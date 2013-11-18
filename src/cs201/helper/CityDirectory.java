@@ -44,4 +44,14 @@ public class CityDirectory {
 	public List<Restaurant> getRestaurants() {
 		return restaurants;
 	}
+	
+	public Restaurant getRestaurantWithID(int id) {
+		for (Restaurant r : restaurants) {
+			if (r.getId() == id) {
+				return r;
+			}
+		}
+		
+		return null;
+	}
 }
