@@ -42,8 +42,20 @@ public abstract class Restaurant extends Structure {
 			return (host.getPerson() == null) ? host : null;
 		}
 		case RestaurantWaiter: {
-			// Logic for returning a waiter goes here
-			return null;
+			RestaurantWaiterRole waiter = null;
+			for (RestaurantWaiterRole r : waiters) {
+				if (r.getPerson() == null) {
+					waiter = r;
+					break;
+				}
+			}
+			if (waiters.size() < MAXWAITERS) {
+				RestaurantWaiterRole newWaiter = new RestaurantWaiterRole();
+				waiters.add(newWaiter);
+				waiter = newWaiter;
+			}
+			
+			return waiter;
 		}
 		case RestaurantCashier: {
 			return (cashier.getPerson() == null) ? cashier : null;
@@ -52,7 +64,7 @@ public abstract class Restaurant extends Structure {
 			return new RestaurantCustomerRole();
 		}
 		default: {
-			Do("Wrong Intention provided");
+			Do("Wrong Intention provided in getRole(Intention)");
 			return null;
 		}
 		}
