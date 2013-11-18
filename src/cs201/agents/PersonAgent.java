@@ -118,6 +118,28 @@ public class PersonAgent extends Agent {
 	@Override
 	protected boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
+		
+		/*if (passengerRole.getActive()) {
+			passengerRole.pickAndExecuteAnAction();
+			return true;
+		}*/
+		
+		boolean actionPerformed = false;
+		for (Role r : roles) {
+			if (r.getActive()) {
+				actionPerformed = r.pickAndExecuteAnAction() || actionPerformed;
+			}
+			if (actionPerformed) {
+				return true;
+			}
+		}
+		
+		if (planner.size() > 0) {
+			performAction(planner.get(0));
+			return true;
+		}
+		
+		
 		return false;
 	}
 	
@@ -125,7 +147,37 @@ public class PersonAgent extends Agent {
 	/**************************************************************************
 	 *                                Actions                                 *
 	 **************************************************************************/
-	
+	/**
+	 * Performs a given Action, including moving to the location of that action
+	 * NOTE: I DON'T KNOW IF THIS WORKS YET
+	 * 
+	 * @param a The Action to be performed
+	 */
+	private void performAction(Action a) {
+		if (currentLocation != a.location) {
+			//passengerRole.msgGoTo(a.location);
+			//passengerRole.setActive(true);
+		}
+		
+		Role newRole = a.location.getRole(a.intent);
+		if (newRole == null) {
+			//passengerRole.active = false;
+			return;
+		}
+		
+		for (Role r : roles) {
+			if (r.getClass().isInstance(newRole.getClass())) {
+				r.startInteraction(a.intent);
+				r.setActive(true);
+				return;
+			}
+		}
+		
+		roles.add(newRole);
+		newRole.setPerson(this);
+		newRole.startInteraction(a.intent);
+		newRole.setActive(true);
+	}
 	
 	/**************************************************************************
 	 *                                Utility                                 *
