@@ -16,7 +16,7 @@ public class RestaurantCustomerRole extends Role {
 	}
 
 	@Override
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
 		return false;
 	}
