@@ -6,18 +6,26 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.roles.restaurantRoles.RestaurantCustomerRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.structures.Structure;
 
+/**
+ * Base Restaurant class that every team member must extend in their personal Restaurants
+ * @author Matt Pohlmann
+ *
+ */
 public abstract class Restaurant extends Structure {
-	RestaurantCashierRole cashier;
-	RestaurantCookRole cook;
-	RestaurantHostRole host;
-	List<RestaurantWaiterRole> waiters;
-	double moneyOnHand;
-	int bankAccountNumber;
-	boolean isOpen;
+	protected final int MAXWAITERS = 3;
+	
+	private RestaurantCashierRole cashier;
+	private RestaurantCookRole cook;
+	private RestaurantHostRole host;
+	private List<RestaurantWaiterRole> waiters;
+	private double moneyOnHand;
+	private int bankAccountNumber;
+	private boolean isOpen;
 	
 	public Restaurant(int x, int y, int width, int height, int id) {
 		super(x, y, width, height, id);
@@ -26,8 +34,28 @@ public abstract class Restaurant extends Structure {
 
 	@Override
 	public Role getRole(Intention role) {
-		// TODO Auto-generated method stub
-		return null;
+		switch (role) {
+		case RestaurantCook: {
+			return (cook.getPerson() == null) ? cook : null;
+		}
+		case RestaurantHost: {
+			return (host.getPerson() == null) ? host : null;
+		}
+		case RestaurantWaiter: {
+			// Logic for returning a waiter goes here
+			return null;
+		}
+		case RestaurantCashier: {
+			return (cashier.getPerson() == null) ? cashier : null;
+		}
+		case RestaurantCustomer: {
+			return new RestaurantCustomerRole();
+		}
+		default: {
+			Do("Wrong Intention provided");
+			return null;
+		}
+		}
 	}
 	
 	/**

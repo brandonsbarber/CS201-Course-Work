@@ -7,6 +7,11 @@ import cs201.agents.PersonAgent;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
 
+/**
+ * Base class for all Structures in SimCity201. They are actually Rectangles that can be clicked on in the GUI
+ * @author Matt Pohlmann
+ *
+ */
 public abstract class Structure extends Rectangle2D.Double {
 	int id;
 	//StructurePanel panel;
@@ -100,5 +105,20 @@ public abstract class Structure extends Rectangle2D.Double {
 		this.closingTime.day = null;
 		this.closingTime.hour = time.hour;
 		this.closingTime.minute = time.minute;
+	}
+	
+	/**
+	 * General-purpose function for printing to the terminal. Format: "Restaurant 2: Gained $100"
+	 * @param msg The message that should be printed (i.e. Gained $100)
+	 */
+	protected void Do(String msg) {
+		StringBuffer output = new StringBuffer();
+		output.append(this.getClass().getSimpleName());
+		output.append(" ");
+		output.append(this.id);
+		output.append(": ");
+		output.append(msg);
+		
+		System.out.println(output.toString());
 	}
 }
