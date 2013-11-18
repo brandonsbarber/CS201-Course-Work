@@ -35,7 +35,7 @@ public abstract class Role {
 	 * Scheduler for roles is non-threaded (it is called manually by the PersonAgent's scheduler)
 	 * @return True if an action was performed, false otherwise
 	 */
-	protected abstract boolean pickAndExecuteAnAction();
+	public abstract boolean pickAndExecuteAnAction();
 	
 	/**
 	 * Any work-related Role must know when it's time to close and leave work. Others can simply implement
