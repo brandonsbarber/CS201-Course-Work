@@ -3,6 +3,7 @@ package cs201.roles.housingRoles;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
@@ -22,7 +23,7 @@ public class LandlordRole extends Role implements Landlord {
 	    RentState state;
 		boolean needsMaintenance;
 
-	        myProperty(Residence res, Renter ren, double a, Date d) {
+	        myProperty(Residence res, Renter ren, double a, WeekDay d) {
 	        	residence = res;
 	            renter = ren;
 	            amtDue = a;
@@ -62,14 +63,14 @@ public class LandlordRole extends Role implements Landlord {
 			}
 		}
 		for (myProperty mP:myProperties) {
-			if (getTomorrow() == mP.dayDue && mP.state == RentState.notDue) {
+			if (/*getTomorrow()*/WeekDay.Sunday == mP.dayDue && mP.state == RentState.notDue) {
 				mP.state = RentState.dueNotNotified;
 				return true;
 			}
 		}
 		
 		for (myProperty mP:myProperties) {
-			if (getToday() == mP.dayDue && mP.state == RentState.dueNotified) {
+			if (/*getToday()*/WeekDay.Sunday == mP.dayDue && mP.state == RentState.dueNotified) {
 				mP.state = RentState.lateNotNotified;
 				return true;
 			}
@@ -118,7 +119,7 @@ public class LandlordRole extends Role implements Landlord {
 	
 	// Utilities
 	
-	public void addProperty(Residence res, Renter renter, double rentAmount, Date rentDueDate) {
+	public void addProperty(Residence res, Renter renter, double rentAmount, WeekDay rentDueDate) {
         myProperty mP = new myProperty(res, renter, rentAmount, rentDueDate);
         myProperties.add(mP);
 	}

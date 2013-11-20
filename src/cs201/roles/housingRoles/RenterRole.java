@@ -32,8 +32,10 @@ public class RenterRole extends Role implements Renter {
 			else
 			{
 				//WithdrawMoneyPerson(amtRentOwed-(getPerson().getMoney()));
+				return false;
 			}
 		}
+		return false;
 	}
 
 	//Actions
