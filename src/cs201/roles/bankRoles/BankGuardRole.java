@@ -3,7 +3,10 @@ package cs201.roles.bankRoles;
 import java.awt.List;
 import java.util.Queue;
 
+import cs201.agents.PersonAgent.Intention;
+import cs201.interfaces.roles.bank.BankGuard;
 import cs201.roles.Role;
+import cs201.structures.bank.Bank;
 
 
 public class BankGuardRole extends Role implements BankGuard {
@@ -13,18 +16,17 @@ public class BankGuardRole extends Role implements BankGuard {
     //================================================================================
 	
 	Queue<BankCustomerRole> waitingCustomers;
-	List<BankTellerRole> bankTellers;
+	//List<BankTellerRole> bankTellers;
 	
 	//================================================================================
     // Scheduler
     //================================================================================
 	
 	public boolean pickAndExecuteAnAction() {
-		if (// BankCustomerRole cust in waitingCustomers && 
-				// BankTellerRole teller in bankTellers  teller.state == TellerState.UNOCCUPIED) {
-			    escortToTeller(cust, teller);
+		for(BankCustomerRole cust : waitingCustomers) {
+			// Do action
 		}
-		if (!Bank.getOpen) { // May not need this rule if we just allow customers to finish up
+		if (!Bank.getOpen()) { // May not need this rule if we just allow customers to finish up
 			    escortCustomersOut();
 		}
         return false;
@@ -41,22 +43,34 @@ public class BankGuardRole extends Role implements BankGuard {
 	}
 	
 	public void msgDoneWithCustomer(BankTellerRole teller) {
-	    //stateChanged();
+	    stateChanged();
 	}
 	
 	//================================================================================
     // Actions
     //================================================================================
 
-	private void escortToTeller(cust, teller) {
-	    waitingCustomers.peek().msgGoToTeller(teller);
+	private void escortToTeller(BankCustomerRole cust, BankTellerRole teller) {
+	    waitingCustomers.peek().msgSeeTeller(teller);
 	    waitingCustomers.remove();
 	}
 	
-	private void escortCustomersOut(cust, teller) {
+	private void escortCustomersOut() {
 	    for (BankCustomerRole cust : waitingCustomers) {
-	        waitingCustomers.peek().msgLeaveBank(cust);
+	        waitingCustomers.peek().msgLeaveBank();
 	        waitingCustomers.remove();
 	    }
 	}
-}
+
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
+	}}

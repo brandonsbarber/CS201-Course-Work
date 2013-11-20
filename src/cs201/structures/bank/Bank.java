@@ -66,7 +66,7 @@ public class Bank extends Structure {
 	    isOpen = open;
 	}
 	// Returns whether or not this Bank is open
-	public boolean getOpen() {
+	public static boolean getOpen() {
 	    return isOpen;
 	}
 	
