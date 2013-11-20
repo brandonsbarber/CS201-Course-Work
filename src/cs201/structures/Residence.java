@@ -4,8 +4,8 @@ import java.util.List;
 
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
-import cs201.interfaces.Landlord;
-import cs201.interfaces.Resident;
+import cs201.interfaces.roles.housing.Landlord;
+import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
 
 public class Residence extends Structure {

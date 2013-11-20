@@ -1,4 +1,4 @@
-package cs201.interfaces;
+package cs201.interfaces.roles.housing;
 
 import cs201.structures.Residence;
 

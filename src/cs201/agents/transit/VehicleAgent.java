@@ -1,7 +1,7 @@
 package cs201.agents.transit;
 
 import cs201.agents.Agent;
-import cs201.interfaces.transit.Vehicle;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.structures.Structure;
 
 public abstract class VehicleAgent extends Agent implements Vehicle

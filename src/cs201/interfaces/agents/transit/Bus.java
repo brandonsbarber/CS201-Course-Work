@@ -1,4 +1,6 @@
-package cs201.interfaces.transit;
+package cs201.interfaces.agents.transit;
+
+import cs201.interfaces.roles.transit.Passenger;
 
 public interface Bus extends Vehicle
 {

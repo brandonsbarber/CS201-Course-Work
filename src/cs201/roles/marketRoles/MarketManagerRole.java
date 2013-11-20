@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import cs201.agents.PersonAgent.Intention;
-import cs201.interfaces.marketInterfaces.MarketConsumer;
-import cs201.interfaces.marketInterfaces.MarketEmployee;
-import cs201.interfaces.marketInterfaces.MarketManager;
+import cs201.interfaces.roles.market.MarketConsumer;
+import cs201.interfaces.roles.market.MarketEmployee;
+import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 
 public class MarketManagerRole extends Role implements MarketManager {

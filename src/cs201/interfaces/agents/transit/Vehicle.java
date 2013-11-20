@@ -1,4 +1,4 @@
-package cs201.interfaces.transit;
+package cs201.interfaces.agents.transit;
 
 import cs201.structures.Structure;
 

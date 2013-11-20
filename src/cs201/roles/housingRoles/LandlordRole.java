@@ -2,8 +2,8 @@ package cs201.roles.housingRoles;
 
 import java.util.List;
 
-import cs201.interfaces.Landlord;
-import cs201.interfaces.Renter;
+import cs201.interfaces.roles.housing.Landlord;
+import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
 import cs201.structures.Residence;
 

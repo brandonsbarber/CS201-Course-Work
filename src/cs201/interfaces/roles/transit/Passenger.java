@@ -1,5 +1,6 @@
-package cs201.interfaces.transit;
+package cs201.interfaces.roles.transit;
 
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.structures.Structure;
 
 public interface Passenger
