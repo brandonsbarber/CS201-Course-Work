@@ -3,6 +3,8 @@ package cs201.roles.bankRoles;
 import java.awt.List;
 import java.util.Queue;
 
+import cs201.roles.Role;
+
 
 public class BankGuardRole extends Role implements BankGuard {
 	
@@ -18,8 +20,8 @@ public class BankGuardRole extends Role implements BankGuard {
     //================================================================================
 	
 	public boolean pickAndExecuteAnAction() {
-		if (Ǝ BankCustomerRole cust in waitingCustomers && 
-				Ǝ BankTellerRole teller in bankTellers ∋ teller.state == TellerState.UNOCCUPIED) {
+		if (// BankCustomerRole cust in waitingCustomers && 
+				// BankTellerRole teller in bankTellers  teller.state == TellerState.UNOCCUPIED) {
 			    escortToTeller(cust, teller);
 		}
 		if (!Bank.getOpen) { // May not need this rule if we just allow customers to finish up
@@ -39,7 +41,7 @@ public class BankGuardRole extends Role implements BankGuard {
 	}
 	
 	public void msgDoneWithCustomer(BankTellerRole teller) {
-	    stateChanged();
+	    //stateChanged();
 	}
 	
 	//================================================================================

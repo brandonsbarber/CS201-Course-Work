@@ -1,5 +1,7 @@
 package cs201.roles.bankRoles;
 
+import cs201.roles.Role;
+
 public class BankCustomerRole extends Role implements BankCustomer {
 	
 	//================================================================================
