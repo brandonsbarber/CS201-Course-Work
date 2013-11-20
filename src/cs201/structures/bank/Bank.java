@@ -1,7 +1,10 @@
 package cs201.structures.bank;
 
+import java.util.HashMap;
 import java.util.List;
 
+import cs201.agents.PersonAgent.Intention;
+import cs201.roles.Role;
 import cs201.roles.bankRoles.BankGuardRole;
 import cs201.roles.bankRoles.BankTellerRole;
 import cs201.structures.Structure;
@@ -14,13 +17,13 @@ public class Bank extends Structure {
     //================================================================================
 	
 	List<BankTellerRole> bankTellers;
-	BankGuardRole bankGuard;
-	boolean isOpen;
+	static BankGuardRole bankGuard;
+	static boolean isOpen;
 	double bankBalance;
 	
 	public enum AccountTypes { BUSINESS, PERSONAL }
-	HashMap<int actNumber, double balance> personalAccounts;
-	HashMap<int actNumber, double balance> businessAccounts;
+	HashMap personalAccounts = new HashMap();
+	HashMap businessAccounts = new HashMap();
 	
 	
 	//================================================================================
@@ -44,21 +47,21 @@ public class Bank extends Structure {
 	    return bankGuard;
 	}
 	// Returns SimCity201's personal accounts
-	public HashMap<int actNumber, double balance> getPersonalAccounts() {
+	public HashMap getPersonalAccounts() {
 	    return personalAccounts;
 	}
 	// Returns SimCity201's business accounts
-	public HashMap<int actNumber, double balance> getBusinessAccounts() {
+	public HashMap getBusinessAccounts() {
 	    return businessAccounts;
 	}
 	// Returns the total money held inside of the Bank (Useful for granting loans)
 	public double getBankBalance() {
-	    for(int actNum : personalAccounts.keySet()) {
+	    /*for(int actNum : personalAccounts.keySet()) {
 	       bankBalance += personalAccounts.get(actNum);
 	    }
 	    for(int actNum : businessAccounts.keySet()) {
 	       bankBalance += businessAccounts.get(actNum);
-	    }
+	    }*/
 	    return bankBalance;
 	}
 	// Sets whether this Bank is open or closed
@@ -68,6 +71,12 @@ public class Bank extends Structure {
 	// Returns whether or not this Bank is open
 	public static boolean getOpen() {
 	    return isOpen;
+	}
+
+	@Override
+	public Role getRole(Intention role) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
