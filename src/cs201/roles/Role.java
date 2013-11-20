@@ -60,6 +60,28 @@ public abstract class Role {
 	}
 	
 	/**
+	 * Gets the name of this Role (just the name of its PersonAgent)
+	 * @return String representation of the Person's name
+	 */
+	public String getName() {
+		return (myPerson != null) ? myPerson.getName() : "NULL";
+	}
+	
+	
+	/**
+	 * A String representation of this Role (i.e. BankTellerRole Jim)
+	 * @return A String representation of this Role
+	 */
+	public String toString() {
+		StringBuffer output = new StringBuffer();
+		output.append(this.getClass().getSimpleName());
+		output.append(" ");
+		output.append((myPerson != null) ? myPerson.getName() : "NULL");
+		
+		return output.toString();
+	}
+	
+	/**
 	 * Makes this Role active or inactive
 	 * @param newActive True to make Role active, false to deactivate it
 	 */
