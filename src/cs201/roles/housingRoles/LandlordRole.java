@@ -6,7 +6,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
-import cs201.structures.Residence;
+import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
 	List<myProperty> myProperties;

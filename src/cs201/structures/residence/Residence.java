@@ -1,4 +1,4 @@
-package cs201.structures;
+package cs201.structures.residence;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
+import cs201.structures.Structure;
 
 public class Residence extends Structure {
 	private Resident resident;

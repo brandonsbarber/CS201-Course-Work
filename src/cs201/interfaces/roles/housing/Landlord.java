@@ -1,6 +1,6 @@
 package cs201.interfaces.roles.housing;
 
-import cs201.structures.Residence;
+import cs201.structures.residence.Residence;
 
 public interface Landlord {
 
