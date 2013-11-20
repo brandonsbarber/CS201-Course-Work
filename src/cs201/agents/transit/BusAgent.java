@@ -49,17 +49,58 @@ public class BusAgent extends VehicleAgent implements Bus
 	{
 		passengers.add(p);
 		justBoarded.add(p);
+		sem.release();
 	}
 
 	@Override
-	public void msgNotBoarding(Passenger p) {
-		// TODO Auto-generated method stub
-		
+	public void msgNotBoarding(Passenger p)
+	{
+		sem.release();
 	}
 	
 	@Override
-	protected boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+	protected boolean pickAndExecuteAnAction()
+	{
+		if(route != null)
+		{
+			goToNextStop();
+		}
 		return false;
+	}
+
+	private void goToNextStop()
+	{
+		BusStop s = route.getNextStop();
+		msgSetDestination(s);
+		//gui.doGoToDestination()
+		for(Passenger pass : passengers)
+		{
+			pass.msgReachedDestination(s);
+			try
+			{
+				sem.acquire();
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		List<Passenger> newPassengers = s.getPassengerList(this);
+		
+		for(Passenger pass : newPassengers)
+		{
+			pass.msgPleaseBoard(this);
+			try
+			{
+				sem.acquire();
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		s.removePassengers(this,justBoarded);
+		justBoarded.clear();
 	}
 }
