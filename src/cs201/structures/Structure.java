@@ -128,4 +128,17 @@ public abstract class Structure extends Rectangle2D.Double {
 		
 		System.out.println(output.toString());
 	}
+	
+	/**
+	 * A String representation of this Structure (i.e. Bank 1)
+	 * @return A String representation of this Structure
+	 */
+	public String toString() {
+		StringBuffer output = new StringBuffer();
+		output.append(this.getClass().getSimpleName());
+		output.append(" ");
+		output.append(id);
+		
+		return output.toString();
+	}
 }
