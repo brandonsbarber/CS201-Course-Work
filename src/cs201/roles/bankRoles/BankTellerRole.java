@@ -1,5 +1,7 @@
 package cs201.roles.bankRoles;
 
+import cs201.agents.PersonAgent.Intention;
+import cs201.interfaces.roles.bank.BankTeller;
 import cs201.roles.Role;
 
 
@@ -112,5 +114,17 @@ public class BankTellerRole extends Role implements BankTeller {
 	         myCustomer.getCustomer.msgLoanDenied();
 	    }
 	    Bank.getGuard.msgDoneWithCustomer(this);
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }
