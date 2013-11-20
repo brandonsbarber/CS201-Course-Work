@@ -1,4 +1,4 @@
-package cs201.interfaces.marketInterfaces;
+package cs201.interfaces.roles.market;
 
 import java.util.List;
 

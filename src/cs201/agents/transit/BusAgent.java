@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import cs201.helper.transit.BusRoute;
-import cs201.interfaces.transit.Bus;
-import cs201.interfaces.transit.Passenger;
+import cs201.interfaces.agents.transit.Bus;
+import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.transit.BusStop;
 
 public class BusAgent extends VehicleAgent implements Bus

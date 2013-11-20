@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cs201.interfaces.transit.Truck;
+import cs201.interfaces.agents.transit.Truck;
 import cs201.structures.Structure;
 
 public class TruckAgent extends VehicleAgent implements Truck

@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import cs201.interfaces.transit.Car;
-import cs201.interfaces.transit.Passenger;
+import cs201.interfaces.agents.transit.Car;
+import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
 
 public class CarAgent extends VehicleAgent implements Car
