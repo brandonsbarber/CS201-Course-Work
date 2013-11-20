@@ -7,11 +7,11 @@ import javax.swing.Timer;
 
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.helper.Matt.MenuMatt;
+import cs201.interfaces.roles.restaurant.RestaurantCustomerRole;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
-import cs201.roles.restaurantRoles.RestaurantCustomerRole;
 
 import java.util.concurrent.Semaphore;
 

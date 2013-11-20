@@ -7,9 +7,9 @@ import java.util.*;
 import javax.swing.Timer;
 
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
+import cs201.interfaces.roles.restaurant.RestaurantCookRole;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
-import cs201.roles.restaurantRoles.RestaurantCookRole;
 
 /**
  * Restaurant Cook Agent

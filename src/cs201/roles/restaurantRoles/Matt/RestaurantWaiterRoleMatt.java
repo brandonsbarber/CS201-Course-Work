@@ -9,9 +9,9 @@ import javax.swing.Timer;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.helper.Matt.MenuMatt;
 import cs201.helper.Matt.TableMatt;
+import cs201.interfaces.roles.restaurant.RestaurantWaiterRole;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
-import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 
 import java.util.concurrent.Semaphore;
 
