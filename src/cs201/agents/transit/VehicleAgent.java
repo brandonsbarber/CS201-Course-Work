@@ -11,6 +11,12 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public void msgSetDestination (Structure destination)
 	{
 		this.destination = destination;
+		stateChanged();
+	}
+	
+	public void msgSetLocation(Structure s)
+	{
+		currentLocation = s;
 	}
 	
 	public boolean destinationReached()
