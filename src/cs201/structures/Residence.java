@@ -3,8 +3,10 @@ package cs201.structures;
 import java.util.List;
 
 import cs201.agents.PersonAgent;
+import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.Landlord;
 import cs201.interfaces.Resident;
+import cs201.roles.Role;
 
 public class Residence extends Structure {
 	private Resident resident;
@@ -55,7 +57,7 @@ public class Residence extends Structure {
 	
 	public void removeResident(Resident r) {
 		if(resident == r) {
-	                resident = NULL;
+	           resident = null;
 	        }
 	}
 	
@@ -108,5 +110,11 @@ public class Residence extends Structure {
 
 	public boolean hasFood() {
 		return hasFood;
+	}
+	
+	@Override
+	public Role getRole(Intention role) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
