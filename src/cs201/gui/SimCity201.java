@@ -8,6 +8,9 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.structures.restaurant.RestaurantMatt;
+
 public class SimCity201 extends JFrame {
 	CityPanel cityPanel;
 	JPanel buildingPanels;
@@ -34,16 +37,23 @@ public class SimCity201 extends JFrame {
 		buildingPanels.setBackground(Color.YELLOW);
 		
 		// Create initial buildings here and add them to cityPanel and buildingPanels
-		for (int i = 0; i < 3; i++) {
-			
-		}
+		RestaurantMatt r = new RestaurantMatt(40, 40, 40, 40, 0);
+		RestaurantGuiMatt g = new RestaurantGuiMatt(r, 0, this);
+		r.setStructurePanel(g);
+		buildingPanels.add(g, "" + 0);
+		cityPanel.addStructure(r);
 		
+		RestaurantMatt r2 = new RestaurantMatt(40, 100, 40, 40, 1);
+		RestaurantGuiMatt g2 = new RestaurantGuiMatt(r, 1, this);
+		r2.setStructurePanel(g2);
+		buildingPanels.add(g2, "" + 1);
+		cityPanel.addStructure(r2);
 		
 		add(BorderLayout.NORTH, cityPanel);
 		add(BorderLayout.SOUTH, buildingPanels);
 	}
 	
-	public void displayBuildingPanel(BuildingPanel bp) {
+	public void displayStructurePanel(StructurePanel bp) {
 		cardLayout.show(buildingPanels, bp.getName());
 	}
 }

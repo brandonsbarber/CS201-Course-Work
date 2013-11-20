@@ -30,7 +30,7 @@ public class CityPanel extends JPanel implements MouseListener {
 		}
 	}
 	
-	public void addBuilding(Structure s) {
+	public void addStructure(Structure s) {
 		buildings.add(s);
 	}
 	

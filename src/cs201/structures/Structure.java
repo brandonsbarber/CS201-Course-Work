@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 
 import cs201.agents.PersonAgent;
-import cs201.gui.BuildingPanel;
+import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
 
@@ -15,7 +15,7 @@ import cs201.roles.Role;
  */
 public abstract class Structure extends Rectangle2D.Double {
 	int id;
-	BuildingPanel panel;
+	StructurePanel panel;
 	Point guiLocation;
 	Point entranceLocation;
 	Point deliveryLocation;
@@ -47,14 +47,14 @@ public abstract class Structure extends Rectangle2D.Double {
 	 * When this Structure is clicked in the GUI, this Structure's panel will be shown in the card layout of the main program
 	 */
 	public void displayStructure() {
-		panel.displayBuildingPanel();
+		panel.displayStructurePanel();
 	}
 	
 	/**
 	 * Sets this Structure's panel so it can be viewed when clicked
 	 * @param sp The new StructurePanel
 	 */
-	public void setStructurePanel(BuildingPanel sp) {
+	public void setStructurePanel(StructurePanel sp) {
 		panel = sp;
 	}
 	

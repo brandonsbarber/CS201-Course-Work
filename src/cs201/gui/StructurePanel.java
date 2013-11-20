@@ -7,12 +7,12 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class BuildingPanel extends JPanel {
+public class StructurePanel extends JPanel {
 	Rectangle2D rectangle;
 	String name;
 	SimCity201 city;
 
-	public BuildingPanel(Rectangle2D r, int i, SimCity201 sc) {
+	public StructurePanel(Rectangle2D r, int i, SimCity201 sc) {
 		rectangle = r;
 		name = "" + i;
 		city = sc;
@@ -30,8 +30,8 @@ public class BuildingPanel extends JPanel {
 		return name;
 	}
 	
-	public void displayBuildingPanel() {
-		city.displayBuildingPanel(this);
+	public void displayStructurePanel() {
+		city.displayStructurePanel(this);
 	}
 
 }
