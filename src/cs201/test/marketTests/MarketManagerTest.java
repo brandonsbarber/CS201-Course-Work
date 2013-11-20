@@ -1,4 +1,4 @@
-package cs201.tests.marketTests;
+package cs201.test.marketTests;
 
 import static org.junit.Assert.*;
 

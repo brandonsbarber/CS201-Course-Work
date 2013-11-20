@@ -5,7 +5,7 @@ import java.util.List;
 import cs201.interfaces.Landlord;
 import cs201.interfaces.Renter;
 import cs201.roles.Role;
-import cs201.structures.Residence;
+import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
 	List<myProperty> myProperties;

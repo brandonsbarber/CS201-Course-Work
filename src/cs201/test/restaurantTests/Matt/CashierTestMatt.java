@@ -1,4 +1,4 @@
-package cs201.test;
+package cs201.test.restaurantTests.Matt;
 
 import cs201.test.mock.Matt.*;
 import cs201.roles.restaurantRoles.Matt.*;
