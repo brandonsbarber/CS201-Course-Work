@@ -6,6 +6,8 @@ import cs201.roles.Role;
 public class RestaurantWaiterRole extends Role {
 
 	public RestaurantWaiterRole() {
+		super();
+		
 		// TODO Auto-generated constructor stub
 	}
 

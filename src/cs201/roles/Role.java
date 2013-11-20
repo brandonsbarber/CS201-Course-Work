@@ -11,6 +11,11 @@ public abstract class Role {
 	PersonAgent myPerson;
 	boolean isActive;
 	
+	public Role() {
+		myPerson = null;
+		isActive = false;
+	}
+	
 	/**
 	 * Starts an interaction in the Role based upon the PersonAgent's intent
 	 * @param intent What the PersonAgent intends to do with this Role
