@@ -12,6 +12,9 @@ import cs201.helper.Matt.MenuMatt;
 import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantCashierRole;
+import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.roles.restaurantRoles.RestaurantHostRole;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 
 import java.util.concurrent.Semaphore;
@@ -20,8 +23,8 @@ import java.util.concurrent.Semaphore;
  * Restaurant Waiter Agent
  */
 public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements WaiterMatt {
-	private RestaurantCookRoleMatt cook;
-	private RestaurantHostRoleMatt host;
+	//private RestaurantCookRoleMatt cook;
+	//private RestaurantHostRoleMatt host;
 	private RestaurantCashierRoleMatt cashier;
 	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private WaiterGuiMatt waiterGui;
@@ -36,8 +39,6 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	public RestaurantWaiterRoleMatt(RestaurantCookRoleMatt cook, RestaurantHostRoleMatt host, RestaurantCashierRoleMatt cashier) {
 		super();
 
-		this.cook = cook;
-		this.host = host;
 		this.cashier = cashier;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
 	}
@@ -45,8 +46,6 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	public RestaurantWaiterRoleMatt() {
 		super();
 
-		this.cook = null;
-		this.host = null;
 		this.cashier = null;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
 	}
@@ -240,7 +239,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	private void AskForBreak() {
 		DoAskForBreak();
 		state = WaiterState.waitingForResponse;
-		host.msgPermissionForBreak(this);
+		((RestaurantHostRoleMatt) restaurant.getHost()).msgPermissionForBreak(this);
 	}
 	
 	private void GoOnBreak() {
@@ -251,13 +250,13 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	private void GoOffBreak() {
 		DoGoOffBreak();
 		state = WaiterState.none;
-		host.msgOffBreak(this);
+		((RestaurantHostRoleMatt) restaurant.getHost()).msgOffBreak(this);
 	}
 	
 	private void SeatCustomer(MyCustomer m) {
 		DoGoToCustomerWaiting(m);
 		m.customer.msgFollowMeToTable(this, new MenuMatt());
-		host.msgCustomerRetrievedFromWaitingArea();
+		((RestaurantHostRoleMatt) restaurant.getHost()).msgCustomerRetrievedFromWaitingArea();
 		DoSeatCustomer(m);
 		m.state = CustomerState.none;
 	}
@@ -271,7 +270,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	private void GiveOrderToCook(MyCustomer m) {
 		m.state = CustomerState.none;
 		DoGiveOrderToCook(m);
-		cook.msgHereIsAnOrder(this, m.choice, m.tableNumber);
+		((RestaurantCookRoleMatt) restaurant.getCook()).msgHereIsAnOrder(this, m.choice, m.tableNumber);
 	}
 	
 	private void RetakeCustomerOrder(MyCustomer m) {
@@ -302,13 +301,13 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	
 	private void CustomerLeaving(MyCustomer m) {
 		DoCustomerLeaving(m);
-		host.msgTableIsFree(this, m.tableNumber);
+		((RestaurantHostRoleMatt) restaurant.getHost()).msgTableIsFree(this, m.tableNumber);
 		myCustomers.remove(m);
 	}
 
 	// Utilities -------------------------------------------------------------
 	private void DoAskForBreak() {
-		System.out.println("Waiter " + this.toString() + " asking host " + host.getName() + " to go on break.");
+		System.out.println("Waiter " + this.toString() + " asking host " + ((RestaurantHostRoleMatt) restaurant.getHost()).getName() + " to go on break.");
 		waiterGui.setWaitingForBreakResponse();
 	}
 	
@@ -361,7 +360,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	private void DoSeatCustomer(MyCustomer m) {
 		System.out.println("Waiter " + this.toString() + " seating customer " + m.customer.toString() + ".");	
 		
-		for (TableMatt t : host.getTables()) {
+		for (TableMatt t : ((RestaurantHostRoleMatt) restaurant.getHost()).getTables()) {
 			if (t.tableNum() == m.tableNumber) {
 				m.customer.getGui().DoGoToSeat(t.X(), t.Y());
 				waiterGui.GoToLocation(t.X(), t.Y());
@@ -419,7 +418,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 			e.printStackTrace();
 		}
 		
-		cook.msgOrderPickedUp(m.choice);
+		((RestaurantCookRoleMatt) restaurant.getCook()).msgOrderPickedUp(m.choice);
 		waiterGui.GoToCustomer(m.customer);
 		waiterGui.setMessage(m.choice);
 		try {
@@ -497,18 +496,6 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 		return waiterGui;
 	}
 	
-	public void setCook(RestaurantCookRoleMatt cook) {
-		this.cook = cook;
-	}
-	
-	public void setHost(RestaurantHostRoleMatt host) {
-		this.host = host;
-	}
-	
-	public void setCashier(RestaurantCashierRoleMatt cashier) {
-		this.cashier = cashier;
-	}
-	
 	/**
 	 * The WaiterGui tells this WaiterAgent that it has reached its destination, freeing up this WaiterAgent
 	 * to continue working
@@ -544,5 +531,6 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 		// TODO Auto-generated method stub
 		
 	}
+
 }
 

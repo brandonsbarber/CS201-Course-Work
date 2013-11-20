@@ -10,6 +10,8 @@ import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantCashierRole;
+import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 
 /**
@@ -287,4 +289,5 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		// TODO Auto-generated method stub
 		
 	}
+
 }

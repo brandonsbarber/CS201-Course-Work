@@ -2,9 +2,11 @@ package cs201.roles.restaurantRoles;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
+import cs201.structures.restaurant.Restaurant;
 
 public abstract class RestaurantCookRole extends Role {
-
+	protected Restaurant restaurant;
+	
 	public RestaurantCookRole() {
 		super();
 		
@@ -19,5 +21,5 @@ public abstract class RestaurantCookRole extends Role {
 
 	@Override
 	public abstract void closingTime();
-
+	
 }

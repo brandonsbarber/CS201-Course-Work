@@ -1,9 +1,12 @@
 package cs201.structures.restaurant;
 
+import java.util.ArrayList;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
@@ -16,6 +19,14 @@ public class RestaurantMatt extends Restaurant {
 		// TODO Auto-generated constructor stub
 		
 		// Setup all roles
+		this.host = new RestaurantHostRoleMatt();
+		this.cook = new RestaurantCookRoleMatt();
+		this.cashier = new RestaurantCashierRoleMatt();
+		this.waiters = new ArrayList<RestaurantWaiterRole>();
+		for (int i = 0; i < INITIALWAITERS; i++) {
+			RestaurantWaiterRoleMatt newWaiter = new RestaurantWaiterRoleMatt();
+			waiters.add(newWaiter);
+		}
 	}
 	
 	@Override
@@ -30,6 +41,7 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantWaiter: {
 			for (RestaurantWaiterRole r : waiters) {
 				if (r.getPerson() == null) {
+					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
 					return r;
 				}
 			}
