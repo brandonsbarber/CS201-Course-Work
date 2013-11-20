@@ -1,6 +1,8 @@
 package cs201.roles.bankRoles;
 
+import cs201.interfaces.roles.bank.BankCustomer;
 import cs201.roles.Role;
+import cs201.structures.bank.Bank;
 
 public class BankCustomerRole extends Role implements BankCustomer {
 	
@@ -45,7 +47,7 @@ public class BankCustomerRole extends Role implements BankCustomer {
 			goToTeller();
 		}
 		if (state == CustomerState.TalkingToTeller && 
-		   (myPerson.getAccountNumber() == null || intent == Intention.OpenAccount)) {
+		   (/*myPerson.getAccountNumber() == null ||*/ intent == Intention.OpenAccount)) {
 			openBankAccount();
 		}
 		if (state == CustomerState.TalkingToTeller && intent == Intention.WithdrawMoney) {
@@ -66,11 +68,11 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	
 	public void msgSeeTeller(BankTellerRole teller) {
 	    state = CustomerState.WalkingToTeller;
-	    destination = teller.getLocation
+	    //destination = teller.getLocation();
 	}
 	
 	public void msgAccountIsOpened(int actNum) {
-	    myPerson.setBankAccount(actNum);
+	    //myPerson.setBankAccount(actNum);
 	}
 	
 	public void msgMoneyIsDeposited(int newBalance) {
@@ -82,7 +84,7 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	}
 	
 	public void msgLoanIsGranted(int loanAmount) {
-	    myPerson.setMoney(myPerson.getMoney() + loanAmount);
+	    //myPerson.setMoney(myPerson.getMoney() + loanAmount);
 	}
 	
 	public void msgLeaveBank() {
@@ -94,28 +96,40 @@ public class BankCustomerRole extends Role implements BankCustomer {
     //================================================================================
 
 	private void addToWaitingList() {
-	    Bank.getGuard.msgHereToSeeTeller(this);
+	    Bank.getGuard().msgHereToSeeTeller(this);
 	    state = CustomerState.Waiting;
 	}
 	
 	private void goToTeller() {
-	    DoGoToTeller(xDest, yDest);
+	    //DoGoToTeller(xDest, yDest);
 	    state = CustomerState.TalkingToTeller;
 	}
 	
 	private void openBankAccount() {
-	    myTeller.msgOpenAccount(this, startingBalance);
+	    //myTeller.msgOpenAccount(this, startingBalance);
 	}
 	
 	private void withdrawMoney() {
-	    myTeller.msgWithdrawMoney(accountNumber, amtNeeded);
+	    //myTeller.msgWithdrawMoney(accountNumber, amtNeeded);
 	}
 	
 	private void depositMoney() {
-	    myTeller.msgDepositMoney(accountNumber, amtToDeposit);
+	    //myTeller.msgDepositMoney(accountNumber, amtToDeposit);
 	}
 	
 	private void takeOutLoan() {
-	    myTeller.msgRequestMoney(accountNumber, amtRequested);
+	    //myTeller.msgRequestMoney(accountNumber, amtRequested);
+	}
+
+	@Override
+	public void startInteraction(cs201.agents.PersonAgent.Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }

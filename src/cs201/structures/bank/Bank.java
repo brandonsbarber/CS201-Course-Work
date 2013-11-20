@@ -40,7 +40,7 @@ public class Bank extends Structure {
 	    return bankTellers;
 	}
 	// Returns the bank's guard
-	public BankGuardRole getGuard() {
+	public static BankGuardRole getGuard() {
 	    return bankGuard;
 	}
 	// Returns SimCity201's personal accounts
