@@ -9,7 +9,7 @@ import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.structures.Structure;
-
+ 
 /**
  * Base Restaurant class that every team member must extend in their personal Restaurants
  * @author Matt Pohlmann
