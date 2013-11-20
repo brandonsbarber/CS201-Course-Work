@@ -1,14 +1,19 @@
 package cs201.structures.restaurant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.interfaces.roles.restaurant.RestaurantCashierRole;
+import cs201.interfaces.roles.restaurant.RestaurantCookRole;
+import cs201.interfaces.roles.restaurant.RestaurantCustomerRole;
+import cs201.interfaces.roles.restaurant.RestaurantHostRole;
+import cs201.interfaces.roles.restaurant.RestaurantWaiterRole;
 import cs201.roles.Role;
-import cs201.roles.restaurantRoles.RestaurantCashierRole;
-import cs201.roles.restaurantRoles.RestaurantCookRole;
-import cs201.roles.restaurantRoles.RestaurantCustomerRole;
-import cs201.roles.restaurantRoles.RestaurantHostRole;
-import cs201.roles.restaurantRoles.RestaurantWaiterRole;
+import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 import cs201.structures.Structure;
 
 /**
@@ -17,6 +22,7 @@ import cs201.structures.Structure;
  *
  */
 public abstract class Restaurant extends Structure {
+	protected final int INITIALWAITERS = 2;
 	protected final int MAXWAITERS = 3;
 	
 	private RestaurantCashierRole cashier;
@@ -30,6 +36,16 @@ public abstract class Restaurant extends Structure {
 	public Restaurant(int x, int y, int width, int height, int id) {
 		super(x, y, width, height, id);
 		// TODO Auto-generated constructor stub
+		
+		if (this instanceof RestaurantMatt) {
+			host = new RestaurantHostRoleMatt();
+			cashier = new RestaurantCashierRoleMatt(host);
+			cook = new RestaurantCookRoleMatt();
+			waiters = new ArrayList<RestaurantWaiterRole>();
+			for (int i = 0; i < INITIALWAITERS; i++) {
+				waiters.add(new RestaurantWaiterRoleMatt());
+			}
+		}
 	}
 
 	@Override
