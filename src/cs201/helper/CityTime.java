@@ -30,6 +30,15 @@ public class CityTime {
 	}
 	
 	/**
+	 * Determines equality between this CityTime and another CityTime, ignoring what day it is
+	 * @param other The CityTime being compared to this one
+	 * @return True if the two are the same
+	 */
+	public boolean equalsIgnoreDay(CityTime other) {
+		return this.hour == other.hour && this.minute == other.minute;
+	}
+	
+	/**
 	 * Enum for describing the days of the week
 	 * @author Matt Pohlmann
 	 *
