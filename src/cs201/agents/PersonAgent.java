@@ -24,6 +24,8 @@ public class PersonAgent extends Agent {
 	private final int INITIALHUNGER = 0;
 	private final int HUNGERPERMINUTE = 1;
 	private final int INITIALMONEY = 30;
+	private final int INITIALWAKEUPHOUR = 7;
+	private final int INITIALWAKEUPMINUTE = 0;
 	
 	
 	/**************************************************************************
@@ -35,6 +37,7 @@ public class PersonAgent extends Agent {
 	//private PassengerRole passengerRole;
 	private List<Action> planner;
 	private CityTime time;
+	private CityTime wakeupTime;
 	private double moneyOnHand;
 	private int hungerLevel;
 	//private Vehicle vehicle;
@@ -58,6 +61,7 @@ public class PersonAgent extends Agent {
 		//this.passengerRole.setPerson(this);
 		this.planner = Collections.synchronizedList(new ArrayList<Action>());
 		this.time = new CityTime();
+		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
 		this.hungerLevel = INITIALHUNGER;
 		//this.vehicle = null;
@@ -116,11 +120,14 @@ public class PersonAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
 		
+		// If you're going somewhere, that has highest priority
 		/*if (passengerRole.getActive()) {
 			passengerRole.pickAndExecuteAnAction();
 			return true;
 		}*/
 		
+		// If you have active roles, those have next highest priority (because you're currently
+		// doing something)
 		boolean actionPerformed = false;
 		synchronized(roles) {
 			for (Role r : roles) {
@@ -133,14 +140,22 @@ public class PersonAgent extends Agent {
 			}
 		}
 		
+		// If you have an active Action (meaning you decided to perform this action and go to its
+		// location then actually perform that Action)
 		if (planner.get(0).active) {
 			performAction(planner.get(0));
 			return true;
 		}
 		
+		// If you have an action in your planner, go to its location and make it active)
 		if (planner.size() > 0) {
 			goToLocation(planner.get(0));
 			return true;
+		}
+		
+		// If it's time to wake up in the morning
+		if (time.equalsIgnoreDay(this.wakeupTime)) {
+			
 		}
 		
 		
@@ -219,6 +234,7 @@ public class PersonAgent extends Agent {
 		Do("Added eating at home (" + home + ") to Planner");
 	}
 	
+	/*
 	private void withdrawMoneyAsCustomer() {
 		Action temp = new Action();
 		// Pick a random bank to perform the transaction at
@@ -272,7 +288,7 @@ public class PersonAgent extends Agent {
 		temp.intent = Intention.MarketConsumer;
 		planner.add(temp);
 		Do("Added a market run at " + temp.location + " to Planner");
-	}
+	}*/
 	
 	private void eatAtRestaurant() {
 		Action temp = new Action();
@@ -366,6 +382,23 @@ public class PersonAgent extends Agent {
 	 */
 	public int getBankAccountNumber() {
 		return this.bankAccountNumber;
+	}
+	
+	/**
+	 * Returns the time at which this PersonAgent wakes up every morning
+	 * @return a CityTime object representing this person's morning wakeup time
+	 */
+	public CityTime getWakeupTime() {
+		return wakeupTime;
+	}
+	
+	/**
+	 * Sets this PersonAgent's wakeup time
+	 * @param time The new wakeup time for this PersonAgent
+	 */
+	public void setWakeupTime(CityTime time) {
+		this.wakeupTime.hour = time.hour;
+		this.wakeupTime.minute = time.minute;
 	}
 	
 	/**

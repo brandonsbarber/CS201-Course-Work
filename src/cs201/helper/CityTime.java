@@ -21,6 +21,17 @@ public class CityTime {
 	}
 	
 	/**
+	 * Creates a time where the day does not matter
+	 * @param hour The hour being saved
+	 * @param minute The minute being saved
+	 */
+	public CityTime(int hour, int minute) {
+		this.hour = hour;
+		this.minute = minute;
+		this.day = WeekDay.Monday;
+	}
+	
+	/**
 	 * Determines equality between this CityTime and another CityTime
 	 * @param other The CityTime being compared to this one
 	 * @return True if the two are the same
