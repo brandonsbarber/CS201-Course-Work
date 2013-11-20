@@ -17,7 +17,7 @@ public class MarketManagerTest {
 	@Test
 	public void test() {
 		MarketManager myManager = new MarketManagerRole();
-		
+
 	}
 
 }
