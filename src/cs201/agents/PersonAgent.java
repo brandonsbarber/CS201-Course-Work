@@ -1,6 +1,7 @@
 package cs201.agents;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -49,10 +50,10 @@ public class PersonAgent extends Agent {
 		
 		this.name = name;
 		this.animation = new Semaphore(0);
-		this.roles = new ArrayList<Role>();
+		this.roles = Collections.synchronizedList(new ArrayList<Role>());
 		//this.passengerRole = new PassengerRole();
 		//this.passengerRole.setPerson(this);
-		this.planner = new ArrayList<Action>();
+		this.planner = Collections.synchronizedList(new ArrayList<Action>());
 		this.time = new CityTime();
 		this.moneyOnHand = INITIALMONEY;
 		this.hungerLevel = INITIALHUNGER;
@@ -118,17 +119,24 @@ public class PersonAgent extends Agent {
 		}*/
 		
 		boolean actionPerformed = false;
-		for (Role r : roles) {
-			if (r.getActive()) {
-				actionPerformed = r.pickAndExecuteAnAction() || actionPerformed;
-			}
-			if (actionPerformed) {
-				return true;
+		synchronized(roles) {
+			for (Role r : roles) {
+				if (r.getActive()) {
+					actionPerformed = r.pickAndExecuteAnAction() || actionPerformed;
+				}
+				if (actionPerformed) {
+					return true;
+				}
 			}
 		}
 		
-		if (planner.size() > 0) {
+		if (planner.get(0).active) {
 			performAction(planner.get(0));
+			return true;
+		}
+		
+		if (planner.size() > 0) {
+			goToLocation(planner.get(0));
 			return true;
 		}
 		
@@ -141,25 +149,32 @@ public class PersonAgent extends Agent {
 	 *                                Actions                                 *
 	 **************************************************************************/
 	/**
-	 * Performs a given Action, including moving to the location of that action
-	 * NOTE: I DON'T KNOW IF THIS WORKS YET
-	 * 
-	 * @param a The Action to be performed
+	 * Uses a PassengerRole to go to a location in SimCity201 if the PersonAgent is not already there
+	 * @param a The associated Action denoting where to go and what to do when getting there
 	 */
-	private void performAction(Action a) {
+	private void goToLocation(Action a) {
+		a.active = true;
 		if (currentLocation != a.location) {
 			//passengerRole.msgGoTo(a.location);
 			//passengerRole.setActive(true);
 		}
-		
+	}
+	
+	/**
+	 * Performs a given Action
+	 * NOTE: I DON'T KNOW IF THIS WORKS YET, but it should
+	 * 
+	 * @param a The Action to be performed
+	 */
+	private void performAction(Action a) {		
 		Role newRole = a.location.getRole(a.intent);
 		if (newRole == null) {
-			//passengerRole.active = false;
 			return;
 		}
 		
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
+				r.setPerson(this);
 				r.startInteraction(a.intent);
 				r.setActive(true);
 				return;
@@ -170,18 +185,13 @@ public class PersonAgent extends Agent {
 		newRole.setPerson(this);
 		newRole.startInteraction(a.intent);
 		newRole.setActive(true);
+		
+		planner.remove(a);
 	}
 	
 	/**************************************************************************
 	 *                                Utility                                 *
-	 **************************************************************************/
-	/**
-	 * When an Action has been completed, this should be called by the Role so the Person can move on to the next Action
-	 */
-	public void finishedAction() {
-		planner.remove(0);
-	}
-	
+	 **************************************************************************/	
 	/**
 	 * Any work-related Role must be removed from a person who is leaving work so it can be assigned to someone else
 	 * @param toRemove The Role being removed from this PersonAgent
@@ -352,10 +362,18 @@ public class PersonAgent extends Agent {
 	private class Action {
 		Structure location;
 		Intention intent;
+		boolean active;
+		
+		public Action() {
+			this.location = null;
+			this.intent = null;
+			this.active = false;
+		}
 		
 		public Action(Structure location, Intention intent) {
 			this.location = location;
 			this.intent = intent;
+			this.active = false;
 		}
 	}
 }
