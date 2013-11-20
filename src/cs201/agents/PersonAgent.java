@@ -51,6 +51,7 @@ public class PersonAgent extends Agent {
 		this.animation = new Semaphore(0);
 		this.roles = new ArrayList<Role>();
 		//this.passengerRole = new PassengerRole();
+		//this.passengerRole.setPerson(this);
 		this.planner = new ArrayList<Action>();
 		this.time = new CityTime();
 		this.moneyOnHand = INITIALMONEY;
@@ -101,14 +102,6 @@ public class PersonAgent extends Agent {
 		time.minute = newTime.minute;
 		
 		stateChanged();
-	}
-	
-	/**
-	 * Received from a PassengerRole to update this Person's location in SimCity201
-	 * @param newLocation
-	 */
-	public void msgDoneMoving(Structure newLocation) {
-		currentLocation = newLocation;
 	}
 	
 	
@@ -182,6 +175,101 @@ public class PersonAgent extends Agent {
 	/**************************************************************************
 	 *                                Utility                                 *
 	 **************************************************************************/
+	/**
+	 * When an Action has been completed, this should be called by the Role so the Person can move on to the next Action
+	 */
+	public void finishedAction() {
+		planner.remove(0);
+	}
+	
+	/**
+	 * Any work-related Role must be removed from a person who is leaving work so it can be assigned to someone else
+	 * @param toRemove The Role being removed from this PersonAgent
+	 */
+	public void removeRole(Role toRemove) {
+		roles.remove(toRemove);
+	}
+	
+	/**
+	 * Sets how much money this person has. Could be used by GUI to force this person to go to the Bank
+	 * @param newMoney The quantity of money this person has
+	 */
+	public void setMoney(double newMoney) {
+		this.moneyOnHand = newMoney;
+	}
+	
+	/**
+	 * Returns how much money this person has on hand
+	 * @return How much money this PersonAgent has right now (not including in the Bank)
+	 */
+	public double getMoney() {
+		return this.moneyOnHand;
+	}
+	
+	/**
+	 * Adds money to this PersonAgent's money on hand
+	 * @param amount How much money to add
+	 */
+	public void addMoney(double amount) {
+		this.moneyOnHand += amount;
+	}
+	
+	/**
+	 * Removes money from this PersonAgent's money on hand
+	 * @param amount How much money to remove
+	 */
+	public void removeMoney(double amount) {
+		this.moneyOnHand -= amount;
+	}
+	
+	/**
+	 * Sets this PersonAgent's hunger level to level. Possibly used by GUI to force a PersonAgent to go eat
+	 * @param level The new hunger level. What constitutes 'hungry' TBD later
+	 */
+	public void setHungerLevel(int level) {
+		this.hungerLevel = level;
+	}
+	
+	/**
+	 * Gets how hungry a person is, represented as an integer where 0 = not hungry at all
+	 * @return How hungry this PersonAgent is
+	 */
+	public int getHungerLevel() {
+		return this.hungerLevel;
+	}
+	
+	/**
+	 * Returns this PersonAgent's workplace. Could be null if they don't work
+	 * @return A Structure representing where this PersonAgent works, or null if they don't work or it wasn't set properly
+	 */
+	public Structure getWorkplace() {
+		return workplace;
+	}
+	
+	/**
+	 * Sets this PersonAgent's bank account number
+	 * @param newNumber The new bank account number
+	 */
+	public void setBankAccountNumber(int newNumber) {
+		this.bankAccountNumber = newNumber;
+	}
+	
+	/**
+	 * Gets this PersonAgent's bank account number
+	 * @return A positive integer representing this PersonAgent's bank account number. -1 means it was never set up
+	 */
+	public int getBankAccountNumber() {
+		return this.bankAccountNumber;
+	}
+	
+	/**
+	 * Received from a PassengerRole to update this Person's location in SimCity201
+	 * @param newLocation
+	 */
+	public void doneMoving(Structure newLocation) {
+		currentLocation = newLocation;
+	}
+	
 	/**
 	 * Gets the name of this PersonAgent
 	 * @return This PersonAgent's name
