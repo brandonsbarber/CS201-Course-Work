@@ -90,7 +90,27 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		// Process the next available order
+		Order order = null;
+		synchronized (orders) {
+			for (Order o : orders) {
+				if (o.state == OrderState.PENDING) {
+					order = o;
+				}
+			}
+		}
+		MyEmployee employee = null;
+		for (MyEmployee e : employees) {
+			if (e.state == EmployeeState.AVAILABLE) {
+				employee = e;
+			}
+		}
+		if (employee != null && order != null) {	// if we found an order and an available employee,
+			// process the order
+			ProcessOrder(order, employee);
+			return true;
+		}
+		
 		return false;
 	}
 	
@@ -165,6 +185,15 @@ public class MarketManagerRole extends Role implements MarketManager {
 	/*
 	 * ********** ACTIONS **********
 	 */
+	
+	private void ProcessOrder(Order o, MyEmployee e) {
+		// Send the employee a message to retrieve the items
+		e.employee.msgRetrieveItems(this, o.items, o.id);
+		e.state = EmployeeState.BUSY;
+		
+		// Mark the order as being processed
+		o.state = OrderState.PROCESSING;
+	}
 
 	/*
 	 * ********** UTILITY **********

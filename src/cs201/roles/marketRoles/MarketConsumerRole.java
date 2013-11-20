@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.interfaces.marketInterfaces.MarketConsumer;
 import cs201.interfaces.marketInterfaces.MarketEmployee;
 import cs201.interfaces.marketInterfaces.MarketManager;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.Item;
 
-public class MarketConsumerRole extends Role implements MarketEmployee {
+public class MarketConsumerRole extends Role implements MarketConsumer {
 	
 	/*
 	 * ********** DATA **********
