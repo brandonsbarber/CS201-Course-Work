@@ -2,6 +2,7 @@ package cs201.roles.housingRoles;
 
 import java.util.List;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
@@ -120,5 +121,17 @@ public class LandlordRole extends Role implements Landlord {
 	public void addProperty(Residence res, Renter renter, double rentAmount, Date rentDueDate) {
         myProperty mP = new myProperty(res, renter, rentAmount, rentDueDate);
         myProperties.add(mP);
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }

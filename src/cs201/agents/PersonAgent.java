@@ -65,7 +65,7 @@ public class PersonAgent extends Agent {
 		this.moneyOnHand = INITIALMONEY;
 		this.hungerLevel = INITIALHUNGER;
 		//this.vehicle = null;
-		this.home = null;
+		this.setHome(null);
 		this.workplace = null;
 		this.job = Intention.None;
 		this.currentLocation = null;
@@ -86,7 +86,7 @@ public class PersonAgent extends Agent {
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
 		
-		this.home = home;		
+		this.setHome(home);		
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
@@ -220,18 +220,18 @@ public class PersonAgent extends Agent {
 	
 	private void sleepAtHome() {
 		Action temp = new Action();
-		temp.location = home;
+		temp.location = getHome();
 		temp.intent = Intention.ResidenceSleep;
 		planner.add(temp);
-		Do("Added going home (" + home + ") to sleep to Planner");
+		Do("Added going home (" + getHome() + ") to sleep to Planner");
 	}
 	
 	private void eatAtHome() {
 		Action temp = new Action();
-		temp.location = home;
+		temp.location = getHome();
 		temp.intent = Intention.ResidenceEat;
 		planner.add(temp);
-		Do("Added eating at home (" + home + ") to Planner");
+		Do("Added eating at home (" + getHome() + ") to Planner");
 	}
 	
 	/*
@@ -457,6 +457,16 @@ public class PersonAgent extends Agent {
 		System.out.println(output.toString());
 	}
 	
+	public Structure getHome()
+	{
+		return home;
+	}
+
+	public void setHome(Structure home)
+	{
+		this.home = home;
+	}
+
 	/**
 	 * Represents anything a PersonAgent might want to do in SimCity201
 	 * @author Matt Pohlmann

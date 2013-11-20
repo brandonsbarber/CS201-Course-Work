@@ -1,7 +1,9 @@
 package cs201.roles.housingRoles;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
+import cs201.structures.Residence;
 
 public class ResidentRole extends Role implements Resident {
 	enum ResidentState {doingNothing, hungry, eating};
@@ -23,14 +25,16 @@ public class ResidentRole extends Role implements Resident {
 	
 	public boolean pickAndExecuteAnAction() {
 		if (state == ResidentState.hungry) {
-			if (getPerson().home.hasFood()) {
+			if (((Residence)(getPerson().getHome())).hasFood()) {
 				pickAndEatFromFridge();
+				return true;
 			}
 			else {
-				getPerson().goToMarket();
+				//getPerson().goToMarket();
+				return false;
 			}	
 		}
-			
+		return false;
 	}
 	
 	//Actions
@@ -40,6 +44,18 @@ public class ResidentRole extends Role implements Resident {
 
 		//picks food from home's fridge list of Food and eats it.
 
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	//Utility
