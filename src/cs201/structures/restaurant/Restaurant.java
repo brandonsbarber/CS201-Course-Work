@@ -6,7 +6,6 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
-import cs201.roles.restaurantRoles.RestaurantCustomerRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.structures.Structure;
@@ -17,58 +16,28 @@ import cs201.structures.Structure;
  *
  */
 public abstract class Restaurant extends Structure {
-	protected final int MAXWAITERS = 3;
-	
-	private RestaurantCashierRole cashier;
-	private RestaurantCookRole cook;
-	private RestaurantHostRole host;
-	private List<RestaurantWaiterRole> waiters;
-	private double moneyOnHand;
-	private int bankAccountNumber;
-	private boolean isOpen;
+	protected RestaurantCashierRole cashier;
+	protected RestaurantCookRole cook;
+	protected RestaurantHostRole host;
+	protected List<RestaurantWaiterRole> waiters;
+	protected double moneyOnHand;
+	protected int bankAccountNumber;
+	protected boolean isOpen;
 	
 	public Restaurant(int x, int y, int width, int height, int id) {
 		super(x, y, width, height, id);
-		// TODO Auto-generated constructor stub
+		
+		this.cashier = null;
+		this.cook = null;
+		this.host = null;
+		this.waiters = null;
+		this.moneyOnHand = 0;
+		this.bankAccountNumber = -1;
+		this.isOpen = false;
 	}
 
 	@Override
-	public Role getRole(Intention role) {
-		switch (role) {
-		case RestaurantCook: {
-			return (cook.getPerson() == null) ? cook : null;
-		}
-		case RestaurantHost: {
-			return (host.getPerson() == null) ? host : null;
-		}
-		case RestaurantWaiter: {
-			RestaurantWaiterRole waiter = null;
-			for (RestaurantWaiterRole r : waiters) {
-				if (r.getPerson() == null) {
-					waiter = r;
-					break;
-				}
-			}
-			if (waiters.size() < MAXWAITERS) {
-				RestaurantWaiterRole newWaiter = new RestaurantWaiterRole();
-				waiters.add(newWaiter);
-				waiter = newWaiter;
-			}
-			
-			return waiter;
-		}
-		case RestaurantCashier: {
-			return (cashier.getPerson() == null) ? cashier : null;
-		}
-		case RestaurantCustomer: {
-			return new RestaurantCustomerRole();
-		}
-		default: {
-			Do("Wrong Intention provided in getRole(Intention)");
-			return null;
-		}
-		}
-	}
+	public abstract Role getRole(Intention role);
 	
 	/**
 	 * Returns this Restaurant's Cashier if someone is currently acting as a Cashier, null otherwise
@@ -132,6 +101,14 @@ public abstract class Restaurant extends Structure {
 	 */
 	public void setBankAccountNumber(int newNumber) {
 		bankAccountNumber = newNumber;
+	}
+	
+	/**
+	 * Gets this Restaurant's bank account number
+	 * @return The Restaurant's account number
+	 */
+	public int getBankAccountNumber() {
+		return bankAccountNumber;
 	}
 	
 	/**

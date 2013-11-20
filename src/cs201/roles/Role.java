@@ -11,6 +11,11 @@ public abstract class Role {
 	PersonAgent myPerson;
 	boolean isActive;
 	
+	public Role() {
+		myPerson = null;
+		isActive = false;
+	}
+	
 	/**
 	 * Starts an interaction in the Role based upon the PersonAgent's intent
 	 * @param intent What the PersonAgent intends to do with this Role
@@ -57,6 +62,28 @@ public abstract class Role {
 	 */
 	public void setPerson(PersonAgent newPerson) {
 		myPerson = newPerson;
+	}
+	
+	/**
+	 * Gets the name of this Role (just the name of its PersonAgent)
+	 * @return String representation of the Person's name
+	 */
+	public String getName() {
+		return (myPerson != null) ? myPerson.getName() : "NULL";
+	}
+	
+	
+	/**
+	 * A String representation of this Role (i.e. BankTellerRole Jim)
+	 * @return A String representation of this Role
+	 */
+	public String toString() {
+		StringBuffer output = new StringBuffer();
+		output.append(this.getClass().getSimpleName());
+		output.append(" ");
+		output.append((myPerson != null) ? myPerson.getName() : "NULL");
+		
+		return output.toString();
 	}
 	
 	/**

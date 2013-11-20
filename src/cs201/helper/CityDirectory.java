@@ -28,7 +28,11 @@ public class CityDirectory {
 	
 	private List<PersonAgent> people = Collections.synchronizedList(new ArrayList<PersonAgent>());
 	private List<Restaurant> restaurants = Collections.synchronizedList(new ArrayList<Restaurant>());
+	//private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
+	//private List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
+	//private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
 	
+	// People Stuff
 	public void addPerson(PersonAgent newPerson) {
 		people.add(newPerson);
 	}
@@ -37,6 +41,7 @@ public class CityDirectory {
 		return people;
 	}
 	
+	// Restaurant Stuff
 	public void addRestaurant(Restaurant newRestaurant) {
 		restaurants.add(newRestaurant);
 	}
@@ -54,4 +59,62 @@ public class CityDirectory {
 		
 		return null;
 	}
+	
+	// Bank Stuff
+	/*public void addBank(Bank newBank) {
+		banks.add(newBank);
+	}
+	
+	public List<Bank> getBanks() {
+		return banks;
+	}
+	
+	public Bank getBankWithID(int id) {
+		for (Bank r : banks) {
+			if (r.getId() == id) {
+				return r;
+			}
+		}
+		
+		return null;
+	}*/
+	
+	// Market Stuff
+	/*public void addMarket(Market newMarket) {
+		markets.add(newMarket);
+	}
+	
+	public List<Market> getMarkets() {
+		return markets;
+	}
+	
+	public Market getMarketWithID(int id) {
+		for (Market r : markets) {
+			if (r.getId() == id) {
+				return r;
+			}
+		}
+		
+		return null;
+	}*/
+	
+	// Residence Stuff
+	/*public void addResidence(Residence newResidence) {
+		residences.add(newResidence);
+	}
+	
+	public List<Residence> getResidences() {
+		return residences;
+	}
+	
+	public Residence getResidenceWithID(int id) {
+		for (Residence r : residences) {
+			if (r.getId() == id) {
+				return r;
+			}
+		}
+		
+		return null;
+	}*/
+	
 }

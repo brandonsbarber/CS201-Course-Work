@@ -2,29 +2,26 @@ package cs201.roles.restaurantRoles;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
+import cs201.structures.restaurant.Restaurant;
 
-public class RestaurantHostRole extends Role {
-
+public abstract class RestaurantHostRole extends Role {
+	protected Restaurant restaurant;
+	
 	public RestaurantHostRole() {
+		super();
+		
+		this.restaurant = null;
+		
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-
-	}
+	public abstract void startInteraction(Intention intent);
 
 	@Override
-	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public abstract boolean pickAndExecuteAnAction();
 
 	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-
-	}
+	public abstract void closingTime();
 
 }

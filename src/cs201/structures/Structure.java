@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 
 import cs201.agents.PersonAgent;
+import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
 
@@ -13,18 +14,24 @@ import cs201.roles.Role;
  *
  */
 public abstract class Structure extends Rectangle2D.Double {
-	int id;
-	//StructurePanel panel;
-	Point guiLocation;
-	Point entranceLocation;
-	Point deliveryLocation;
-	Point parkingLocation;
-	CityTime closingTime;
+	protected int id;
+	protected StructurePanel panel;
+	protected Point guiLocation;
+	protected Point entranceLocation;
+	protected Point deliveryLocation;
+	protected Point parkingLocation;
+	protected CityTime closingTime;
 	
 	public Structure(int x, int y, int width, int height, int id) {
 		super(x, y, width, height);
 		
 		this.id = id;
+		this.panel = null;
+		this.guiLocation = null;
+		this.entranceLocation = null;
+		this.deliveryLocation = null;
+		this.parkingLocation = null;
+		this.closingTime = null;
 	}
 	
 	/**
@@ -46,15 +53,15 @@ public abstract class Structure extends Rectangle2D.Double {
 	 * When this Structure is clicked in the GUI, this Structure's panel will be shown in the card layout of the main program
 	 */
 	public void displayStructure() {
-		//panel.displayBuildingPanel();
+		panel.displayStructurePanel();
 	}
 	
 	/**
 	 * Sets this Structure's panel so it can be viewed when clicked
 	 * @param sp The new StructurePanel
 	 */
-	public void setStructurePanel(/*StructurePanel sp*/) {
-		//panel = sp;
+	public void setStructurePanel(StructurePanel sp) {
+		panel = sp;
 	}
 	
 	/**
@@ -120,5 +127,18 @@ public abstract class Structure extends Rectangle2D.Double {
 		output.append(msg);
 		
 		System.out.println(output.toString());
+	}
+	
+	/**
+	 * A String representation of this Structure (i.e. Bank 1)
+	 * @return A String representation of this Structure
+	 */
+	public String toString() {
+		StringBuffer output = new StringBuffer();
+		output.append(this.getClass().getSimpleName());
+		output.append(" ");
+		output.append(id);
+		
+		return output.toString();
 	}
 }

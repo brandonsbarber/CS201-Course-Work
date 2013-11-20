@@ -21,12 +21,32 @@ public class CityTime {
 	}
 	
 	/**
+	 * Creates a time where the day does not matter
+	 * @param hour The hour being saved
+	 * @param minute The minute being saved
+	 */
+	public CityTime(int hour, int minute) {
+		this.hour = hour;
+		this.minute = minute;
+		this.day = WeekDay.Monday;
+	}
+	
+	/**
 	 * Determines equality between this CityTime and another CityTime
 	 * @param other The CityTime being compared to this one
 	 * @return True if the two are the same
 	 */
 	public boolean equals(CityTime other) {
 		return this.day == other.day && this.hour == other.hour && this.minute == other.minute;
+	}
+	
+	/**
+	 * Determines equality between this CityTime and another CityTime, ignoring what day it is
+	 * @param other The CityTime being compared to this one
+	 * @return True if the two are the same
+	 */
+	public boolean equalsIgnoreDay(CityTime other) {
+		return this.hour == other.hour && this.minute == other.minute;
 	}
 	
 	/**
