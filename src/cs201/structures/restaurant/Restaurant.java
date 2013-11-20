@@ -135,6 +135,14 @@ public abstract class Restaurant extends Structure {
 	}
 	
 	/**
+	 * Gets this Restaurant's bank account number
+	 * @return The Restaurant's account number
+	 */
+	public int getBankAccountNumber() {
+		return bankAccountNumber;
+	}
+	
+	/**
 	 * Sets whether this Restaurant is open or closed
 	 * @param open True to set this Restaurant to open, closed to close it down
 	 */
