@@ -64,6 +64,7 @@ public class BusAgent extends VehicleAgent implements Bus
 		if(route != null)
 		{
 			goToNextStop();
+			return true;
 		}
 		return false;
 	}

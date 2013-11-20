@@ -64,15 +64,18 @@ public class CarAgent extends VehicleAgent implements Car
 			if(destinationReached())
 			{
 				arrival();
+				return true;
 			}
 			else
 			{
 				goToDestination();
+				return true;
 			}
 		}
 		else if(!pickups.isEmpty())
 		{
 			processPickup(pickups.remove(0));
+			return true;
 		}
 		return false;
 	}
