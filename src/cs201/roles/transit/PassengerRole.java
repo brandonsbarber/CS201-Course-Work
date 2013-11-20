@@ -12,6 +12,8 @@ import cs201.interfaces.transit.Passenger;
 import cs201.interfaces.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.structures.Structure;
+import cs201.structures.transit.BusStop;
+import cs201.interfaces.transit.Bus;
 
 public class PassengerRole extends Role implements Passenger
 {
@@ -117,13 +119,30 @@ public class PassengerRole extends Role implements Passenger
 
 	private void populateWaypoints()
 	{
-		// TODO Auto-generated method stub
+		if (car != null)
+		{
+			waypoints.add (new Move(destination, MoveType.Car));
+		}
 		
+		List<BusStop> stops = new ArrayList<BusStop>();
+		//Find nearest two bus stops
+		if(stops.size() == 2)
+		{
+			waypoints.add(new Move(stops.get(0),MoveType.Walk));
+			waypoints.add(new Move(stops.get(1),MoveType.Bus));
+			waypoints.add(new Move(destination,MoveType.Walk));
+		}
+		else
+		{
+			waypoints.add(new Move(destination,MoveType.Walk));
+		}
 	}
 
 	private void finishMoving()
 	{
-		// TODO Auto-generated method stub
+		//message person done moving
+		setActive(false);
+		currentVehicle = null;
 		
 	}
 	
@@ -135,12 +154,58 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void processArrival()
 	{
-		
+		if(currentLocation == waypoints.peek().s)
+		{
+			Structure s = waypoints.remove().s;
+			if(currentVehicle != null)
+			{
+				if(currentVehicle instanceof Car)
+				{
+					((Car)currentVehicle).msgLeaving(this);
+				}
+				else if(currentVehicle instanceof Bus)
+				{
+					((Bus)currentVehicle).msgLeaving(this);
+				}
+				currentVehicle = null;
+				s = PassengerState.None;
+			}
+		}
+		else if (currentVehicle instanceof Bus)
+		{
+			((Bus)currentVehicle).msgStaying(this);
+		}
 	}
 	
 	private void moveToLocation(Move point)
 	{
-		
+		switch(point.m)
+		{
+			case Walk :
+				/*gui.doGoToStructure(move.s);*/
+				state = PassengerState.Arrived;
+				break;
+			case Car :
+				car.msgCallCar(this, currentLocation, destination);
+				try
+				{
+					waitingForVehicle.acquire();
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				break;
+			case Bus : 
+				((BusStop)currentLocation).addPassenger(this);
+				try
+				{
+					waitingForVehicle.acquire();
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				break;
+		}
 	}
 
 	@Override
