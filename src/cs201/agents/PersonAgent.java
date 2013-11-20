@@ -166,7 +166,7 @@ public class PersonAgent extends Agent {
 		}
 		
 		for (Role r : roles) {
-			if (r.getClass().isInstance(newRole.getClass())) {
+			if (r.getClass().isInstance(newRole)) {
 				r.startInteraction(a.intent);
 				r.setActive(true);
 				return;

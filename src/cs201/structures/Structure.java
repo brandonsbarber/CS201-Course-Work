@@ -14,18 +14,24 @@ import cs201.roles.Role;
  *
  */
 public abstract class Structure extends Rectangle2D.Double {
-	int id;
-	StructurePanel panel;
-	Point guiLocation;
-	Point entranceLocation;
-	Point deliveryLocation;
-	Point parkingLocation;
-	CityTime closingTime;
+	protected int id;
+	protected StructurePanel panel;
+	protected Point guiLocation;
+	protected Point entranceLocation;
+	protected Point deliveryLocation;
+	protected Point parkingLocation;
+	protected CityTime closingTime;
 	
 	public Structure(int x, int y, int width, int height, int id) {
 		super(x, y, width, height);
 		
 		this.id = id;
+		this.panel = null;
+		this.guiLocation = null;
+		this.entranceLocation = null;
+		this.deliveryLocation = null;
+		this.parkingLocation = null;
+		this.closingTime = null;
 	}
 	
 	/**

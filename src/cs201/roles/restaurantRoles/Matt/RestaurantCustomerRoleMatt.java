@@ -5,21 +5,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.helper.Matt.MenuMatt;
-import cs201.interfaces.roles.restaurant.RestaurantCustomer;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantCustomerRole;
 
 import java.util.concurrent.Semaphore;
 
 /**
  * Restaurant customer agent.
  */
-public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements CustomerMatt {
-	private String name;
+public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implements CustomerMatt {
 	private final int EATINGDURATION = 6500;
 	private final int CHOOSINGDURATION = 2500;
 	private final int WAITINGDURATION = 8000;
@@ -32,6 +32,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 	private CashierMatt cashier;
 	private MenuMatt menu;
 	private String choice;
+	private String forceChoice;
 	
 	private int attemptedOrders;
 	private final double STARTINGMONEY = 15.00;
@@ -53,34 +54,28 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 	 *
 	 * @param name name of the customer
 	 */
-	public RestaurantCustomerRoleMatt(String name, RestaurantCashierRoleMatt cashier){
+	public RestaurantCustomerRoleMatt(RestaurantCashierRoleMatt cashier) {
 		super();
-		this.name = name;
 		this.cashier = cashier;
 		this.money = STARTINGMONEY;
 		this.checkAmount = 0;
 		this.attemptedOrders = 0;
-		
-		switch (name) {
-		case "broke": {
-			this.money = 0;
-			break;
-		}
-		case "cheap": {
-			this.money = 5;
-			break;
-		}
-		case "normal": {
-			this.money = 12;
-			break;
-		}
-		case "wealthy": {
-			this.money = 1337;
-			break;
-		}
-		}
+		this.forceChoice = "";
+	}
+	
+	public RestaurantCustomerRoleMatt() {
+		super();
+		this.cashier = null;
+		this.money = STARTINGMONEY;
+		this.checkAmount = 0;
+		this.attemptedOrders = 0;
+		this.forceChoice = "";
 	}
 
+	public void setCashier(CashierMatt cashier) {
+		this.cashier = cashier;
+	}
+	
 	public void setHost(HostMatt host) {
 		this.host = host;
 	}
@@ -96,7 +91,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 	@Override
 	public void msgAboutToBeSeated() {
 		state = AgentState.AboutToBeSeated;
-		System.out.println("Customer " + name + " about to be seated.");
+		System.out.println("Customer " + this.getName() + " about to be seated.");
 		stateChanged();
 	}
 
@@ -229,7 +224,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 
 	private void ChooseFood() {
 		if (attemptedOrders >= 2) {
-			System.out.println("Customer " + this.name + " tried to order twice and didn't receive anything, so he's leaving the restaurant.");
+			System.out.println("Customer " + this.getName() + " tried to order twice and didn't receive anything, so he's leaving the restaurant.");
 			LeaveRestaurant();
 			return;
 		}
@@ -306,7 +301,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 	}
 	
 	private void DoWaitTimeTooLong() {
-		System.out.println("Customer " + this.name + " decided that he waited too long. He's leaving the restaurant.");
+		System.out.println("Customer " + this.getName() + " decided that he waited too long. He's leaving the restaurant.");
 		
 		customerGui.DoExitRestaurant();
 		try {
@@ -315,11 +310,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 			e.printStackTrace();
 		}
 		
-		System.out.println("Customer " + this.name + " has left the restaurant.");
+		System.out.println("Customer " + this.getName() + " has left the restaurant.");
 	}
 	
 	private void DoSitDown() {
-		System.out.println("Customer " + this.toString() + " is sitting down.");
+		System.out.println("Customer " + getName() + " is sitting down.");
 		customerGui.Animate();
 		try {
 			atTargetPosition.acquire();
@@ -339,8 +334,8 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MenuMatt tempMenu = new MenuMatt();
-				if (tempMenu.getPrice(name) != null) {
-					choice = name;
+				if (tempMenu.getPrice(forceChoice) != null) {
+					choice = forceChoice;
 				} else {
 					choice = null;
 					do {
@@ -352,7 +347,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 						choice = null;
 					} while (menu.size() > 0);
 					if (choice == null) {
-						System.out.println("Customer " + name + " cannot afford anything! He is leaving the restaurant.");
+						System.out.println("Customer " + getName() + " cannot afford anything! He is leaving the restaurant.");
 						event = AgentEvent.cannotAffordAnything;
 						stateChanged();
 						return;
@@ -426,7 +421,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 		atTargetPosition.release();
 	}
 	
-	// Accessors -------------------------------------------------------------
+	// Utility -------------------------------------------------------------
+	public void setForceChoice(String choice) {
+		forceChoice = choice;
+	}
+	
 	public void setGui(CustomerGuiMatt g) {
 		customerGui = g;
 	}
@@ -434,6 +433,18 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements Cu
 	@Override
 	public CustomerGuiMatt getGui() {
 		return customerGui;
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

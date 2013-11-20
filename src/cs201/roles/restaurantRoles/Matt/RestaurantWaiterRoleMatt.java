@@ -6,19 +6,20 @@ import java.util.*;
 
 import javax.swing.Timer;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.helper.Matt.MenuMatt;
 import cs201.helper.Matt.TableMatt;
-import cs201.interfaces.roles.restaurant.RestaurantWaiter;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 
 import java.util.concurrent.Semaphore;
 
 /**
  * Restaurant Waiter Agent
  */
-public class RestaurantWaiterRoleMatt extends RestaurantWaiter implements WaiterMatt {
+public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements WaiterMatt {
 	private RestaurantCookRoleMatt cook;
 	private RestaurantHostRoleMatt host;
 	private RestaurantCashierRoleMatt cashier;
@@ -38,6 +39,15 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiter implements Waiter
 		this.cook = cook;
 		this.host = host;
 		this.cashier = cashier;
+		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
+	}
+	
+	public RestaurantWaiterRoleMatt() {
+		super();
+
+		this.cook = null;
+		this.host = null;
+		this.cashier = null;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
 	}
 	
@@ -487,6 +497,18 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiter implements Waiter
 		return waiterGui;
 	}
 	
+	public void setCook(RestaurantCookRoleMatt cook) {
+		this.cook = cook;
+	}
+	
+	public void setHost(RestaurantHostRoleMatt host) {
+		this.host = host;
+	}
+	
+	public void setCashier(RestaurantCashierRoleMatt cashier) {
+		this.cashier = cashier;
+	}
+	
 	/**
 	 * The WaiterGui tells this WaiterAgent that it has reached its destination, freeing up this WaiterAgent
 	 * to continue working
@@ -509,6 +531,18 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiter implements Waiter
 			this.choice = null;
 			this.checkAmount = 0;
 		}
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

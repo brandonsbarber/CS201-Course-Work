@@ -6,15 +6,16 @@ import java.util.*;
 
 import javax.swing.Timer;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
-import cs201.interfaces.roles.restaurant.RestaurantCook;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantCookRole;
 
 /**
  * Restaurant Cook Agent
  */
-public class RestaurantCookRoleMatt extends RestaurantCook implements CookMatt {
+public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt {
 	private CookGuiMatt gui = null;
 	private List<Order> orders;
 	private Map<String, Food> foods;
@@ -226,12 +227,24 @@ public class RestaurantCookRoleMatt extends RestaurantCook implements CookMatt {
 		}
 		
 		/**
-		 * Returns a textual representation of this Order
+		 * Returns a textual representation of this Order (i.e. Steak for table 1)
 		 * @return String representing this order
 		 */
 		public String toString() {
 			return (choice + " for table " + tableNum);
 		}
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

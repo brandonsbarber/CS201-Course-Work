@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
 import cs201.helper.Matt.MenuMatt;
-import cs201.interfaces.roles.restaurant.RestaurantCashier;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantCashierRole;
 
 
 /**
@@ -18,7 +19,7 @@ import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
  * 
  * @author Matt Pohlmann
  */
-public class RestaurantCashierRoleMatt extends RestaurantCashier implements CashierMatt {
+public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements CashierMatt {
 
 	private final double STARTINGMONEY = 50;
 	private MenuMatt menu;
@@ -37,6 +38,20 @@ public class RestaurantCashierRoleMatt extends RestaurantCashier implements Cash
 		this.host = host;
 		currentMoney = STARTINGMONEY;
 		System.out.printf("Cashier " + this.getName() + " has $%.2f.\n", currentMoney);
+	}
+	
+	public RestaurantCashierRoleMatt() {
+		super();
+
+		checks = Collections.synchronizedList(new ArrayList<Check>());
+		menu = new MenuMatt();
+		this.host = null;
+		currentMoney = STARTINGMONEY;
+		System.out.printf("Cashier " + this.getName() + " has $%.2f.\n", currentMoney);
+	}
+	
+	public void setHost(HostMatt host) {
+		this.host = host;
 	}
 	
 	// Messages -------------------------------------------------------------
@@ -191,5 +206,17 @@ public class RestaurantCashierRoleMatt extends RestaurantCashier implements Cash
 	 */
 	public void setGui(CashierGuiMatt gui) {
 		this.gui = gui;
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }

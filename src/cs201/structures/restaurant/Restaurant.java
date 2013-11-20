@@ -1,19 +1,13 @@
 package cs201.structures.restaurant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
-import cs201.interfaces.roles.restaurant.RestaurantCashier;
-import cs201.interfaces.roles.restaurant.RestaurantCook;
-import cs201.interfaces.roles.restaurant.RestaurantCustomer;
-import cs201.interfaces.roles.restaurant.RestaurantHost;
-import cs201.interfaces.roles.restaurant.RestaurantWaiter;
 import cs201.roles.Role;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
+import cs201.roles.restaurantRoles.RestaurantCashierRole;
+import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.roles.restaurantRoles.RestaurantHostRole;
+import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.structures.Structure;
 
 /**
@@ -24,73 +18,37 @@ import cs201.structures.Structure;
 public abstract class Restaurant extends Structure {
 	protected final int INITIALWAITERS = 2;
 	protected final int MAXWAITERS = 3;
+	protected final double INITIALMONEY = 50.0;
 	
-	private RestaurantCashier cashier;
-	private RestaurantCook cook;
-	private RestaurantHost host;
-	private List<RestaurantWaiter> waiters;
-	private double moneyOnHand;
-	private int bankAccountNumber;
-	private boolean isOpen;
+	protected RestaurantCashierRole cashier;
+	protected RestaurantCookRole cook;
+	protected RestaurantHostRole host;
+	protected List<RestaurantWaiterRole> waiters;
+	protected double moneyOnHand;
+	protected int bankAccountNumber;
+	protected boolean isOpen;
 	
 	public Restaurant(int x, int y, int width, int height, int id) {
 		super(x, y, width, height, id);
 		// TODO Auto-generated constructor stub
 		
-		if (this instanceof RestaurantMatt) {
-			host = new RestaurantHostRoleMatt();
-			cashier = new RestaurantCashierRoleMatt(host);
-			cook = new RestaurantCookRoleMatt();
-			waiters = new ArrayList<RestaurantWaiter>();
-			for (int i = 0; i < INITIALWAITERS; i++) {
-				waiters.add(new RestaurantWaiterRoleMatt());
-			}
-		}
+		this.cashier = null;
+		this.cook = null;
+		this.host = null;
+		this.waiters = null;
+		this.moneyOnHand = INITIALMONEY;
+		this.bankAccountNumber = -1;
+		this.isOpen = false;
 	}
 
 	@Override
-	public Role getRole(Intention role) {
-		switch (role) {
-		case RestaurantCook: {
-			return (cook.getPerson() == null) ? cook : null;
-		}
-		case RestaurantHost: {
-			return (host.getPerson() == null) ? host : null;
-		}
-		case RestaurantWaiter: {
-			RestaurantWaiter waiter = null;
-			for (RestaurantWaiter r : waiters) {
-				if (r.getPerson() == null) {
-					waiter = r;
-					break;
-				}
-			}
-			if (waiters.size() < MAXWAITERS) {
-				RestaurantWaiter newWaiter = new RestaurantWaiter();
-				waiters.add(newWaiter);
-				waiter = newWaiter;
-			}
-			
-			return waiter;
-		}
-		case RestaurantCashier: {
-			return (cashier.getPerson() == null) ? cashier : null;
-		}
-		case RestaurantCustomer: {
-			return new RestaurantCustomer();
-		}
-		default: {
-			Do("Wrong Intention provided in getRole(Intention)");
-			return null;
-		}
-		}
-	}
+	public abstract Role getRole(Intention role);
 	
 	/**
 	 * Returns this Restaurant's Cashier if someone is currently acting as a Cashier, null otherwise
 	 * @return This Restaurant's active Cashier
 	 */
-	public RestaurantCashier getCashier() {
+	public RestaurantCashierRole getCashier() {
 		return (cashier.getPerson() != null) ? cashier : null;
 	}
 	
@@ -98,7 +56,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns this Restaurant's Cook if someone is currently acting as a Cook, null otherwise
 	 * @return This Restaurant's active Cook
 	 */
-	public RestaurantCook getCook() {
+	public RestaurantCookRole getCook() {
 		return (cook.getPerson() != null) ? cook : null;
 	}
 	
@@ -106,7 +64,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns this Restaurant's Host if someone is currently acting as a Host, null otherwise
 	 * @return This Restaurant's active Host
 	 */
-	public RestaurantHost getHost() {
+	public RestaurantHostRole getHost() {
 		return (host.getPerson() != null) ? host : null;
 	}
 	
@@ -114,7 +72,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns a list of this Restaurant's Waiters
 	 * @return A list of Waiters
 	 */
-	public List<RestaurantWaiter> getWaiters() {
+	public List<RestaurantWaiterRole> getWaiters() {
 		return waiters;
 	}
 	

@@ -5,16 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.helper.Matt.TableMatt;
-import cs201.interfaces.roles.restaurant.RestaurantHost;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.restaurantRoles.RestaurantHostRole;
 
 /**
  * Restaurant Host Agent
  */
-public class RestaurantHostRoleMatt extends RestaurantHost implements HostMatt {
+public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMatt {
 	private static final int NTABLES = 4;//a global for the number of tables. SHOULD BE A PERFECT SQUARE
 	
 	//Notice that we implement waitingCustomers using ArrayList, but type it
@@ -273,5 +274,17 @@ public class RestaurantHostRoleMatt extends RestaurantHost implements HostMatt {
 			this.state = WaiterState.working;
 			this.numberOfCustomers = 0;
 		}
+	}
+
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closingTime() {
+		// TODO Auto-generated method stub
+		
 	}
 }
