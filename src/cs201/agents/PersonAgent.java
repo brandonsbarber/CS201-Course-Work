@@ -3,11 +3,14 @@ package cs201.agents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
 import cs201.structures.Structure;
+import cs201.structures.restaurant.Restaurant;
 
 /**
  * The PersonAgent that represents all people in SimCity201
@@ -157,6 +160,7 @@ public class PersonAgent extends Agent {
 		if (currentLocation != a.location) {
 			//passengerRole.msgGoTo(a.location);
 			//passengerRole.setActive(true);
+			Do("Going to " + a.location);
 		}
 	}
 	
@@ -167,6 +171,8 @@ public class PersonAgent extends Agent {
 	 * @param a The Action to be performed
 	 */
 	private void performAction(Action a) {		
+		Do("Performing Action: " + a.intent + " at " + a.location);
+		
 		Role newRole = a.location.getRole(a.intent);
 		if (newRole == null) {
 			return;
@@ -187,6 +193,96 @@ public class PersonAgent extends Agent {
 		newRole.setActive(true);
 		
 		planner.remove(a);
+	}
+	
+	private void goToWork() {
+		Action temp = new Action();
+		temp.location = workplace;
+		temp.intent = job;
+		planner.add(temp);
+		Do("Added going to work (" + workplace + ") to Planner");
+	}
+	
+	private void sleepAtHome() {
+		Action temp = new Action();
+		temp.location = home;
+		temp.intent = Intention.ResidenceSleep;
+		planner.add(temp);
+		Do("Added going home (" + home + ") to sleep to Planner");
+	}
+	
+	private void eatAtHome() {
+		Action temp = new Action();
+		temp.location = home;
+		temp.intent = Intention.ResidenceEat;
+		planner.add(temp);
+		Do("Added eating at home (" + home + ") to Planner");
+	}
+	
+	private void withdrawMoneyAsCustomer() {
+		Action temp = new Action();
+		// Pick a random bank to perform the transaction at
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
+		temp.location = CityDirectory.getInstance().getBanks().get(num);
+		temp.intent = Intention.BankWithdrawMoneyCustomer;
+		planner.add(temp);
+		Do("Added withdrawing money as customer at " + temp.location + " to Planner");
+	}
+	
+	private void depositMoneyAsCustomer() {
+		Action temp = new Action();
+		// Pick a random bank to perform the transaction at
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
+		temp.location = CityDirectory.getInstance().getBanks().get(num);
+		temp.intent = Intention.BankDepositMoneyCustomer;
+		planner.add(temp);
+		Do("Added depositing money as customer at " + temp.location + " to Planner");
+	}
+	
+	private void withdrawMoneyAsBusiness() {
+		Action temp = new Action();
+		// Pick a random bank to perform the transaction at
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
+		temp.location = CityDirectory.getInstance().getBanks().get(num);
+		temp.intent = Intention.BankWithdrawMoneyBusiness;
+		planner.add(temp);
+		Do("Added withdrawing money as business at " + temp.location + " to Planner");
+	}
+	
+	private void depositMoneyAsBusiness() {
+		Action temp = new Action();
+		// Pick a random bank to perform the transaction at
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
+		temp.location = CityDirectory.getInstance().getBanks().get(num);
+		temp.intent = Intention.BankDepositMoneyBusiness;
+		planner.add(temp);
+		Do("Added depositing money as business at " + temp.location + " to Planner");
+	}
+	
+	private void goToMarket() {
+		Action temp = new Action();
+		// Pick a random market
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getMarkets().size());
+		temp.location = CityDirectory.getInstance().getMarkets().get(num);
+		temp.intent = Intention.MarketConsumer;
+		planner.add(temp);
+		Do("Added a market run at " + temp.location + " to Planner");
+	}
+	
+	private void eatAtRestaurant() {
+		Action temp = new Action();
+		// Pick a random restaurant to eat at
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getRestaurants().size());
+		temp.location = CityDirectory.getInstance().getRestaurants().get(num);
+		temp.intent = Intention.RestaurantCustomer;
+		planner.add(temp);
+		Do("Added eating at " + temp.location + " to Planner");
 	}
 	
 	/**************************************************************************
