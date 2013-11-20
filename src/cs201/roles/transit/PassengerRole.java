@@ -168,7 +168,7 @@ public class PassengerRole extends Role implements Passenger
 					((Bus)currentVehicle).msgLeaving(this);
 				}
 				currentVehicle = null;
-				s = PassengerState.None;
+				state = PassengerState.None;
 			}
 		}
 		else if (currentVehicle instanceof Bus)
@@ -182,7 +182,8 @@ public class PassengerRole extends Role implements Passenger
 		switch(point.m)
 		{
 			case Walk :
-				/*gui.doGoToStructure(move.s);*/
+				/*gui.doGoToStructure(point.s);*/
+				currentLocation = point.s;
 				state = PassengerState.Arrived;
 				break;
 			case Car :
@@ -200,7 +201,8 @@ public class PassengerRole extends Role implements Passenger
 				try
 				{
 					waitingForVehicle.acquire();
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 					e.printStackTrace();
 				}
