@@ -10,6 +10,8 @@ public abstract class RestaurantCustomerRole extends Role {
 	public RestaurantCustomerRole() {
 		super();
 		
+		this.restaurant = null;
+		
 		// TODO Auto-generated constructor stub
 	}
 

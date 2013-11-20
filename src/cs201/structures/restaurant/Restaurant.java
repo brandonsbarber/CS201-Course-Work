@@ -16,10 +16,6 @@ import cs201.structures.Structure;
  *
  */
 public abstract class Restaurant extends Structure {
-	protected final int INITIALWAITERS = 2;
-	protected final int MAXWAITERS = 3;
-	protected final double INITIALMONEY = 50.0;
-	
 	protected RestaurantCashierRole cashier;
 	protected RestaurantCookRole cook;
 	protected RestaurantHostRole host;
@@ -30,13 +26,12 @@ public abstract class Restaurant extends Structure {
 	
 	public Restaurant(int x, int y, int width, int height, int id) {
 		super(x, y, width, height, id);
-		// TODO Auto-generated constructor stub
 		
 		this.cashier = null;
 		this.cook = null;
 		this.host = null;
 		this.waiters = null;
-		this.moneyOnHand = INITIALMONEY;
+		this.moneyOnHand = 0;
 		this.bankAccountNumber = -1;
 		this.isOpen = false;
 	}

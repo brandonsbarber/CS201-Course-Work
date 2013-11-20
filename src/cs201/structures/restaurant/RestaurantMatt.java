@@ -12,11 +12,11 @@ import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 
 public class RestaurantMatt extends Restaurant {
-
+	private final int INITIALWAITERS = 2;
+	private final int MAXWAITERS = 4;
+	
 	public RestaurantMatt(int x, int y, int width, int height, int id) {
 		super(x, y, width, height, id);
-		
-		// TODO Auto-generated constructor stub
 		
 		// Setup all roles
 		this.host = new RestaurantHostRoleMatt();
