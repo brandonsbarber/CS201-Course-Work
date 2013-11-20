@@ -1,0 +1,19 @@
+package cs201.structures.market;
+
+import cs201.agents.PersonAgent.Intention;
+import cs201.roles.Role;
+import cs201.structures.Structure;
+
+public class MarketStructure extends Structure {
+
+	public MarketStructure(int x, int y, int width, int height, int id) {
+		super(x, y, width, height, id);
+	}
+
+	@Override
+	public Role getRole(Intention role) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
