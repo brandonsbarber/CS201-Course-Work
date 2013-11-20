@@ -2,6 +2,7 @@ package cs201.roles.marketRoles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.marketInterfaces.MarketEmployee;
@@ -15,14 +16,23 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** DATA **********
 	 */
 	String name = "";
-	List<MarketBill> marketBills;
+	Map<String, Item> inventory;
 	
-	enum MarketBillState {OUTSTANDING, PAID};
-	class MarketBill {
+	enum OrderState {PENDING, PROCESSED};
+	private class Order {
+		List<Item> items;
+		int id;
+		OrderState state;
 		MarketManager manager;
-		float amount;
-		MarketBillState state;
+		
+		public Order(MarketManager m, List<Item> i, int id, OrderState s) {
+			items = i;
+			id = id;
+			state = s;
+			manager = m;
+		}
 	}
+	
 	
 	/*
 	 * ********** CONSTRUCTORS **********
@@ -50,20 +60,16 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgHereIsYourTotal(MarketManager manager, float amount) {
+	public void msgRetrieveItems(MarketManager manager, List<Item> items, int id) {
 		stateChanged();
-	}
-	
-	public void msgHereAreYourItems(List<Item> items) {
-		stateChanged();
-	}
-	
-	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void closingTime() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -72,7 +78,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** ACTIONS **********
 	 */
 	
-	private void PayBill(MarketBill mb) {
+	private void ProcessOrder(Order o) {
 		
 	}
 
