@@ -3,9 +3,9 @@ package cs201.interfaces.roles.restaurant;
 import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
 
-public class RestaurantHostRole extends Role {
+public class RestaurantCashier extends Role {
 
-	public RestaurantHostRole() {
+	public RestaurantCashier() {
 		super();
 		
 		// TODO Auto-generated constructor stub

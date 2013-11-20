@@ -9,7 +9,7 @@ import javax.swing.Timer;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.helper.Matt.MenuMatt;
 import cs201.helper.Matt.TableMatt;
-import cs201.interfaces.roles.restaurant.RestaurantWaiterRole;
+import cs201.interfaces.roles.restaurant.RestaurantWaiter;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Restaurant Waiter Agent
  */
-public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements WaiterMatt {
+public class RestaurantWaiterRoleMatt extends RestaurantWaiter implements WaiterMatt {
 	private RestaurantCookRoleMatt cook;
 	private RestaurantHostRoleMatt host;
 	private RestaurantCashierRoleMatt cashier;

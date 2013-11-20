@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
-import cs201.interfaces.roles.restaurant.RestaurantCashierRole;
-import cs201.interfaces.roles.restaurant.RestaurantCookRole;
-import cs201.interfaces.roles.restaurant.RestaurantCustomerRole;
-import cs201.interfaces.roles.restaurant.RestaurantHostRole;
-import cs201.interfaces.roles.restaurant.RestaurantWaiterRole;
+import cs201.interfaces.roles.restaurant.RestaurantCashier;
+import cs201.interfaces.roles.restaurant.RestaurantCook;
+import cs201.interfaces.roles.restaurant.RestaurantCustomer;
+import cs201.interfaces.roles.restaurant.RestaurantHost;
+import cs201.interfaces.roles.restaurant.RestaurantWaiter;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
@@ -25,10 +25,10 @@ public abstract class Restaurant extends Structure {
 	protected final int INITIALWAITERS = 2;
 	protected final int MAXWAITERS = 3;
 	
-	private RestaurantCashierRole cashier;
-	private RestaurantCookRole cook;
-	private RestaurantHostRole host;
-	private List<RestaurantWaiterRole> waiters;
+	private RestaurantCashier cashier;
+	private RestaurantCook cook;
+	private RestaurantHost host;
+	private List<RestaurantWaiter> waiters;
 	private double moneyOnHand;
 	private int bankAccountNumber;
 	private boolean isOpen;
@@ -41,7 +41,7 @@ public abstract class Restaurant extends Structure {
 			host = new RestaurantHostRoleMatt();
 			cashier = new RestaurantCashierRoleMatt(host);
 			cook = new RestaurantCookRoleMatt();
-			waiters = new ArrayList<RestaurantWaiterRole>();
+			waiters = new ArrayList<RestaurantWaiter>();
 			for (int i = 0; i < INITIALWAITERS; i++) {
 				waiters.add(new RestaurantWaiterRoleMatt());
 			}
@@ -58,15 +58,15 @@ public abstract class Restaurant extends Structure {
 			return (host.getPerson() == null) ? host : null;
 		}
 		case RestaurantWaiter: {
-			RestaurantWaiterRole waiter = null;
-			for (RestaurantWaiterRole r : waiters) {
+			RestaurantWaiter waiter = null;
+			for (RestaurantWaiter r : waiters) {
 				if (r.getPerson() == null) {
 					waiter = r;
 					break;
 				}
 			}
 			if (waiters.size() < MAXWAITERS) {
-				RestaurantWaiterRole newWaiter = new RestaurantWaiterRole();
+				RestaurantWaiter newWaiter = new RestaurantWaiter();
 				waiters.add(newWaiter);
 				waiter = newWaiter;
 			}
@@ -77,7 +77,7 @@ public abstract class Restaurant extends Structure {
 			return (cashier.getPerson() == null) ? cashier : null;
 		}
 		case RestaurantCustomer: {
-			return new RestaurantCustomerRole();
+			return new RestaurantCustomer();
 		}
 		default: {
 			Do("Wrong Intention provided in getRole(Intention)");
@@ -90,7 +90,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns this Restaurant's Cashier if someone is currently acting as a Cashier, null otherwise
 	 * @return This Restaurant's active Cashier
 	 */
-	public RestaurantCashierRole getCashier() {
+	public RestaurantCashier getCashier() {
 		return (cashier.getPerson() != null) ? cashier : null;
 	}
 	
@@ -98,7 +98,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns this Restaurant's Cook if someone is currently acting as a Cook, null otherwise
 	 * @return This Restaurant's active Cook
 	 */
-	public RestaurantCookRole getCook() {
+	public RestaurantCook getCook() {
 		return (cook.getPerson() != null) ? cook : null;
 	}
 	
@@ -106,7 +106,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns this Restaurant's Host if someone is currently acting as a Host, null otherwise
 	 * @return This Restaurant's active Host
 	 */
-	public RestaurantHostRole getHost() {
+	public RestaurantHost getHost() {
 		return (host.getPerson() != null) ? host : null;
 	}
 	
@@ -114,7 +114,7 @@ public abstract class Restaurant extends Structure {
 	 * Returns a list of this Restaurant's Waiters
 	 * @return A list of Waiters
 	 */
-	public List<RestaurantWaiterRole> getWaiters() {
+	public List<RestaurantWaiter> getWaiters() {
 		return waiters;
 	}
 	

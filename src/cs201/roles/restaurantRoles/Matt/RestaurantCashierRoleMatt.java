@@ -6,7 +6,7 @@ import java.util.List;
 
 import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
 import cs201.helper.Matt.MenuMatt;
-import cs201.interfaces.roles.restaurant.RestaurantCashierRole;
+import cs201.interfaces.roles.restaurant.RestaurantCashier;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
@@ -18,7 +18,7 @@ import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
  * 
  * @author Matt Pohlmann
  */
-public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements CashierMatt {
+public class RestaurantCashierRoleMatt extends RestaurantCashier implements CashierMatt {
 
 	private final double STARTINGMONEY = 50;
 	private MenuMatt menu;

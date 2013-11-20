@@ -7,14 +7,14 @@ import java.util.*;
 import javax.swing.Timer;
 
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
-import cs201.interfaces.roles.restaurant.RestaurantCookRole;
+import cs201.interfaces.roles.restaurant.RestaurantCook;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 
 /**
  * Restaurant Cook Agent
  */
-public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt {
+public class RestaurantCookRoleMatt extends RestaurantCook implements CookMatt {
 	private CookGuiMatt gui = null;
 	private List<Order> orders;
 	private Map<String, Food> foods;

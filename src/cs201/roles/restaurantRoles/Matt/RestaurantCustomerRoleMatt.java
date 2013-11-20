@@ -7,7 +7,7 @@ import javax.swing.Timer;
 
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.helper.Matt.MenuMatt;
-import cs201.interfaces.roles.restaurant.RestaurantCustomerRole;
+import cs201.interfaces.roles.restaurant.RestaurantCustomer;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
@@ -18,7 +18,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Restaurant customer agent.
  */
-public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implements CustomerMatt {
+public class RestaurantCustomerRoleMatt extends RestaurantCustomer implements CustomerMatt {
 	private String name;
 	private final int EATINGDURATION = 6500;
 	private final int CHOOSINGDURATION = 2500;

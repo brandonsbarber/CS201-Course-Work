@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.helper.Matt.TableMatt;
-import cs201.interfaces.roles.restaurant.RestaurantHostRole;
+import cs201.interfaces.roles.restaurant.RestaurantHost;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
@@ -14,7 +14,7 @@ import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 /**
  * Restaurant Host Agent
  */
-public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMatt {
+public class RestaurantHostRoleMatt extends RestaurantHost implements HostMatt {
 	private static final int NTABLES = 4;//a global for the number of tables. SHOULD BE A PERFECT SQUARE
 	
 	//Notice that we implement waitingCustomers using ArrayList, but type it
