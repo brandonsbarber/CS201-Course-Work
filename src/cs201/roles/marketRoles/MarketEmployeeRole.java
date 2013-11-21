@@ -19,14 +19,14 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	String name = "";
 	List<RetrievalRequest> requests = Collections.synchronizedList(new ArrayList<RetrievalRequest>());
 	
-	enum RetrievalState {PENDING, PROCESSED};
+	enum RequestState {PENDING, PROCESSED};
 	private class RetrievalRequest {
 		List<ItemRequest> items;
 		int id;
-		RetrievalState state;
+		RequestState state;
 		MarketManager manager;
 		
-		public RetrievalRequest(MarketManager m, List<ItemRequest> i, int id, RetrievalState s) {
+		public RetrievalRequest(MarketManager m, List<ItemRequest> i, int id, RequestState s) {
 			items = i;
 			id = id;
 			state = s;
@@ -69,8 +69,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 */
 	
 	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {
+		System.out.println("Got message msgRetrieveItems");
+		
 		// Add the new retrieval request to the list of requests
-		requests.add(new RetrievalRequest(manager, items, id, RetrievalState.PENDING));
+		requests.add(new RetrievalRequest(manager, items, id, RequestState.PENDING));
 		
 		stateChanged();
 	}
@@ -92,6 +94,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		for (ItemRequest item : request.items) {
 			doGetItem(item);
 		}
+		
+		// Give the items to the manager
+		request.manager.msgHereAreItems(this, request.items, request.id);
+		
+		// The request has now been processed
+		request.state = RequestState.PROCESSED;
 	}
 	
 	/*
@@ -111,12 +119,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		// Go through our requests list and find the first one that is PENDING
 		synchronized(requests) {
 			for (RetrievalRequest request : requests) {
-				if (request.state == RetrievalState.PENDING)
+				if (request.state == RequestState.PENDING)
 					return request;
 			}
 		}
 		
-		// If there aren't any PENDING request, return null
+		// If there aren't any PENDING requests, return null
 		return null;
 	}
 

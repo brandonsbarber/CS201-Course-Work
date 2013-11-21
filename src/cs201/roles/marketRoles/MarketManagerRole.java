@@ -12,6 +12,10 @@ import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 
+/**
+ * The MarketManagerRole, the head of a market. Deals directly with customers and money. Dispatches MarketEmployees to retrieve items
+ * @author Ben Doherty
+ */
 public class MarketManagerRole extends Role implements MarketManager {
 	
 	/*
@@ -124,6 +128,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {
+		System.out.println("Got message msgHereIsOrder");
+		
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, OrderType.INPERSON, nextOrderID));
@@ -148,6 +154,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {
+		System.out.println("Got message msgHereAreItems");
+		
 		// Find the consumer's order in our list
 		Order theOrder = null;
 		synchronized (orders) {
