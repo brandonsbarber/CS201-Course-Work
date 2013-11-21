@@ -19,16 +19,20 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	String name = "";
-	private List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
-	private List<MyEmployee> employees = new ArrayList<MyEmployee>();
-	private Map<MarketConsumer, ConsumerRecord> consumerBalance = 
+	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
+	List<MyEmployee> employees = new ArrayList<MyEmployee>();
+	Map<MarketConsumer, ConsumerRecord> consumerBalance = 
 			new HashMap<MarketConsumer, ConsumerRecord>();
-	private Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
-	//List<DeliveryTruck> deliveryTrucks;
+	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	
-	public class ItemRequest {
+	public static class ItemRequest {
 		String item;
 		int amount;
+		
+		public ItemRequest(String i, int a) {
+			item = i;
+			amount = a;
+		}
 	}
 	
 	public class InventoryEntry {

@@ -26,7 +26,8 @@ public abstract class Role {
 	 * Releases the semaphore in PersonAgent so that its scheduler begins to run again
 	 */
 	protected void stateChanged() {
-		myPerson.stateChanged();
+		if (myPerson != null)
+			myPerson.stateChanged();
 	}
 	
 	/**
