@@ -8,7 +8,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
-import cs201.roles.marketRoles.MarketManagerRole.Item;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 	
@@ -16,16 +16,15 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** DATA **********
 	 */
 	String name = "";
-	Map<String, Item> inventory;
 	
 	enum OrderState {PENDING, PROCESSED};
 	private class Order {
-		List<Item> items;
+		List<String> items;
 		int id;
 		OrderState state;
 		MarketManager manager;
 		
-		public Order(MarketManager m, List<Item> i, int id, OrderState s) {
+		public Order(MarketManager m, List<String> i, int id, OrderState s) {
 			items = i;
 			id = id;
 			state = s;
@@ -60,7 +59,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgRetrieveItems(MarketManager manager, List<Item> items, int id) {
+	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {
 		stateChanged();
 	}
 

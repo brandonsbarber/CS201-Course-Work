@@ -8,7 +8,7 @@ import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
-import cs201.roles.marketRoles.MarketManagerRole.Item;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 
 public class MarketConsumerRole extends Role implements MarketConsumer {
 	
@@ -55,7 +55,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		stateChanged();
 	}
 	
-	public void msgHereAreYourItems(List<Item> items) {
+	public void msgHereAreYourItems(List<ItemRequest> items) {
 		stateChanged();
 	}
 	

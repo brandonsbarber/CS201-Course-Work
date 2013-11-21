@@ -19,16 +19,22 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	String name = "";
-	List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
-	List<MyEmployee> employees = new ArrayList<MyEmployee>();
-	Map<MarketConsumer, ConsumerRecord> consumerBalance = 
+	private List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
+	private List<MyEmployee> employees = new ArrayList<MyEmployee>();
+	private Map<MarketConsumer, ConsumerRecord> consumerBalance = 
 			new HashMap<MarketConsumer, ConsumerRecord>();
-	Map<Item, InventoryEntry> inventory = new HashMap<Item, InventoryEntry>();
+	private Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	//List<DeliveryTruck> deliveryTrucks;
 	
-	public class InventoryEntry {
-		Item item;
+	public class ItemRequest {
+		String item;
 		int amount;
+	}
+	
+	public class InventoryEntry {
+		String item;
+		int amount;
+		float price;
 	}
 	
 	public class ConsumerRecord {
@@ -36,23 +42,18 @@ public class MarketManagerRole extends Role implements MarketManager {
 		float balance;
 	}
 	
-	public class Item {
-		String type;
-		float price;
-	}
-	
 	enum OrderState {PENDING, PROCESSING, READY, SENT};
 	enum OrderType {INPERSON, DELIVERY};
 	int nextOrderID = 0;
 	private class Order {
-		List<Item> items;
+		List<ItemRequest> items;
 		MarketConsumer consumer;
 		OrderState state;
 		OrderType type;
 		float totalPrice;
 		int id;
 		
-		public Order(MarketConsumer c, List<Item> i, OrderState s, OrderType t, int oID) {
+		public Order(MarketConsumer c, List<ItemRequest> i, OrderState s, OrderType t, int oID) {
 			items = i;
 			consumer = c;
 			state = s;
@@ -118,7 +119,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgHereIsMyOrder(MarketConsumer consumer, List<Item> items) {
+	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, OrderType.INPERSON, nextOrderID));
@@ -128,7 +129,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		stateChanged();
 	}
 	
-	public void msgHereIsMyOrderForDeliery(MarketConsumer consumer, List<Item> items) {
+	public void msgHereIsMyOrderForDeliery(MarketConsumer consumer, List<ItemRequest> items) {
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, OrderType.DELIVERY, nextOrderID));
@@ -142,7 +143,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		stateChanged();
 	}
 	
-	public void msgHereAreItems(MarketEmployee employee, List<Item> items, int id) {
+	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {
 		// Find the consumer's order in our list
 		Order theOrder = null;
 		synchronized (orders) {
@@ -187,8 +188,20 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	private void ProcessOrder(Order o, MyEmployee e) {
+		// We're going to assemble a list of valid ItemRequests to our MarketEmployee
+		List<ItemRequest> itemList = new ArrayList<ItemRequest>();
+		
+		// Go through each PersonItem in the order, check to see if we sell it, and check to see if we have any in stock
+		for (ItemRequest item : o.items) {
+			int amountWeHave = AmountInStock(item);
+			if (amountWeHave > 0) {
+				item.amount = amountWeHave;
+				itemList.add(item);
+			}
+		}
+		
 		// Send the employee a message to retrieve the items
-		e.employee.msgRetrieveItems(this, o.items, o.id);
+		e.employee.msgRetrieveItems(this, itemList, o.id);
 		e.state = EmployeeState.BUSY;
 		
 		// Mark the order as being processed
@@ -201,6 +214,27 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	public void AddEmployee(MarketEmployee e) {
 		employees.add(new MyEmployee(e, EmployeeState.AVAILABLE));
+	}
+	
+	public void AddInventoryEntry(InventoryEntry entry) {
+		// Ensure that we store the item as lowercase
+		entry.item = entry.item.toLowerCase();
+		
+		// Add the inventory entry
+		inventory.put(entry.item, entry);
+	}
+	
+	/*
+	 * Returns how many of a certain item we have in stock, up to the consumer's initial request
+	 */
+	private int AmountInStock(ItemRequest item) {
+		String lowercaseItemName = item.item.toLowerCase();
+		InventoryEntry entry = inventory.get(lowercaseItemName);
+		if (entry == null) return 0;
+		if (entry.amount >= item.amount)
+			return item.amount;
+		else
+			return entry.amount;
 	}
 
 }
