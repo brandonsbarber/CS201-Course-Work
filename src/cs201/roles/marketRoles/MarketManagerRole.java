@@ -116,7 +116,21 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 		if (employee != null && order != null) {	// if we found an order and an available employee,
 			// process the order
-			ProcessOrder(order, employee);
+			processOrder(order, employee);
+			return true;
+		}
+		
+		// Dispatch a ready order
+		order = null;
+		synchronized (orders) {
+			for (Order o : orders) {
+				if (o.state == OrderState.READY) {
+					order = o;
+				}
+			}
+		}
+		if (order != null) { // if we found an order that is READY
+			dispatchOrder(order);
 			return true;
 		}
 		
@@ -166,6 +180,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 				}
 			}
 		}
+		if (theOrder == null) return;
 		
 		// Set his items to the ones the employee returned
 		theOrder.items = items;
@@ -176,11 +191,11 @@ public class MarketManagerRole extends Role implements MarketManager {
 		// The employee can process other orders
 		MyEmployee myEmployee = null;
 		for (MyEmployee e : employees) {
-			if (e == employee) {
+			if (e.employee == employee) {
 				myEmployee = e;
 			}
 		}
-		myEmployee.state = EmployeeState.AVAILABLE;
+		if (myEmployee != null) myEmployee.state = EmployeeState.AVAILABLE;
 		
 		stateChanged();
 	}
@@ -199,7 +214,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * ********** ACTIONS **********
 	 */
 	
-	private void ProcessOrder(Order o, MyEmployee e) {
+	private void processOrder(Order o, MyEmployee e) {
 		// We're going to assemble a list of valid ItemRequests to our MarketEmployee
 		List<ItemRequest> itemList = new ArrayList<ItemRequest>();
 		
@@ -212,12 +227,33 @@ public class MarketManagerRole extends Role implements MarketManager {
 			}
 		}
 		
+		// Mark the order as being processed
+		o.state = OrderState.PROCESSING;
+		
 		// Send the employee a message to retrieve the items
 		e.employee.msgRetrieveItems(this, itemList, o.id);
 		e.state = EmployeeState.BUSY;
 		
-		// Mark the order as being processed
-		o.state = OrderState.PROCESSING;
+	}
+	
+	private void dispatchOrder(Order o) {
+		// Dispatch the order based on its type
+		if (o.type == OrderType.INPERSON) {
+			// The consumer is standing right there, so just give him the items
+			o.consumer.msgHereAreYourItems(o.items);
+		} else if (o.type == OrderType.DELIVERY) {
+			// The consumer wants the items delivered to him
+			// TODO
+		}
+		
+		// The order has now been sent
+		o.state = OrderState.SENT;
+		
+		// Calculate the price of the order
+		// TODO
+		
+		// The consumer needs to pay for the order
+		// TODO
 	}
 
 	/*

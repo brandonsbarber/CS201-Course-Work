@@ -52,12 +52,15 @@ public class MarketManagerTest {
 		// Check to see if our new order is in the MarketManager's list of orders
 		assertEquals("The MarketManager should have added the order to his list of orders.", manager.orders.size(), 1);
 		
-		// Call the MarketManager's scheduler once
+		// Call the MarketManager's scheduler once to dispatch an employee
 		assertTrue("The MarketManager's scheduler should have processed the first order and returned true.", manager.pickAndExecuteAnAction());
 		
 		// Ensure that the MarketManager sent a retrieval message to the MarketEmployee
 		assertTrue("The MarketEmployee's log should have a msgRetrieveItems.", employee.log.getFirstEventWhichContainsString("Received msgRetrieveItems") != null);
 		
+		// Call the MarketManager's scheduler once to send the order back to the MarketConsumer
+		assertTrue("The MarketManager's scheduler should have sent the order to the consumer and returned true.", manager.pickAndExecuteAnAction());
+
 	}
 
 }
