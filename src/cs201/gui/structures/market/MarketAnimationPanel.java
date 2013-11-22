@@ -22,6 +22,17 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     private final int DEFAULT_WINDOW_HEIGHT = 500;
     
     private final int ANIMATION_LENGTH = 10;
+    
+    private final int FRONT_DESK_X = 250;
+    private final int FRONT_DESK_Y = 350;
+    private final int FRONT_DESK_WIDTH = 150;
+    private final int FRONT_DESK_HEIGHT = 40;
+    private final int FIRST_SHELF_X = 50;
+    private final int FIRST_SHELF_Y = 50;
+    private final int SHELF_WIDTH = 50;
+    private final int SHELF_HEIGHT = 200;
+    private final int SHELF_SPACING = 150;
+    private final int SHELF_COUNT = 3;
 
     private List<Gui> guis = new ArrayList<Gui>();
     
@@ -49,7 +60,13 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     	
     	// Draw the front desk bottom right of the screen
         g2.setColor(Color.black);
-        g2.fillRect(250, 350, 150, 40);
+        g2.fillRect(FRONT_DESK_X, FRONT_DESK_Y, FRONT_DESK_WIDTH, FRONT_DESK_HEIGHT);
+        
+        // Draw the shelves
+        g2.setColor(Color.blue);
+        for (int i = 0; i < SHELF_COUNT; i ++) {
+        	g2.fillRect(FIRST_SHELF_X + i * SHELF_SPACING, FIRST_SHELF_Y, SHELF_WIDTH, SHELF_HEIGHT);
+        }
     	
         // Tell each gui to update
         for(Gui gui : guis) {
