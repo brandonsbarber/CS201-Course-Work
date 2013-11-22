@@ -2,6 +2,7 @@ package cs201.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
@@ -61,14 +62,14 @@ public class PersonAgent extends Agent {
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
 		this.passengerRole = new PassengerRole(null);
 		this.passengerRole.setPerson(this);
-		this.planner = Collections.synchronizedList(new ArrayList<Action>());
+		this.planner = Collections.synchronizedList(new LinkedList<Action>());
 		this.currentAction = null;
 		this.time = new CityTime();
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
 		this.hungerLevel = INITIALHUNGER;
 		this.vehicle = null;
-		this.setHome(null);
+		this.home = null;
 		this.workplace = null;
 		this.job = Intention.None;
 		this.currentLocation = null;
@@ -90,7 +91,7 @@ public class PersonAgent extends Agent {
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
 		
-		this.setHome(home);		
+		this.home = home;		
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
@@ -614,12 +615,6 @@ public class PersonAgent extends Agent {
 		public Action() {
 			this.location = null;
 			this.intent = null;
-			this.active = false;
-		}
-		
-		public Action(Structure location, Intention intent) {
-			this.location = location;
-			this.intent = intent;
 			this.active = false;
 		}
 	}
