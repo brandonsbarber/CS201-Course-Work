@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.agents.transit.Vehicle;
@@ -148,8 +149,23 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void checkBoardingRequest(Vehicle remove)
 	{
-		// TODO Auto-generated method stub
-		
+		if(remove instanceof Bus)
+		{
+			Bus bus = (Bus)remove;
+			BusRoute route = bus.getRoute();
+			if(route.hasStop((BusStop)waypoints.peek().s))
+			{
+				bus.msgDoneBoarding(this);
+				state = PassengerState.InTransit;
+				boardingRequest.clear();
+			}
+		}
+		else if(remove instanceof Car)
+		{
+			Car car = (Car)remove;
+			car.msgDoneBoarding(this);
+			boardingRequest.clear();
+		}
 	}
 	
 	private void processArrival()
