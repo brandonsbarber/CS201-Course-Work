@@ -18,16 +18,16 @@ import cs201.structures.transit.BusStop;
 
 public class PassengerRole extends Role implements Passenger
 {
-	Structure destination;
-	Structure currentLocation;
+	public Structure destination;
+	public Structure currentLocation;
 	
-	List<Vehicle> boardingRequest;
+	public List<Vehicle> boardingRequest;
 	
-	Vehicle currentVehicle;
+	public Vehicle currentVehicle;
 	
 	Car car;
 	
-	Queue<Move> waypoints;
+	public Queue<Move> waypoints;
 	
 	class Move
 	{
@@ -43,17 +43,23 @@ public class PassengerRole extends Role implements Passenger
 	
 	enum MoveType {Walk,Bus,Car};
 	
-	enum PassengerState {None,Waiting,Boarding,InTransit,Arrived};
-	PassengerState state;
+	public enum PassengerState {None,Waiting,Boarding,InTransit,Arrived};
+	public PassengerState state;
 	
 	Semaphore waitingForVehicle;
 	
-	public PassengerRole(Structure currentLocation)
+	public PassengerRole(Structure curLoc)
 	{
 		boardingRequest = new ArrayList<Vehicle>();
 		waypoints = new LinkedList<Move>();
 		
 		state = PassengerState.None;
+		this.currentLocation = curLoc;
+	}
+	
+	public void addCar(Car c)
+	{
+		this.car = c;
 	}
 	
 	@Override
@@ -68,7 +74,6 @@ public class PassengerRole extends Role implements Passenger
 	public void msgPleaseBoard(Vehicle v)
 	{
 		boardingRequest.add(v);
-		waitingForVehicle.release();
 	}
 
 	@Override
@@ -87,10 +92,10 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		if(currentLocation == destination)
+		if(currentLocation == destination && state == PassengerState.None)
 		{
 			finishMoving();
-			return true;
+			return false;
 		}
 		if(state == PassengerState.None && waypoints.isEmpty())
 		{
@@ -123,6 +128,7 @@ public class PassengerRole extends Role implements Passenger
 		if (car != null)
 		{
 			waypoints.add (new Move(destination, MoveType.Car));
+			return;
 		}
 		
 		List<BusStop> stops = new ArrayList<BusStop>();
@@ -143,8 +149,6 @@ public class PassengerRole extends Role implements Passenger
 	{
 		//message person done moving
 		setActive(false);
-		currentVehicle = null;
-		
 	}
 	
 	private void checkBoardingRequest(Vehicle remove)
@@ -165,6 +169,7 @@ public class PassengerRole extends Role implements Passenger
 			Car car = (Car)remove;
 			car.msgDoneBoarding(this);
 			boardingRequest.clear();
+			currentVehicle = remove;
 		}
 	}
 	
@@ -204,24 +209,9 @@ public class PassengerRole extends Role implements Passenger
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
-				try
-				{
-					waitingForVehicle.acquire();
-				} catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);
-				try
-				{
-					waitingForVehicle.acquire();
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
 				break;
 		}
 	}
