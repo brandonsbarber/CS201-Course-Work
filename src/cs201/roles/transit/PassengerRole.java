@@ -167,9 +167,12 @@ public class PassengerRole extends Role implements Passenger
 		else if(remove instanceof Car)
 		{
 			Car car = (Car)remove;
-			car.msgDoneBoarding(this);
-			boardingRequest.clear();
-			currentVehicle = remove;
+			if(car == this.car)
+			{
+				car.msgDoneBoarding(this);
+				boardingRequest.clear();
+				currentVehicle = remove;
+			}
 		}
 	}
 	
