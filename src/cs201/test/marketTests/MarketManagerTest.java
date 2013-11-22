@@ -21,6 +21,9 @@ public class MarketManagerTest {
 	MockMarketEmployee employee;
 	MarketConsumer consumer;
 	
+	/**
+	 * Run before each test case. Instantiates a MarketManagerRole, a MockEmployee, and a MockConsumer. Introduces the manager to the new employee.
+	 */
 	@Before
 	public void setUp() throws Exception {
 		// Create the unit under test- our MarketManagerRole
@@ -42,7 +45,7 @@ public class MarketManagerTest {
 	}
 
 	/**
-	 * The very basic of tests. Checks to see if the MarketManager can handle an order of a single item from a MarketConsumer, dispatch an employee,
+	 * The very basic of tests. Checks to see if the MarketManager can handle an order of a single item from the MarketConsumer, dispatch an employee,
 	 * and send the fulfilled order back to the consumer.
 	 */
 	@Test
@@ -69,11 +72,6 @@ public class MarketManagerTest {
 		
 		// Call the MarketManager's scheduler once to send the order back to the MarketConsumer
 		assertTrue("The MarketManager's scheduler should have sent the order to the consumer and returned true.", manager.pickAndExecuteAnAction());
-	}
-	
-	@Test
-	public void test2() {
-		assertTrue(true);
 	}
 
 }
