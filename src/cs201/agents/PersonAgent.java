@@ -8,9 +8,10 @@ import java.util.concurrent.Semaphore;
 
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
+import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
-import cs201.structures.restaurant.Restaurant;
 
 /**
  * The PersonAgent that represents all people in SimCity201
@@ -34,13 +35,14 @@ public class PersonAgent extends Agent {
 	private String name;
 	private Semaphore animation;
 	private List<Role> roles;
-	//private PassengerRole passengerRole;
+	private PassengerRole passengerRole;
 	private List<Action> planner;
+	private Action currentAction;
 	private CityTime time;
 	private CityTime wakeupTime;
 	private double moneyOnHand;
 	private int hungerLevel;
-	//private Vehicle vehicle;
+	private Vehicle vehicle;
 	private Structure home;
 	private Structure workplace;
 	private Intention job;
@@ -57,14 +59,15 @@ public class PersonAgent extends Agent {
 		this.name = name;
 		this.animation = new Semaphore(0);
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
-		//this.passengerRole = new PassengerRole();
-		//this.passengerRole.setPerson(this);
+		this.passengerRole = new PassengerRole(null);
+		this.passengerRole.setPerson(this);
 		this.planner = Collections.synchronizedList(new ArrayList<Action>());
+		this.currentAction = null;
 		this.time = new CityTime();
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
 		this.hungerLevel = INITIALHUNGER;
-		//this.vehicle = null;
+		this.vehicle = null;
 		this.setHome(null);
 		this.workplace = null;
 		this.job = Intention.None;
@@ -80,8 +83,9 @@ public class PersonAgent extends Agent {
 	 * @param workplace This PersonAgent's workplace (can be null if the PersonAgent doesn't work)
 	 * @param job This PersonAgent's job (can be none if this PersonAgent doesn't work)
 	 * @param location This PersonAgent's starting location (probably his home)
+	 * @param vehicle This PersonAgent's vehicle (can be null if he/she doesn't have a vehicle initially)
 	 */
-	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location/*, Vehicle vehicle*/) {
+	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
@@ -90,7 +94,7 @@ public class PersonAgent extends Agent {
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
-		//this.vehicle = vehicle;
+		this.vehicle = vehicle;
 	}
 	
 	
@@ -121,10 +125,10 @@ public class PersonAgent extends Agent {
 		// TODO Auto-generated method stub
 		
 		// If you're going somewhere, that has highest priority
-		/*if (passengerRole.getActive()) {
+		if (passengerRole.getActive()) {
 			passengerRole.pickAndExecuteAnAction();
 			return true;
-		}*/
+		}
 		
 		// If you have active roles, those have next highest priority (because you're currently
 		// doing something)
@@ -173,8 +177,8 @@ public class PersonAgent extends Agent {
 	private void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
-			//passengerRole.msgGoTo(a.location);
-			//passengerRole.setActive(true);
+			passengerRole.msgGoTo(a.location);
+			passengerRole.setActive(true);
 			Do("Going to " + a.location);
 		}
 	}
@@ -207,97 +211,149 @@ public class PersonAgent extends Agent {
 		newRole.startInteraction(a.intent);
 		newRole.setActive(true);
 		
+		currentAction = a;
 		planner.remove(a);
 	}
 	
-	private void goToWork() {
+	private void goToWork(boolean highPriority) {
 		Action temp = new Action();
 		temp.location = workplace;
 		temp.intent = job;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added going to work (" + workplace + ") to Planner");
 	}
 	
-	private void sleepAtHome() {
+	private void sleepAtHome(boolean highPriority) {
 		Action temp = new Action();
 		temp.location = getHome();
 		temp.intent = Intention.ResidenceSleep;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added going home (" + getHome() + ") to sleep to Planner");
 	}
 	
-	private void eatAtHome() {
+	private void eatAtHome(boolean highPriority) {
 		Action temp = new Action();
 		temp.location = getHome();
 		temp.intent = Intention.ResidenceEat;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added eating at home (" + getHome() + ") to Planner");
 	}
 	
-	/*
-	private void withdrawMoneyAsCustomer() {
+	
+	private void withdrawMoneyAsCustomer(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random bank to perform the transaction at
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
 		temp.location = CityDirectory.getInstance().getBanks().get(num);
 		temp.intent = Intention.BankWithdrawMoneyCustomer;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added withdrawing money as customer at " + temp.location + " to Planner");
 	}
 	
-	private void depositMoneyAsCustomer() {
+	private void depositMoneyAsCustomer(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random bank to perform the transaction at
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
 		temp.location = CityDirectory.getInstance().getBanks().get(num);
 		temp.intent = Intention.BankDepositMoneyCustomer;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added depositing money as customer at " + temp.location + " to Planner");
 	}
 	
-	private void withdrawMoneyAsBusiness() {
+	private void withdrawMoneyAsBusiness(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random bank to perform the transaction at
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
 		temp.location = CityDirectory.getInstance().getBanks().get(num);
 		temp.intent = Intention.BankWithdrawMoneyBusiness;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added withdrawing money as business at " + temp.location + " to Planner");
 	}
 	
-	private void depositMoneyAsBusiness() {
+	private void depositMoneyAsBusiness(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random bank to perform the transaction at
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
 		temp.location = CityDirectory.getInstance().getBanks().get(num);
 		temp.intent = Intention.BankDepositMoneyBusiness;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added depositing money as business at " + temp.location + " to Planner");
 	}
 	
-	private void goToMarket() {
+	private void goToMarketForGoods(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random market
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(CityDirectory.getInstance().getMarkets().size());
 		temp.location = CityDirectory.getInstance().getMarkets().get(num);
-		temp.intent = Intention.MarketConsumer;
-		planner.add(temp);
-		Do("Added a market run at " + temp.location + " to Planner");
-	}*/
+		temp.intent = Intention.MarketConsumerGoods;
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
+		Do("Added a market run for goods at " + temp.location + " to Planner");
+	}
 	
-	private void eatAtRestaurant() {
+	private void goToMarketForCar(boolean highPriority) {
+		Action temp = new Action();
+		// Pick a random market
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getMarkets().size());
+		temp.location = CityDirectory.getInstance().getMarkets().get(num);
+		temp.intent = Intention.MarketConsumerCar;
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
+		Do("Added a market run for a new car at " + temp.location + " to Planner");
+	}
+	
+	private void eatAtRestaurant(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random restaurant to eat at
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(CityDirectory.getInstance().getRestaurants().size());
 		temp.location = CityDirectory.getInstance().getRestaurants().get(num);
 		temp.intent = Intention.RestaurantCustomer;
-		planner.add(temp);
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
 		Do("Added eating at " + temp.location + " to Planner");
 	}
 	
@@ -310,6 +366,41 @@ public class PersonAgent extends Agent {
 	 */
 	public void removeRole(Role toRemove) {
 		roles.remove(toRemove);
+	}
+	
+	/**
+	 * Roles can tell the PersonAgent that he/she should immediately go do another action.
+	 * For example: A ResidentRole might need to go to the bank before paying rent, so it would
+	 * 				call this method with Intention.BankWithdrawMoneyCustomer and true as the
+	 * 				parameters. The ResidentRole is deactivated, the PersonAgent gets a new Action
+	 * 				with highest priority and immediately goes to the bank, returning to his 
+	 *  			ResidentRole after getting money from the bank.
+	 * @param from The Role calling this method
+	 * @param intent What the Role would like this PersonAgent to go do
+	 * @param returnToCurrentAction Whether the PersonAgent should return to the previous Role after completing the new Action
+	 */
+	public void addIntermediateAction(Role from, Intention intent, boolean returnToCurrentAction) {		
+		from.setActive(false);
+		
+		switch (intent) {
+		case ResidenceSleep: this.sleepAtHome(true); break;
+		case ResidenceEat: this.eatAtHome(true); break;
+		case BankWithdrawMoneyCustomer: this.withdrawMoneyAsCustomer(true); break;
+		case BankDepositMoneyCustomer: this.depositMoneyAsCustomer(true); break;
+		case BankWithdrawMoneyBusiness: this.withdrawMoneyAsBusiness(true); break;
+		case BankDepositMoneyBusiness: this.depositMoneyAsBusiness(true); break;
+		case MarketConsumerGoods: this.goToMarketForGoods(true); break;
+		case MarketConsumerCar: this.goToMarketForCar(true); break;
+		case RestaurantCustomer: this.eatAtRestaurant(true); break;
+		default: {
+			Do("addIntermediateAction(Intention, boolean):: Provided bad Intention");
+			return;
+		}
+		}
+		
+		if (returnToCurrentAction) {
+			planner.add(1, currentAction);
+		}
 	}
 	
 	/**
@@ -382,6 +473,22 @@ public class PersonAgent extends Agent {
 	 */
 	public int getBankAccountNumber() {
 		return this.bankAccountNumber;
+	}
+	
+	/**
+	 * Sets this PersonAgent's Vehicle to a new Vehicle (basically only used when they buy a car)
+	 * @param newVehicle The new Vehicle
+	 */
+	public void setVehicle(Vehicle newVehicle) {
+		this.vehicle = newVehicle;
+	}
+	
+	/**
+	 * Gets this PersonAgent's vehicle if they have one
+	 * @return The Vehicle, or null if this PersonAgent has no vehicle
+	 */
+	public Vehicle getVehicle() {
+		return vehicle;
 	}
 	
 	/**
@@ -485,7 +592,8 @@ public class PersonAgent extends Agent {
 		BankDepositMoneyBusiness,
 		MarketManager,
 		MarketEmployee,
-		MarketConsumer,
+		MarketConsumerGoods,
+		MarketConsumerCar,
 		RestaurantCook,
 		RestaurantHost,
 		RestaurantWaiter,
