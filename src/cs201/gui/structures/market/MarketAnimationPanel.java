@@ -21,16 +21,16 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     private final static int DEFAULT_WINDOW_WIDTH = 500;
     private final static int DEFAULT_WINDOW_HEIGHT = 500;
         
-    private final int FRONT_DESK_X = 250;
-    private final int FRONT_DESK_Y = 350;
-    private final int FRONT_DESK_WIDTH = 150;
-    private final int FRONT_DESK_HEIGHT = 40;
-    private final int FIRST_SHELF_X = 50;
-    private final int FIRST_SHELF_Y = 50;
-    private final int SHELF_WIDTH = 50;
-    private final int SHELF_HEIGHT = 200;
-    private final int SHELF_SPACING = 150;
-    private final int SHELF_COUNT = 3;
+    public final static int FRONT_DESK_X = 250;
+    public final static int FRONT_DESK_Y = 350;
+    public final static int FRONT_DESK_WIDTH = 150;
+    public final static int FRONT_DESK_HEIGHT = 40;
+    public final static int FIRST_SHELF_X = 50;
+    public final static int FIRST_SHELF_Y = 50;
+    public final static int SHELF_WIDTH = 50;
+    public final static int SHELF_HEIGHT = 200;
+    public final static int SHELF_SPACING = 150;
+    public final static int SHELF_COUNT = 3;
     
     private final int ANIMATION_LENGTH = 10;
     private Timer timer;

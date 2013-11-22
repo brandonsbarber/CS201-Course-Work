@@ -50,8 +50,16 @@ public class MarketAnimationTest {
 		// Create a new MarketEmployee gui and add him to our animation panel
 		MarketEmployeeGui employeeGui = new MarketEmployeeGui();
 		animationPanel.addGui(employeeGui);
+		MarketEmployeeGui employeeGui2 = new MarketEmployeeGui();
+		animationPanel.addGui(employeeGui2);
 		
-		employeeGui.doAnimate();
+		employeeGui.doGoToItemOnShelf(2, 7);
+		Thread.sleep(5000);
+		employeeGui2.doGoToItemOnShelf(0, 4);
+		Thread.sleep(5000);
+		employeeGui.doGoToItemOnShelf(1, 4);
+		Thread.sleep(10000);
+		employeeGui.doGoToItemOnShelf(0, 3);
 		
 		System.in.read();
 	}

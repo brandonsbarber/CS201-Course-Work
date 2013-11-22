@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
+import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.roles.marketRoles.MarketManagerRole;
 
 public class MarketEmployeeGui implements Gui {
@@ -17,6 +18,10 @@ public class MarketEmployeeGui implements Gui {
 
 	private int xPos, yPos, xDestination, yDestination;
 	
+	private enum IsleMovementState {MOVE_OUT_OF_ISLE, MOVE_TO_ISLE, MOVE_TO_SHELF};
+	
+	private int isleDestination = -1;
+	
 	public MarketEmployeeGui() {
 		this(null);
 	}
@@ -29,13 +34,20 @@ public class MarketEmployeeGui implements Gui {
 	}
 
 	public void updatePosition() {
-		if (xPos < xDestination) {
+		
+		if (isleNumber(xPos) != isleDestination && isleDestination != -1) {
+			if (yPos > MarketAnimationPanel.FIRST_SHELF_Y - EMPLOYEE_SIZE - 10) {
+				yPos--;
+			} else {
+				if (isleDestination > isleNumber(xPos)) xPos++; else xPos--;
+			}
+		}
+		else if (xPos < xDestination) {
 			xPos++;
 		} else if (xPos > xDestination) {
 			xPos--;
 		}
-		
-		if (yPos < yDestination) {
+		else if (yPos < yDestination) {
 			yPos++;
 		} else if (yPos > yDestination) {
 			yPos--;
@@ -72,4 +84,18 @@ public class MarketEmployeeGui implements Gui {
 		xDestination = 200;
 		yDestination = 200;
 	}
+	
+	public void doGoToItemOnShelf(int isleNumber, int itemNumber) {
+		xDestination = MarketAnimationPanel.FIRST_SHELF_X + MarketAnimationPanel.SHELF_WIDTH + 5 + MarketAnimationPanel.SHELF_SPACING * isleNumber;
+		yDestination = MarketAnimationPanel.FIRST_SHELF_Y + (int)(MarketAnimationPanel.SHELF_HEIGHT * (itemNumber / 10.0));
+		isleDestination = isleNumber;
+	}
+	
+	private int isleNumber(int x) {
+		int offsetXPos = x - MarketAnimationPanel.FIRST_SHELF_X;
+		int isleWidth = MarketAnimationPanel.SHELF_SPACING;
+		int isleNumber = offsetXPos /  isleWidth;
+		return isleNumber;
+	}
+	
 }
