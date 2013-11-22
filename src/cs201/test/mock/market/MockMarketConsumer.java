@@ -15,12 +15,6 @@ public class MockMarketConsumer extends Mock implements MarketConsumer {
 		super(name);
 	}
 
-	/*
-	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {
-		log.add(new LoggedEvent("MarketEmployee: " + this.name + ": Received msgRetrieveItems."));
-	}
-	*/
-
 	public void msgHereIsYourTotal(MarketManager manager, float amount) {
 
 	}
