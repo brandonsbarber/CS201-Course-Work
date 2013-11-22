@@ -24,14 +24,14 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	String name = "";
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
-	List<MyEmployee> employees = new ArrayList<MyEmployee>();
+	public List<MyEmployee> employees = new ArrayList<MyEmployee>();
 	Map<MarketConsumer, ConsumerRecord> consumerBalance = 
 			new HashMap<MarketConsumer, ConsumerRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	
 	public static class ItemRequest {
-		String item;
-		int amount;
+		public String item;
+		public int amount;
 		
 		public ItemRequest(String i, int a) {
 			item = i;
@@ -39,10 +39,16 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 	}
 	
-	public class InventoryEntry {
+	public static class InventoryEntry {
 		String item;
 		int amount;
 		float price;
+		
+		public InventoryEntry(String i, int a, float p) {
+			item = i;
+			amount = a;
+			price = p;
+		}
 	}
 	
 	public class ConsumerRecord {
@@ -141,9 +147,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {
-		System.out.println("Got message msgHereIsOrder");
-		
+	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {		
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, OrderType.INPERSON, nextOrderID));
@@ -167,9 +171,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		stateChanged();
 	}
 	
-	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {
-		System.out.println("Got message msgHereAreItems");
-		
+	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {		
 		// Find the consumer's order in our list
 		Order theOrder = null;
 		synchronized (orders) {

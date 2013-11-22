@@ -26,7 +26,13 @@ public class MockMarketConsumer extends Mock implements MarketConsumer {
 	}
 
 	public void msgHereAreYourItems(List<ItemRequest> items) {
-		log.add(new LoggedEvent("MarketConsumer: " + this.name + ": Received msgHereAreYourItems."));
+		// Log the message
+		String msg = "MarketConsumer: " + this.name + ": Received msgHereAreYourItems with ";
+		for (ItemRequest item : items) {
+			msg += item.amount + " " + item.item;
+		}
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
 	}
 
 	public void startInteraction(Intention intent) {

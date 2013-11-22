@@ -17,7 +17,12 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 
 	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {
 		// Log the message
-		log.add(new LoggedEvent("MarketEmployee: " + this.name + ": Received msgRetrieveItems."));
+		String msg = "MarketEmployee: " + this.name + ": Received msgRetrieveItems with ";
+		for (ItemRequest item : items) {
+			msg += item.amount + " " + item.item;
+		}
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
 		
 		// Immediately return the items to the manager
 		manager.msgHereAreItems(this, items, id);
