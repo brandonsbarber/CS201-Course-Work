@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.junit.Before;
 import org.junit.Test;
 
+import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
 
@@ -21,7 +22,13 @@ public class MarketAnimationTest {
 	public void setUp() throws Exception {
 
 	}
-
+	
+	/**
+	 * A test to see if our MarketAnimationPanel works with a MarketManagerGui, MarketEmployeeGui, and a MarketConsumerGui.
+	 * This tests always "passes" in terms of JUnit, but the point is to watch the animation to make sure everything looks correct.
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
 	@Test
 	public void test() throws InterruptedException, IOException {
 		// Create a new JFrame
@@ -39,6 +46,12 @@ public class MarketAnimationTest {
 		// Create a new MarketManager gui and add him to our animation panel
 		MarketManagerGui managerGui = new MarketManagerGui();
 		animationPanel.addGui(managerGui);
+		
+		// Create a new MarketEmployee gui and add him to our animation panel
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui();
+		animationPanel.addGui(employeeGui);
+		
+		employeeGui.doAnimate();
 		
 		System.in.read();
 	}

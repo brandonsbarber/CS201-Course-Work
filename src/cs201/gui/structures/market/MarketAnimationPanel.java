@@ -18,11 +18,9 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
 	/*
 	 * ********** DATA & CONSTANTS **********
 	 */
-    private final int DEFAULT_WINDOW_WIDTH = 500;
-    private final int DEFAULT_WINDOW_HEIGHT = 500;
-    
-    private final int ANIMATION_LENGTH = 10;
-    
+    private final static int DEFAULT_WINDOW_WIDTH = 500;
+    private final static int DEFAULT_WINDOW_HEIGHT = 500;
+        
     private final int FRONT_DESK_X = 250;
     private final int FRONT_DESK_Y = 350;
     private final int FRONT_DESK_WIDTH = 150;
@@ -33,17 +31,22 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     private final int SHELF_HEIGHT = 200;
     private final int SHELF_SPACING = 150;
     private final int SHELF_COUNT = 3;
+    
+    private final int ANIMATION_LENGTH = 10;
+    private Timer timer;
 
     private List<Gui> guis = new ArrayList<Gui>();
     
     public MarketAnimationPanel(int width, int height) {
     	setSize(width, height);
         setVisible(true);
+        
+        timer = new Timer(ANIMATION_LENGTH, this );
+    	timer.start();
     }
 
     public MarketAnimationPanel() {
-    	setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-        setVisible(true);
+    	this(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
     }
 
 	public void actionPerformed(ActionEvent e) {
