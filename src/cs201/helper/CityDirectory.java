@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent;
+import cs201.structures.bank.Bank;
+import cs201.structures.market.MarketStructure;
+import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.Restaurant;
 
 /**
@@ -28,9 +31,9 @@ public class CityDirectory {
 	
 	private List<PersonAgent> people = Collections.synchronizedList(new ArrayList<PersonAgent>());
 	private List<Restaurant> restaurants = Collections.synchronizedList(new ArrayList<Restaurant>());
-	//private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
-	//private List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
-	//private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
+	private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
+	private List<MarketStructure> markets = Collections.synchronizedList(new ArrayList<MarketStructure>());
+	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
 	
 	// People Stuff
 	public void addPerson(PersonAgent newPerson) {
@@ -61,7 +64,7 @@ public class CityDirectory {
 	}
 	
 	// Bank Stuff
-	/*public void addBank(Bank newBank) {
+	public void addBank(Bank newBank) {
 		banks.add(newBank);
 	}
 	
@@ -77,29 +80,29 @@ public class CityDirectory {
 		}
 		
 		return null;
-	}*/
+	}
 	
 	// Market Stuff
-	/*public void addMarket(Market newMarket) {
+	public void addMarket(MarketStructure newMarket) {
 		markets.add(newMarket);
 	}
 	
-	public List<Market> getMarkets() {
+	public List<MarketStructure> getMarkets() {
 		return markets;
 	}
 	
-	public Market getMarketWithID(int id) {
-		for (Market r : markets) {
+	public MarketStructure getMarketWithID(int id) {
+		for (MarketStructure r : markets) {
 			if (r.getId() == id) {
 				return r;
 			}
 		}
 		
 		return null;
-	}*/
+	}
 	
 	// Residence Stuff
-	/*public void addResidence(Residence newResidence) {
+	public void addResidence(Residence newResidence) {
 		residences.add(newResidence);
 	}
 	
@@ -115,6 +118,6 @@ public class CityDirectory {
 		}
 		
 		return null;
-	}*/
+	}
 	
 }
