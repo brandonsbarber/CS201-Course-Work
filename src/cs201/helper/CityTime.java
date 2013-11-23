@@ -88,6 +88,28 @@ public class CityTime {
 	}
 	
 	/**
+	 * Increments this CityTime by minutesToAdd. Will properly roll over the day
+	 * @param minutesToAdd How many minutes to increment by
+	 */
+	public void increment(int minutesToAdd) {
+		int minutes = this.minute + minutesToAdd;
+		int hours = ((this.hour + minutes / 60) % 24 + 24) % 24;
+		if (minutesToAdd < 0) {
+			hours--;
+		}
+		minutes = (minutes % 60 + 60) % 60;
+		
+		if (this.day != null && hour > hours) {
+			int currentDay = this.day.ordinal();
+			currentDay = (currentDay + 1) % WeekDay.values().length;
+			this.day = WeekDay.values()[currentDay];
+		}
+		
+		this.minute = minutes;
+		this.hour = hours;
+	}
+	
+	/**
 	 * Finds the difference in minutes between two CityTime objects (not counting the Day)
 	 * @param a CityTime 1
 	 * @param b CityTime 2
@@ -104,16 +126,16 @@ public class CityTime {
 	public String toString() {
 		StringBuffer s = new StringBuffer();
 		if (this.day != null) {
-			s.append(this.day);
+			s.append(String.format("%9s", this.day));
 			s.append(", ");
 		}
 		if (this.hour == 0 || this.hour == 12) {
 			s.append(12);
 		} else {
-			s.append(this.hour % 12);
+			s.append(String.format("%2d", this.hour % 12));
 		}
 		s.append(":");
-		s.append(this.minute);
+		s.append(String.format("%02d", this.minute));
 		s.append(this.hour < 12 ? "AM" : "PM");
 		
 		return s.toString();
