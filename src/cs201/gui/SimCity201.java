@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.helper.CityDirectory;
 import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
@@ -51,6 +52,8 @@ public class SimCity201 extends JFrame {
 		
 		add(BorderLayout.NORTH, cityPanel);
 		add(BorderLayout.SOUTH, buildingPanels);
+		
+		CityDirectory.getInstance().startTime();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {

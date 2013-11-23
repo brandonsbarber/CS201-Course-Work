@@ -1,8 +1,13 @@
 package cs201.helper;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
 import cs201.structures.bank.Bank;
@@ -20,7 +25,7 @@ import cs201.structures.restaurant.Restaurant;
  * @author Matt Pohlmann
  *
  */
-public class CityDirectory {
+public class CityDirectory implements ActionListener {
 	private static final CityDirectory INSTANCE = new CityDirectory();
 	
 	private CityDirectory() {};
@@ -29,11 +34,68 @@ public class CityDirectory {
 		return INSTANCE;
 	}
 	
+	private final int INITIALTIMEROUT = 1875; // 1.875 real life seconds
+	private final int TIMESTEP = 15; // 15 SimCity201 minutes
+	private Timer cityTimer = new Timer(INITIALTIMEROUT, this);
+	private CityTime time = new CityTime();
 	private List<PersonAgent> people = Collections.synchronizedList(new ArrayList<PersonAgent>());
 	private List<Restaurant> restaurants = Collections.synchronizedList(new ArrayList<Restaurant>());
 	private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	private List<MarketStructure> markets = Collections.synchronizedList(new ArrayList<MarketStructure>());
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
+	
+	// SimCity201 Time Stuff
+	public void startTime() {
+		cityTimer.setRepeats(true);
+		cityTimer.start();
+		System.out.println("SimCity201 Time: " + time);
+	}
+	
+	public void setTimerOut(int newTimerOut) {
+		cityTimer.setDelay(newTimerOut);
+		cityTimer.setInitialDelay(newTimerOut);
+		cityTimer.restart();
+	}
+	
+	public CityTime getTime() {
+		return time;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		time = time.add(15);
+		System.out.println("SimCity201 Time: " + time);
+		
+		synchronized(people) {
+			for (PersonAgent p : people) {
+				p.msgUpdateTime(time);
+			}
+		}
+		
+		synchronized(restaurants) {
+			for (Restaurant r : restaurants) {
+				r.updateTime(time);
+			}
+		}
+		
+		synchronized(banks) {
+			for (Bank b : banks) {
+				b.updateTime(time);
+			}
+		}
+		
+		synchronized(markets) {
+			for (MarketStructure m : markets) {
+				m.updateTime(time);
+			}
+		}
+		
+		synchronized(residences) {
+			for (Residence r : residences) {
+				r.updateTime(time);
+			}
+		}
+	}
 	
 	// People Stuff
 	public void addPerson(PersonAgent newPerson) {
@@ -54,9 +116,11 @@ public class CityDirectory {
 	}
 	
 	public Restaurant getRestaurantWithID(int id) {
-		for (Restaurant r : restaurants) {
-			if (r.getId() == id) {
-				return r;
+		synchronized(restaurants) {
+			for (Restaurant r : restaurants) {
+				if (r.getId() == id) {
+					return r;
+				}
 			}
 		}
 		
@@ -73,9 +137,11 @@ public class CityDirectory {
 	}
 	
 	public Bank getBankWithID(int id) {
-		for (Bank r : banks) {
-			if (r.getId() == id) {
-				return r;
+		synchronized(banks) {
+			for (Bank r : banks) {
+				if (r.getId() == id) {
+					return r;
+				}
 			}
 		}
 		
@@ -118,6 +184,5 @@ public class CityDirectory {
 		}
 		
 		return null;
-	}
-	
+	}	
 }

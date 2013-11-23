@@ -16,7 +16,7 @@ public class CityTime {
 	 */
 	public CityTime() {
 		this.day = WeekDay.Monday;
-		this.hour = 7;
+		this.hour = 5;
 		this.minute = 0;
 	}
 	
