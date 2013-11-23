@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import cs201.helper.CityDirectory;
@@ -173,11 +172,11 @@ public class PersonAgent extends Agent implements Person {
 			
 			// If you have an hour or more, eat at a Restaurant
 			if (CityTime.timeDifference(workTime, time) >= 60) {
-				this.eatAtRestaurant(false);
+				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), false);
 			}
 			// If you have less than an hour, eat at home
 			else {
-				this.eatAtHome(false);
+				this.addActionToPlanner(Intention.ResidenceEat, home, false);
 			}
 			return true;
 		}
@@ -185,7 +184,7 @@ public class PersonAgent extends Agent implements Person {
 		// If it's time to go to work
 		if (state == PersonState.Awake && time.equalsIgnoreDay(this.workTime)) {
 			this.state = PersonState.AtWork;
-			this.goToWork(true);
+			this.addActionToPlanner(job, workplace, true);
 			return true;
 		}
 		
@@ -243,161 +242,22 @@ public class PersonAgent extends Agent implements Person {
 		planner.remove(a);
 	}
 	
-	private void goToWork(boolean highPriority) {
+	/**
+	 * General-use Action for adding something to this PersonAgent's daily planner
+	 * @param intent What the PersonAgent will do
+	 * @param location Where the PersonAgent should go
+	 * @param highPriority Whether this is high enough priority to be put at the front of the planner
+	 */
+	private void addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
 		Action temp = new Action();
-		temp.location = workplace;
-		temp.intent = job;
+		temp.location = location;
+		temp.intent = intent;
 		if (!highPriority) {
 			planner.add(temp);
 		} else {
 			planner.add(0, temp);
 		}
-		Do("Added going to work (" + workplace + ") to Planner");
-	}
-	
-	private void sleepAtHome(boolean highPriority) {
-		Action temp = new Action();
-		temp.location = home;
-		temp.intent = Intention.ResidenceSleep;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added going home (" + getHome() + ") to sleep to Planner");
-	}
-	
-	private void eatAtHome(boolean highPriority) {
-		Action temp = new Action();
-		temp.location = home;
-		temp.intent = Intention.ResidenceEat;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added eating at home (" + getHome() + ") to Planner");
-	}
-	
-	
-	private void withdrawMoneyAsCustomer(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankWithdrawMoneyCustomer;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added withdrawing money as customer at " + temp.location + " to Planner");
-	}
-	
-	private void depositMoneyAsCustomer(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankDepositMoneyCustomer;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added depositing money as customer at " + temp.location + " to Planner");
-	}
-	
-	private void getLoan(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankTakeOutLoan;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added taking out a laon at " + temp.location + " to Planner");
-	}
-	
-	private void withdrawMoneyAsBusiness(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankWithdrawMoneyBusiness;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added withdrawing money as business at " + temp.location + " to Planner");
-	}
-	
-	private void depositMoneyAsBusiness(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankDepositMoneyBusiness;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added depositing money as business at " + temp.location + " to Planner");
-	}
-	
-	private void goToMarketForGoods(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random market
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getMarkets().size());
-		temp.location = CityDirectory.getInstance().getMarkets().get(num);
-		temp.intent = Intention.MarketConsumerGoods;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added a market run for goods at " + temp.location + " to Planner");
-	}
-	
-	private void goToMarketForCar(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random market
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getMarkets().size());
-		temp.location = CityDirectory.getInstance().getMarkets().get(num);
-		temp.intent = Intention.MarketConsumerCar;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added a market run for a new car at " + temp.location + " to Planner");
-	}
-	
-	private void eatAtRestaurant(boolean highPriority) {
-		Action temp = new Action();
-		// Pick a random restaurant to eat at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getRestaurants().size());
-		temp.location = CityDirectory.getInstance().getRestaurants().get(num);
-		temp.intent = Intention.RestaurantCustomer;
-		if (!highPriority) {
-			planner.add(temp);
-		} else {
-			planner.add(0, temp);
-		}
-		Do("Added eating at " + temp.location + " to Planner");
+		Do("Added " + temp.intent + " at " + temp.location + "to planner.");
 	}
 	
 	
@@ -421,16 +281,16 @@ public class PersonAgent extends Agent implements Person {
 		
 		// Create a new action with high priority and put it at front of planner
 		switch (intent) {
-		case ResidenceSleep: this.sleepAtHome(true); break;
-		case ResidenceEat: this.eatAtHome(true); break;
-		case BankWithdrawMoneyCustomer: this.withdrawMoneyAsCustomer(true); break;
-		case BankDepositMoneyCustomer: this.depositMoneyAsCustomer(true); break;
-		case BankTakeOutLoan: this.getLoan(true); break;
-		case BankWithdrawMoneyBusiness: this.withdrawMoneyAsBusiness(true); break;
-		case BankDepositMoneyBusiness: this.depositMoneyAsBusiness(true); break;
-		case MarketConsumerGoods: this.goToMarketForGoods(true); break;
-		case MarketConsumerCar: this.goToMarketForCar(true); break;
-		case RestaurantCustomer: this.eatAtRestaurant(true); break;
+		case ResidenceSleep: this.addActionToPlanner(intent, home, true); break;
+		case ResidenceEat: this.addActionToPlanner(intent, home, true); break;
+		case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+		case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+		case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+		case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+		case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+		case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
+		case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
+		case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
 		default: {
 			Do("addIntermediateAction(Intention, boolean):: Provided bad Intention");
 			return;
