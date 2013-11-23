@@ -136,9 +136,9 @@ public class PersonAgent extends Agent implements Person {
 				if (r.getActive()) {
 					actionPerformed = r.pickAndExecuteAnAction() || actionPerformed;
 				}
-				if (actionPerformed) {
-					return true;
-				}
+			}
+			if (actionPerformed) {
+				return true;
 			}
 		}
 		
@@ -242,7 +242,7 @@ public class PersonAgent extends Agent implements Person {
 	
 	private void sleepAtHome(boolean highPriority) {
 		Action temp = new Action();
-		temp.location = getHome();
+		temp.location = home;
 		temp.intent = Intention.ResidenceSleep;
 		if (!highPriority) {
 			planner.add(temp);
@@ -254,7 +254,7 @@ public class PersonAgent extends Agent implements Person {
 	
 	private void eatAtHome(boolean highPriority) {
 		Action temp = new Action();
-		temp.location = getHome();
+		temp.location = home;
 		temp.intent = Intention.ResidenceEat;
 		if (!highPriority) {
 			planner.add(temp);
