@@ -3,6 +3,7 @@ package cs201.structures.restaurant;
 import java.util.ArrayList;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.helper.CityTime;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
@@ -68,6 +69,12 @@ public class RestaurantMatt extends Restaurant {
 			return null;
 		}
 		}
+	}
+
+	@Override
+	public void updateTime(CityTime time) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

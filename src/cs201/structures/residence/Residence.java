@@ -4,7 +4,7 @@ import java.util.List;
 
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
-import cs201.interfaces.roles.housing.Landlord;
+import cs201.helper.CityTime;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
 import cs201.structures.Structure;
@@ -117,5 +117,11 @@ public class Residence extends Structure {
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void updateTime(CityTime time) {
+		// TODO Auto-generated method stub
+		
 	}
 }

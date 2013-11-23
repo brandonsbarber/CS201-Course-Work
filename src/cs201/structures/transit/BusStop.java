@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.helper.CityTime;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.roles.Role;
@@ -56,5 +57,11 @@ public class BusStop extends Structure
 			addRequests.clear();
 			parkedBus = null;
 		}
+	}
+
+	@Override
+	public void updateTime(CityTime time) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -50,6 +50,12 @@ public abstract class Structure extends Rectangle2D.Double {
 	public abstract Role getRole(PersonAgent.Intention role);
 	
 	/**
+	 * Updates the time at this Structure. Used to tell people working there that it's time to close up and go home
+	 * @param time The new CityTime
+	 */
+	public abstract void updateTime(CityTime time);
+	
+	/**
 	 * When this Structure is clicked in the GUI, this Structure's panel will be shown in the card layout of the main program
 	 */
 	public void displayStructure() {
@@ -137,7 +143,7 @@ public abstract class Structure extends Rectangle2D.Double {
 		StringBuffer output = new StringBuffer();
 		output.append(this.getClass().getSimpleName());
 		output.append(" ");
-		output.append(id);
+		output.append(this.id);
 		
 		return output.toString();
 	}

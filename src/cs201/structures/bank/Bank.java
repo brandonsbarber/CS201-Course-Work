@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.helper.CityTime;
 import cs201.roles.Role;
 import cs201.roles.bankRoles.BankGuardRole;
 import cs201.roles.bankRoles.BankTellerRole;
@@ -77,6 +78,12 @@ public class Bank extends Structure {
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void updateTime(CityTime time) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

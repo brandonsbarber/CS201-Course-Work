@@ -35,9 +35,6 @@ public abstract class Restaurant extends Structure {
 		this.bankAccountNumber = -1;
 		this.isOpen = false;
 	}
-
-	@Override
-	public abstract Role getRole(Intention role);
 	
 	/**
 	 * Returns this Restaurant's Cashier if someone is currently acting as a Cashier, null otherwise
