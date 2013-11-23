@@ -56,7 +56,7 @@ public class PersonAgent extends Agent implements Person {
 	
 	
 	/**************************************************************************
-	 *                            Constructor/Setup                           *
+	 *                           Constructors/Setup                           *
 	 **************************************************************************/
 	public PersonAgent(String name) {
 		super();
@@ -99,6 +99,9 @@ public class PersonAgent extends Agent implements Person {
 	}
 	
 	
+	/**************************************************************************
+	 *                                Messages                                *
+	 **************************************************************************/
 	@Override
 	public void msgUpdateTime(CityTime newTime) {
 		int minutesPassed = (newTime.hour - time.hour) * 60 + (newTime.minute - time.minute);
@@ -154,7 +157,21 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If it's time to wake up in the morning
 		if (time.equalsIgnoreDay(this.wakeupTime)) {
-			
+			// If you have an hour or more, eat at a Restaurant
+			if (CityTime.timeDifference(time, workTime) >= 60) {
+				this.eatAtRestaurant(false);
+			}
+			// If you have less than an hour, eat at home
+			else {
+				this.eatAtHome(false);
+			}
+			return true;
+		}
+		
+		// If it's time to go to work
+		if (time.equalsIgnoreDay(this.workTime)) {
+			this.goToWork(true);
+			return true;
 		}
 		
 		
@@ -364,8 +381,10 @@ public class PersonAgent extends Agent implements Person {
 	
 	@Override
 	public void addIntermediateAction(Role from, Intention intent, boolean returnToCurrentAction) {		
+		// Deactivate sending Role
 		from.setActive(false);
 		
+		// Create a new action with high priority and put it at front of planner
 		switch (intent) {
 		case ResidenceSleep: this.sleepAtHome(true); break;
 		case ResidenceEat: this.eatAtHome(true); break;
@@ -382,6 +401,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		}
 		
+		// If Role requests that the PersonAgent return after, add that action back at position 1
 		if (returnToCurrentAction) {
 			planner.add(1, currentAction);
 		}
