@@ -16,7 +16,7 @@ public class CityTime {
 	 */
 	public CityTime() {
 		this.day = WeekDay.Monday;
-		this.hour = 5;
+		this.hour = 6;
 		this.minute = 0;
 	}
 	
@@ -113,11 +113,11 @@ public class CityTime {
 	 * Finds the difference in minutes between two CityTime objects (not counting the Day)
 	 * @param a CityTime 1
 	 * @param b CityTime 2
-	 * @return int representing the difference in minutes between the two times
+	 * @return int representing the difference in minutes between the two times. Positive if a is larger, negative is b is larger
 	 */
 	public static int timeDifference(CityTime a, CityTime b) {
-		int difference = Math.abs((a.hour - b.hour) * 60);
-		difference += Math.abs(a.minute - b.minute);
+		int difference = (a.hour - b.hour) * 60;
+		difference += a.minute - b.minute;
 		
 		return difference;
 	}

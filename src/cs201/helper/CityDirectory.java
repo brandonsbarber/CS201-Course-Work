@@ -34,7 +34,7 @@ public class CityDirectory implements ActionListener {
 		return INSTANCE;
 	}
 	
-	private final int INITIALTIMEROUT = 10; // 1.875 real life seconds
+	private final int INITIALTIMEROUT = 1875; // 1.875 real life seconds
 	private final int TIMESTEP = 15; // 15 SimCity201 minutes
 	private Timer cityTimer = new Timer(INITIALTIMEROUT, this);
 	private CityTime time = new CityTime();
@@ -48,7 +48,7 @@ public class CityDirectory implements ActionListener {
 	public void startTime() {
 		cityTimer.setRepeats(true);
 		cityTimer.start();
-		System.out.println("SimCity201 Time: " + time);
+		System.out.println("[SimCity201] Time: " + time);
 	}
 	
 	public void setTimerOut(int newTimerOut) {
@@ -63,8 +63,8 @@ public class CityDirectory implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		time.increment(15);
-		System.out.println("SimCity201 Time: " + time);
+		time.increment(TIMESTEP);
+		System.out.println("[SimCity201] Time: " + time);
 		
 		synchronized(people) {
 			for (PersonAgent p : people) {

@@ -8,8 +8,11 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import cs201.agents.PersonAgent;
+import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.restaurant.RestaurantGuiMatt;
 import cs201.helper.CityDirectory;
+import cs201.helper.CityTime;
 import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
@@ -42,17 +45,23 @@ public class SimCity201 extends JFrame {
 		RestaurantGuiMatt g = new RestaurantGuiMatt(r, 0, this);
 		r.setStructurePanel(g);
 		buildingPanels.add(g, "" + 0);
+		CityDirectory.getInstance().addRestaurant(r);
 		cityPanel.addStructure(r);
 		
 		RestaurantMatt r2 = new RestaurantMatt(40, 100, 40, 40, 1);
 		RestaurantGuiMatt g2 = new RestaurantGuiMatt(r, 1, this);
 		r2.setStructurePanel(g2);
 		buildingPanels.add(g2, "" + 1);
+		CityDirectory.getInstance().addRestaurant(r2);
 		cityPanel.addStructure(r2);
 		
 		add(BorderLayout.NORTH, cityPanel);
 		add(BorderLayout.SOUTH, buildingPanels);
 		
+		PersonAgent p = new PersonAgent("Matt");
+		p.setupPerson(CityDirectory.getInstance().getTime(), null, null, Intention.None, null, null);
+		p.startThread();
+		CityDirectory.getInstance().addPerson(p);
 		CityDirectory.getInstance().startTime();
 	}
 	

@@ -41,6 +41,12 @@ public interface Person {
 	public abstract void removeRole(Role toRemove);
 	
 	/**
+	 * Tells the PersonAgent that he is no longer working. Should be called by a work-related Role right before it
+	 * deactivates itself
+	 */
+	public void goOffWork();
+	
+	/**
 	 * Roles can tell the PersonAgent that he/she should immediately go do another action.
 	 * For example: A ResidentRole might need to go to the bank before paying rent, so it would
 	 * 				call this method with Intention.BankWithdrawMoneyCustomer and true as the

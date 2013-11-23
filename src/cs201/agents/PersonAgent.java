@@ -37,6 +37,7 @@ public class PersonAgent extends Agent implements Person {
 	 *                                 Data                                   *
 	 **************************************************************************/
 	private String name;
+	private PersonState state;
 	private Semaphore animation;
 	private List<Role> roles;
 	private PassengerRole passengerRole;
@@ -62,6 +63,7 @@ public class PersonAgent extends Agent implements Person {
 		super();
 		
 		this.name = name;
+		this.state = PersonState.Sleeping;
 		this.animation = new Semaphore(0);
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
 		this.passengerRole = new PassengerRole(null);
@@ -96,6 +98,10 @@ public class PersonAgent extends Agent implements Person {
 		this.job = job;
 		this.currentLocation = location;
 		this.vehicle = vehicle;
+		
+		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
+			this.state = PersonState.Awake;
+		}
 	}
 	
 	
@@ -144,21 +150,29 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you have an active Action (meaning you decided to perform this action and go to its
 		// location, then actually perform that Action)
-		if (planner.get(0).active) {
-			performAction(planner.get(0));
-			return true;
+		synchronized(planner) {
+			for (Action a : planner) {
+				if (a.active) {
+					performAction(planner.get(0));
+					return true;
+				}
+			}
 		}
 		
 		// If you have an action in your planner, go to its location and make it active)
-		if (planner.size() > 0) {
-			goToLocation(planner.get(0));
-			return true;
+		synchronized(planner) {
+			for (Action a : planner) {
+				goToLocation(a);
+				return true;
+			}
 		}
 		
 		// If it's time to wake up in the morning
-		if (time.equalsIgnoreDay(this.wakeupTime)) {
+		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
+			this.state = PersonState.Awake;
+			
 			// If you have an hour or more, eat at a Restaurant
-			if (CityTime.timeDifference(time, workTime) >= 60) {
+			if (CityTime.timeDifference(workTime, time) >= 60) {
 				this.eatAtRestaurant(false);
 			}
 			// If you have less than an hour, eat at home
@@ -169,7 +183,8 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to work
-		if (time.equalsIgnoreDay(this.workTime)) {
+		if (state == PersonState.Awake && time.equalsIgnoreDay(this.workTime)) {
+			this.state = PersonState.AtWork;
 			this.goToWork(true);
 			return true;
 		}
@@ -295,6 +310,21 @@ public class PersonAgent extends Agent implements Person {
 		Do("Added depositing money as customer at " + temp.location + " to Planner");
 	}
 	
+	private void getLoan(boolean highPriority) {
+		Action temp = new Action();
+		// Pick a random bank to perform the transaction at
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
+		temp.location = CityDirectory.getInstance().getBanks().get(num);
+		temp.intent = Intention.BankTakeOutLoan;
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
+		Do("Added taking out a laon at " + temp.location + " to Planner");
+	}
+	
 	private void withdrawMoneyAsBusiness(boolean highPriority) {
 		Action temp = new Action();
 		// Pick a random bank to perform the transaction at
@@ -380,6 +410,11 @@ public class PersonAgent extends Agent implements Person {
 	}
 	
 	@Override
+	public void goOffWork() {
+		this.state = PersonState.Awake;
+	}
+	
+	@Override
 	public void addIntermediateAction(Role from, Intention intent, boolean returnToCurrentAction) {		
 		// Deactivate sending Role
 		from.setActive(false);
@@ -390,6 +425,7 @@ public class PersonAgent extends Agent implements Person {
 		case ResidenceEat: this.eatAtHome(true); break;
 		case BankWithdrawMoneyCustomer: this.withdrawMoneyAsCustomer(true); break;
 		case BankDepositMoneyCustomer: this.depositMoneyAsCustomer(true); break;
+		case BankTakeOutLoan: this.getLoan(true); break;
 		case BankWithdrawMoneyBusiness: this.withdrawMoneyAsBusiness(true); break;
 		case BankDepositMoneyBusiness: this.depositMoneyAsBusiness(true); break;
 		case MarketConsumerGoods: this.goToMarketForGoods(true); break;
@@ -657,6 +693,7 @@ public class PersonAgent extends Agent implements Person {
 		BankGuard,
 		BankWithdrawMoneyCustomer,
 		BankDepositMoneyCustomer,
+		BankTakeOutLoan,
 		BankWithdrawMoneyBusiness,
 		BankDepositMoneyBusiness,
 		MarketManager,
@@ -685,5 +722,11 @@ public class PersonAgent extends Agent implements Person {
 			this.intent = null;
 			this.active = false;
 		}
+	}
+	
+	private enum PersonState {
+		Sleeping,
+		Awake,
+		AtWork
 	}
 }
