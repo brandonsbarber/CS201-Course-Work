@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
+import cs201.interfaces.agents.Person;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.roles.transit.PassengerRole;
@@ -19,7 +20,7 @@ import cs201.structures.Structure;
  * @author Matt Pohlmann
  *
  */
-public class PersonAgent extends Agent {
+public class PersonAgent extends Agent implements Person {
 	/**************************************************************************
 	 *                              Constants                                 *
 	 **************************************************************************/
@@ -28,6 +29,8 @@ public class PersonAgent extends Agent {
 	private final int INITIALMONEY = 30;
 	private final int INITIALWAKEUPHOUR = 7;
 	private final int INITIALWAKEUPMINUTE = 0;
+	private final int INITIALWORKHOUR = 8;
+	private final int INITIALWORKMINUTE = 0;
 	
 	
 	/**************************************************************************
@@ -47,6 +50,7 @@ public class PersonAgent extends Agent {
 	private Structure home;
 	private Structure workplace;
 	private Intention job;
+	private CityTime workTime;
 	private Structure currentLocation;
 	private int bankAccountNumber;
 	
@@ -72,20 +76,16 @@ public class PersonAgent extends Agent {
 		this.home = null;
 		this.workplace = null;
 		this.job = Intention.None;
+		this.workTime = new CityTime(INITIALWORKHOUR, INITIALWORKMINUTE);
 		this.currentLocation = null;
 		this.bankAccountNumber = -1;
 	}
 	
-	/**
-	 * Sets up a PersonAgent with the correct information given.
-	 * MUST BE CALLED BEFORE STARTING A PERSON'S THREAD OR STRANGE BEHAVIOR WILL OCCUR
-	 * @param curTime The current time in SimCity201
-	 * @param home This PersonAgent's home
-	 * @param workplace This PersonAgent's workplace (can be null if the PersonAgent doesn't work)
-	 * @param job This PersonAgent's job (can be none if this PersonAgent doesn't work)
-	 * @param location This PersonAgent's starting location (probably his home)
-	 * @param vehicle This PersonAgent's vehicle (can be null if he/she doesn't have a vehicle initially)
-	 */
+	public PersonAgent() {
+		Do("WARNING: A PersonAgent should never be created with the default constructor. Use PersonAgent(String) instead.");
+	}
+	
+	@Override
 	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
 		this.time.hour = curTime.hour;
@@ -99,13 +99,7 @@ public class PersonAgent extends Agent {
 	}
 	
 	
-	/**************************************************************************
-	 *                                Messages                                *
-	 **************************************************************************/
-	/**
-	 * Updates the time so this Person can make appropriate time-based decisions
-	 * @param newTime The new time in SimCity201
-	 */
+	@Override
 	public void msgUpdateTime(CityTime newTime) {
 		int minutesPassed = (newTime.hour - time.hour) * 60 + (newTime.minute - time.minute);
 		hungerLevel += HUNGERPERMINUTE * minutesPassed;
@@ -146,7 +140,7 @@ public class PersonAgent extends Agent {
 		}
 		
 		// If you have an active Action (meaning you decided to perform this action and go to its
-		// location then actually perform that Action)
+		// location, then actually perform that Action)
 		if (planner.get(0).active) {
 			performAction(planner.get(0));
 			return true;
@@ -179,6 +173,7 @@ public class PersonAgent extends Agent {
 		a.active = true;
 		if (currentLocation != a.location) {
 			passengerRole.msgGoTo(a.location);
+			currentLocation = null;
 			passengerRole.setActive(true);
 			Do("Going to " + a.location);
 		}
@@ -358,28 +353,16 @@ public class PersonAgent extends Agent {
 		Do("Added eating at " + temp.location + " to Planner");
 	}
 	
+	
 	/**************************************************************************
-	 *                                Utility                                 *
-	 **************************************************************************/	
-	/**
-	 * Any work-related Role must be removed from a person who is leaving work so it can be assigned to someone else
-	 * @param toRemove The Role being removed from this PersonAgent
-	 */
+	 *                              Role Related                              *
+	 **************************************************************************/
+	@Override
 	public void removeRole(Role toRemove) {
 		roles.remove(toRemove);
 	}
 	
-	/**
-	 * Roles can tell the PersonAgent that he/she should immediately go do another action.
-	 * For example: A ResidentRole might need to go to the bank before paying rent, so it would
-	 * 				call this method with Intention.BankWithdrawMoneyCustomer and true as the
-	 * 				parameters. The ResidentRole is deactivated, the PersonAgent gets a new Action
-	 * 				with highest priority and immediately goes to the bank, returning to his 
-	 *  			ResidentRole after getting money from the bank.
-	 * @param from The Role calling this method
-	 * @param intent What the Role would like this PersonAgent to go do
-	 * @param returnToCurrentAction Whether the PersonAgent should return to the previous Role after completing the new Action
-	 */
+	@Override
 	public void addIntermediateAction(Role from, Intention intent, boolean returnToCurrentAction) {		
 		from.setActive(false);
 		
@@ -404,6 +387,33 @@ public class PersonAgent extends Agent {
 		}
 	}
 	
+	@Override
+	public void addMoney(double amount) {
+		this.moneyOnHand += amount;
+	}
+	
+	@Override
+	public void removeMoney(double amount) {
+		this.moneyOnHand -= amount;
+	}
+	
+	@Override
+	public void doneMoving(Structure newLocation) {
+		currentLocation = newLocation;
+	}
+	
+	
+	/**************************************************************************
+	 *                             Getters/Setters                            *
+	 **************************************************************************/
+	/**
+	 * Gets what this PersonAgent is currently doing
+	 * @return An Action (contains an Intention intent and Structure location)
+	 */
+	public Action getCurrentAction() {
+		return this.currentAction;
+	}
+	
 	/**
 	 * Sets how much money this person has. Could be used by GUI to force this person to go to the Bank
 	 * @param newMoney The quantity of money this person has
@@ -421,22 +431,6 @@ public class PersonAgent extends Agent {
 	}
 	
 	/**
-	 * Adds money to this PersonAgent's money on hand
-	 * @param amount How much money to add
-	 */
-	public void addMoney(double amount) {
-		this.moneyOnHand += amount;
-	}
-	
-	/**
-	 * Removes money from this PersonAgent's money on hand
-	 * @param amount How much money to remove
-	 */
-	public void removeMoney(double amount) {
-		this.moneyOnHand -= amount;
-	}
-	
-	/**
 	 * Sets this PersonAgent's hunger level to level. Possibly used by GUI to force a PersonAgent to go eat
 	 * @param level The new hunger level. What constitutes 'hungry' TBD later
 	 */
@@ -450,6 +444,14 @@ public class PersonAgent extends Agent {
 	 */
 	public int getHungerLevel() {
 		return this.hungerLevel;
+	}
+	
+	/**
+	 * Sets this PersonAgent's workplace to workplace
+	 * @param workplace Structure representing where this PersonAgent works
+	 */
+	public void setWorkplace(Structure workplace) {
+		this.workplace = workplace;
 	}
 	
 	/**
@@ -510,13 +512,69 @@ public class PersonAgent extends Agent {
 	}
 	
 	/**
-	 * Received from a PassengerRole to update this Person's location in SimCity201
-	 * @param newLocation
+	 * Returns the time at which this PersonAgent goes to work
+	 * @return a CityTime object representing when this PersonAgent starts his/her work shift
 	 */
-	public void doneMoving(Structure newLocation) {
-		currentLocation = newLocation;
+	public CityTime getWorkTime() {
+		return workTime;
 	}
 	
+	/**
+	 * Sets when this PersonAgent goes to work
+	 * @param time The new work time for this PersonAgent
+	 */
+	public void setWorkTime(CityTime time) {
+		this.workTime.hour = time.hour;
+		this.workTime.minute = time.minute;
+	}
+	
+	/**
+	 * Returns where this PersonAgent currently is (null if the PersonAgent is traveling)
+	 * @return a Structure representing where this PersonAgent is
+	 */
+	public Structure getCurrentLocation() {
+		return this.currentLocation;
+	}
+	
+	/**
+	 * Returns this PersonAgent's home
+	 * @return Structure (should be a Residence) where this PersonAgent lives
+	 */
+	public Structure getHome()
+	{
+		return this.home;
+	}
+	
+	/**
+	 * Sets a new home for this PersonAgent
+	 * @param home The new Structure where this PersonAgent lives
+	 */
+	public void setHome(Structure home)
+	{
+		this.home = home;
+	}
+	
+	/**
+	 * Returns this PersonAgent's job in SimCity201
+	 * @return An Intention representing this PersonAgent's job
+	 */
+	public Intention getJob() {
+		return this.job;
+	}
+	
+	/**
+	 * Sets this PersonAgent's job in SimCity201. Note, this function does not check whether the
+	 * job provided is actually a job, and not something like Intention.ResidenceSleep
+	 * @param job The PersonAgent's new job
+	 */
+	public void setJob(Intention job) {
+		this.job = job;
+	}
+	
+	
+	/**************************************************************************
+	 *                                Utility                                 *
+	 **************************************************************************/
 	/**
 	 * Gets the name of this PersonAgent
 	 * @return This PersonAgent's name
@@ -563,16 +621,6 @@ public class PersonAgent extends Agent {
 		output.append(msg);
 		
 		System.out.println(output.toString());
-	}
-	
-	public Structure getHome()
-	{
-		return home;
-	}
-
-	public void setHome(Structure home)
-	{
-		this.home = home;
 	}
 
 	/**
