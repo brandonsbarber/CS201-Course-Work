@@ -437,8 +437,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		this.msgIsHungry();
 	}
 
 	@Override
