@@ -12,7 +12,6 @@ import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.restaurant.RestaurantGuiMatt;
 import cs201.helper.CityDirectory;
-import cs201.helper.CityTime;
 import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
@@ -59,7 +58,7 @@ public class SimCity201 extends JFrame {
 		add(BorderLayout.SOUTH, buildingPanels);
 		
 		PersonAgent p = new PersonAgent("Matt");
-		p.setupPerson(CityDirectory.getInstance().getTime(), null, null, Intention.None, null, null);
+		p.setupPerson(CityDirectory.getInstance().getTime(), null, r2, Intention.RestaurantHost, null, null);
 		p.startThread();
 		CityDirectory.getInstance().addPerson(p);
 		CityDirectory.getInstance().startTime();
