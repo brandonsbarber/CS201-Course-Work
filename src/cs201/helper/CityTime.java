@@ -21,14 +21,26 @@ public class CityTime {
 	}
 	
 	/**
-	 * Creates a time where the day does not matter
+	 * Creates a time where the day does not matter (is actually null)
 	 * @param hour The hour being saved
 	 * @param minute The minute being saved
 	 */
 	public CityTime(int hour, int minute) {
 		this.hour = hour;
 		this.minute = minute;
-		this.day = WeekDay.Monday;
+		this.day = null;
+	}
+	
+	/**
+	 * Creates a CityTime with the given time (times are 24-hour based) so 2:45PM would be 14:45
+	 * @param hour Int
+	 * @param minute Int
+	 * @param day WeekDay
+	 */
+	public CityTime(int hour, int minute, WeekDay day) {
+		this.hour = hour;
+		this.day = day;
+		this.minute = minute;
 	}
 	
 	/**
@@ -41,12 +53,57 @@ public class CityTime {
 	}
 	
 	/**
+	 * Determines equality between this CityTime and a given time
+	 * @param hour The hour to compare to (24-hour based)
+	 * @param minute The minute to compare to
+	 * @return True if CityTime equals the time given (ignores the day)
+	 */
+	public boolean equals(int hour, int minute) {
+		return this.hour == hour && this.minute == minute;
+	}
+	
+	/**
 	 * Determines equality between this CityTime and another CityTime, ignoring what day it is
 	 * @param other The CityTime being compared to this one
 	 * @return True if the two are the same
 	 */
 	public boolean equalsIgnoreDay(CityTime other) {
 		return this.hour == other.hour && this.minute == other.minute;
+	}
+	
+	/**
+	 * Adds minutesToAdd to this CityTime and returns a new CityTime (Does not change this CityTime)
+	 * @param minutesToAdd How many minutes to add (can be negative)
+	 * @return A new CityTime object
+	 */
+	public CityTime add(int minutesToAdd) {
+		int minutes = this.minute + minutesToAdd;
+		int hours = ((this.hour + minutes / 60) % 24 + 24) % 24;
+		if (minutesToAdd < 0) {
+			hours--;
+		}
+		minutes = (minutes % 60 + 60) % 60;
+		
+		return new CityTime(hours, minutes);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer s = new StringBuffer();
+		if (this.day != null) {
+			s.append(this.day);
+			s.append(", ");
+		}
+		if (this.hour == 0 || this.hour == 12) {
+			s.append(12);
+		} else {
+			s.append(this.hour % 12);
+		}
+		s.append(":");
+		s.append(this.minute);
+		s.append(this.hour < 12 ? "AM" : "PM");
+		
+		return s.toString();
 	}
 	
 	/**
