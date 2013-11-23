@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
+import cs201.agents.PersonAgent.Intention;
 import cs201.structures.bank.Bank;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.Residence;
@@ -127,6 +129,12 @@ public class CityDirectory implements ActionListener {
 		return null;
 	}
 	
+	public Restaurant getRandomRestaurant() {
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(restaurants.size());
+		return restaurants.get(num);
+	}
+	
 	// Bank Stuff
 	public void addBank(Bank newBank) {
 		banks.add(newBank);
@@ -148,6 +156,12 @@ public class CityDirectory implements ActionListener {
 		return null;
 	}
 	
+	public Bank getRandomBank() {
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(banks.size());
+		return banks.get(num);
+	}
+	
 	// Market Stuff
 	public void addMarket(MarketStructure newMarket) {
 		markets.add(newMarket);
@@ -165,6 +179,12 @@ public class CityDirectory implements ActionListener {
 		}
 		
 		return null;
+	}
+	
+	public MarketStructure getRandomMarket() {
+		Random randGenerator = new Random();
+		int num = randGenerator.nextInt(markets.size());
+		return markets.get(num);
 	}
 	
 	// Residence Stuff
