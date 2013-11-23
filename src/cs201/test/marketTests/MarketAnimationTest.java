@@ -60,6 +60,10 @@ public class MarketAnimationTest {
 		employeeGui.doGoToItemOnShelf(1, 4);
 		Thread.sleep(10000);
 		employeeGui.doGoToItemOnShelf(0, 3);
+		Thread.sleep(10000);
+		employeeGui.doGoToManager();
+		Thread.sleep(10000);
+		employeeGui.doGoHome();
 		
 		System.in.read();
 	}

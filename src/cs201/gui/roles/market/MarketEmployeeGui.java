@@ -21,6 +21,8 @@ public class MarketEmployeeGui implements Gui {
 	private enum IsleMovementState {MOVE_OUT_OF_ISLE, MOVE_TO_ISLE, MOVE_TO_SHELF};
 	
 	private int isleDestination = -1;
+	private boolean goingToManager = false;
+	private boolean goingHome = false;
 	
 	public MarketEmployeeGui() {
 		this(null);
@@ -35,6 +37,12 @@ public class MarketEmployeeGui implements Gui {
 
 	public void updatePosition() {
 		
+		if (goingToManager) {
+			if (yPos < (MarketAnimationPanel.FIRST_SHELF_Y + MarketAnimationPanel.SHELF_HEIGHT + EMPLOYEE_SIZE)) {
+				yPos++;
+				return;
+			}
+		}
 		if (isleNumber(xPos) != isleDestination && isleDestination != -1) {
 			if (yPos > MarketAnimationPanel.FIRST_SHELF_Y - EMPLOYEE_SIZE - 10) {
 				yPos--;
@@ -52,6 +60,9 @@ public class MarketEmployeeGui implements Gui {
 		} else if (yPos > yDestination) {
 			yPos--;
 		}
+		else {
+			goingToManager = false;
+		} 
 		
 		return;
 	}
@@ -89,6 +100,19 @@ public class MarketEmployeeGui implements Gui {
 		xDestination = MarketAnimationPanel.FIRST_SHELF_X + MarketAnimationPanel.SHELF_WIDTH + 5 + MarketAnimationPanel.SHELF_SPACING * isleNumber;
 		yDestination = MarketAnimationPanel.FIRST_SHELF_Y + (int)(MarketAnimationPanel.SHELF_HEIGHT * (itemNumber / 10.0));
 		isleDestination = isleNumber;
+	}
+	
+	public void doGoToManager() {
+		xDestination = MarketAnimationPanel.FRONT_DESK_X - EMPLOYEE_SIZE - 15;
+		yDestination = MarketAnimationPanel.FRONT_DESK_Y;
+		isleDestination = -1;
+		goingToManager = true;
+	}
+	
+	public void doGoHome() {
+		xDestination = EMPLOYEE_HOME_X;
+		yDestination = EMPLOYEE_HOME_Y;
+		
 	}
 	
 	private int isleNumber(int x) {
