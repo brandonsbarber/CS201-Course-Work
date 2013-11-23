@@ -220,6 +220,8 @@ public class PersonAgent extends Agent implements Person {
 		Do("Performing Action: " + a.intent + " at " + a.location);
 		
 		Role newRole = a.location.getRole(a.intent);
+		Do("Received new Role: " + newRole);
+		
 		if (newRole == null) {
 			return;
 		}
@@ -249,6 +251,11 @@ public class PersonAgent extends Agent implements Person {
 	 * @param highPriority Whether this is high enough priority to be put at the front of the planner
 	 */
 	private void addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
+		if (intent == null || location == null) {
+			Do("Call to addActionToPlanner had null argument(s).");
+			return;
+		}
+		
 		Action temp = new Action();
 		temp.location = location;
 		temp.intent = intent;
@@ -257,7 +264,7 @@ public class PersonAgent extends Agent implements Person {
 		} else {
 			planner.add(0, temp);
 		}
-		Do("Added " + temp.intent + " at " + temp.location + "to planner.");
+		Do("Added action " + temp.intent + " at " + temp.location + " to planner.");
 	}
 	
 	
@@ -530,8 +537,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
+		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append(" ");
+		output.append("] ");
 		output.append(this.name);
 		output.append(": ");
 		output.append(msg);
