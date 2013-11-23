@@ -108,8 +108,9 @@ public abstract class Role {
 	 */
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
+		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append(" ");
+		output.append("] ");
 		output.append(this.myPerson.getName());
 		output.append(": ");
 		output.append(msg);

@@ -126,8 +126,9 @@ public abstract class Structure extends Rectangle2D.Double {
 	 */
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
+		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append(" ");
+		output.append("] ");
 		output.append(this.id);
 		output.append(": ");
 		output.append(msg);
