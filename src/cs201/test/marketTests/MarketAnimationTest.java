@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.junit.Before;
 import org.junit.Test;
 
+import cs201.gui.astar.Position;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
@@ -48,22 +49,12 @@ public class MarketAnimationTest {
 		animationPanel.addGui(managerGui);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui = new MarketEmployeeGui();
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui(animationPanel);
 		animationPanel.addGui(employeeGui);
-		MarketEmployeeGui employeeGui2 = new MarketEmployeeGui();
-		animationPanel.addGui(employeeGui2);
 		
-		employeeGui.doGoToItemOnShelf(2, 7);
+		employeeGui.guiMoveFromCurrentPostionTo(new Position(8, 7));
 		Thread.sleep(5000);
-		employeeGui2.doGoToItemOnShelf(0, 4);
-		Thread.sleep(5000);
-		employeeGui.doGoToItemOnShelf(1, 4);
-		Thread.sleep(10000);
-		employeeGui.doGoToItemOnShelf(0, 3);
-		Thread.sleep(10000);
-		employeeGui.doGoToManager();
-		Thread.sleep(10000);
-		employeeGui.doGoHome();
+		employeeGui.guiMoveFromCurrentPostionTo(new Position(10, 10));
 		
 		System.in.read();
 	}

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -37,10 +38,52 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
 
     private List<Gui> guis = new ArrayList<Gui>();
     
+    /*
+     * ********** A* IMPLEMENTATION **********
+     */
+    
+    // Set up our grid
+    static int gridWidth = 20;
+    static int gridHeight = 20;
+    final int gridPixelWidth = DEFAULT_WINDOW_WIDTH / gridWidth;
+    final int gridPixelHeight = DEFAULT_WINDOW_HEIGHT / gridHeight;
+    
+    // Set up our grid of semaphores
+    Semaphore[][] grid = new Semaphore[gridWidth + 1][gridHeight + 1]; 
+    
+    public Semaphore[][] getAStarGrid() {
+    	return grid;
+    }
+  	
+    /*
+     * ********** CONSTRUCTORS **********
+     */
+    
     public MarketAnimationPanel(int width, int height) {
+    	// Set the properties of the JPanel
     	setSize(width, height);
         setVisible(true);
         
+        // Initialize the semaphore grid
+      	for (int i = 0; i < gridWidth + 1; i++) {
+      	    for (int j = 0; j < gridHeight + 1; j++) {
+      	    	grid[i][j]=new Semaphore(1,true);
+      	    }
+      	}
+      	
+      	// Make the 0-th row and column unavailable
+      	try {
+      		for (int i = 0; i < gridHeight + 1; i++) grid[0][0+i].acquire();
+      		for (int i = 1; i < gridWidth + 1; i++) grid[0+i][0].acquire();
+      	} catch (Exception e) {
+      		System.out.println("Unexcepted error occured in MarketAnimationPanel constructor: " + e);
+      	}
+      	
+      	// Make the 1st shelf unavailable
+      	acquireRectangleGrid(5, 4, 5, 8);
+      	acquireRectangleGrid(7, 4, 7, 9);
+        
+      	// Create a timer to control the animation
         timer = new Timer(ANIMATION_LENGTH, this );
     	timer.start();
     }
@@ -66,10 +109,15 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
         g2.fillRect(FRONT_DESK_X, FRONT_DESK_Y, FRONT_DESK_WIDTH, FRONT_DESK_HEIGHT);
         
         // Draw the shelves
+        /*
         g2.setColor(Color.blue);
         for (int i = 0; i < SHELF_COUNT; i ++) {
         	g2.fillRect(FIRST_SHELF_X + i * SHELF_SPACING, FIRST_SHELF_Y, SHELF_WIDTH, SHELF_HEIGHT);
         }
+        */
+        g2.setColor(Color.blue);
+        drawRectangleGrid(5, 4, 5, 8, g2);
+        drawRectangleGrid(7, 4, 7, 9, g2);
     	
         // Tell each gui to update
         for(Gui gui : guis) {
@@ -84,6 +132,28 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
                 gui.draw(g2);
             }
         }
+    }
+    
+    private void drawRectangleGrid(int leftX, int topY, int rightX, int bottomY, Graphics2D context) {
+    	for (int x = leftX - 1; x <= rightX - 1; x++) {
+    		for (int y = topY - 1; y <= bottomY - 1; y++) {
+    			context.fillRect(gridPixelWidth * x, gridPixelHeight * y, gridPixelWidth, gridPixelHeight);
+    		}
+    	}
+    }
+    
+    private void acquireRectangleGrid(int left, int top, int right, int bottom) {
+    	for (int x = left; x <= right; x++) {
+    		for (int y = top; y <= bottom; y++) {
+    			System.out.println("Acquiring (" + x + "," + y +")");
+    			try {
+					grid[x][y].acquire();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	}
     }
 
     public void addGui(Gui gui) {
