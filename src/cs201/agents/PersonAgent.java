@@ -28,6 +28,8 @@ public class PersonAgent extends Agent implements Person {
 	private final int INITIALMONEY = 30;
 	private final int INITIALWAKEUPHOUR = 7;
 	private final int INITIALWAKEUPMINUTE = 0;
+	private final int INITIALSLEEPHOUR = 7;
+	private final int INITIALSLEEPMINUTE = 0;
 	private final int INITIALWORKHOUR = 8;
 	private final int INITIALWORKMINUTE = 0;
 	
@@ -44,6 +46,7 @@ public class PersonAgent extends Agent implements Person {
 	private Action currentAction;
 	private CityTime time;
 	private CityTime wakeupTime;
+	private CityTime sleepTime;
 	private double moneyOnHand;
 	private int hungerLevel;
 	private Vehicle vehicle;
@@ -71,6 +74,7 @@ public class PersonAgent extends Agent implements Person {
 		this.currentAction = null;
 		this.time = new CityTime();
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
+		this.sleepTime = new CityTime(INITIALSLEEPHOUR, INITIALSLEEPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
 		this.hungerLevel = INITIALHUNGER;
 		this.vehicle = null;
@@ -124,9 +128,7 @@ public class PersonAgent extends Agent implements Person {
 	 *                               Scheduler                                *
 	 **************************************************************************/
 	@Override
-	protected boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
-		
+	protected boolean pickAndExecuteAnAction() {		
 		// If you're going somewhere, that has highest priority
 		if (passengerRole.getActive()) {
 			passengerRole.pickAndExecuteAnAction();
@@ -152,7 +154,7 @@ public class PersonAgent extends Agent implements Person {
 		synchronized(planner) {
 			for (Action a : planner) {
 				if (a.active) {
-					performAction(planner.get(0));
+					performAction(a);
 					return true;
 				}
 			}
@@ -188,7 +190,14 @@ public class PersonAgent extends Agent implements Person {
 			return true;
 		}
 		
+		// If it's time to go to sleep
+		if (state == PersonState.Awake && time.equalsIgnoreDay(this.sleepTime)) {
+			this.planner.clear();
+			this.addActionToPlanner(Intention.ResidenceSleep, home, false);
+			return true;
+		}
 		
+		// If nothing to do
 		return false;
 	}
 	
@@ -220,8 +229,6 @@ public class PersonAgent extends Agent implements Person {
 		Do("Performing Action: " + a.intent + " at " + a.location);
 		
 		Role newRole = a.location.getRole(a.intent);
-		Do("Received new Role: " + newRole);
-		
 		if (newRole == null) {
 			return;
 		}
@@ -229,16 +236,18 @@ public class PersonAgent extends Agent implements Person {
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
-				r.startInteraction(a.intent);
-				r.setActive(true);
+				Do("Reusing Role: " + newRole);
+				//r.startInteraction(a.intent);
+				//r.setActive(true);
 				return;
 			}
 		}
 		
 		roles.add(newRole);
 		newRole.setPerson(this);
-		newRole.startInteraction(a.intent);
-		newRole.setActive(true);
+		Do("Received new Role: " + newRole);
+		//newRole.startInteraction(a.intent);
+		//newRole.setActive(true);
 		
 		currentAction = a;
 		planner.remove(a);
@@ -432,6 +441,23 @@ public class PersonAgent extends Agent implements Person {
 	public void setWakeupTime(CityTime time) {
 		this.wakeupTime.hour = time.hour;
 		this.wakeupTime.minute = time.minute;
+	}
+	
+	/**
+	 * Returns the time at which this PersonAgent sleeps every night
+	 * @return a CityTime object representing this person's bedtime
+	 */
+	public CityTime getSleepTime() {
+		return sleepTime;
+	}
+	
+	/**
+	 * Sets this PersonAgent's bedtime
+	 * @param time The new bedtime for this PersonAgent
+	 */
+	public void setSleepTime(CityTime time) {
+		this.sleepTime.hour = time.hour;
+		this.sleepTime.minute = time.minute;
 	}
 	
 	/**
