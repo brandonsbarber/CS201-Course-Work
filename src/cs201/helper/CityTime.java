@@ -87,6 +87,19 @@ public class CityTime {
 		return new CityTime(hours, minutes);
 	}
 	
+	/**
+	 * Finds the difference in minutes between two CityTime objects (not counting the Day)
+	 * @param a CityTime 1
+	 * @param b CityTime 2
+	 * @return int representing the difference in minutes between the two times
+	 */
+	public static int timeDifference(CityTime a, CityTime b) {
+		int difference = Math.abs((a.hour - b.hour) * 60);
+		difference += Math.abs(a.minute - b.minute);
+		
+		return difference;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer s = new StringBuffer();
