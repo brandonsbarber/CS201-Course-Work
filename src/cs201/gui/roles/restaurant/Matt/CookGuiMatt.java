@@ -14,8 +14,6 @@ public class CookGuiMatt implements Gui {
 
 	private RestaurantCookRoleMatt role;
 	private boolean isPresent;
-
-	RestaurantGuiMatt gui;
 	
 	private List<String> cooking;
 	private List<String> plating;
@@ -25,10 +23,9 @@ public class CookGuiMatt implements Gui {
 	private final int platingAreaX = 100;
 	private final int platingAreaY = 425;
 
-	public CookGuiMatt(RestaurantCookRoleMatt c, RestaurantGuiMatt r) {
+	public CookGuiMatt(RestaurantCookRoleMatt c) {
 		role = c;
 		isPresent = true;
-		this.gui = r;
 		cooking = Collections.synchronizedList(new ArrayList<String>());
 		plating = Collections.synchronizedList(new ArrayList<String>());
 	}

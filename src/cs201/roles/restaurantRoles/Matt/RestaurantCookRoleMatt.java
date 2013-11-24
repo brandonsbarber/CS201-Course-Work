@@ -8,9 +8,11 @@ import javax.swing.Timer;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
+import cs201.helper.CityDirectory;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.structures.market.MarketStructure;
 
 /**
  * Restaurant Cook Agent
@@ -20,7 +22,6 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private List<Order> orders;
 	private Map<String, Food> foods;
 	private enum OrderState { pending, cooking, done, pickup };
-	//private List<MarketAgent> markets;
 	private final int FOODTHRESHOLD = 2;
 	private final int MAXSTOCK = 5;
 	private final int INITIALSTOCK = 3;
@@ -29,7 +30,6 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		super();
 
 		orders = Collections.synchronizedList(new ArrayList<Order>());
-		//markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
 		foods = Collections.synchronizedMap(new Hashtable<String, Food>());
 		
 		foods.put("Steak", new Food("Steak", 3500, INITIALSTOCK)); 
@@ -52,12 +52,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 	
 	@Override
-	public void msgFulfillSupplyOrder(String type, int amount) {
+	public void msgFulfillSupplyOrder(String type, int amount, MarketStructure from) {
 		Food temp = foods.get(type);
 		temp.quantity += amount;
 		temp.orderPending = false;
 		if (temp.amountOrdered > amount || amount == 0) {
-			temp.nextMarket++;
+			temp.marketsTried.add(from);
 		}
 		stateChanged();
 	}
@@ -75,15 +75,15 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		// If there is something to do'
 		
 		// If food needs to be ordered
-		/*synchronized(foods) {
+		synchronized(foods) {
 			for (String f : foods.keySet()) {
 				Food temp = foods.get(f);
-				if (!temp.orderPending && temp.quantity < FOODTHRESHOLD && temp.nextMarket < markets.size()) {
+				if (!temp.orderPending && temp.quantity < FOODTHRESHOLD && temp.marketsTried.size() < CityDirectory.getInstance().getMarkets().size()) {
 					OrderFood(temp);
 					return true;
 				}
 			}
-		}*/
+		}
 		
 		synchronized(orders) {
 			for (Order o : orders) {
@@ -132,10 +132,15 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 	
 	private void OrderFood(Food f) {
-		DoOrderFood(f);
 		f.amountOrdered = MAXSTOCK - f.quantity;
-		//markets.get(f.nextMarket).msgOrderSupplies(f.type, f.amountOrdered);
-		f.orderPending = true;
+		for (MarketStructure m : CityDirectory.getInstance().getMarkets()) {
+			if (!f.marketsTried.contains(m)) {
+				DoOrderFood(f, m);
+				//CityDirectory.getInstance().getRandomMarket().getTeller().msgOrderFood(f.type, f.amountOrdered);
+				f.orderPending = true;
+				break;
+			}
+		}
 	}
 
 	// Utilities -------------------------------------------------------------
@@ -154,8 +159,8 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		gui.addPlatingItem(o.choice);
 	}
 	
-	private void DoOrderFood(Food f) {
-		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from Market " + f.nextMarket + ".");
+	private void DoOrderFood(Food f, MarketStructure m) {
+		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from " + m + ".");
 	}
 	
 	/**
@@ -185,7 +190,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		private String type;
 		private int cookTime;
 		private int quantity;
-		private int nextMarket;
+		private List<MarketStructure> marketsTried;
 		private boolean orderPending;
 		private int amountOrdered;
 		
@@ -193,7 +198,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			this.type = type;
 			this.cookTime = cookTime;
 			this.quantity = initialQuantity;
-			this.nextMarket = 0;
+			this.marketsTried = new ArrayList<MarketStructure>();
 			this.orderPending = false;
 			this.amountOrdered = 0;
 		}
