@@ -19,18 +19,41 @@ public class CityPanel extends JPanel implements MouseListener
 
 	ArrayList<Structure> buildings;
 	
+	public enum DrivingDirection
+	{
+		None,North,South,East,West,Turn;
+		
+		public DrivingDirection turnRight()
+		{
+			if(this == North)
+			{
+				return East;
+			}
+			else if(this == East)
+			{
+				return South;
+			}
+			else if(this == South)
+			{
+				return West;
+			}
+			else if(this == West)
+			{
+				return North;
+			}
+			
+			return this;
+		}
+		
+		public boolean isValid()
+		{
+			return ordinal() > 0;
+		}
+	};
+	
 	private String[][] cityGrid = 
 	{
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
-			{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},
-			{"G","S","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","S","G"},
-			{"G","S","C","S","S","S","S","C","S","S","S","S","C","S","S","S","S","R","S","G"},
-			{"G","S","R","S","G","G","S","R","S","G","G","S","R","S","G","G","S","R","S","G"},
-			{"G","S","R","S","G","G","S","R","S","G","G","S","R","S","G","G","S","R","S","G"},
-			{"G","S","C","S","S","S","S","C","S","S","S","S","C","S","S","S","S","R","S","G"},
-			{"G","S","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","S","G"},
-			{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
+			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 	
 	
@@ -38,8 +61,47 @@ public class CityPanel extends JPanel implements MouseListener
 		buildings = new ArrayList<Structure>();
 		
 		addMouseListener(this);
+		
+		populateDrivingMap();
 	}
 	
+	private void populateDrivingMap()
+	{
+		drivingMap = new DrivingDirection[cityGrid.length][cityGrid[0].length];
+		
+		for(int y = 0; y < cityGrid.length; y++)
+		{
+			for(int x = 0; x < cityGrid[y].length; x++)
+			{
+				DrivingDirection dir = DrivingDirection.None;
+				
+				if(Character.isDigit(cityGrid[y][x].charAt(0)))
+				{
+					int val = Integer.parseInt(cityGrid[y][x]);
+					switch(val)
+					{
+						case 1:dir = DrivingDirection.North;break;
+						case 2:dir = DrivingDirection.East;break;
+						case 3:dir = DrivingDirection.South;break;
+						case 4:dir = DrivingDirection.West;break;
+					}
+				}
+				else
+				{
+					if(cityGrid[y][x].equals("T"))
+					{
+						dir = DrivingDirection.Turn;
+					}
+					else
+					{
+						dir = DrivingDirection.None;
+					}
+				}
+				drivingMap[y][x] = dir;
+			}
+		}
+	}
+
 	public void paintComponent(Graphics g)
 	{	
 		Graphics2D g2 = (Graphics2D) g;
@@ -69,9 +131,18 @@ public class CityPanel extends JPanel implements MouseListener
 					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
 				}
 				
+				if(drivingMap[y][x].isValid())
+				{
+					g2.setColor(Color.BLUE);
+				}
+				
 				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				
+				
 			}
 		}
+		
+		
 		
 		g2.setColor(Color.BLACK);
 		
@@ -122,5 +193,7 @@ public class CityPanel extends JPanel implements MouseListener
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public DrivingDirection[][] drivingMap;
 	
 }
