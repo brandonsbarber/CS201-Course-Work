@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.roles.housingRoles.ResidentRole;
+import cs201.roles.housingRoles.LandlordRole;
 
-public class ResidentGui implements Gui {
+public class LandlordGui implements Gui {
 
-	private ResidentRole role = null;
+	private LandlordRole role = null;
 	private boolean isPresent;
 	
 	private final int WIDTH = 20, HEIGHT = 20;
@@ -17,17 +17,17 @@ public class ResidentGui implements Gui {
 	private int xPos;
 	private int yPos;
 	
-	public ResidentGui() {
+	public LandlordGui() {
 		this(null);
 	}
 	
-	public ResidentGui(ResidentRole newRole) {
+	public LandlordGui(LandlordRole newRole) {
 		xPos = startX;
 		yPos = startY;
 		role = newRole;
 		isPresent = true;
 	}
-	
+
 	@Override
 	public void updatePosition() {
 		// TODO Auto-generated method stub
@@ -36,13 +36,12 @@ public class ResidentGui implements Gui {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.ORANGE);
+		// TODO Auto-generated method stub
+		g.setColor(Color.BLUE);
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("Resident", WIDTH, HEIGHT);
-		// TODO Auto-generated method stub
-
+		g.drawString("Landlord", WIDTH, HEIGHT);
 	}
 
 	@Override
