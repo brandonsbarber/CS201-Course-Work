@@ -43,6 +43,7 @@ public class ResidentRole extends Role implements Resident {
 				}
 				else {
 					//getPerson().goToMarket();
+					Do("I need to get food from the market. I need to implement some way to do that.");
 					return false;
 				}	
 			default: 
@@ -54,6 +55,7 @@ public class ResidentRole extends Role implements Resident {
 	//Actions
 	
 	private void pickAndEatFromFridge() {
+		Do("pickAndEatFromFridge called.");
 		//animation go to fridge
 		state = ResidentState.eating;
 		List<String> fridgeContents = residence.getFridgeContents();
@@ -63,6 +65,7 @@ public class ResidentRole extends Role implements Resident {
 		
 		//timer, gui animation
 		myPerson.setHungerLevel(0); //clear hunger amount
+		Do("finished pickAndEatFromFridge action");
 	}
 	
 	private void goToSleep() {

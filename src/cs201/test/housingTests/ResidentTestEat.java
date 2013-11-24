@@ -5,11 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import cs201.agents.PersonAgent;
 import cs201.roles.housingRoles.ResidentRole;
 import cs201.structures.residence.Residence;
 
 public class ResidentTestEat {
 
+	PersonAgent person;
 	ResidentRole resident;
 	Residence residence;
 	
@@ -18,7 +20,12 @@ public class ResidentTestEat {
 	public void setUp() throws Exception {
 		System.out.println("------Begin Test------ \n");
 		resident = new ResidentRole();
+		
 		residence = new Residence(0, 0, 0, 0, 0);
+		person = new PersonAgent("TestPerson");
+		person.setHome(residence);
+		resident.setResidence(residence);
+		resident.setPerson(person);
 	}
 
 	@Test
@@ -29,9 +36,12 @@ public class ResidentTestEat {
 		
 		residence.addFood("Test Food 1", 1);
 		
-		assertTrue("JK!", residence.hasFood());
+		assertTrue("Residence should now have a food item in the fridge.", residence.hasFood());
 		
+		resident.msgStartEating();
+		resident.pickAndExecuteAnAction();
 		
+		assertFalse("Residence should again not have food in the fridge.", residence.hasFood());
 	}
 
 }

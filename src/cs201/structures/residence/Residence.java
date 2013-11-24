@@ -1,6 +1,8 @@
 package cs201.structures.residence;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import cs201.agents.PersonAgent;
@@ -13,7 +15,7 @@ import cs201.structures.Structure;
 public class Residence extends Structure {
 	private Resident resident;
 	private Role owner; //owner is either a resident or a landlord.
-	private List<Food> fridge = new ArrayList<Food>();
+	private List<Food> fridge = Collections.synchronizedList(new ArrayList<Food>());
 	private boolean hasFood;
 	
 	private class Food {
@@ -80,7 +82,24 @@ public class Residence extends Structure {
 	}
 	
 	public void removeFood(String t) {
+		for(Iterator<Food> it = fridge.iterator(); it.hasNext();) {
+			Food f = it.next();
+			if (f.getType() == t) {
+				f.minusOne();
+				System.out.println("One of food removed");
+				if (f.noneLeft()) {
+					it.remove();
+					System.out.println("Food category removed");
+					if (fridge.isEmpty()) {
+						hasFood = false;
+					}	
+				}
+			}
+			
+		}
+		/*
 		for(Food f : fridge) {
+			
 			if(f.getType() == t) {
 				f.minusOne();
 				if (f.noneLeft()) {
@@ -89,8 +108,8 @@ public class Residence extends Structure {
 						hasFood = false;
 					}	
 				}
-			}
-		}
+			
+		}}*/
 	}
 	
 	public void performMaintenance() {
@@ -129,6 +148,7 @@ public class Residence extends Structure {
 	public boolean hasFood() {
 		return hasFood;
 	}
+	
 	
 	@Override
 	public Role getRole(Intention role) {
