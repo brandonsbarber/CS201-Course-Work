@@ -7,6 +7,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import cs201.gui.structures.restaurant.RestaurantGuiMatt;
 import cs201.structures.restaurant.RestaurantMatt;
@@ -23,9 +24,9 @@ public class SimCity201 extends JFrame {
 		setLayout(new BorderLayout());
 		
 		cityPanel = new CityPanel();
-		cityPanel.setPreferredSize(new Dimension(1000, 250));
-		cityPanel.setMaximumSize(new Dimension(1000, 250));
-		cityPanel.setMinimumSize(new Dimension(1000, 250));
+		cityPanel.setPreferredSize(new Dimension(2000, 500));
+		cityPanel.setMaximumSize(new Dimension(2000, 500));
+		cityPanel.setMinimumSize(new Dimension(2000, 500));
 		
 		cardLayout = new CardLayout();
 		
@@ -49,8 +50,19 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g2, "" + 1);
 		cityPanel.addStructure(r2);
 		
-		add(BorderLayout.NORTH, cityPanel);
+		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
+		
+		cityScrollPane.setMinimumSize(new Dimension(1000, 250));
+		cityScrollPane.setMaximumSize(new Dimension(1000, 250));
+		cityScrollPane.setPreferredSize(new Dimension(1000, 250));
+		
+		cityScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
+		add(BorderLayout.NORTH, cityScrollPane);
 		add(BorderLayout.SOUTH, buildingPanels);
+		
+		pack();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {

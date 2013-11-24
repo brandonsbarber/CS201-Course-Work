@@ -1,8 +1,10 @@
 package cs201.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -20,9 +22,20 @@ public class CityPanel extends JPanel implements MouseListener {
 		addMouseListener(this);
 	}
 	
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g)
+	{	
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.black);
+		Dimension bounds = getPreferredSize();
+		
+		g2.setColor(Color.LIGHT_GRAY.brighter().brighter());
+		g2.fillRect(0,0,(int)bounds.getWidth(),(int)bounds.getHeight());
+		
+		g2.setColor(Color.BLACK);
+		
+		for(int i = 0; i <= 250; i+=50)
+		{
+			g2.drawLine(0, i, 1000, i);
+		}
 		
 		for (int i = 0; i < buildings.size(); i++) {
 			Structure s = buildings.get(i);
