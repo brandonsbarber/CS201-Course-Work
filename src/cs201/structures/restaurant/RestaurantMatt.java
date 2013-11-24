@@ -74,6 +74,7 @@ public class RestaurantMatt extends Restaurant {
 				((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
 				waiters.add(newWaiter);
 				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
+				this.panel.addGui(waiterGui);
 				return newWaiter;
 			}
 			
@@ -88,6 +89,7 @@ public class RestaurantMatt extends Restaurant {
 			((RestaurantCustomerRoleMatt) newCustomer).setGui(customerGui);
 			newCustomer.setCashier((RestaurantCashierRoleMatt) cashier);
 			newCustomer.setHost((RestaurantHostRoleMatt) host);
+			this.panel.addGui(customerGui);
 			return newCustomer;
 		}
 		default: {
