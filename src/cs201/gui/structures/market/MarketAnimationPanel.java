@@ -22,10 +22,6 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     private final static int DEFAULT_WINDOW_WIDTH = 500;
     private final static int DEFAULT_WINDOW_HEIGHT = 500;
         
-    public final static int FRONT_DESK_X = 250;
-    public final static int FRONT_DESK_Y = 350;
-    public final static int FRONT_DESK_WIDTH = 150;
-    public final static int FRONT_DESK_HEIGHT = 40;
     public final static int FIRST_SHELF_X = 50;
     public final static int FIRST_SHELF_Y = 50;
     public final static int SHELF_WIDTH = 50;
@@ -86,6 +82,7 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
       	acquireRectangleGrid(3, 3, 18, 3);
       	acquireRectangleGrid(3, 11, 12, 11);
       	acquireRectangleGrid(15, 11, 18, 11);
+        acquireRectangleGrid(10, 15, 15, 15);
         
       	// Create a timer to control the animation
         timer = new Timer(ANIMATION_LENGTH, this );
@@ -110,7 +107,7 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     	
     	// Draw the front desk bottom right of the screen
         g2.setColor(Color.black);
-        g2.fillRect(FRONT_DESK_X, FRONT_DESK_Y, FRONT_DESK_WIDTH, FRONT_DESK_HEIGHT);
+        drawRectangleGrid(10, 15, 15, 15, g2);
         
         // Draw the shelves
         g2.setColor(Color.blue);
@@ -119,7 +116,7 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
         }
         
         // Draw the walls
-        g2.setColor(Color.black);
+        g2.setColor(Color.gray);
         drawRectangleGrid(3, 3, 18, 3, g2);
         drawRectangleGrid(3, 11, 12, 11, g2);
         drawRectangleGrid(15, 11, 18, 11, g2);
@@ -150,7 +147,7 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     private void acquireRectangleGrid(int left, int top, int right, int bottom) {
     	for (int x = left; x <= right; x++) {
     		for (int y = top; y <= bottom; y++) {
-    			System.out.println("Acquiring (" + x + "," + y +")");
+    			//System.out.println("Acquiring (" + x + "," + y +")");
     			try {
 					grid[x][y].acquire();
 				} catch (InterruptedException e) {

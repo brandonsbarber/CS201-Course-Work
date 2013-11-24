@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import cs201.gui.astar.Position;
+import cs201.gui.roles.market.MarketConsumerGui;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
@@ -61,11 +62,16 @@ public class MarketAnimationTest {
 		MarketEmployeeGui employeeGui3 = new MarketEmployeeGui(animationPanel, 1, 3);
 		animationPanel.addGui(employeeGui3);
 		
+		// Create a new MarketConsumer gui and add him to our animation panel
+		MarketConsumerGui consumer = new MarketConsumerGui();
+		animationPanel.addGui(consumer);
+		
+		consumer.doWalkToManager();
 		Random generator = new Random();
 		while(true) {
-			employeeGui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(6));
-			employeeGui2.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(6));
-			employeeGui3.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(6));
+			employeeGui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
+			employeeGui2.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
+			employeeGui3.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
 			Thread.sleep(6000);
 		}
 

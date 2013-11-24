@@ -50,7 +50,7 @@ public class MarketManagerTest {
 		consumer = new MockMarketConsumer("consumer");
 		
 		// Tell the MarketManager about the employee
-		manager.AddEmployee(employee);
+		manager.addEmployee(employee);
 		assertEquals("The MarketManager's employee list does not have exactly one employee.", manager.employees.size(), 1);
 	}
 

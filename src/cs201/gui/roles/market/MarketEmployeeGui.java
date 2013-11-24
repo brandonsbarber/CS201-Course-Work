@@ -70,7 +70,7 @@ public class MarketEmployeeGui implements Gui {
 		
 		// Set the start position
 		currentPosition = new Position(startX, startY);
-		currentPosition.moveInto(grid);
+		//currentPosition.moveInto(grid);
 	}
 	
 	private void calculatePathToNextDestination(Position nextDestination) {
@@ -127,8 +127,8 @@ public class MarketEmployeeGui implements Gui {
 				nextPosition = positionQueue.poll();
 				
 				//Try and get lock for the next step.
-			    int attempts    = 1;
-			    boolean gotPermit = nextPosition.moveInto(aStar.getGrid());
+			    //int attempts    = 1;
+			    //boolean gotPermit = nextPosition.moveInto(aStar.getGrid());
 
 			    //Did not get lock. Lets make n attempts.
 			    /*
@@ -145,16 +145,16 @@ public class MarketEmployeeGui implements Gui {
 			    */
 
 			    //Did not get lock after trying n attempts. So recalculating path.            
-			    if (!gotPermit) {
+			    //if (!gotPermit) {
 			    	//System.out.println("[Gaut] " + guiWaiter.getName() + " No Luck even after " + attempts + " attempts! Lets recalculate");
-			    	positionQueue.clear();
-			    	guiMoveFromCurrentPositionTo(ultimateDestination);
-			    } else {
+			    	//positionQueue.clear();
+			    	//guiMoveFromCurrentPositionTo(ultimateDestination);
+			   // } else {
 			    	//Got the required lock. Lets move.
 			    	//System.out.println("[Gaut] " + guiWaiter.getName() + " got permit for " + tmpPath.toString());
-			    	currentPosition.release(aStar.getGrid());
+			    	//currentPosition.release(aStar.getGrid());
 			    	currentPosition = nextPosition;
-			    }
+			    //}
 			}
 		}
 	}

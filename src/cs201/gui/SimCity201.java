@@ -8,7 +8,10 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.gui.structures.market.MarketGui;
 import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
@@ -48,6 +51,12 @@ public class SimCity201 extends JFrame {
 		r2.setStructurePanel(g2);
 		buildingPanels.add(g2, "" + 1);
 		cityPanel.addStructure(r2);
+		
+		MarketStructure market = new MarketStructure(150, 40, 40, 40, 2);
+		MarketGui marketGui = new MarketGui(market, 2, this);
+		market.setStructurePanel(marketGui);
+		buildingPanels.add(marketGui, "2");
+		cityPanel.addStructure(market);
 		
 		add(BorderLayout.NORTH, cityPanel);
 		add(BorderLayout.SOUTH, buildingPanels);

@@ -3,9 +3,12 @@ package cs201.roles.marketRoles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.market.MarketConsumerGui;
+import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
@@ -32,6 +35,9 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 			state = s;
 		}
 	}
+	
+	MarketConsumerGui gui = null;
+	Semaphore animation = new Semaphore(0, true);
 	
 	/*
 	 * ********** CONSTRUCTORS **********
@@ -80,13 +86,17 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
+		// Walk to the marketManager
+		if (gui != null)
+			gui.doWalkToManager();
+		pauseForAnimation();
 		
+		// Go through my inventory and create an ItemRequest for everything that I'm low on
+		// TODO
 	}
 
 	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+
 	}
 	
 	/*
@@ -103,9 +113,30 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 			this.getPerson().removeMoney(mb.amount);
 		}
 	}
+	
+	/*
+	 * ********** ANIMATION **********
+	 */
+	public void animationFinished() {
+		animation.release();
+	}
+	
+	private void pauseForAnimation () {
+		try {
+			animation.acquire();
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	 * ********** UTILITY **********
 	 */
+	
+	public void setGui(MarketConsumerGui g) {
+		gui = g;
+	}
 
 }

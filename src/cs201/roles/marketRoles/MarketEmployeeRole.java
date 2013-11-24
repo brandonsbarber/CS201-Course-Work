@@ -136,7 +136,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		animation.release();
 	}
 	
-	private void pauseForAnimation() {
+	private void pauseForAnimation () {
 		try {
 			animation.acquire();
 			Thread.sleep(1000);

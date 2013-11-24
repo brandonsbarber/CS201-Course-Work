@@ -283,8 +283,22 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * ********** UTILITY **********
 	 */
 	
-	public void AddEmployee(MarketEmployee e) {
+	public void addEmployee(MarketEmployee e) {
 		employees.add(new MyEmployee(e, EmployeeState.AVAILABLE));
+	}
+	
+	/**
+	 * Removes a MarketEmployee from this MarketManager's list of employees, effectively firing him.
+	 * @param employee The MarketEmployee to be removed.
+	 */
+	public void removeEmployee(MarketEmployee employee) {
+		// Search my employee list until I find this employee, then remove him
+		for (MyEmployee thisEmployee : employees) {
+			if (thisEmployee.employee == employee) {
+				employees.remove(thisEmployee);
+				break;
+			}
+		}
 	}
 	
 	public void AddInventoryEntry(InventoryEntry entry) {
@@ -310,6 +324,18 @@ public class MarketManagerRole extends Role implements MarketManager {
 			return item.amount;
 		else
 			return entry.amount;
+	}
+	
+	/**
+	 * Gets the MarketManager's list of employees.
+	 * @return A List<MarketEmployee> of the currently employed MarketEmployees by this MarketManager.
+	 */
+	public List<MarketEmployee> getEmployees() {
+		List<MarketEmployee> employeeList = new ArrayList<MarketEmployee>();
+		for (MyEmployee employee : employees) {
+			employeeList.add(employee.employee);
+		}
+		return employeeList;
 	}
 
 }

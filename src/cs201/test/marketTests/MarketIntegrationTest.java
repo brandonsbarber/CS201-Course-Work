@@ -13,10 +13,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import cs201.gui.roles.market.MarketConsumerGui;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.interfaces.roles.market.MarketConsumer;
+import cs201.roles.marketRoles.MarketConsumerRole;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.test.mock.market.MockMarketConsumer;
@@ -27,7 +29,7 @@ public class MarketIntegrationTest {
 	MarketManagerRole manager;
 	MarketEmployeeRole employee;
 	MarketEmployeeRole employee2;
-	MockMarketConsumer consumer;
+	MarketConsumerRole consumer;
 	
 	JFrame mainFrame;
 	MarketAnimationPanel animationPanel;
@@ -42,11 +44,11 @@ public class MarketIntegrationTest {
 		employee2 = new MarketEmployeeRole("employee2");
 		
 		// Create a consumer to place an order
-		consumer = new MockMarketConsumer("consumer");
+		consumer = new MarketConsumerRole("consumer");
 		
 		// Tell the MarketManager about the employee
-		manager.AddEmployee(employee);
-		manager.AddEmployee(employee2);
+		manager.addEmployee(employee);
+		manager.addEmployee(employee2);
 		
 		// Set up the GUI
 		setUpGui();
@@ -71,24 +73,31 @@ public class MarketIntegrationTest {
 		manager.setGui(managerGui);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui = new MarketEmployeeGui(animationPanel, 1, 1);
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui(animationPanel, 2, 2);
 		animationPanel.addGui(employeeGui);
 		employee.setGui(employeeGui);
 		employeeGui.setRole(employee);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui2 = new MarketEmployeeGui(animationPanel, 3, 1);
+		MarketEmployeeGui employeeGui2 = new MarketEmployeeGui(animationPanel, 4, 2);
 		animationPanel.addGui(employeeGui2);
 		employee2.setGui(employeeGui2);
 		employeeGui2.setRole(employee2);
+		
+		// Create a consumer gui and add him to our animation panel
+		MarketConsumerGui consumerGui = new MarketConsumerGui();
+		animationPanel.addGui(consumerGui);
+		consumer.setGui(consumerGui);
+		consumerGui.setRole(consumer);
 }
 
 	@Test
-	@Ignore
 	public void guiIntegrationTest() {
 		// Give the market a starting amount of chicken for inventory
 		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
 		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("lettuce", 200, 1.99f));
+		
+		consumer.startInteraction(null);
 
 		// Create our order by creating some item requests and adding them to a list
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("chicken", 4);
@@ -104,10 +113,22 @@ public class MarketIntegrationTest {
 		assertTrue("The MarketManager's scheduler should have processed the first order and returned true.", manager.pickAndExecuteAnAction());
 		
 		// Call the employee's scheduler once to send the order back to the MarketConsumer
-		assertTrue("The employee's scheduler should have retrieved the item and returned true.", employee.pickAndExecuteAnAction());
+		assertTrue("The employee's scheduler should have retrieved the item and returned true.", employee2.pickAndExecuteAnAction());
+		
+		// Call the employee's scheduer to return home
+		assertFalse("The employee's scheduler should have nothing left to do.", employee2.pickAndExecuteAnAction());
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	@Test
+	@Ignore
 	public void guiIntegrationTest2Employees() {
 		// Give the market a starting amount of chicken for inventory
 		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
