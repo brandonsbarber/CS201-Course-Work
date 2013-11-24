@@ -18,6 +18,7 @@ public class SimCity201 extends JFrame {
 	CardLayout cardLayout;
 	
 	public SimCity201() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(1000, 500);
 		

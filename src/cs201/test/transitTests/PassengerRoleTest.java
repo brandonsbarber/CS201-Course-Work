@@ -20,6 +20,7 @@ public class PassengerRoleTest extends TestCase
 		s2 = new BusStop(0, 0, 0, 0, 1);
 		
 		pass = new PassengerRole(s1);
+		pass.testing = true;
 		car = new MockCar("Mock Car 1");
 		car2 = new MockCar("Mock Car 2");
 		pass.addCar(car);

@@ -18,6 +18,8 @@ import cs201.structures.transit.BusStop;
 
 public class PassengerRole extends Role implements Passenger
 {
+	public boolean testing = false;
+	
 	public Structure destination;
 	public Structure currentLocation;
 	
@@ -25,7 +27,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	public Vehicle currentVehicle;
 	
-	Car car;
+	private Car car;
 	
 	public Queue<Move> waypoints;
 	
@@ -55,6 +57,8 @@ public class PassengerRole extends Role implements Passenger
 		
 		state = PassengerState.None;
 		this.currentLocation = curLoc;
+		
+		waitingForVehicle = new Semaphore(0);
 	}
 	
 	public void addCar(Car c)
@@ -74,6 +78,7 @@ public class PassengerRole extends Role implements Passenger
 	public void msgPleaseBoard(Vehicle v)
 	{
 		boardingRequest.add(v);
+		waitingForVehicle.release();
 	}
 
 	@Override
@@ -212,11 +217,25 @@ public class PassengerRole extends Role implements Passenger
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
+				
+				if(!testing)
+				{
+					try
+					{
+						waitingForVehicle.acquire();
+					}
+					catch(InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);
 				break;
 		}
+		System.out.println("Got released");
 	}
 
 	@Override

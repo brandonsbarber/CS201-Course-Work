@@ -3,6 +3,7 @@ package cs201.agents.transit;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.Agent;
+import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.structures.Structure;
 
@@ -12,9 +13,17 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	
 	Semaphore animationSemaphore = new Semaphore(0);
 	
+	VehicleGui gui;
+	
+	public void setGui(VehicleGui gui)
+	{
+		this.gui = gui;
+	}
+	
 	public void msgAnimationDestinationReached()
 	{
 		animationSemaphore.release();
+		System.out.println("Animation Reached");
 	}
 	
 	public void msgSetDestination (Structure destination)
