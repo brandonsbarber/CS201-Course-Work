@@ -27,7 +27,7 @@ public class MarketManagerTest {
 
 	MarketManagerRole manager;
 	MockMarketEmployee employee;
-	MarketConsumer consumer;
+	MockMarketConsumer consumer;
 	
 	/**
 	 * Run before each test case. Instantiates a MarketManagerRole, a MockEmployee, and a MockConsumer. Introduces the manager to the new employee.
@@ -56,7 +56,7 @@ public class MarketManagerTest {
 
 	/**
 	 * The very basic of tests. Checks to see if the MarketManager can handle an order of a single item from the MarketConsumer, dispatch an employee,
-	 * and send the fulfilled order back to the consumer.
+	 * and send the fulfilled order back to the consumer for the correct price.
 	 */
 	@Test
 	public void simpleTest() {
@@ -82,8 +82,17 @@ public class MarketManagerTest {
 		
 		// Call the MarketManager's scheduler once to send the order back to the MarketConsumer
 		assertTrue("The MarketManager's scheduler should have sent the order to the consumer and returned true.", manager.pickAndExecuteAnAction());
+		
+		// Ensure that the MarketConsumer got 2 messages: msgHereAreYourItems and msgHereIsYourTotal
+		assertTrue("The MarketConsumer should get a hereAreYourItems message.", consumer.log.getFirstEventWhichContainsString("Received msgHereAreYourItems with 4 chicken") != null);
+		assertTrue("The MarketConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 27.96") != null);
+		
 	}
 	
+	/**
+	 * Another basic test. Checks to see if the MarketManager can handle an order of 2 items from the MarketConsumer, dispatch an employee, and send
+	 * the order back to the consumer for the correct price.
+	 */
 	@Test
 	public void multipleItems() {
 		// Give the market a starting amount of chicken for inventory
@@ -112,6 +121,10 @@ public class MarketManagerTest {
 		
 		// Call the MarketManager's scheduler once to send the order back to the MarketConsumer
 		assertTrue("The MarketManager's scheduler should have sent the order to the consumer and returned true.", manager.pickAndExecuteAnAction());
+		
+		// Ensure that the MarketConsumer got 2 messages: msgHereAreYourItems and msgHereIsYourTotal
+		assertTrue("The MarketConsumer should get a hereAreYourItems message.", consumer.log.getFirstEventWhichContainsString("Received msgHereAreYourItems with 4 chicken 6 steak") != null);
+		assertTrue("The MarektConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 99.90") != null);
 	}
 
 }

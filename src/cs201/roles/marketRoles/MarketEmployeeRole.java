@@ -78,9 +78,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {
-		System.out.println("Got message msgRetrieveItems");
-		
+	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {		
 		// Add the new retrieval request to the list of requests
 		requests.add(new RetrievalRequest(manager, items, id, RequestState.PENDING));
 		
@@ -106,8 +104,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		}
 		
 		// Walk to the manager
-		gui.doGoToManager();
-		pauseForAnimation();
+		if (gui != null) {
+			gui.doGoToManager();
+			pauseForAnimation();
+		}
 		
 		// Give the items to the manager
 		request.manager.msgHereAreItems(this, request.items, request.id);

@@ -10,11 +10,9 @@ public class MarketGui extends StructurePanel {
 
 	public MarketGui(Rectangle2D r, int i, SimCity201 sc) {
 		super(r, i, sc);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void setPersonEnabled(Role role) {
-		// TODO Auto-generated method stub
 		
 	}
 

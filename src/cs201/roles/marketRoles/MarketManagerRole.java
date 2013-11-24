@@ -26,8 +26,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	String name = "";
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
 	public List<MyEmployee> employees = new ArrayList<MyEmployee>();
-	Map<MarketConsumer, ConsumerRecord> consumerBalance = 
-			new HashMap<MarketConsumer, ConsumerRecord>();
+	Map<MarketConsumer, ConsumerRecord> consumerBalance = new HashMap<MarketConsumer, ConsumerRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	MarketManagerGui gui;
 	
@@ -75,6 +74,20 @@ public class MarketManagerRole extends Role implements MarketManager {
 			state = s;
 			type = t;
 			id = oID;
+		}
+		
+		/**
+		 * Calculates the price of an Order using the MarketManager's inventory.
+		 */
+		public void calculatePrice() {
+			float total = 0.0f;
+			for (ItemRequest item : items) {
+				InventoryEntry entry = inventory.get(item.item);
+				if (entry != null) {
+					total += item.amount * entry.price;
+				}
+			}
+			totalPrice = total;
 		}
 
 	}
@@ -170,6 +183,12 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount) {
+		// Pay the consumer's balance
+		ConsumerRecord record = consumerBalance.get(consumer);
+		if (record != null) {
+			record.balance -= amount;
+		}
+		
 		stateChanged();
 	}
 	
@@ -254,10 +273,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 		o.state = OrderState.SENT;
 		
 		// Calculate the price of the order
-		// TODO
+		o.calculatePrice();
 		
 		// The consumer needs to pay for the order
-		// TODO
+		o.consumer.msgHereIsYourTotal(this, o.totalPrice);
 	}
 
 	/*

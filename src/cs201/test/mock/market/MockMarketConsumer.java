@@ -16,7 +16,13 @@ public class MockMarketConsumer extends Mock implements MarketConsumer {
 	}
 
 	public void msgHereIsYourTotal(MarketManager manager, float amount) {
-
+		// Log the message
+		String msg = "MarketConsumer: " + this.name + ": Received msgHereIsYourTotal with " + String.format("%.2f", amount);
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
+		
+		// Go ahead and pay for the order, because we're a good consumer
+		manager.msgHereIsMyPayment(this, amount);
 	}
 
 	public void msgHereAreYourItems(List<ItemRequest> items) {
