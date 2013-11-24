@@ -2,8 +2,6 @@ package cs201.structures.restaurant;
 
 import java.util.List;
 
-import cs201.agents.PersonAgent.Intention;
-import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
