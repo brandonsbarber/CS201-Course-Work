@@ -1,5 +1,6 @@
 package cs201.interfaces.agents;
 
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.helper.CityTime;
 import cs201.interfaces.agents.transit.Vehicle;
@@ -44,7 +45,12 @@ public interface Person {
 	 * Tells the PersonAgent that he is no longer working. Should be called by a work-related Role right before it
 	 * deactivates itself
 	 */
-	public void goOffWork();
+	public abstract void goOffWork();
+	
+	/**
+	 * Any Role where a PersonAgent eats (RestaurantCustomerRole/ResidenceRole) should call this so the Person is no longer hungry
+	 */
+	public abstract void justAte();
 	
 	/**
 	 * Roles can tell the PersonAgent that he/she should immediately go do another action.
