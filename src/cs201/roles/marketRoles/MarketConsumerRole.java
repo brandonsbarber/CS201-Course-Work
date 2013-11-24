@@ -1,8 +1,10 @@
 package cs201.roles.marketRoles;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
@@ -16,13 +18,19 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 * ********** DATA **********
 	 */
 	String name = "";
-	List<MarketBill> marketBills;
+	List<MarketBill> marketBills = Collections.synchronizedList( new ArrayList<MarketBill>() );
 	
 	enum MarketBillState {OUTSTANDING, PAID};
 	class MarketBill {
 		MarketManager manager;
 		float amount;
 		MarketBillState state;
+		
+		public MarketBill(MarketManager m, float a, MarketBillState s) {
+			manager = m;
+			amount = a;
+			state = s;
+		}
 	}
 	
 	/*
@@ -42,7 +50,16 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		// If there are any market bills to pay, pay them
+		synchronized(marketBills) {
+			for (MarketBill bill : marketBills) {
+				if (bill.state == MarketBillState.OUTSTANDING) {
+					payBill(bill);
+					return true;
+				}
+			}
+		}
+		
 		return false;
 	}
 
@@ -52,6 +69,9 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	
 	public void msgHereIsYourTotal(MarketManager manager, float amount) {
+		// Add the bill to our list
+		marketBills.add(new MarketBill(manager, amount, MarketBillState.OUTSTANDING));
+		
 		stateChanged();
 	}
 	
@@ -73,8 +93,15 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 * ********** ACTIONS **********
 	 */
 	
-	private void PayBill(MarketBill mb) {
+	private void payBill(MarketBill mb) {
+		// Pay the bill in full
+		mb.manager.msgHereIsMyPayment(this, mb.amount);
 		
+		// Deduct the amount from my funds
+		PersonAgent person = this.getPerson();
+		if (person != null) {
+			this.getPerson().removeMoney(mb.amount);
+		}
 	}
 
 	/*

@@ -27,11 +27,13 @@ public class MockMarketManager extends Mock implements MarketManager {
 	}
 
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount) {
-		
+		// Log the message
+		String msg = "MarketManager: " + this.name + ": Received msgHereIsPayment with "  + String.format("%.2f", amount);
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
 	}
 
-	public void msgHereAreItems(MarketEmployee employee,
-			List<ItemRequest> items, int id) {
+	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {
 		// Log the message
 		String msg = "MarketManager: " + this.name + ": Received msgHereAreItems with ";
 		for (ItemRequest item : items) {

@@ -20,17 +20,18 @@ import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
+import cs201.roles.marketRoles.MarketConsumerRole;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.test.mock.market.MockMarketConsumer;
 import cs201.test.mock.market.MockMarketEmployee;
 import cs201.test.mock.market.MockMarketManager;
 
-public class MarketEmployeeTest {
+public class MarketConsumerTest {
 
 	MockMarketManager manager;
-	MarketEmployeeRole employee;
-	MockMarketConsumer consumer;
+	MockMarketEmployee employee;
+	MarketConsumerRole consumer;
 	
 	/**
 	 * Run before each test case. Instantiates a MarketManagerRole, a MockEmployee, and a MockConsumer. Introduces the manager to the new employee.
@@ -39,15 +40,15 @@ public class MarketEmployeeTest {
 	public void setUp() throws Exception {
 		System.out.println("========== NEW TEST ==========");
 		
-		// Create the unit under test- our MarketEmployeeRole
-		employee = new MarketEmployeeRole("employee");
-		assertNotNull("new MarketEmployeeRole() returns a null pointer.", employee);
+		// Create the unit under test- our MarketConsumerRole
+		consumer = new MarketConsumerRole("consumer");
+		assertNotNull("new MarketConsumerRole() returns a null pointer.", consumer);
 		
 		// Create a MarketManager
 		manager = new MockMarketManager("manager");
 		
 		// Create a consumer to place an order
-		consumer = new MockMarketConsumer("consumer");
+		employee = new MockMarketEmployee("employee");
 	}
 
 	/**
@@ -55,19 +56,14 @@ public class MarketEmployeeTest {
 	 */
 	@Test
 	public void simpleTest() {
-		// Create our order by creating some item requests and adding them to a list
-		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("chicken", 4);
-		List<MarketManagerRole.ItemRequest> list = new ArrayList<MarketManagerRole.ItemRequest>();
-		list.add(item1);
+		// Give the consumer a bill to pay
+		consumer.msgHereIsYourTotal(manager, 123.45f);
 		
-		// Tell the employee to retrieve the items
-		employee.msgRetrieveItems(manager, list, 0);
+		// Run the consumer's scheduler to verify he pays back the MarketManager
+		assertTrue("The MarketConsumer should have paid the market's bill and returned true.", consumer.pickAndExecuteAnAction());
 		
-		// Run the employee's scheduler to allow him to retrieve the items
-		assertTrue("The employee's scheduler should have returned true after retrieving items.", employee.pickAndExecuteAnAction());
-		
-		// Ensure that the manager got the HereAreItems message
-		assertTrue("The MarketManager should have gotten the HereAreItems message from the employee.", manager.log.getFirstEventWhichContainsString("Received msgHereAreItems with 4 chicken") != null);
+		// Ensure that the manager received the HereIsPayment message
+		assertTrue("The MarketManager should have gotten a HereIsPayment message from the consumer.", manager.log.getFirstEventWhichContainsString("Received msgHereIsPayment with 123.45") != null);
 	}
 
 }
