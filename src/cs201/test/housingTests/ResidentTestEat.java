@@ -14,6 +14,7 @@ public class ResidentTestEat {
 	
 	@Before
 	public void setUp() throws Exception {
+		resident = new ResidentRole();
 	}
 
 	@Test

@@ -6,8 +6,12 @@ import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class ResidentRole extends Role implements Resident {
-	enum ResidentState {doingNothing, hungry, eating};
+	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp};
 	ResidentState state;
+	
+	public ResidentRole() {
+		state = ResidentState.doingNothing;
+	}
 	
 	//Messages
 	
@@ -24,7 +28,11 @@ public class ResidentRole extends Role implements Resident {
 	//Scheduler
 	
 	public boolean pickAndExecuteAnAction() {
-		if (state == ResidentState.hungry) {
+		switch (state) {
+		case readyToSleep:
+				goToSleep();
+				return true;
+		case hungry: 
 			if (((Residence)(myPerson.getHome())).hasFood()) {
 				pickAndEatFromFridge();
 				return true;
@@ -33,6 +41,8 @@ public class ResidentRole extends Role implements Resident {
 				//getPerson().goToMarket();
 				return false;
 			}	
+		default: 
+			break;
 		}
 		return false;
 	}
@@ -43,13 +53,26 @@ public class ResidentRole extends Role implements Resident {
 		state = ResidentState.eating;
 
 		//picks food from home's fridge list of Food and eats it.
-
+		
+	}
+	
+	private void goToSleep() {
+		//go to bed
+		state = ResidentState.sleeping;
+		//timer/wait for wakeup
 	}
 
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
-		
+		if (intent == Intention.ResidenceEat) {
+			this.msgStartEating();
+		}
+		if (intent == Intention.ResidenceSleep) {
+			state = ResidentState.readyToSleep;
+			stateChanged();
+			//action to prepare scheduler for sleep action
+		}
 	}
 
 	@Override
