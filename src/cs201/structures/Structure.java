@@ -22,11 +22,11 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected Point parkingLocation;
 	protected CityTime closingTime;
 	
-	public Structure(int x, int y, int width, int height, int id) {
+	public Structure(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height);
 		
 		this.id = id;
-		this.panel = null;
+		this.panel = p;
 		this.guiLocation = null;
 		this.entranceLocation = null;
 		this.deliveryLocation = null;

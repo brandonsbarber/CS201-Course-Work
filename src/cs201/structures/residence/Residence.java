@@ -4,6 +4,7 @@ import java.util.List;
 
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
@@ -40,8 +41,8 @@ public class Residence extends Structure {
 		}
 	}
 	
-	public Residence(int x, int y, int width, int height, int id) {
-	    super(x, y, width, height, id);
+	public Residence(int x, int y, int width, int height, int id, StructurePanel p) {
+	    super(x, y, width, height, id, p);
 	    owner = null;
 	    resident = null;
 	}

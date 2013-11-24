@@ -28,10 +28,12 @@ public class WaiterGuiMatt implements Gui {
     private String message = "";
     
     private RestaurantConfigPanelMatt panel;
+    private boolean isPresent;
     
     public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantConfigPanelMatt r) {
         this.role = role;
         this.panel = r;
+        this.isPresent = true;
     }
 
     public void updatePosition() {
@@ -102,8 +104,12 @@ public class WaiterGuiMatt implements Gui {
 	}
 
     public boolean isPresent() {
-        return true;
+        return isPresent;
     }
+
+	public void setPresent(boolean p) {
+		isPresent = p;
+	}
     
     public boolean isOnBreak() {
     	return (breakState == BreakState.onBreak || breakState == BreakState.waitingForResponse);

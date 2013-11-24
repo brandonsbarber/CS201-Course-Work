@@ -3,6 +3,7 @@ package cs201.structures.restaurant;
 import java.util.ArrayList;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
@@ -20,27 +21,33 @@ public class RestaurantMatt extends Restaurant {
 	private final int INITIALWAITERS = 2;
 	private final int MAXWAITERS = 4;
 	
-	public RestaurantMatt(int x, int y, int width, int height, int id) {
-		super(x, y, width, height, id);
+	public RestaurantMatt(int x, int y, int width, int height, int id, StructurePanel p) {
+		super(x, y, width, height, id, p);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
 		
 		this.cook = new RestaurantCookRoleMatt();
 		CookGuiMatt cookGui = new CookGuiMatt((RestaurantCookRoleMatt) cook);
+		cookGui.setPresent(false);
 		((RestaurantCookRoleMatt) cook).setGui(cookGui);
+		this.panel.addGui(cookGui);
 		
 		this.cashier = new RestaurantCashierRoleMatt();
 		CashierGuiMatt cashierGui = new CashierGuiMatt((RestaurantCashierRoleMatt) cashier);
+		cashierGui.setPresent(false);
 		((RestaurantCashierRoleMatt) cashier).setGui(cashierGui);
 		((RestaurantCashierRoleMatt) cashier).setHost((RestaurantHostRoleMatt) host);
+		this.panel.addGui(cashierGui);
 		
 		this.waiters = new ArrayList<RestaurantWaiterRole>();
 		for (int i = 0; i < INITIALWAITERS; i++) {
 			RestaurantWaiterRoleMatt newWaiter = new RestaurantWaiterRoleMatt();
 			WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
+			waiterGui.setPresent(false);
 			((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
 			waiters.add(newWaiter);
+			this.panel.addGui(waiterGui);
 		}
 	}
 	

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
 import cs201.roles.bankRoles.BankGuardRole;
@@ -31,8 +32,8 @@ public class Bank extends Structure {
     // Constructors
     //================================================================================
 	
-	public Bank(int x, int y, int width, int height, int id) {
-	    super(x, y, width, height, id);
+	public Bank(int x, int y, int width, int height, int id, StructurePanel p) {
+	    super(x, y, width, height, id, p);
 	}
 	
 	//================================================================================

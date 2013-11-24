@@ -2,6 +2,7 @@ package cs201.structures.restaurant;
 
 import java.util.List;
 
+import cs201.gui.StructurePanel;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
@@ -22,8 +23,8 @@ public abstract class Restaurant extends Structure {
 	protected int bankAccountNumber;
 	protected boolean isOpen;
 	
-	public Restaurant(int x, int y, int width, int height, int id) {
-		super(x, y, width, height, id);
+	public Restaurant(int x, int y, int width, int height, int id, StructurePanel p) {
+		super(x, y, width, height, id, p);
 		
 		this.cashier = null;
 		this.cook = null;

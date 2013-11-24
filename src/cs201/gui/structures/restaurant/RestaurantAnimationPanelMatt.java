@@ -16,7 +16,7 @@ import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 
-public class RestaurantAnimationPanelMatt extends StructurePanel implements ActionListener {
+public class RestaurantAnimationPanelMatt extends StructurePanel {
 
     public static final int WINDOWX = 600;
     public static final int WINDOWY = 700;
@@ -58,38 +58,18 @@ public class RestaurantAnimationPanelMatt extends StructurePanel implements Acti
     private final int PLATINGAREA1_Y = COOKAREAMAIN_Y + (int)(WINDOWY * .01f);
     private final int PLATINGAREA2_X = (int)(WINDOWX * .39f);
     private final int PLATINGAREA3_X = (int)(WINDOWX * .43f);
-    
-    private final int ANIMATIONLENGTH = 10;
-    private Timer timer;
 
-    private List<Gui> guis = new ArrayList<Gui>();
-
-    public RestaurantAnimationPanelMatt(Rectangle2D r, int i, SimCity201 sc) {
-    	super(r, i, sc);
+    public RestaurantAnimationPanelMatt(int i, SimCity201 sc) {
+    	super(i, sc);
     	
     	setSize(WINDOWX, WINDOWY);
 		setMinimumSize(new Dimension(WINDOWX, WINDOWY));
 		setMaximumSize(new Dimension(WINDOWX, WINDOWY));
 		setPreferredSize(new Dimension(WINDOWX, WINDOWY));
         setVisible(true);
- 
-        timer = new Timer(ANIMATIONLENGTH, this);
-        timer.setRepeats(true);
-    	timer.start();
     }
 
-	public void actionPerformed(ActionEvent e) {
-		repaint();  //Will have paintComponent called
-	}
-	
-	public void toggleTimer() {
-		if (timer.isRunning()) {
-			timer.stop();
-		} else {
-			timer.start();
-		}
-	}
-
+	@Override
     public void paintComponent(Graphics g) {
     	Graphics2D g2 = (Graphics2D)g;
 
@@ -141,21 +121,6 @@ public class RestaurantAnimationPanelMatt extends StructurePanel implements Acti
         g2.setColor(Color.BLACK);
         g2.drawString(":Plating", PLATINGAREA_X, PLATINGAREA_Y);
         
-        
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
-        }
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.draw(g2);
-            }
-        }
-    }
-
-    public void addGui(Gui gui) {
-        guis.add(gui);
+        super.paintComponent(g);
     }
 }
