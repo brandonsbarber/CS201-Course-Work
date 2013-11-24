@@ -13,7 +13,7 @@ import cs201.structures.Structure;
 public class Residence extends Structure {
 	private Resident resident;
 	private Role owner; //owner is either a resident or a landlord.
-	private List<Food> fridge;
+	private List<Food> fridge = new ArrayList<Food>();
 	private boolean hasFood;
 	
 	private class Food {
@@ -64,12 +64,15 @@ public class Residence extends Structure {
 	}
 	
 	public void addFood(String t, int amt) {
-		for(Food f : fridge) {
-			if(f.getType() == t) {
-				f.addMore(amt);
+		if (!fridge.isEmpty()) {
+			for(Food f : fridge) {
+				if(f.getType() == t) {
+					f.addMore(amt);
+				}
+				
 			}
-			
 		}
+		
 		
 		Food f = new Food(t, amt);
 		fridge.add(f);
@@ -107,6 +110,9 @@ public class Residence extends Structure {
 	}
 	
 	public List<String> getFridgeContents() {
+		if (fridge.isEmpty()) {
+			return null;
+		}
 		List<String> contents = new ArrayList<String>();
 		for (Food f:fridge) {
 			if(!contents.contains(f.getType())) {

@@ -14,7 +14,7 @@ public class ResidentRole extends Role implements Resident {
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
-		residence = (Residence) myPerson.getHome();
+		//residence = (Residence) myPerson.getHome();  //would be helpful to connect residence to person's home
 	}
 	
 	//Messages
@@ -37,7 +37,7 @@ public class ResidentRole extends Role implements Resident {
 					goToSleep();
 					return true;
 			case hungry: 
-				if (((Residence)(myPerson.getHome())).hasFood()) {
+				if (residence.hasFood()) {
 					pickAndEatFromFridge();
 					return true;
 				}
@@ -62,6 +62,7 @@ public class ResidentRole extends Role implements Resident {
 		residence.removeFood(fridgeContents.get(rand));
 		
 		//timer, gui animation
+		myPerson.setHungerLevel(0); //clear hunger amount
 	}
 	
 	private void goToSleep() {
@@ -91,4 +92,7 @@ public class ResidentRole extends Role implements Resident {
 	
 	//Utility
 	
+	public void setResidence(Residence newResidence) {
+		residence = newResidence;
+	}
 }
