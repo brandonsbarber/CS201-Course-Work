@@ -11,7 +11,7 @@ import cs201.structures.Structure;
 
 public class Residence extends Structure {
 	private Resident resident;
-	private PersonAgent owner;
+	private Role owner; //owner is either a resident or a landlord.
 	private List<Food> fridge;
 	private boolean hasFood;
 	
@@ -40,15 +40,15 @@ public class Residence extends Structure {
 		}
 	}
 	
-	public Residence(int x, int y, int width, int height) {
-	    super(x, y, width, height, 0); //what should ID be?
+	public Residence(int x, int y, int width, int height, int id) {
+	    super(x, y, width, height, id);
 	    owner = null;
 	    resident = null;
 	}
 	
 	//Setters
 	
-	public void setOwner(PersonAgent p) {
+	public void setOwner(Role p) {
 		owner = p;
 	}
 	
@@ -101,7 +101,7 @@ public class Residence extends Structure {
 		return resident;
 	}
 	
-	public PersonAgent getOwner() {
+	public Role getOwner() {
 		return owner;
 	}
 	
@@ -116,6 +116,15 @@ public class Residence extends Structure {
 	@Override
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
+		if (role==Intention.ResidenceEat) {
+			return (Role) resident;
+		}
+		if (role==Intention.ResidenceSleep) {
+			return (Role) resident;
+		}
+		if (role==Intention.ResidenceLandLord) {
+			return owner;
+		}
 		return null;
 	}
 }

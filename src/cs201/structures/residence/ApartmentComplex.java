@@ -13,8 +13,8 @@ public class ApartmentComplex extends Structure {
 	Landlord landlord;
 	List<Residence> apartments;
 	
-	public ApartmentComplex (int x, int y, int width, int height) {
-	    super(x, y, width, height, 0 ); //ID??
+	public ApartmentComplex (int x, int y, int width, int height, int id) {
+	    super(x, y, width, height, id); //ID??
 	    landlord = null;
 	}
 	
