@@ -18,7 +18,7 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 		// Log the message
 		String msg = "MarketEmployee: " + this.name + ": Received msgRetrieveItems with ";
 		for (ItemRequest item : items) {
-			msg += item.amount + " " + item.item;
+			msg += item.amount + " " + item.item + " ";
 		}
 		System.out.println(msg);
 		log.add(new LoggedEvent(msg));

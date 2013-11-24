@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.market.MarketManagerGui;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
@@ -28,6 +29,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	Map<MarketConsumer, ConsumerRecord> consumerBalance = 
 			new HashMap<MarketConsumer, ConsumerRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
+	MarketManagerGui gui;
 	
 	public static class ItemRequest {
 		public String item;
@@ -272,6 +274,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 		
 		// Add the inventory entry
 		inventory.put(entry.item, entry);
+	}
+	
+	public void setGui(MarketManagerGui g) {
+		gui = g;
 	}
 	
 	/*

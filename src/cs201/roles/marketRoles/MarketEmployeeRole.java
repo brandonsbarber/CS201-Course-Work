@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
@@ -34,6 +37,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		}
 	}
 	
+	MarketEmployeeGui gui;
+	Semaphore animation = new Semaphore(0, true);
+	
 	
 	/*
 	 * ********** CONSTRUCTORS **********
@@ -59,6 +65,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			processRequest(pendingRequest);
 			return true;
 		}
+		
+		// If there's nothing else to do, go home
+		if (gui != null)
+			gui.doGoHome();
 		
 		return false;
 	}
@@ -95,6 +105,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			doGetItem(item);
 		}
 		
+		// Walk to the manager
+		gui.doGoToManager();
+		pauseForAnimation();
+		
 		// Give the items to the manager
 		request.manager.msgHereAreItems(this, request.items, request.id);
 		
@@ -106,9 +120,30 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** ANIMATION **********
 	 */
 	private void doGetItem(ItemRequest item) {
-		/*
-		 * animation code to retrieve the item
-		 */
+		if (gui != null) {
+			/* 
+			 * Just to a random shelf location
+			 * This works, for now. Remember it's a simulation, not an emulation ;)
+			 * In v2 I might store the locations in a map
+			 */
+			Random generator = new Random();
+			gui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
+			pauseForAnimation();
+		}
+	}
+	
+	public void animationFinished() {
+		animation.release();
+	}
+	
+	private void pauseForAnimation() {
+		try {
+			animation.acquire();
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -126,6 +161,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		
 		// If there aren't any PENDING requests, return null
 		return null;
+	}
+	
+	public void setGui(MarketEmployeeGui g) {
+		gui = g;
 	}
 
 }

@@ -79,9 +79,13 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
       		System.out.println("Unexcepted error occured in MarketAnimationPanel constructor: " + e);
       	}
       	
-      	// Make the 1st shelf unavailable
-      	acquireRectangleGrid(5, 4, 5, 8);
-      	acquireRectangleGrid(7, 4, 7, 9);
+      	// Make shelves and walls unavailable
+      	for (int i = 3; i <= 18; i += 3) {
+        	acquireRectangleGrid(i, 5, i, 9);
+        }
+      	acquireRectangleGrid(3, 3, 18, 3);
+      	acquireRectangleGrid(3, 11, 12, 11);
+      	acquireRectangleGrid(15, 11, 18, 11);
         
       	// Create a timer to control the animation
         timer = new Timer(ANIMATION_LENGTH, this );
@@ -109,15 +113,16 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
         g2.fillRect(FRONT_DESK_X, FRONT_DESK_Y, FRONT_DESK_WIDTH, FRONT_DESK_HEIGHT);
         
         // Draw the shelves
-        /*
         g2.setColor(Color.blue);
-        for (int i = 0; i < SHELF_COUNT; i ++) {
-        	g2.fillRect(FIRST_SHELF_X + i * SHELF_SPACING, FIRST_SHELF_Y, SHELF_WIDTH, SHELF_HEIGHT);
+        for (int i = 3; i <= 18; i += 3) {
+        	drawRectangleGrid(i, 5, i, 9, g2);
         }
-        */
-        g2.setColor(Color.blue);
-        drawRectangleGrid(5, 4, 5, 8, g2);
-        drawRectangleGrid(7, 4, 7, 9, g2);
+        
+        // Draw the walls
+        g2.setColor(Color.black);
+        drawRectangleGrid(3, 3, 18, 3, g2);
+        drawRectangleGrid(3, 11, 12, 11, g2);
+        drawRectangleGrid(15, 11, 18, 11, g2);
     	
         // Tell each gui to update
         for(Gui gui : guis) {

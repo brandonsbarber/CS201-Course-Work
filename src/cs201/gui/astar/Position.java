@@ -19,6 +19,9 @@ public class Position {
     public int getX() {return x;}
     public int getY() {return y;}
     
+    public int getXInPixels() {return (x-1)*25;}
+    public int getYInPixels() {return (y-1)*25;}
+    
     public double distance(Position destination){
 	return Math.sqrt(
 		Math.pow(destination.getX()-x,2) +

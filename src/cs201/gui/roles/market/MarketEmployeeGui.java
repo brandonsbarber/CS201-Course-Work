@@ -33,14 +33,15 @@ public class MarketEmployeeGui implements Gui {
 		}
 	}
 	
-	Queue<Destination> destinationQueue = new LinkedList<Destination>();
-	Destination currentDestination = null;
+	Queue<Position> destinationQueue = new LinkedList<Position>();
+	Queue<Position> positionQueue = new LinkedList<Position>();
+	Position ultimateDestination = null;
+	Position nextPosition = null;
+	Position homePosition = null;
 	
 	private enum IsleMovementState {MOVE_OUT_OF_ISLE, MOVE_TO_ISLE, MOVE_TO_SHELF};
 	
-	private int isleDestination = -1;
-	private boolean goingToManager = false;
-	private boolean goingHome = false;
+	private boolean animating = false;
 	
 	MarketAnimationPanel animPanel;
 	
@@ -51,14 +52,15 @@ public class MarketEmployeeGui implements Gui {
 	AStarTraversal aStar = null;
 	Position currentPosition = null;
 	
-	public MarketEmployeeGui(MarketAnimationPanel a) {
-		this(null, a);
+	public MarketEmployeeGui(MarketAnimationPanel a, int startX, int startY) {
+		this(null, a, startX, startY);
 	}
 
-	public MarketEmployeeGui(MarketEmployeeRole c, MarketAnimationPanel a) {
+	public MarketEmployeeGui(MarketEmployeeRole c, MarketAnimationPanel a, int startX, int startY) {
 		role = c;
-		xPos = EMPLOYEE_HOME_X;
-		yPos = EMPLOYEE_HOME_Y;
+		homePosition = new Position(startX, startY);
+		xPos = homePosition.getXInPixels();
+		yPos = homePosition.getYInPixels();
 		isPresent = true;
 		animPanel = a;
 		
@@ -67,91 +69,92 @@ public class MarketEmployeeGui implements Gui {
 		aStar = new AStarTraversal(grid);
 		
 		// Set the start position
-		currentPosition = new Position(1, 1);
-		currentPosition.moveInto(aStar.getGrid());
+		currentPosition = new Position(startX, startY);
+		currentPosition.moveInto(grid);
 	}
 	
-	public void guiMoveFromCurrentPostionTo(Position to){
-
-		AStarNode aStarNode = (AStarNode)aStar.generalSearch(currentPosition, to);
+	private void calculatePathToNextDestination(Position nextDestination) {
+		AStarNode aStarNode = (AStarNode)aStar.generalSearch(currentPosition, nextDestination);
 		List<Position> path = aStarNode.getPath();
 		Boolean firstStep   = true;
 		Boolean gotPermit   = true;
-
-		for (Position tmpPath: path) {
-		    //The first node in the path is the current node. So skip it.
-		    if (firstStep) {
-		    	firstStep   = false;
-		    	continue;
-		    }
-
-		    //Try and get lock for the next step.
-		    int attempts    = 1;
-		    gotPermit       = new Position(tmpPath.getX(), tmpPath.getY()).moveInto(aStar.getGrid());
-
-		    //Did not get lock. Lets make n attempts.
-		    while (!gotPermit && attempts < 3) {
-		    	//System.out.println("[Gaut] " + guiWaiter.getName() + " got NO permit for " + tmpPath.toString() + " on attempt " + attempts);
-
-		    	//Wait for 1sec and try again to get lock.
-		    	try { Thread.sleep(1000); }
-		    	catch (Exception e){}
-
-		    	gotPermit   = new Position(tmpPath.getX(), tmpPath.getY()).moveInto(aStar.getGrid());
-		    	attempts ++;
-		    }
-
-		    //Did not get lock after trying n attempts. So recalculating path.            
-		    if (!gotPermit) {
-		    	//System.out.println("[Gaut] " + guiWaiter.getName() + " No Luck even after " + attempts + " attempts! Lets recalculate");
-		    	guiMoveFromCurrentPostionTo(to);
-		    	break;
-		    }
-
-		    //Got the required lock. Lets move.
-		    //System.out.println("[Gaut] " + guiWaiter.getName() + " got permit for " + tmpPath.toString());
-		    currentPosition.release(aStar.getGrid());
-		    currentPosition = new Position(tmpPath.getX(), tmpPath.getY ());
-		    
-		    Destination nextDestination = new Destination((currentPosition.getX() - 1) * 25, (currentPosition.getY() - 1) * 25);
-		    destinationQueue.add(nextDestination);
+		
+		// The first node in the path is the current node. So skip it.
+		path.remove(0);
+		
+		// Add the remaining positions to our position queue
+		positionQueue.clear();
+		for (Position position : path) {
+			positionQueue.add(position);
 		}
+	}
+	
+	public boolean guiMoveFromCurrentPositionTo(Position to){
+		if (to.open(aStar.getGrid())) {
+			animating = true;
+			ultimateDestination = to;
+			calculatePathToNextDestination(ultimateDestination);
+			return true;
+		}
+		return false;
 	}
 
 	public void updatePosition() {
 		
-		/*
-		if (goingToManager) {
-			if (yPos < (MarketAnimationPanel.FIRST_SHELF_Y + MarketAnimationPanel.SHELF_HEIGHT + EMPLOYEE_SIZE)) {
-				yPos++;
-				return;
+		if (animating && xPos == ultimateDestination.getXInPixels() && yPos == ultimateDestination.getYInPixels()) {
+			if (role != null) {
+				role.animationFinished();
 			}
+			animating = false;
 		}
-		if (isleNumber(xPos) != isleDestination && isleDestination != -1) {
-			if (yPos > MarketAnimationPanel.FIRST_SHELF_Y - EMPLOYEE_SIZE - 10) {
-				yPos--;
-			} else {
-				if (isleDestination > isleNumber(xPos)) xPos++; else xPos--;
-			}
-		}
-		*/
 		
-		if (currentDestination != null) {
-			if (xPos < currentDestination.x)
+		if (nextPosition != null) {
+			if (xPos < nextPosition.getXInPixels())
 				xPos++;
-			else if (xPos > currentDestination.x)
+			else if (xPos > nextPosition.getXInPixels())
 				xPos--;
 			
-			if (yPos < currentDestination.y)
+			if (yPos < nextPosition.getYInPixels())
 				yPos++;
-			else if (yPos > currentDestination.y)
+			else if (yPos > nextPosition.getYInPixels())
 				yPos--;
 			
-			if (xPos == currentDestination.x && yPos == currentDestination.y)
-				currentDestination = null;
+			if (xPos == nextPosition.getXInPixels() && yPos == nextPosition.getYInPixels()) {
+				nextPosition = null;
+			}
 		} else {
-			if (destinationQueue.size() != 0) {
-				currentDestination = destinationQueue.poll();
+			if (positionQueue.size() > 0) {
+				nextPosition = positionQueue.poll();
+				
+				//Try and get lock for the next step.
+			    int attempts    = 1;
+			    boolean gotPermit = nextPosition.moveInto(aStar.getGrid());
+
+			    //Did not get lock. Lets make n attempts.
+			    /*
+			    while (!gotPermit && attempts < 3) {
+			    	//System.out.println("[Gaut] " + guiWaiter.getName() + " got NO permit for " + tmpPath.toString() + " on attempt " + attempts);
+
+			    	//Wait for 1sec and try again to get lock.
+			    	try { Thread.sleep(1000); }
+			    	catch (Exception e){}
+
+			    	gotPermit   = new Position(nextPosition.getX(), nextPosition.getY()).moveInto(aStar.getGrid());
+			    	attempts ++;
+			    }
+			    */
+
+			    //Did not get lock after trying n attempts. So recalculating path.            
+			    if (!gotPermit) {
+			    	//System.out.println("[Gaut] " + guiWaiter.getName() + " No Luck even after " + attempts + " attempts! Lets recalculate");
+			    	positionQueue.clear();
+			    	guiMoveFromCurrentPositionTo(ultimateDestination);
+			    } else {
+			    	//Got the required lock. Lets move.
+			    	//System.out.println("[Gaut] " + guiWaiter.getName() + " got permit for " + tmpPath.toString());
+			    	currentPosition.release(aStar.getGrid());
+			    	currentPosition = nextPosition;
+			    }
 			}
 		}
 	}
@@ -180,28 +183,22 @@ public class MarketEmployeeGui implements Gui {
 		return yPos;
 	}
 	
-	public void doAnimate() {
-		xDestination = 200;
-		yDestination = 200;
-	}
-	
 	public void doGoToItemOnShelf(int isleNumber, int itemNumber) {
-		xDestination = MarketAnimationPanel.FIRST_SHELF_X + MarketAnimationPanel.SHELF_WIDTH + 5 + MarketAnimationPanel.SHELF_SPACING * isleNumber;
-		yDestination = MarketAnimationPanel.FIRST_SHELF_Y + (int)(MarketAnimationPanel.SHELF_HEIGHT * (itemNumber / 10.0));
-		isleDestination = isleNumber;
+		guiMoveFromCurrentPositionTo(new Position(4 + 3 * isleNumber, 5 + itemNumber));
 	}
 	
 	public void doGoToManager() {
-		xDestination = MarketAnimationPanel.FRONT_DESK_X - EMPLOYEE_SIZE - 15;
-		yDestination = MarketAnimationPanel.FRONT_DESK_Y;
-		isleDestination = -1;
-		goingToManager = true;
+		for (int x = 10; x > 0; x--) {
+			if (guiMoveFromCurrentPositionTo(new Position(x, 14)))
+				return;
+		}
+		// There isn't a spot, so just release the semaphore
+		if (role != null)
+			role.animationFinished();
 	}
 	
 	public void doGoHome() {
-		xDestination = EMPLOYEE_HOME_X;
-		yDestination = EMPLOYEE_HOME_Y;
-		
+		guiMoveFromCurrentPositionTo(homePosition);
 	}
 	
 	private int isleNumber(int x) {
@@ -209,6 +206,10 @@ public class MarketEmployeeGui implements Gui {
 		int isleWidth = MarketAnimationPanel.SHELF_SPACING;
 		int isleNumber = offsetXPos /  isleWidth;
 		return isleNumber;
+	}
+	
+	public void setRole(MarketEmployeeRole r) {
+		role = r;
 	}
 	
 }

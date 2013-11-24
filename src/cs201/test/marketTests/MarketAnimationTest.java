@@ -3,6 +3,7 @@ package cs201.test.marketTests;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,14 +50,25 @@ public class MarketAnimationTest {
 		animationPanel.addGui(managerGui);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui = new MarketEmployeeGui(animationPanel);
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui(animationPanel, 1, 1);
 		animationPanel.addGui(employeeGui);
 		
-		employeeGui.guiMoveFromCurrentPostionTo(new Position(8, 7));
-		Thread.sleep(5000);
-		employeeGui.guiMoveFromCurrentPostionTo(new Position(10, 10));
+		// Create a new MarketEmployee gui and add him to our animation panel
+		MarketEmployeeGui employeeGui2 = new MarketEmployeeGui(animationPanel, 1, 2);
+		animationPanel.addGui(employeeGui2);
 		
-		System.in.read();
+		// Create a new MarketEmployee gui and add him to our animation panel
+		MarketEmployeeGui employeeGui3 = new MarketEmployeeGui(animationPanel, 1, 3);
+		animationPanel.addGui(employeeGui3);
+		
+		Random generator = new Random();
+		while(true) {
+			employeeGui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(6));
+			employeeGui2.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(6));
+			employeeGui3.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(6));
+			Thread.sleep(6000);
+		}
+
 	}
 
 }
