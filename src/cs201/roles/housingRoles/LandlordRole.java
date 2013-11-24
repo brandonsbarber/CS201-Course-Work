@@ -33,6 +33,11 @@ public class LandlordRole extends Role implements Landlord {
 		public boolean needsMaintenance() {
 			return needsMaintenance;
 		}
+		
+		public void performMaintenance() {
+			residence.performMaintenance();
+			needsMaintenance = false;
+		}
 	}
 	
 	//Messages
@@ -114,7 +119,7 @@ public class LandlordRole extends Role implements Landlord {
 
 	private void FixProperty(myProperty mP) {
 	//perform maintenance task on property
-        mP.residence.performMaintenance(); //will likely be more specific
+        mP.performMaintenance();
 	}
 	
 	// Utilities
@@ -127,6 +132,9 @@ public class LandlordRole extends Role implements Landlord {
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
+		if (intent == Intention.ResidenceLandLord) {
+			//stub
+		}
 		
 	}
 

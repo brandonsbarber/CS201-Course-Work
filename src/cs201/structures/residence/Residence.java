@@ -1,5 +1,6 @@
 package cs201.structures.residence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent;
@@ -103,6 +104,16 @@ public class Residence extends Structure {
 	
 	public Role getOwner() {
 		return owner;
+	}
+	
+	public List<String> getFridgeContents() {
+		List<String> contents = new ArrayList<String>();
+		for (Food f:fridge) {
+			if(!contents.contains(f.getType())) {
+				contents.add(f.getType());
+			}
+		}
+		return contents;
 	}
 	
 	public boolean isApartment() {

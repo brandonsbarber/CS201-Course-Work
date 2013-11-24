@@ -1,5 +1,7 @@
 package cs201.roles.housingRoles;
 
+import java.util.List;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
@@ -8,9 +10,11 @@ import cs201.structures.residence.Residence;
 public class ResidentRole extends Role implements Resident {
 	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp};
 	ResidentState state;
+	private Residence residence;
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
+		residence = (Residence) myPerson.getHome();
 	}
 	
 	//Messages
@@ -29,20 +33,20 @@ public class ResidentRole extends Role implements Resident {
 	
 	public boolean pickAndExecuteAnAction() {
 		switch (state) {
-		case readyToSleep:
-				goToSleep();
-				return true;
-		case hungry: 
-			if (((Residence)(myPerson.getHome())).hasFood()) {
-				pickAndEatFromFridge();
-				return true;
-			}
-			else {
-				//getPerson().goToMarket();
-				return false;
-			}	
-		default: 
-			break;
+			case readyToSleep:
+					goToSleep();
+					return true;
+			case hungry: 
+				if (((Residence)(myPerson.getHome())).hasFood()) {
+					pickAndEatFromFridge();
+					return true;
+				}
+				else {
+					//getPerson().goToMarket();
+					return false;
+				}	
+			default: 
+				break;
 		}
 		return false;
 	}
@@ -50,14 +54,18 @@ public class ResidentRole extends Role implements Resident {
 	//Actions
 	
 	private void pickAndEatFromFridge() {
+		//animation go to fridge
 		state = ResidentState.eating;
-
-		//picks food from home's fridge list of Food and eats it.
+		List<String> fridgeContents = residence.getFridgeContents();
+		//picks food from home's fridge list of Food and eats it. Temporarily random choice
+		int rand = (int)Math.random()*fridgeContents.size();
+		residence.removeFood(fridgeContents.get(rand));
 		
+		//timer, gui animation
 	}
 	
 	private void goToSleep() {
-		//go to bed
+		//animation go to bed
 		state = ResidentState.sleeping;
 		//timer/wait for wakeup
 	}
