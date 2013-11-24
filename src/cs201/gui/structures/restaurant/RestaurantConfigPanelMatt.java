@@ -1,15 +1,19 @@
 package cs201.gui.structures.restaurant;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
+
+import javax.swing.JPanel;
 
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 import cs201.roles.Role;
 
-public class RestaurantGuiMatt extends StructurePanel {
-
-	public RestaurantGuiMatt(Rectangle2D r, int i, SimCity201 sc) {
-		super(r, i, sc);
+public class RestaurantConfigPanelMatt extends JPanel {
+	
+	public RestaurantConfigPanelMatt(Rectangle2D r, int i, SimCity201 sc) {
+		super();
 		// TODO Auto-generated constructor stub
 	}
 

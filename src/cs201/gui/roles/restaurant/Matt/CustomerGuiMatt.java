@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
 
 public class CustomerGuiMatt implements Gui {
@@ -21,7 +21,7 @@ public class CustomerGuiMatt implements Gui {
 	private int waitingAreaX = DEFAULTWAITINGAREA;
 	private int waitingAreaY = DEFAULTWAITINGAREA;
 
-	RestaurantGuiMatt panel;
+	RestaurantConfigPanelMatt panel;
 
 	private int xPos, yPos;
 	private int xDestination, yDestination;
@@ -32,7 +32,7 @@ public class CustomerGuiMatt implements Gui {
 	
 	private String eating;
 
-	public CustomerGuiMatt(RestaurantCustomerRoleMatt c, RestaurantGuiMatt r) {
+	public CustomerGuiMatt(RestaurantCustomerRoleMatt c, RestaurantConfigPanelMatt r) {
 		agent = c;
 		xPos = RESTAURANTENTRANCE;
 		yPos = RESTAURANTENTRANCE;

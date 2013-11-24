@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 
@@ -27,9 +27,9 @@ public class WaiterGuiMatt implements Gui {
     private BreakState breakState = BreakState.none;
     private String message = "";
     
-    private RestaurantGuiMatt panel;
+    private RestaurantConfigPanelMatt panel;
     
-    public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantGuiMatt r) {
+    public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantConfigPanelMatt r) {
         this.role = role;
         this.panel = r;
     }

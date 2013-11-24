@@ -92,7 +92,7 @@ public class RestaurantMatt extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {
-		if (time.equalsIgnoreDay(this.closingTime)) {
+		if (this.closingTime != null && time.equalsIgnoreDay(this.closingTime)) {
 			host.closingTime();
 			cook.closingTime();
 			cashier.closingTime();

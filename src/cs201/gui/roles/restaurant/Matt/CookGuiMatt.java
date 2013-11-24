@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 
 public class CookGuiMatt implements Gui {

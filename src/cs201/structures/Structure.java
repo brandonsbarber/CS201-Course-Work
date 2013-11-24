@@ -115,6 +115,7 @@ public abstract class Structure extends Rectangle2D.Double {
 	 * @param time The Structure's closing time
 	 */
 	public void setClosingTime(CityTime time) {
+		this.closingTime = new CityTime();
 		this.closingTime.day = null;
 		this.closingTime.hour = time.hour;
 		this.closingTime.minute = time.minute;
