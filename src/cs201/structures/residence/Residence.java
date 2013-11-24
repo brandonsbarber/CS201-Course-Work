@@ -40,8 +40,8 @@ public class Residence extends Structure {
 		}
 	}
 	
-	public Residence(int x, int y, int width, int height) {
-	    super(x, y, width, height, 0); //what should ID be?
+	public Residence(int x, int y, int width, int height, int id) {
+	    super(x, y, width, height, id);
 	    owner = null;
 	    resident = null;
 	}
