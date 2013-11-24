@@ -1,6 +1,8 @@
 package cs201.interfaces.agents;
 
 
+import java.util.LinkedList;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.helper.CityTime;
 import cs201.interfaces.agents.transit.Vehicle;
@@ -60,10 +62,10 @@ public interface Person {
 	 * 				with highest priority and immediately goes to the bank, returning to his 
 	 *  			ResidentRole after getting money from the bank.
 	 * @param from The Role calling this method
-	 * @param intent What the Role would like this PersonAgent to go do
+	 * @param intents A list of things to do (i.e. go to Bank, go to Market)
 	 * @param returnToCurrentAction Whether the PersonAgent should return to the previous Role after completing the new Action
 	 */
-	public abstract void addIntermediateAction(Role from, Intention intent, boolean returnToCurrentAction);
+	public abstract void addIntermediateActions(Role from, LinkedList<Intention> intents, boolean returnToCurrentAction);
 	
 	/**
 	 * Adds money to this PersonAgent's money on hand

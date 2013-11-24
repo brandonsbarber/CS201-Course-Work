@@ -245,7 +245,7 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
-			//this.addActionToPlanner(Intention.ResidenceRelax, home, false);
+			this.addActionToPlanner(Intention.ResidenceRelax, home, false);
 			return true;
 		}
 		return false;
@@ -287,7 +287,7 @@ public class PersonAgent extends Agent implements Person {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
 				Do("Reusing Role: " + r);
-				//r.startInteraction(a.intent);
+				r.startInteraction(a.intent);
 				r.setActive(true);
 				return;
 			}
@@ -296,7 +296,7 @@ public class PersonAgent extends Agent implements Person {
 		roles.add(newRole);
 		newRole.setPerson(this);
 		Do("Received new Role: " + newRole);
-		//newRole.startInteraction(a.intent);
+		newRole.startInteraction(a.intent);
 		newRole.setActive(true);
 		
 		currentAction = a;
@@ -346,32 +346,36 @@ public class PersonAgent extends Agent implements Person {
 	}
 	
 	@Override
-	public void addIntermediateAction(Role from, Intention intent, boolean returnToCurrentAction) {		
+	public void addIntermediateActions(Role from, LinkedList<Intention> intents, boolean returnToCurrentAction) {		
 		// Deactivate sending Role
 		from.setActive(false);
+		int numActivities = intents.size();
 		
-		// Create a new action with high priority and put it at front of planner
-		switch (intent) {
-		case ResidenceSleep: this.addActionToPlanner(intent, home, true); break;
-		case ResidenceEat: this.addActionToPlanner(intent, home, true); break;
-		case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-		case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-		case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-		case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-		case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-		case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
-		case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
-		case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
-		default: {
-			Do("addIntermediateAction(Intention, boolean):: Provided bad Intention");
-			return;
-		}
+		while (intents.size() > 0) {
+			// Create a new action with high priority and put it at front of planner
+			Intention intent = intents.removeLast();
+			switch (intent) {
+			case ResidenceSleep: this.addActionToPlanner(intent, home, true); break;
+			case ResidenceEat: this.addActionToPlanner(intent, home, true); break;
+			case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
+			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
+			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
+			default: {
+				Do("addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
+				return;
+			}
+			}
 		}
 		
-		// If Role requests that the PersonAgent return after, add that action back at position 1
+		// If Role requests that the PersonAgent return after, add that action back at the correct position
 		if (returnToCurrentAction) {
 			currentAction.active = false;
-			planner.add(1, currentAction);
+			planner.add(numActivities, currentAction);
 		}
 	}
 	
