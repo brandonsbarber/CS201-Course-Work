@@ -13,8 +13,26 @@ import javax.swing.JPanel;
 
 import cs201.structures.Structure;
 
-public class CityPanel extends JPanel implements MouseListener {
+public class CityPanel extends JPanel implements MouseListener
+{
+	private static final int GRID_SIZE = 25;
+
 	ArrayList<Structure> buildings;
+	
+	private String[][] cityGrid = 
+	{
+			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
+			{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},
+			{"G","S","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","S","G"},
+			{"G","S","C","S","S","S","S","C","S","S","S","S","C","S","S","S","S","R","S","G"},
+			{"G","S","R","S","G","G","S","R","S","G","G","S","R","S","G","G","S","R","S","G"},
+			{"G","S","R","S","G","G","S","R","S","G","G","S","R","S","G","G","S","R","S","G"},
+			{"G","S","C","S","S","S","S","C","S","S","S","S","C","S","S","S","S","R","S","G"},
+			{"G","S","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","R","S","G"},
+			{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},
+			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
+	};
+	
 	
 	public CityPanel() {
 		buildings = new ArrayList<Structure>();
@@ -30,12 +48,32 @@ public class CityPanel extends JPanel implements MouseListener {
 		g2.setColor(Color.LIGHT_GRAY.brighter().brighter());
 		g2.fillRect(0,0,(int)bounds.getWidth(),(int)bounds.getHeight());
 		
-		g2.setColor(Color.BLACK);
-		
-		for(int i = 0; i <= 250; i+=50)
+		for(int y = 0; y < cityGrid.length; y++)
 		{
-			g2.drawLine(0, i, 1000, i);
+			for(int x = 0; x < cityGrid[y].length; x++)
+			{
+				if(cityGrid[y][x].equals("G"))
+				{
+					g2.setColor(Color.GREEN);
+				}
+				else if(cityGrid[y][x].equals("R"))
+				{
+					g2.setColor(Color.GRAY.darker());
+				}
+				else if(cityGrid[y][x].equals("C"))
+				{
+					g2.setColor(Color.GRAY.brighter());
+				}
+				else if(cityGrid[y][x].equals("S"))
+				{
+					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
+				}
+				
+				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+			}
 		}
+		
+		g2.setColor(Color.BLACK);
 		
 		for (int i = 0; i < buildings.size(); i++) {
 			Structure s = buildings.get(i);
