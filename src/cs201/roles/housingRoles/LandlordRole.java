@@ -47,6 +47,7 @@ public class LandlordRole extends Role implements Landlord {
 		for (myProperty mP : myProperties) {
 			if(mP.renter == r) {
 				mP.state = RentState.paid;
+				myPerson.addMoney(amt);
 			}
 		}
 	}

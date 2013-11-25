@@ -47,6 +47,9 @@ public class LandlordRenterInteractionTest {
 		renterRole.pickAndExecuteAnAction();
 		renterRole.msgRentDueYouOwe(30);
 		renterRole.pickAndExecuteAnAction();
+		renterRole.msgRentDueYouOwe(30);
+		renterRole.pickAndExecuteAnAction();
+		renterRole.pickAndExecuteAnAction();
 	}
 
 }

@@ -16,6 +16,9 @@ public class ResidentGui implements Gui {
 	
 	private int xPos;
 	private int yPos;
+	private int xDestination;
+	private int yDestination;
+	
 	
 	public ResidentGui() {
 		this(null);
@@ -24,6 +27,8 @@ public class ResidentGui implements Gui {
 	public ResidentGui(ResidentRole newRole) {
 		xPos = startX;
 		yPos = startY;
+		xDestination = xPos;
+		yDestination = yPos;
 		role = newRole;
 		isPresent = true;
 	}
@@ -31,6 +36,23 @@ public class ResidentGui implements Gui {
 	@Override
 	public void updatePosition() {
 		// TODO Auto-generated method stub
+		if (xPos<xDestination) {
+			xPos++;
+		}
+		else if (xPos>xDestination) {
+			xPos--;
+		}
+		
+		if (yPos<yDestination) {
+			yPos++;
+		}
+		else if (yPos>yDestination) {
+			yPos--;
+		}
+		
+		if (xPos==xDestination && yPos==yDestination) {
+			
+		}
 		return;
 	}
 

@@ -30,7 +30,7 @@ public class ResidenceAnimationTest {
 		wrapper.setVisible(true);
 		wrapper.setSize(new Dimension(300, 300));
 		
-		//residenceGui = new ResidenceGui();
+		residenceGui = new ResidenceGui();
         wrapper.add(residenceGui);
 		
 	}
