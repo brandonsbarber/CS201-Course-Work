@@ -223,6 +223,26 @@ public class MarketManagerRole extends Role implements MarketManager {
 		stateChanged();
 	}
 	
+	/**
+	 * Sent by a structure to pay a bill.
+	 * @param structure The structure in debt.
+	 * @param amount The amount to put towards the outstanding balance.
+	 */
+	public void msgHereIsMyPayment(Structure structure, float amount) {
+		// Pay the structure's balance
+		StructureRecord record = structureBalance.get(structure);
+		if (record != null) {
+			record.balance -= amount;
+		}
+		
+		stateChanged();
+	}
+	
+	/**
+	 * Sent by a MarketConsumer to pay a bill.
+	 * @param consumer The MarketConsumer in debt.
+	 * @param amount The amount to put towards the outstanding balance.
+	 */
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount) {
 		// Pay the consumer's balance
 		ConsumerRecord record = consumerBalance.get(consumer);
