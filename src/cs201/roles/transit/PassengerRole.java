@@ -297,6 +297,7 @@ public class PassengerRole extends Role implements Passenger
 		else if (currentVehicle instanceof Bus)
 		{
 			((Bus)currentVehicle).msgStaying(this);
+			state = PassengerState.InTransit;
 		}
 	}
 	
