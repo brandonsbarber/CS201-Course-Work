@@ -57,6 +57,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
+		Do("Passenger "+p+" done boarding.");
 		passengers.add(p);
 		justBoarded.add(p);
 		sem.release();
@@ -84,16 +85,7 @@ public class BusAgent extends VehicleAgent implements Bus
 		BusStop s = route.getNextStop();
 		msgSetDestination(s);
 		
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e1) 
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		animate();
 		
 		for(Passenger pass : passengers)
 		{
@@ -108,9 +100,11 @@ public class BusAgent extends VehicleAgent implements Bus
 			}
 		}
 		List<Passenger> newPassengers = s.getPassengerList(this);
+		Do("Asking for passengers from "+s);
 		
 		for(Passenger pass : newPassengers)
 		{
+			Do("Messaging passenger");
 			pass.msgPleaseBoard(this);
 			try
 			{

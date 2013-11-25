@@ -24,7 +24,7 @@ public class PassengerGui implements Gui
 
 	public PassengerGui(PassengerRole pass,CityPanel city)
 	{
-		this(pass,city,50,50);
+		this(pass,city,pass.getCurrentLocation());
 	}
 	
 	public PassengerGui(PassengerRole pass,CityPanel city, int x, int y)
@@ -36,6 +36,11 @@ public class PassengerGui implements Gui
 		destY = y;
 		fired = true;
 		present = false;
+	}
+	
+	public PassengerGui(PassengerRole pass,CityPanel city, Structure s)
+	{
+		this(pass,city,(int)s.x,(int)s.y);
 	}
 	
 	public void setPresent(boolean present)

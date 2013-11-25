@@ -23,6 +23,7 @@ import cs201.gui.transit.PassengerGui;
 import cs201.gui.transit.VehicleGui;
 import cs201.helper.CityDirectory;
 import cs201.helper.transit.BusRoute;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
 import cs201.structures.restaurant.RestaurantMatt;
@@ -96,18 +97,18 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		populateDrivingMap();
 		//Testing Hacks
-		/*
-		 * stops.add(new BusStop(2*25,2*25,25,25,1));
-		stops.add(new BusStop(7*25,2*25,25,25,2));
-		stops.add(new BusStop(7*25,7*25,25,25,3));
-		stops.add(new BusStop(2*25,7*25,25,25,4));
+		
+		stops.add(new BusStop(2*25,2*25,25,25,1, null));
+		stops.add(new BusStop(7*25,2*25,25,25,2, null));
+		stops.add(new BusStop(7*25,7*25,25,25,3, null));
+		stops.add(new BusStop(2*25,7*25,25,25,4, null));
 		
 		for(BusStop stop : stops)
 		{
 			buildings.add(stop);
 		}
 		
-		 * BusAgent bus = new BusAgent(new BusRoute(stops),0);
+		BusAgent bus = new BusAgent(new BusRoute(stops),0);
 		VehicleGui busG;
 		guis.add(busG = new VehicleGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
 		
@@ -115,24 +116,26 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		bus.startThread();
 		
-		BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
+		/*BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
 		VehicleGui busG2;
 		guis.add(busG2 = new VehicleGui(bus2,this,(int)stops.get(2).x,(int)stops.get(2).y));
 		
 		bus2.setGui(busG2);
 		
-		bus2.startThread();
+		bus2.startThread();*/
 		
 		CarAgent car = new CarAgent();
 		VehicleGui gui;
 		guis.add(gui = new VehicleGui(car,this));
 		
-		Structure startLoc = new RestaurantMatt(18*25,2*25,25,25,1);
-		Structure endLoc = new RestaurantMatt(50,50,25,25,2);
+		Structure startLoc = new BusStop(18*25,2*25,25,25,1, null);
+		Structure endLoc = new BusStop(50,50,25,25,2, null);
 		
-		PassengerRole pass = new PassengerRole(startLoc);
+		PassengerRole pass = new PassengerRole(stops.get(0));
 		
-		PassengerGui pgui = new PassengerGui(pass,this,(int)startLoc.x,(int)startLoc.y);
+		pass.setBusStops(stops);
+		
+		PassengerGui pgui = new PassengerGui(pass,this);
 		
 		pass.setGui(pgui);
 		
@@ -140,9 +143,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		PassengerTestAgent passAgent = new PassengerTestAgent(pass);
 		
-		pass.msgGoTo(endLoc);
+		pass.msgGoTo(stops.get(1));
 		
-		pass.addCar(car);
+		//pass.addCar(car);
 		
 		car.setGui(gui);
 		
@@ -152,17 +155,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		TruckAgent truck = new TruckAgent(stops.get(0));
 		
-		VehicleGui tGui = new VehicleGui(truck,this,(int)stops.get(0).x,(int)stops.get(0).y);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(1),1);
 		
-		truck.setGui(tGui);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
 		
-		guis.add(tGui);
-		
-		truck.msgMakeDeliveryRun(null, stops.get(1));
-		
-		truck.msgMakeDeliveryRun(null, stops.get(2));
-		
-		truck.startThread();*/
+		truck.startThread();
 		
 		timer.start();
 	}
