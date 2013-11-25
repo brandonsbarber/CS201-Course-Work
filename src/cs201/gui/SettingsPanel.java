@@ -2,6 +2,7 @@ package cs201.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -28,14 +29,25 @@ public class SettingsPanel extends JPanel implements ActionListener
 		panelMap = new HashMap<String,ArrayList<ConfigPanel>>();
 		contentsScrollPane = new JScrollPane();
 		
+		JPanel topPanels = new JPanel();
+		topPanels.setLayout(new GridLayout(2,1,0,0));
 		
 		categories = new JComboBox();
 		categories.addActionListener(this);
 		specifics = new JComboBox();
+		specifics.addActionListener(this);
 
-		setLayout(new FlowLayout());
-		add(categories);
-		add(specifics);
+		setLayout(new BorderLayout());
+		topPanels.add(categories);
+		topPanels.add(specifics);
+		
+		add(topPanels,BorderLayout.NORTH);
+		
+		//ConfigPanel pan = new ConfigPanel();
+		
+		//contentsScrollPane.setViewportView(pan);
+		
+		add(contentsScrollPane);
 	}
 	
 	public void addPanel (String tabTitle)
@@ -60,6 +72,10 @@ public class SettingsPanel extends JPanel implements ActionListener
 			{
 				specifics.addItem(panel);
 			}
+		}
+		else if(e.getSource() == specifics)
+		{
+			contentsScrollPane.setViewportView((ConfigPanel)specifics.getSelectedItem());
 		}
 		revalidate();
 		repaint();
