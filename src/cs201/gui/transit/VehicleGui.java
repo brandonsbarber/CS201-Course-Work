@@ -45,7 +45,6 @@ public class VehicleGui implements Gui
 	
 	public void doGoToLocation(Structure structure)
 	{
-		System.out.println("Going to location. "+structure);
 		destination = structure;
 		destX = (int)structure.getX();
 		destY = (int)structure.getY();

@@ -104,14 +104,12 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		Do("Clearing waypoints?");
 		stateChanged();
 	}
 
 	@Override
 	public void msgPleaseBoard(Vehicle v)
 	{
-		Do("Adding a board request");
 		boardingRequest.add(v);
 		waitingForVehicle.release();
 	}
@@ -121,7 +119,6 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
-		Do("Arrived at "+s);
 		stateChanged();
 	}
 
@@ -134,11 +131,8 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		Do("Running scheduler");
-		Do(""+waypoints.size());
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
-			Do("ENDING?");
 			finishMoving();
 			return false;
 		}
@@ -149,7 +143,6 @@ public class PassengerRole extends Role implements Passenger
 		}
 		if(!boardingRequest.isEmpty())
 		{
-			Do("Processing board requests");
 			checkBoardingRequest(boardingRequest.remove(0));
 			return true;
 			
@@ -164,7 +157,6 @@ public class PassengerRole extends Role implements Passenger
 			moveToLocation(waypoints.peek());
 			return true;
 		}
-		Do("Reached end");
 		return false;
 	}
 
@@ -227,7 +219,6 @@ public class PassengerRole extends Role implements Passenger
 		}
 		else
 		{
-			Do("Adding to waypoints");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
@@ -247,7 +238,6 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void checkBoardingRequest(Vehicle remove)
 	{
-		Do("Checking boarding request");
 		if(remove instanceof Bus)
 		{
 			Bus bus = (Bus)remove;
@@ -277,12 +267,8 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void processArrival()
 	{
-		Do("PROCESSING ARRIVAL Reaching?!");
-		Do(""+waypoints);
-		Do(""+waypoints.size());
 		if(currentLocation == waypoints.peek().s)
 		{
-			Do("Hello? Removing");
 			Structure s = waypoints.remove().s;
 			if(currentVehicle != null)
 			{
@@ -293,7 +279,6 @@ public class PassengerRole extends Role implements Passenger
 				else if(currentVehicle instanceof Bus)
 				{
 					((Bus)currentVehicle).msgLeaving(this);
-					Do("Messaging Bus Leaving");
 				}
 				currentVehicle = null;
 			}
@@ -313,7 +298,6 @@ public class PassengerRole extends Role implements Passenger
 		switch(point.m)
 		{
 			case Walk :
-				Do("Walk path");
 				if(!testing)
 				{
 					gui.doGoToLocation(point.s);
@@ -328,10 +312,8 @@ public class PassengerRole extends Role implements Passenger
 				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;
-				Do("Waypoints after animation: "+waypoints.size());
 				break;
 			case Car :
-				Do("Car path");
 				car.msgCallCar(this, currentLocation, destination);
 				
 				if(!testing)
@@ -339,7 +321,6 @@ public class PassengerRole extends Role implements Passenger
 					try
 					{
 						waitingForVehicle.acquire();
-						Do("Released");
 					}
 					catch(InterruptedException e)
 					{
@@ -349,14 +330,12 @@ public class PassengerRole extends Role implements Passenger
 				
 				break;
 			case Bus : 
-				Do("Bus path");
 				((BusStop)currentLocation).addPassenger(this);
 				if(!testing)
 				{
 					try
 					{
 						waitingForVehicle.acquire();
-						Do("Released");
 					}
 					catch(InterruptedException e)
 					{
@@ -365,7 +344,6 @@ public class PassengerRole extends Role implements Passenger
 				}
 				break;
 		}
-		Do("Waypoints at end of call: "+waypoints.size());
 	}
 
 	@Override

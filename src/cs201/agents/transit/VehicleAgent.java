@@ -23,7 +23,6 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public void msgAnimationDestinationReached()
 	{
 		animationSemaphore.release();
-		System.out.println("Animation Reached");
 	}
 	
 	public void msgSetDestination (Structure destination)
@@ -46,7 +45,6 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	{
 		if(gui == null)
 		{
-			Do("GUI is null");
 			return;
 		}
 		gui.doGoToLocation(destination);

@@ -53,7 +53,6 @@ public class CarAgent extends VehicleAgent implements Car
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		Do("Leaving from "+p);
 		sem.release();
 	}
 
@@ -87,13 +86,10 @@ public class CarAgent extends VehicleAgent implements Car
 		System.out.println("We have reached destination.");
 		try
 		{
-			Do("Blocking");
 			sem.acquire();
-			Do("Done blocking");
 		}
 		catch (InterruptedException e)
 		{
-			Do("Problem waiting.");
 			e.printStackTrace();
 		}
 		p = null;
@@ -108,19 +104,14 @@ public class CarAgent extends VehicleAgent implements Car
 	private void processPickup(PickupRequest removed)
 	{
 		msgSetDestination(removed.start);
-		
-		System.out.println("Setting destination. "+removed.start+" and "+removed.destination);
-		
+				
 		animate();
 		
 		removed.p.msgPleaseBoard(this);
-		
-		System.out.println("Blocking");
-		
+				
 		try
 		{
 			sem.acquire();
-			System.out.println("Done blocking");
 		}
 		catch (InterruptedException e)
 		{

@@ -55,23 +55,19 @@ public class TruckAgent extends VehicleAgent implements Truck
 	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
 	{
 		deliveries.add(new Delivery(inventory,destination,price));
-		System.out.println("Got a delivery.");
 		stateChanged();
 	}
 
 	@Override
 	protected boolean pickAndExecuteAnAction()
 	{
-		Do("Truck hello.");
 		if(deliveries.isEmpty() && currentLocation != homeStructure)
 		{
-			Do("returning home");
 			returnHome();
 			return true;
 		}
 		else
 		{
-			Do("removing");
 			for(int i = 0; i < deliveries.size(); i++)
 			{
 				if(deliveries.get(i).s == DeliveryState.Done)
@@ -84,13 +80,11 @@ public class TruckAgent extends VehicleAgent implements Truck
 			{
 				if(d.s == DeliveryState.NotDone)
 				{
-					Do("Making delivery run");
 					makeDeliveryRun(d);
 					return true;
 				}
 			}
 		}
-		Do("Reached end");
 		return false;
 	}
 
@@ -105,7 +99,6 @@ public class TruckAgent extends VehicleAgent implements Truck
 	{
 		gui.setPresent(true);
 		msgSetDestination (homeStructure);
-		Do(""+(gui == null));
 		animate();
 		
 		msgSetDestination (d.destination);
