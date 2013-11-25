@@ -36,7 +36,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	
 	private int attemptedOrders;
 	private final double STARTINGMONEY = 15.00;
-	private double money;
+	//private double money;
 	private double checkAmount;
 	
 	private Semaphore atTargetPosition = new Semaphore(0, false); // used for animation
@@ -57,7 +57,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	public RestaurantCustomerRoleMatt(RestaurantCashierRoleMatt cashier) {
 		super();
 		this.cashier = cashier;
-		this.money = STARTINGMONEY;
+		//this.money = STARTINGMONEY;
 		this.checkAmount = 0;
 		this.attemptedOrders = 0;
 		this.forceChoice = "";
@@ -66,7 +66,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	public RestaurantCustomerRoleMatt() {
 		super();
 		this.cashier = null;
-		this.money = STARTINGMONEY;
+		//this.money = STARTINGMONEY;
 		this.checkAmount = 0;
 		this.attemptedOrders = 0;
 		this.forceChoice = "";
@@ -132,7 +132,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	
 	@Override
 	public void msgHereIsYourChange(double change) {
-		money = change;
+		myPerson.setMoney(change);
 		event = AgentEvent.checkPaid;
 		stateChanged();
 	}
@@ -215,6 +215,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 		DoWaitTimeTooLong();
 		event = AgentEvent.none;
 		attemptedOrders = 0;
+		DeactivateRole();
 	}
 	
 	private void SitDown() {
@@ -255,8 +256,8 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	
 	private void PayCheck() {
 		DoPayCheck(); // contains animation
-		cashier.msgPayCheck(this, money, checkAmount);
-		money = 0;
+		cashier.msgPayCheck(this, myPerson.getMoney(), checkAmount);
+		myPerson.setMoney(0);
 	}
 	
 	private void LeaveRestaurant() {
@@ -265,6 +266,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 		state = AgentState.DoingNothing;
 		event = AgentEvent.none;
 		attemptedOrders = 0;
+		DeactivateRole();
 	}
 
 	// Utilities -------------------------------------------------------------
@@ -340,7 +342,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 					choice = null;
 					do {
 						choice = menu.randomItem();
-						if (menu.getPrice(choice) <= money) {
+						if (menu.getPrice(choice) <= myPerson.getMoney()) {
 							break;
 						}
 						menu.removeItem(choice);
@@ -382,6 +384,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				event = AgentEvent.doneEating;
+				myPerson.justAte();
 				stateChanged();
 			}
 		});
@@ -414,6 +417,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 		System.out.println("Customer " + this.toString() + " has left the restaurant.");
 	}
 	
+	private void DeactivateRole() {
+		this.isActive = false;
+		this.customerGui.setPresent(false);
+	}
+	
 	/**
 	 * The CustomerGui informs the Customer that it is done animating to its destination, freeing up the CustomerAgent
 	 */
@@ -437,7 +445,10 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 
 	@Override
 	public void startInteraction(Intention intent) {
-		this.msgIsHungry();
+		if (intent == Intention.RestaurantCustomer) {
+			this.customerGui.setPresent(true);
+			this.msgIsHungry();
+		}
 	}
 
 	@Override

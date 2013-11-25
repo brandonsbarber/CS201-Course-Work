@@ -84,7 +84,7 @@ public class CustomerGuiMatt implements Gui {
 	
 	public void resetHungry() {
 		isHungry = false;
-		panel.setPersonEnabled(agent);
+		//panel.setPersonEnabled(agent);
 		state = guiState.none;
 	}
 	

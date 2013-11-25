@@ -140,14 +140,17 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you have active roles, those have next highest priority (because you're currently
 		// doing something)
-		boolean performedAction = false;
+		boolean activeRole = false;
 		synchronized(roles) {
 			for (Role r : roles) {
 				if (r.getActive()) {
-					performedAction = r.pickAndExecuteAnAction() || performedAction;
+					activeRole = true;
+					if (r.pickAndExecuteAnAction()) {
+						return true;
+					}
 				}
 			}
-			if (performedAction) {
+			if (activeRole) {
 				return true;
 			}
 		}
@@ -291,21 +294,25 @@ public class PersonAgent extends Agent implements Person {
 			return;
 		}
 		
+		boolean haveRole = false;
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
 				Do("Reusing Role: " + r);
 				r.startInteraction(a.intent);
 				r.setActive(true);
-				return;
+				haveRole = true;
+				break;
 			}
 		}
 		
-		roles.add(newRole);
-		newRole.setPerson(this);
-		Do("Received new Role: " + newRole);
-		newRole.startInteraction(a.intent);
-		newRole.setActive(true);
+		if (!haveRole) {
+			roles.add(newRole);
+			newRole.setPerson(this);
+			Do("Received new Role: " + newRole);
+			newRole.startInteraction(a.intent);
+			newRole.setActive(true);
+		}
 		
 		currentAction = a;
 		planner.remove(a);
