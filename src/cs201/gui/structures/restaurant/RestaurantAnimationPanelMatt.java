@@ -47,7 +47,7 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     private final int COOKAREAGRILL1_X = (int)(WINDOWX * .52f);
     private final int COOKAREAGRILL1_Y = COOKAREAMAIN_Y + (int)(WINDOWY * .01f);
     private final int COOKAREAGRILL2_X = (int)(WINDOWX * .59f);
-    private final int COOKAREAGRILL2_Y = COOKAREAMAIN_Y + (int)(WINDOWY * .01f);;
+    private final int COOKAREAGRILL2_Y = COOKAREAMAIN_Y + (int)(WINDOWY * .01f);
     
     // PLATING AREA
     public static final int PLATINGAREA_X = (int)(WINDOWX * .34f);

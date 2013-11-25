@@ -26,12 +26,14 @@ public class RestaurantMatt extends Restaurant {
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
+		host.setRestaurant(this);
 		
 		this.cook = new RestaurantCookRoleMatt();
 		CookGuiMatt cookGui = new CookGuiMatt((RestaurantCookRoleMatt) cook);
 		cookGui.setPresent(false);
 		((RestaurantCookRoleMatt) cook).setGui(cookGui);
 		this.panel.addGui(cookGui);
+		cook.setRestaurant(this);
 		
 		this.cashier = new RestaurantCashierRoleMatt();
 		CashierGuiMatt cashierGui = new CashierGuiMatt((RestaurantCashierRoleMatt) cashier);
@@ -39,6 +41,7 @@ public class RestaurantMatt extends Restaurant {
 		((RestaurantCashierRoleMatt) cashier).setGui(cashierGui);
 		((RestaurantCashierRoleMatt) cashier).setHost((RestaurantHostRoleMatt) host);
 		this.panel.addGui(cashierGui);
+		cashier.setRestaurant(this);
 		
 		this.waiters = new ArrayList<RestaurantWaiterRole>();
 		for (int i = 0; i < INITIALWAITERS; i++) {
@@ -48,6 +51,7 @@ public class RestaurantMatt extends Restaurant {
 			((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
 			waiters.add(newWaiter);
 			this.panel.addGui(waiterGui);
+			newWaiter.setRestaurant(this);
 		}
 	}
 	
@@ -75,6 +79,7 @@ public class RestaurantMatt extends Restaurant {
 				waiters.add(newWaiter);
 				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
 				this.panel.addGui(waiterGui);
+				newWaiter.setRestaurant(this);
 				return newWaiter;
 			}
 			
@@ -90,6 +95,7 @@ public class RestaurantMatt extends Restaurant {
 			newCustomer.setCashier((RestaurantCashierRoleMatt) cashier);
 			newCustomer.setHost((RestaurantHostRoleMatt) host);
 			this.panel.addGui(customerGui);
+			newCustomer.setRestaurant(this);
 			return newCustomer;
 		}
 		default: {
@@ -103,11 +109,15 @@ public class RestaurantMatt extends Restaurant {
 	public void updateTime(CityTime time) {
 		if (this.closingTime != null && time.equalsIgnoreDay(this.closingTime)) {
 			host.closingTime();
-			cook.closingTime();
-			cashier.closingTime();
-			for (RestaurantWaiterRole r : waiters) {
-				r.closingTime();
-			}
+		}
+	}
+	
+	@Override
+	public void closingTime() {
+		cashier.closingTime();
+		cook.closingTime();
+		for (RestaurantWaiterRole r : waiters) {
+			r.closingTime();
 		}
 	}
 

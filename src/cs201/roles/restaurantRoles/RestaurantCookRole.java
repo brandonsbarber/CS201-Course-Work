@@ -24,4 +24,8 @@ public abstract class RestaurantCookRole extends Role {
 	@Override
 	public abstract void closingTime();
 	
+	public void setRestaurant(Restaurant m) {
+		this.restaurant = m;
+	}
+	
 }

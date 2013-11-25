@@ -122,5 +122,10 @@ public abstract class Restaurant extends Structure {
 	public boolean getOpen() {
 		return isOpen;
 	}
+	
+	/**
+	 * Should be called by the Host when he believes it's okay for all the other employees to go Home
+	 */
+	public abstract void closingTime();
 
 }
