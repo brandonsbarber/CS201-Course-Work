@@ -22,8 +22,13 @@ public class BusAgent extends VehicleAgent implements Bus
 	public BusAgent(BusRoute route)
 	{
 		passengers = Collections.synchronizedList(new ArrayList<Passenger>());
+		justBoarded = new ArrayList<Passenger>();
 		this.route = route;
 		sem = new Semaphore(0);
+		
+		msgSetLocation(route.getNextStop());
+		System.out.println(currentLocation);
+		stateChanged();
 	}
 	
 	public BusRoute getRoute()
@@ -73,7 +78,18 @@ public class BusAgent extends VehicleAgent implements Bus
 	{
 		BusStop s = route.getNextStop();
 		msgSetDestination(s);
-		//gui.doGoToDestination()
+		
+		gui.doGoToLocation(destination);
+		try
+		{
+			animationSemaphore.acquire();
+		}
+		catch (InterruptedException e1) 
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		for(Passenger pass : passengers)
 		{
 			pass.msgReachedDestination(s);

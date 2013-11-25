@@ -24,9 +24,14 @@ public class VehicleGui implements Gui
 	
 	public VehicleGui(VehicleAgent vehicle,CityPanel city)
 	{
+		this(vehicle,city,50,50);
+	}
+	
+	public VehicleGui(VehicleAgent vehicle,CityPanel city, int x, int y)
+	{
 		this.vehicle = vehicle;
-		x = 50;
-		y = 50;
+		this.x = x;
+		this.y = y;
 		destX = x;
 		destY = y;
 		fired = true;

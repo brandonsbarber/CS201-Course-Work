@@ -10,16 +10,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import cs201.agents.PassengerTestAgent;
+import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.gui.transit.VehicleGui;
+import cs201.helper.transit.BusRoute;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
 import cs201.structures.restaurant.RestaurantMatt;
+import cs201.structures.transit.BusStop;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
@@ -66,6 +70,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 	
+	private List<BusStop> stops;
+	
 	
 	public CityPanel()
 	{
@@ -73,6 +79,26 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		buildings = new ArrayList<Structure>();
 		guis = new ArrayList<VehicleGui>();
+		
+		stops = new ArrayList<BusStop>();
+		
+		stops.add(new BusStop(2*25,2*25,25,25,1));
+		stops.add(new BusStop(7*25,2*25,25,25,2));
+		stops.add(new BusStop(7*25,7*25,25,25,3));
+		stops.add(new BusStop(2*25,7*25,25,25,4));
+		
+		for(BusStop stop : stops)
+		{
+			buildings.add(stop);
+		}
+		
+		BusAgent bus = new BusAgent(new BusRoute(stops));
+		VehicleGui busG;
+		guis.add(busG = new VehicleGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
+		
+		bus.setGui(busG);
+		
+		bus.startThread();
 		
 		addMouseListener(this);
 		
@@ -95,7 +121,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		car.setGui(gui);
 		
-		car.startThread();
+		//car.startThread();
 		
 		passAgent.startThread();
 		
