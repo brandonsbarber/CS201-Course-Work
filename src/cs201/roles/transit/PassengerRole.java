@@ -32,6 +32,8 @@ public class PassengerRole extends Role implements Passenger
 	
 	public Queue<Move> waypoints;
 	
+	private List<BusStop> busStops;
+	
 	class Move
 	{
 		Structure s;
@@ -54,6 +56,8 @@ public class PassengerRole extends Role implements Passenger
 	
 	PassengerGui gui;
 	
+	public static final int WALK_DISTANCE = 100;
+	
 	public PassengerRole(Structure curLoc)
 	{
 		boardingRequest = new ArrayList<Vehicle>();
@@ -65,6 +69,13 @@ public class PassengerRole extends Role implements Passenger
 		this.currentLocation = curLoc;
 		
 		waitingForVehicle = new Semaphore(0);
+		
+		busStops = new ArrayList<BusStop>();
+	}
+	
+	public void setBusStops(List<BusStop> stops)
+	{
+		this.busStops = stops;
 	}
 	
 	public void isTesting()
@@ -89,7 +100,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		if(!testing){Do("Clearing waypoints?");}
+		Do("Clearing waypoints?");
 		stateChanged();
 	}
 
@@ -105,7 +116,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
-		if(!testing){Do("Arrived at "+s);}
+		Do("Arrived at "+s);
 		stateChanged();
 	}
 
@@ -118,11 +129,11 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		if(!testing){Do("Running scheduler");}
-		if(!testing){Do(""+waypoints.size());}
-		if(currentLocation == destination && state == PassengerState.None)
+		Do("Running scheduler");
+		Do(""+waypoints.size());
+		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
-			if(!testing){Do("ENDING?");}
+			Do("ENDING?");
 			finishMoving();
 			return false;
 		}
@@ -147,7 +158,7 @@ public class PassengerRole extends Role implements Passenger
 			moveToLocation(waypoints.peek());
 			return true;
 		}
-		if(!testing){Do("Reached end");}
+		Do("Reached end");
 		return false;
 	}
 
@@ -161,9 +172,48 @@ public class PassengerRole extends Role implements Passenger
 			return;
 		}
 		
+		
 		List<BusStop> stops = new ArrayList<BusStop>();
-		//Find nearest two bus stops
-		if(stops.size() == 2)
+		
+		//find closest to current location
+		BusStop closest = null;
+		double minDistance = Double.MAX_VALUE;
+		
+		for(BusStop stop : busStops)
+		{
+			double stopDistance = Math.sqrt(Math.pow(stop.x - currentLocation.x,2) + Math.pow(stop.y - currentLocation.y,2));
+			if(stopDistance < minDistance)
+			{
+				closest = stop;
+				minDistance = stopDistance;
+			}
+		}
+		if(closest != null)
+		{
+			stops.add(closest);
+		}
+		
+		//find closest to destination
+		closest = null;
+		minDistance = Double.MAX_VALUE;
+		
+		for(BusStop stop : busStops)
+		{
+			double stopDistance = Math.sqrt(Math.pow(destination.x - stop.x,2) + Math.pow(destination.y - stop.y,2));
+			if(stopDistance < minDistance)
+			{
+				closest = stop;
+				minDistance = stopDistance;
+			}
+		}
+		if(closest != null && !stops.contains(closest))
+		{
+			stops.add(closest);
+		}
+		
+		
+		
+		if(!shouldWalk() && stops.size() == 2)
 		{
 			waypoints.add(new Move(stops.get(0),MoveType.Walk));
 			waypoints.add(new Move(stops.get(1),MoveType.Bus));
@@ -171,11 +221,17 @@ public class PassengerRole extends Role implements Passenger
 		}
 		else
 		{
-			if(!testing){Do("Adding to waypoints");}
+			Do("Adding to waypoints");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
 
+	public boolean shouldWalk()
+	{
+		double distance = Math.sqrt(Math.pow(destination.x - currentLocation.x,2) + Math.pow(destination.y - currentLocation.y,2));
+		return distance < WALK_DISTANCE;
+	}
+	
 	private void finishMoving()
 	{
 		//message person done moving
@@ -184,7 +240,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void checkBoardingRequest(Vehicle remove)
 	{
-		if(!testing){Do("Checking boarding request");}
+		Do("Checking boarding request");
 		if(remove instanceof Bus)
 		{
 			Bus bus = (Bus)remove;
@@ -195,6 +251,7 @@ public class PassengerRole extends Role implements Passenger
 				state = PassengerState.InTransit;
 				boardingRequest.clear();
 				gui.setPresent(false);
+				currentVehicle = bus;
 			}
 		}
 		else if(remove instanceof Car)
@@ -213,12 +270,12 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void processArrival()
 	{
-		if(!testing){Do("PROCESSING ARRIVAL Reaching?!");}
-		if(!testing){Do(""+waypoints);}
-		if(!testing){Do(""+waypoints.size());}
+		Do("PROCESSING ARRIVAL Reaching?!");
+		Do(""+waypoints);
+		Do(""+waypoints.size());
 		if(currentLocation == waypoints.peek().s)
 		{
-			if(!testing){Do("Hello? Removing");}
+			Do("Hello? Removing");
 			Structure s = waypoints.remove().s;
 			if(currentVehicle != null)
 			{
@@ -229,6 +286,7 @@ public class PassengerRole extends Role implements Passenger
 				else if(currentVehicle instanceof Bus)
 				{
 					((Bus)currentVehicle).msgLeaving(this);
+					Do("Messaging Bus Leaving");
 				}
 				currentVehicle = null;
 			}
@@ -261,7 +319,7 @@ public class PassengerRole extends Role implements Passenger
 				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;
-				if(!testing){Do("Waypoints after animation: "+waypoints.size());}
+				Do("Waypoints after animation: "+waypoints.size());
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
@@ -271,7 +329,7 @@ public class PassengerRole extends Role implements Passenger
 					try
 					{
 						waitingForVehicle.acquire();
-						if(!testing){Do("Released");}
+						Do("Released");
 					}
 					catch(InterruptedException e)
 					{
@@ -284,7 +342,7 @@ public class PassengerRole extends Role implements Passenger
 				((BusStop)currentLocation).addPassenger(this);
 				break;
 		}
-		if(!testing){Do("Waypoints at end of call: "+waypoints.size());}
+		Do("Waypoints at end of call: "+waypoints.size());
 	}
 
 	@Override
@@ -296,5 +354,10 @@ public class PassengerRole extends Role implements Passenger
 	public void msgAnimationFinished()
 	{
 		animationPause.release();
+	}
+
+	public void setCurrentLocation(Structure s2)
+	{
+		currentLocation = s2;
 	}
 }
