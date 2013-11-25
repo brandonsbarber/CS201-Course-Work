@@ -11,6 +11,7 @@ import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.structures.market.MarketStructure;
 
@@ -91,12 +92,12 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	@Override
-	public void msgPayBillFromMarket(MarketStructure market, double amount, String order, int quantity) {
+	public void msgHereIsDeliveryFromMarket(MarketStructure market, double amount, ItemRequest item) {
 		Check temp = new Check();
-		temp.choice = order;
+		temp.choice = item.item;
 		temp.market = market;
 		temp.amount = amount;
-		temp.quantity = quantity;
+		temp.quantity = item.amount;
 		temp.state = CheckState.pending;
 		temp.type = CheckType.market;
 		checks.add(temp);
@@ -187,7 +188,8 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 			if (i.market == c.market && i.order == c.choice && i.quantity >= c.quantity) {
 				currentMoney -= c.amount;
 				DoPayMarket(c);
-				//c.market.getManager().msgHereIsMyPayment(restaurant, c.amount);
+				//this.restaurant.getCook().m
+				c.market.getManager().msgHereIsMyPayment(restaurant, (float)c.amount);
 				checks.remove(c);
 				return;
 			}
