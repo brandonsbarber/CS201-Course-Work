@@ -10,8 +10,8 @@ import cs201.gui.StructurePanel;
 
 public class RestaurantAnimationPanelMatt extends StructurePanel {
 	
-	private static final int DEFAULTWINDOWX = 400;
-	private static final int DEFAULTWINDOWY = 700;
+	private static final int DEFAULTWINDOWX = 480;
+	private static final int DEFAULTWINDOWY = 480;
     private static int WINDOWX = DEFAULTWINDOWX;
     private static int WINDOWY = DEFAULTWINDOWY;
     

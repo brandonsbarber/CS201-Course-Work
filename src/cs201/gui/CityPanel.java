@@ -284,7 +284,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		
 		g2.setColor(Color.BLACK);
-		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height / 2);
+		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height / 2 + bounds.height / 10);
 	}
 	
 	public void addStructure(Structure s) {
