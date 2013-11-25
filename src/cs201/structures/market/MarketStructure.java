@@ -50,7 +50,8 @@ public class MarketStructure extends Structure {
 		p.addGui(employeeGui);
 		
 		// Initialize delivery truck
-		TruckAgent deliveryTruck = new TruckAgent(this);
+		this.deliveryTruck = new TruckAgent(this);
+		deliveryTruck.startThread();
 	}
 
 	

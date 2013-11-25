@@ -31,6 +31,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
 	public static final int GRID_SIZE = 25;
 
+	public static CityPanel INSTANCE = null;
+	
 	ArrayList<Structure> buildings;
 	
 	ArrayList<Gui> guis;
@@ -84,7 +86,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		stops = new ArrayList<BusStop>();
 		
-		
+		if(INSTANCE == null)
+		{
+			INSTANCE = this;
+		}
 		
 		addMouseListener(this);
 		
@@ -159,6 +164,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		truck.startThread();*/
 		
 		timer.start();
+	}
+	
+	public void addGui(Gui gui)
+	{
+		guis.add(gui);
 	}
 	
 	private void populateDrivingMap()

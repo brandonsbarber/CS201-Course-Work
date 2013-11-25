@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import cs201.gui.CityPanel;
 import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Truck;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
@@ -41,6 +42,9 @@ public class TruckAgent extends VehicleAgent implements Truck
 	{
 		homeStructure = home;
 		deliveries = new ArrayList<Delivery>();
+		gui = new VehicleGui(this,CityPanel.INSTANCE,(int)homeStructure.x,(int)homeStructure.y);
+		CityPanel.INSTANCE.addGui(gui);
+		
 	}
 	
 	public void setGui(VehicleGui gui)
@@ -52,6 +56,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
 	{
 		deliveries.add(new Delivery(inventory,destination,price));
+		System.out.println("Got a delivery.");
 		stateChanged();
 	}
 
@@ -130,7 +135,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		{
 			((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
 		}
-		//d.destination.msgMakeDelivery(inventory);
+		
 		d.s = DeliveryState.Done;
 
 	}

@@ -1,6 +1,7 @@
 package cs201.test.transitTests;
 
 import junit.framework.TestCase;
+import cs201.gui.transit.PassengerGui;
 import cs201.roles.transit.PassengerRole;
 import cs201.roles.transit.PassengerRole.PassengerState;
 import cs201.structures.Structure;
@@ -12,6 +13,7 @@ public class PassengerRoleTest extends TestCase
 	PassengerRole pass;
 	MockCar car,car2;
 	Structure s1,s2;
+	PassengerGui passGui;
 	
 	public void setUp() throws Exception
 	{
@@ -19,14 +21,18 @@ public class PassengerRoleTest extends TestCase
 		s2 = new BusStop(0, 0, 0, 0, 1, null);
 		
 		pass = new PassengerRole(s1);
-		pass.testing = true;
+		passGui = new PassengerGui(pass,null);
+		pass.setGui(passGui);
+		pass.isTesting();
 		car = new MockCar("Mock Car 1");
 		car2 = new MockCar("Mock Car 2");
-		pass.addCar(car);
+		//pass.addCar(car);
 	}
 	
 	public void testPassengerOneCar()
 	{
+		pass.addCar(car);
+		
 		pass.msgGoTo(s2);
 		assertEquals("Ensure that passenger's destination is s2.",s2,pass.destination);
 		assertEquals("Ensure that passenger's current location is s1.",s1,pass.currentLocation);
@@ -76,6 +82,8 @@ public class PassengerRoleTest extends TestCase
 	
 	public void testPassengerTwoCars()
 	{
+		pass.addCar(car);
+		
 		pass.msgGoTo(s2);
 		assertEquals("Ensure that passenger's destination is s2.",s2,pass.destination);
 		assertEquals("Ensure that passenger's current location is s1.",s1,pass.currentLocation);
@@ -130,5 +138,12 @@ public class PassengerRoleTest extends TestCase
 		assertFalse("Should not be active.",pass.getActive());
 	}
 	
-	
+	public void testPassengerWalk()
+	{
+		pass.msgGoTo(s2);
+		
+		assertEquals("Passenger's destination should be s2",s2,pass.destination);
+		
+		
+	}
 }
