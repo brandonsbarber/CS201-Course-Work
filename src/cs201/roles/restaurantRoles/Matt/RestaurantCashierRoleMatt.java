@@ -12,6 +12,7 @@ import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
+import cs201.structures.market.MarketStructure;
 
 
 /**
@@ -24,6 +25,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	private final double STARTINGMONEY = 50;
 	private MenuMatt menu;
 	public List<Check> checks; // TEMPORARILY PUBLIC FOR TESTING
+	private List<MarketInvoice> invoices;
 	public enum CheckState { none, pending, customerPaying }; // TEMPORARILY PUBLIC FOR TESTING
 	public enum CheckType { none, restaurant, market }; // TEMPORARILY PUBLIC FOR TESTING
 	private CashierGuiMatt gui;
@@ -35,6 +37,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		super();
 
 		checks = Collections.synchronizedList(new ArrayList<Check>());
+		invoices = Collections.synchronizedList(new ArrayList<MarketInvoice>());
 		menu = new MenuMatt();
 		this.host = host;
 		currentMoney = STARTINGMONEY;
@@ -45,6 +48,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		super();
 
 		checks = Collections.synchronizedList(new ArrayList<Check>());
+		invoices = Collections.synchronizedList(new ArrayList<MarketInvoice>());
 		menu = new MenuMatt();
 		this.host = null;
 		currentMoney = STARTINGMONEY;
@@ -87,10 +91,12 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	@Override
-	public void msgPayBillFromMarket(/*Market market,*/ double amount, String order, double quantity) {
+	public void msgPayBillFromMarket(MarketStructure market, double amount, String order, int quantity) {
 		Check temp = new Check();
-		//temp.market = market;
+		temp.choice = order;
+		temp.market = market;
 		temp.amount = amount;
+		temp.quantity = quantity;
 		temp.state = CheckState.pending;
 		temp.type = CheckType.market;
 		checks.add(temp);
@@ -98,9 +104,10 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	@Override
-	public void msgOrderInvoiceFromCook(double amount, String order, double quantity) {
-		// TODO Auto-generated method stub
-		
+	public void msgOrderInvoiceFromCook(MarketStructure market, String order, double quantity) {
+		MarketInvoice temp = new MarketInvoice(market, order, quantity);
+		invoices.add(temp);
+		stateChanged();
 	}
 
 	/**
@@ -175,9 +182,17 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	private void PayMarket(Check c) {
-		currentMoney -= c.amount;
-		DoPayMarket(c);
-		//c.market.msgPayBill(c.amount);
+		for (MarketInvoice i : invoices) {
+			if (i.market == c.market && i.order == c.choice && i.quantity >= c.quantity) {
+				currentMoney -= c.amount;
+				DoPayMarket(c);
+				//c.market.getTeller().msgPayBill(c.amount);
+				checks.remove(c);
+				return;
+			}
+		}
+		
+		// If no matching invoice
 		checks.remove(c);
 	}
 
@@ -205,8 +220,9 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	public class Check { // TEMPORARILY PUBLIC FOR TESTING
 		WaiterMatt waiter;
 		public CustomerMatt customer; // TEMPORARILY PUBLIC FOR TESTING
-		//public Market market; // TEMPORARILY PUBLIC FOR TESTING
+		public MarketStructure market; // TEMPORARILY PUBLIC FOR TESTING
 		String choice;
+		int quantity;
 		public double amount; // TEMPORARILY PUBLIC FOR TESTING
 		double customerPaid;
 		public CheckState state; // TEMPORARILY PUBLIC FOR TESTING
@@ -215,12 +231,31 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		public  Check() {
 			this.waiter = null;
 			this.customer = null;
-			//this.market = null;
+			this.market = null;
+			this.quantity = 0;
 			this.choice = "";
 			this.amount = 0;
 			this.customerPaid = 0;
 			this.state = CheckState.none;
 			this.type = CheckType.none;
+		}
+	}
+	
+	private class MarketInvoice {
+		MarketStructure market;
+		String order;
+		double quantity;
+		
+		public MarketInvoice(MarketStructure market, String order, double quantity) {
+			this.market = market;
+			this.order = order;
+			this.quantity = quantity;
+		}
+		
+		public MarketInvoice() {
+			this.market = null;
+			this.order = null;
+			this.quantity = 0;
 		}
 	}
 	

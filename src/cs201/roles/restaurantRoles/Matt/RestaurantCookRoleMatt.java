@@ -156,7 +156,9 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		for (MarketStructure m : CityDirectory.getInstance().getMarkets()) {
 			if (!f.marketsTried.contains(m)) {
 				DoOrderFood(f, m);
-				//CityDirectory.getInstance().getRandomMarket().getTeller().msgOrderFood(f.type, f.amountOrdered);
+				MarketStructure market = CityDirectory.getInstance().getRandomMarket();
+				((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgOrderInvoiceFromCook(market, f.type, f.amountOrdered);
+				//market.getTeller().msgOrderFood(f.type, f.amountOrdered);
 				f.orderPending = true;
 				break;
 			}
