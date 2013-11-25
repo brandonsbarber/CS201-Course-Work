@@ -6,12 +6,31 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
+import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.structures.Structure;
 
 public class MarketStructure extends Structure {
 
 	MarketManagerRole manager = null;
+	MarketEmployeeRole employee = null;
+	
+	/**
+	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
+	 */
+	public MarketStructure(int x, int y, int width, int height, int id) {
+		super(x, y, width, height, id);
+		
+		// Create a manager to manage this market
+		MarketManagerRole newManager = new MarketManagerRole();
+		setManager(newManager);
+		
+		// Create an initial employee
+		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
+		hireEmployee(newEmployee);
+		employee = newEmployee;
+	}
+
 	
 	/**
 	 * Hires a new MarketEmployee at this market. Automatically adds the new employee to the MarketManager's list.
@@ -39,17 +58,41 @@ public class MarketStructure extends Structure {
 		return manager.getEmployees();
 	}
 	
-	public MarketStructure(int x, int y, int width, int height, int id) {
-		super(x, y, width, height, id);
-	}
-
+	
 	/**
-	 * Based on the given role
+	 * Based on the given Intention, return the appropriate role
 	 * @param role the requester's Intention when visiting this Market
 	 * @return A Role (usually a MarketManagerRole) representing the contact person for this market
 	 */
 	public Role getRole(Intention role) {
-		return manager;
+		switch (role) {
+		case MarketManager:
+			return manager;
+			
+		case MarketEmployee:
+			return employee;
+		}
+		return null;
+	}
+	
+	/**
+	 * Sets the MarketManagerRole for this market.
+	 * @param m the MarketManagerRole
+	 */
+	public void setManager(MarketManagerRole m) {
+		manager = m;
+	}
+	
+	/**
+	 * Add an inventory entry to this market. You must instantiate a MarketManager first and set him with setManager(...);
+	 * @param item A String name for the item, i.e., "chicken"
+	 * @param quantity The number of inventory items the market has in stock
+	 * @param price A float price
+	 */
+	public void addInventory(String item, int quantity, int price) {
+		if (manager != null) {
+			manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry(item, quantity, price));
+		}
 	}
 
 }
