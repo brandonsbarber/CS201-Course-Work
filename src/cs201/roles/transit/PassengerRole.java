@@ -56,7 +56,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	PassengerGui gui;
 	
-	public static final int WALK_DISTANCE = 100;
+	public static final int WALK_DISTANCE = 200;
 	
 	public PassengerRole(Structure curLoc)
 	{
@@ -107,6 +107,7 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public void msgPleaseBoard(Vehicle v)
 	{
+		Do("Adding a board request");
 		boardingRequest.add(v);
 		waitingForVehicle.release();
 	}
@@ -144,6 +145,7 @@ public class PassengerRole extends Role implements Passenger
 		}
 		if(!boardingRequest.isEmpty())
 		{
+			Do("Processing board requests");
 			checkBoardingRequest(boardingRequest.remove(0));
 			return true;
 			
@@ -236,6 +238,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		//message person done moving
 		setActive(false);
+		gui.setPresent(false);
 	}
 	
 	private void checkBoardingRequest(Vehicle remove)
@@ -306,6 +309,7 @@ public class PassengerRole extends Role implements Passenger
 		switch(point.m)
 		{
 			case Walk :
+				Do("Walk path");
 				if(!testing)
 				{
 					gui.doGoToLocation(point.s);
@@ -323,6 +327,7 @@ public class PassengerRole extends Role implements Passenger
 				Do("Waypoints after animation: "+waypoints.size());
 				break;
 			case Car :
+				Do("Car path");
 				car.msgCallCar(this, currentLocation, destination);
 				
 				if(!testing)
@@ -340,7 +345,20 @@ public class PassengerRole extends Role implements Passenger
 				
 				break;
 			case Bus : 
+				Do("Bus path");
 				((BusStop)currentLocation).addPassenger(this);
+				if(!testing)
+				{
+					try
+					{
+						waitingForVehicle.acquire();
+						Do("Released");
+					}
+					catch(InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
 				break;
 		}
 		Do("Waypoints at end of call: "+waypoints.size());
@@ -360,5 +378,10 @@ public class PassengerRole extends Role implements Passenger
 	public void setCurrentLocation(Structure s2)
 	{
 		currentLocation = s2;
+	}
+
+	public Structure getCurrentLocation()
+	{
+		return currentLocation;
 	}
 }
