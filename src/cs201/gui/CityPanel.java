@@ -92,13 +92,21 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			buildings.add(stop);
 		}
 		
-		BusAgent bus = new BusAgent(new BusRoute(stops));
+		BusAgent bus = new BusAgent(new BusRoute(stops),0);
 		VehicleGui busG;
 		guis.add(busG = new VehicleGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
 		
 		bus.setGui(busG);
 		
 		bus.startThread();
+		
+		BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
+		VehicleGui busG2;
+		guis.add(busG2 = new VehicleGui(bus2,this,(int)stops.get(2).x,(int)stops.get(2).y));
+		
+		bus2.setGui(busG2);
+		
+		bus2.startThread();
 		
 		addMouseListener(this);
 		
@@ -121,7 +129,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		car.setGui(gui);
 		
-		//car.startThread();
+		car.startThread();
 		
 		passAgent.startThread();
 		

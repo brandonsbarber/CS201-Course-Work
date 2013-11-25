@@ -19,15 +19,20 @@ public class BusAgent extends VehicleAgent implements Bus
 	
 	Semaphore sem;
 	
-	public BusAgent(BusRoute route)
+	public BusAgent(BusRoute route,int stopNum)
 	{
 		passengers = Collections.synchronizedList(new ArrayList<Passenger>());
 		justBoarded = new ArrayList<Passenger>();
 		this.route = route;
 		sem = new Semaphore(0);
 		
+		for(int i = 0; i < stopNum; i++)
+		{
+			System.out.println(route.getNextStop());
+		}
+		
 		msgSetLocation(route.getNextStop());
-		System.out.println(currentLocation);
+		System.out.println("Starting at : "+currentLocation);
 		stateChanged();
 	}
 	
