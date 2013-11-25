@@ -167,7 +167,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 				DoOrderFood(f, m);
 				MarketStructure market = CityDirectory.getInstance().getRandomMarket();
 				((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgOrderInvoiceFromCook(market, f.type, f.amountOrdered);
-				//market.getTeller().msgOrderFood(f.type, f.amountOrdered);
+				//market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
 				f.orderPending = true;
 				break;
 			}
