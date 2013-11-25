@@ -133,7 +133,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		pass.msgGoTo(endLoc);
 		
-		//pass.addCar(car);
+		pass.addCar(car);
 		
 		car.setGui(gui);
 		
@@ -141,7 +141,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		passAgent.startThread();
 		
-		TruckAgent truck = new TruckAgent(stops.get(0));
+		/*TruckAgent truck = new TruckAgent(stops.get(0));
 		
 		VehicleGui tGui = new VehicleGui(truck,this,(int)stops.get(0).x,(int)stops.get(0).y);
 		
@@ -153,7 +153,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		truck.msgMakeDeliveryRun(null, stops.get(2));
 		
-		truck.startThread();
+		truck.startThread();*/
 		
 		timer.start();
 	}

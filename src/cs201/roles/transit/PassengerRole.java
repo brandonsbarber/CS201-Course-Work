@@ -70,6 +70,7 @@ public class PassengerRole extends Role implements Passenger
 	public void setGui(PassengerGui gui)
 	{
 		this.gui = gui;
+		gui.setPresent(true);
 	}
 	
 	public void addCar(Car c)
@@ -188,6 +189,7 @@ public class PassengerRole extends Role implements Passenger
 				bus.msgDoneBoarding(this);
 				state = PassengerState.InTransit;
 				boardingRequest.clear();
+				gui.setPresent(false);
 			}
 		}
 		else if(remove instanceof Car)
@@ -199,6 +201,7 @@ public class PassengerRole extends Role implements Passenger
 				boardingRequest.clear();
 				currentVehicle = remove;
 				state = PassengerState.InTransit;
+				gui.setPresent(false);
 			}
 		}
 	}
@@ -224,6 +227,8 @@ public class PassengerRole extends Role implements Passenger
 				}
 				currentVehicle = null;
 			}
+			gui.setPresent(true);
+			gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
 			state = PassengerState.None;
 		}
 		else if (currentVehicle instanceof Bus)
