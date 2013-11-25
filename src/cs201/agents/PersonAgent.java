@@ -13,6 +13,7 @@ import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
 
 /**
  * The PersonAgent that represents all people in SimCity201
@@ -174,10 +175,14 @@ public class PersonAgent extends Agent implements Person {
 		// If it's time to wake up in the morning
 		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
 			this.state = PersonState.Awake;
-			boolean starving = hungerLevel >= STARVING;
+			
+			// If you need to pay rent
+			if (home != null && ((Residence) home).isApartment()) {
+				this.addActionToPlanner(Intention.ResidencePayRent, home, false);
+			}
 			
 			// The Residence Role will determine if there's enough time to eat at a Restaurant, or if eating at home is better
-			this.addActionToPlanner(Intention.ResidenceEat, home, starving);
+			this.addActionToPlanner(Intention.ResidenceEat, home, false);
 			return true;
 		}
 		
@@ -652,6 +657,7 @@ public class PersonAgent extends Agent implements Person {
 		ResidenceEat,
 		ResidenceRelax,
 		ResidenceLandLord,
+		ResidencePayRent,
 		BankTeller,
 		BankGuard,
 		BankWithdrawMoneyCustomer,
