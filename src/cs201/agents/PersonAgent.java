@@ -90,10 +90,6 @@ public class PersonAgent extends Agent implements Person {
 		this.bankAccountNumber = -1;
 	}
 	
-	public PersonAgent() {
-		Do("WARNING: A PersonAgent should never be created with the default constructor. Use PersonAgent(String) instead.");
-	}
-	
 	@Override
 	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
@@ -181,7 +177,7 @@ public class PersonAgent extends Agent implements Person {
 			
 			// If you need to pay rent
 			if (home != null && ((Residence) home).isApartment()) {
-				this.addActionToPlanner(Intention.ResidencePayRent, home, false);
+				this.addActionToPlanner(Intention.ResidencePayRent, home, true);
 			}
 			
 			// The Residence Role will determine if there's enough time to eat at a Restaurant, or if eating at home is better
@@ -237,7 +233,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you're hungry and at home
-		if (state == PersonState.Awake && currentLocation == home && hungerLevel >= HUNGRY) {
+		if (state == PersonState.Awake && home != null && currentLocation == home && hungerLevel >= HUNGRY) {
 			boolean performAction = true;
 			for (Action a : planner) {
 				if (a.intent == Intention.ResidenceEat) {
@@ -255,8 +251,9 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
-			this.addActionToPlanner(Intention.ResidenceRelax, home, false);
-			return true;
+			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {
+				return true;
+			}
 		}
 		
 		return false;
@@ -323,7 +320,7 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	private boolean addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
 		if (intent == null || intent == Intention.None || location == null) {
-			Do("Call to addActionToPlanner had bad or null argument(s).");
+			//Do("Call to addActionToPlanner had bad or null argument(s).\n\tTried: " + intent);
 			return false;
 		}
 		
