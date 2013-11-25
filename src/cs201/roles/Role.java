@@ -46,7 +46,7 @@ public abstract class Role {
 	 * Any work-related Role must know when it's time to close and leave work. Others can simply implement
 	 * then leave this function blank. (Or maybe print)
 	 */
-	public abstract void closingTime();
+	public abstract void msgClosingTime();
 	
 	/**
 	 * Returns this role's PersonAgent

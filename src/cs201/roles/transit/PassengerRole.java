@@ -211,7 +211,7 @@ public class PassengerRole extends Role implements Passenger
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -10,8 +10,6 @@ import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
-import cs201.roles.restaurantRoles.RestaurantCashierRole;
-import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 
 /**
@@ -80,6 +78,12 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 	
 	// Messages -------------------------------------------------------------
+	@Override
+	public void msgClosingTime() {
+		timeToClose = true;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgIWantToEat(CustomerMatt c) {
 		if (timeToClose) {
@@ -225,6 +229,10 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	private void CloseRestaurant() {
 		this.restaurant.closingTime();
 		this.restaurant.setOpen(false);
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		this.waiters.clear();
 		DoCloseRestaurant();
 	}
 	
@@ -322,12 +330,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	@Override
 	public void startInteraction(Intention intent) {
+		// TODO maybe animate into restaurant?
 		timeToClose = false;
-	}
-
-	@Override
-	public void closingTime() {
-		timeToClose = true;
 	}
 
 }

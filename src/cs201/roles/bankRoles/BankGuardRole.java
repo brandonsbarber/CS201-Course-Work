@@ -70,7 +70,7 @@ public class BankGuardRole extends Role implements BankGuard {
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}}

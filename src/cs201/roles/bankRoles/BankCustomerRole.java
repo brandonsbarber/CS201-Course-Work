@@ -128,7 +128,7 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

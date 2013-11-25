@@ -177,7 +177,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		
 	}
 
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

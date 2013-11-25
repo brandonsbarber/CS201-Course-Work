@@ -29,6 +29,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	private CashierGuiMatt gui;
 	public HostMatt host; // TEMPORARILY PUBLIC FOR TESTING
 	private double currentMoney;
+	private boolean closingTime = false;
 
 	public RestaurantCashierRoleMatt(HostMatt host) {
 		super();
@@ -55,6 +56,12 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	// Messages -------------------------------------------------------------
+	@Override
+	public void msgClosingTime() {
+		closingTime = true;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgComputeCheck(WaiterMatt w, CustomerMatt c, String choice) {
 		Check temp = new Check();
@@ -101,6 +108,11 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	 */
 	public boolean pickAndExecuteAnAction() {		
 		// If there is something to do
+		if (closingTime) {
+			LeaveRestaurant();
+			return true;
+		}
+		
 		synchronized(checks) {
 			for (Check c : checks) {
 				if (c.state == CheckState.customerPaying && c.type == CheckType.restaurant) {
@@ -135,6 +147,14 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 
 	// Actions -------------------------------------------------------------
+	private void LeaveRestaurant() {
+		// TODO
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		DoLeaveRestaurant();
+	}
+	
 	private void GiveCheckToWaiter(Check c) {
 		DoGiveCheckToWaiter(c);
 		c.amount = menu.getPrice(c.choice);
@@ -162,6 +182,10 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 
 	// Utilities -------------------------------------------------------------
+	private void DoLeaveRestaurant() {
+		// TODO leave restaurant animation
+	}
+	
 	private void DoGiveCheckToWaiter(Check c) {
 		System.out.println("Cashier " + this.toString() + " giving check back to Waiter " + c.waiter.toString() + " for Customer " + c.customer.toString() + ".");
 	}
@@ -207,16 +231,15 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	public void setGui(CashierGuiMatt gui) {
 		this.gui = gui;
 	}
+	
+	public CashierGuiMatt getGui() {
+		return this.gui;
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		// TODO maybe animate into restaurant?
+		closingTime = false;
 	}
 
-	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -25,6 +25,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private final int FOODTHRESHOLD = 2;
 	private final int MAXSTOCK = 5;
 	private final int INITIALSTOCK = 3;
+	private boolean closingTime = false;
 
 	public RestaurantCookRoleMatt() {
 		super();
@@ -45,6 +46,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 	
 	// Messages -------------------------------------------------------------
+	@Override
+	public void msgClosingTime() {
+		closingTime = true;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgHereIsAnOrder(WaiterMatt w, String choice, int tableNum) {
 		orders.add(new Order(choice, (RestaurantWaiterRoleMatt) w, tableNum));
@@ -72,7 +79,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {		
-		// If there is something to do'
+		// If there is something to do
+		
+		if (closingTime) {
+			LeaveRestaurant();
+			return true;
+		}
 		
 		// If food needs to be ordered
 		synchronized(foods) {
@@ -109,6 +121,14 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 
 	// Actions -------------------------------------------------------------
+	private void LeaveRestaurant() {
+		// TODO
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		DoLeaveRestaurant();
+	}
+	
 	private void CookOrder(Order o) {
 		Food f = foods.get(o.choice);
 		if (f.quantity == 0) {
@@ -144,6 +164,10 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 
 	// Utilities -------------------------------------------------------------
+	private void DoLeaveRestaurant() {
+		// TODO leave restaurant animation
+	}
+	
 	private void DoCookOrder(Order o) {
 		System.out.println("Cook " + this.toString() + " cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
 		gui.addCookingItem(o.choice);
@@ -239,17 +263,16 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			return (choice + " for table " + tableNum);
 		}
 	}
+	
+	public CookGuiMatt getGui() {
+		return this.gui;
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		// TODO maybe animate into restaurant?
+		closingTime = false;
 	}
 
-	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-		
-	}
 }
 

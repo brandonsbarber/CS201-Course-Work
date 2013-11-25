@@ -34,6 +34,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	private WaiterState state = WaiterState.none;
 	private Timer breakTimer;
 	private final int BREAKTIME = 15000; // 15 seconds
+	private boolean closingTime = false;
 	
 
 	public RestaurantWaiterRoleMatt(RestaurantCookRoleMatt cook, RestaurantHostRoleMatt host, RestaurantCashierRoleMatt cashier) {
@@ -51,6 +52,12 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	}
 	
 	// Messages -------------------------------------------------------------
+	@Override
+	public void msgClosingTime() {
+		closingTime = true;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgSeatCustomer(int tNum, CustomerMatt c) {
 		myCustomers.add(new MyCustomer(c, tNum));
@@ -157,6 +164,11 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {
+		if (closingTime) {
+			LeaveRestaurant();
+			return true;
+		}
+		
 		if (state == WaiterState.askingForBreak) {
 			AskForBreak();
 			return true;
@@ -236,6 +248,14 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	}
 
 	// Actions -------------------------------------------------------------
+	private void LeaveRestaurant() {
+		// TODO
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		DoLeaveRestaurant();
+	}
+	
 	private void AskForBreak() {
 		DoAskForBreak();
 		state = WaiterState.waitingForResponse;
@@ -306,6 +326,10 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	}
 
 	// Utilities -------------------------------------------------------------
+	private void DoLeaveRestaurant() {
+		// TODO leave restaurant animation
+	}
+	
 	private void DoAskForBreak() {
 		System.out.println("Waiter " + this.toString() + " asking host " + ((RestaurantHostRoleMatt) restaurant.getHost()).getName() + " to go on break.");
 		waiterGui.setWaitingForBreakResponse();
@@ -522,14 +546,8 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+		// TODO maybe animate into restaurant?
+		closingTime = false;
 	}
 
 }

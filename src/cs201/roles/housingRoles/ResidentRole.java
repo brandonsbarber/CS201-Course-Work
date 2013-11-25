@@ -53,7 +53,7 @@ public class ResidentRole extends Role implements Resident {
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

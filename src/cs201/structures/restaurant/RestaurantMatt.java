@@ -59,15 +59,24 @@ public class RestaurantMatt extends Restaurant {
 	public Role getRole(Intention role) {
 		switch (role) {
 		case RestaurantCook: {
-			return (cook.getPerson() == null) ? cook : null;
+			if (cook.getPerson() == null) {
+				((RestaurantCookRoleMatt) cook).getGui().setPresent(true);
+				return cook;
+			}
+			return null;
 		}
 		case RestaurantHost: {
-			return (host.getPerson() == null) ? host : null;
+			if (host.getPerson() == null) {
+				this.isOpen = true;
+				return host;
+			}
+			return null;
 		}
 		case RestaurantWaiter: {
 			for (RestaurantWaiterRole r : waiters) {
 				if (r.getPerson() == null) {
 					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
+					((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
 					return r;
 				}
 			}
@@ -80,13 +89,18 @@ public class RestaurantMatt extends Restaurant {
 				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
 				this.panel.addGui(waiterGui);
 				newWaiter.setRestaurant(this);
+				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
 				return newWaiter;
 			}
 			
 			return null;
 		}
 		case RestaurantCashier: {
-			return (cashier.getPerson() == null) ? cashier : null;
+			if (cashier.getPerson() == null) {
+				((RestaurantCashierRoleMatt) cashier).getGui().setPresent(true);
+				return cashier;
+			}
+			return null;
 		}
 		case RestaurantCustomer: {
 			RestaurantCustomerRoleMatt newCustomer = new RestaurantCustomerRoleMatt();
@@ -108,16 +122,16 @@ public class RestaurantMatt extends Restaurant {
 	@Override
 	public void updateTime(CityTime time) {
 		if (this.closingTime != null && time.equalsIgnoreDay(this.closingTime)) {
-			host.closingTime();
+			host.msgClosingTime();
 		}
 	}
 	
 	@Override
 	public void closingTime() {
-		cashier.closingTime();
-		cook.closingTime();
+		cashier.msgClosingTime();
+		cook.msgClosingTime();
 		for (RestaurantWaiterRole r : waiters) {
-			r.closingTime();
+			r.msgClosingTime();
 		}
 	}
 

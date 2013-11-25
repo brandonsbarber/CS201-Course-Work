@@ -18,6 +18,7 @@ public class CookGuiMatt implements Gui {
 	private List<String> cooking;
 	private List<String> plating;
 	
+	// from 500x500
 	private final int cookingAreaX = 342;
 	private final int cookingAreaY = 425;
 	private final int platingAreaX = 100;

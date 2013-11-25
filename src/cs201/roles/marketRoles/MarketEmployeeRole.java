@@ -64,7 +64,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		stateChanged();
 	}
 
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}
