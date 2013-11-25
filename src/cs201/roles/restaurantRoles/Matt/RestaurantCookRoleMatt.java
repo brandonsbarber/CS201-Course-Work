@@ -14,6 +14,7 @@ import cs201.helper.Matt.RestaurantRotatingStand.RotatingStandOrder;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.market.MarketStructure;
 
 /**
@@ -167,7 +168,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 				DoOrderFood(f, m);
 				MarketStructure market = CityDirectory.getInstance().getRandomMarket();
 				((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgOrderInvoiceFromCook(market, f.type, f.amountOrdered);
-				//market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
+				market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
 				f.orderPending = true;
 				break;
 			}
