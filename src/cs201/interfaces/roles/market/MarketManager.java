@@ -11,7 +11,7 @@ public interface MarketManager {
 	
 	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items);
 	
-	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, List<ItemRequest> items);
+	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, ItemRequest item);
 	
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount);
 	

@@ -212,7 +212,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	/**
 	 * Sent by a restaurant's cook to order food.
 	 * @param structure The requesting Restaurant's structure
-	 * @param items A list of items
+	 * @param item An ItemRequest
 	 */
 	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, ItemRequest item) {
 		List<ItemRequest> items = new ArrayList<ItemRequest>();
@@ -340,6 +340,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 			// The consumer wants the items delivered to him
 			TruckAgent deliveryTruck = structure.getDeliveryTruck();
 			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure);
+			// TODO in a sec
 			
 		}
 		
@@ -352,13 +353,13 @@ public class MarketManagerRole extends Role implements MarketManager {
 		// The purchaser needs to pay for the order
 		if (o.type == OrderType.INPERSON) {
 			
-			o.consumer.msgHereIsYourTotal(this, o.totalPrice);
+			// The delivery truck will bill the market when it delivers
+			//o.consumer.msgHereIsYourTotal(this, o.totalPrice);
 			consumerBalance.get(o.consumer).balance += o.totalPrice;
 			
 		} else if (o.type == OrderType.DELIVERY) {
 
 			RestaurantCashierRole cashier = o.structure.getCashier();
-			
 			structureBalance.get(o.structure).balance += o.totalPrice;
 			
 		}

@@ -24,7 +24,7 @@ public class MockMarketManager extends Mock implements MarketManager {
 	}
 
 	public void msgHereIsMyOrderForDelivery(Restaurant restaurant,
-			List<ItemRequest> items) {
+			ItemRequest item) {
 		
 	}
 
