@@ -18,6 +18,7 @@ import javax.swing.Timer;
 import cs201.agents.PassengerTestAgent;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
+import cs201.agents.transit.TruckAgent;
 import cs201.gui.transit.PassengerGui;
 import cs201.gui.transit.VehicleGui;
 import cs201.helper.transit.BusRoute;
@@ -139,6 +140,20 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		car.startThread();
 		
 		passAgent.startThread();
+		
+		TruckAgent truck = new TruckAgent(stops.get(0));
+		
+		VehicleGui tGui = new VehicleGui(truck,this,(int)stops.get(0).x,(int)stops.get(0).y);
+		
+		truck.setGui(tGui);
+		
+		guis.add(tGui);
+		
+		truck.msgMakeDeliveryRun(null, stops.get(1));
+		
+		truck.msgMakeDeliveryRun(null, stops.get(2));
+		
+		truck.startThread();
 		
 		timer.start();
 	}
