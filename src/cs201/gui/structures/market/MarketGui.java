@@ -2,26 +2,22 @@ package cs201.gui.structures.market;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import cs201.gui.SimCity201;
-import cs201.gui.StructurePanel;
 import cs201.roles.Role;
 
-public class MarketGui extends StructurePanel implements ActionListener {
+public class MarketGui extends JPanel implements ActionListener {
 	
 	JButton addInventoryButton;
 	
 
-	public MarketGui(Rectangle2D r, int i, SimCity201 sc) {
-		super(r, i, sc);
-		
+	public MarketGui() {		
 		addInventoryButton = new JButton("Add inventory");
 		addInventoryButton.addActionListener(this);
 		addInventoryButton.setEnabled(true);

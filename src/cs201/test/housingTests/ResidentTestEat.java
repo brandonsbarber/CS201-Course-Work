@@ -21,7 +21,7 @@ public class ResidentTestEat {
 		System.out.println("------Begin Test------ \n");
 		resident = new ResidentRole();
 		
-		residence = new Residence(0, 0, 0, 0, 0);
+		residence = new Residence(0, 0, 0, 0, 0, null);
 		person = new PersonAgent("TestPerson");
 		person.setHome(residence);
 		resident.setResidence(residence);

@@ -13,8 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import cs201.gui.Gui;
+import cs201.gui.SimCity201;
+import cs201.gui.StructurePanel;
 
-public class MarketAnimationPanel extends JPanel implements ActionListener {
+public class MarketAnimationPanel extends StructurePanel {
 
 	/*
 	 * ********** DATA & CONSTANTS **********
@@ -28,11 +30,6 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
     public final static int SHELF_HEIGHT = 200;
     public final static int SHELF_SPACING = 150;
     public final static int SHELF_COUNT = 3;
-    
-    private final int ANIMATION_LENGTH = 10;
-    private Timer timer;
-
-    private List<Gui> guis = new ArrayList<Gui>();
     
     /*
      * ********** A* IMPLEMENTATION **********
@@ -55,7 +52,8 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
      * ********** CONSTRUCTORS **********
      */
     
-    public MarketAnimationPanel(int width, int height) {
+    public MarketAnimationPanel(int ii, SimCity201 sc, int width, int height) {
+    	super(ii, sc);
     	// Set the properties of the JPanel
     	setSize(width, height);
         setVisible(true);
@@ -83,21 +81,9 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
       	acquireRectangleGrid(3, 11, 12, 11);
       	acquireRectangleGrid(15, 11, 18, 11);
         acquireRectangleGrid(10, 15, 15, 15);
-        
-      	// Create a timer to control the animation
-        timer = new Timer(ANIMATION_LENGTH, this );
-    	timer.start();
-    }
-
-    public MarketAnimationPanel() {
-    	this(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-    }
-
-	public void actionPerformed(ActionEvent e) {
-		repaint();  //Will have paintComponent called                       
-	}                                                                       
-                                                          
-                                                                            
+    }                                                                                                                         
+         
+    @Override
     public void paintComponent(Graphics g) {
     	Graphics2D g2 = (Graphics2D)g;
     	
@@ -121,19 +107,7 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
         drawRectangleGrid(3, 11, 12, 11, g2);
         drawRectangleGrid(15, 11, 18, 11, g2);
     	
-        // Tell each gui to update
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
-        }
-
-        // Draw each gui
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.draw(g2);
-            }
-        }
+        super.paintComponent(g);
     }
     
     private void drawRectangleGrid(int leftX, int topY, int rightX, int bottomY, Graphics2D context) {
@@ -156,9 +130,5 @@ public class MarketAnimationPanel extends JPanel implements ActionListener {
 				}
     		}
     	}
-    }
-
-    public void addGui(Gui gui) {
-        guis.add(gui);
     }
 }

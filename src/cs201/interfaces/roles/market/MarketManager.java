@@ -17,7 +17,5 @@ public interface MarketManager {
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id);
 	
 	public void startInteraction(Intention intent);
-
-	public void closingTime();
 	
 }

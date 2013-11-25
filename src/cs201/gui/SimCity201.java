@@ -9,15 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-<<<<<<< HEAD
 import cs201.helper.CityDirectory;
-=======
-import cs201.gui.structures.market.MarketAnimationPanel;
-import cs201.gui.structures.market.MarketGui;
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
-import cs201.structures.market.MarketStructure;
-import cs201.structures.restaurant.RestaurantMatt;
->>>>>>> master
 
 public class SimCity201 extends JFrame {
 	private final int SIZEX = 1200;
@@ -49,7 +41,6 @@ public class SimCity201 extends JFrame {
 		buildingPanels.setBackground(Color.YELLOW);
 
 		// Create initial buildings here and add them to cityPanel and buildingPanels
-
 		
 		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
 		

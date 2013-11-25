@@ -64,7 +64,7 @@ public class MarketIntegrationTest {
 		mainFrame.setSize(new Dimension(500, 500));
 		
 		// Add our AnimationPanel to it
-		animationPanel = new MarketAnimationPanel();
+		animationPanel = new MarketAnimationPanel(0, null, 500, 500);
 		mainFrame.add(animationPanel);
 		
 		// Create a new MarketManager gui and add him to our animation panel

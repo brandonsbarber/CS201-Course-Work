@@ -1,12 +1,11 @@
 package cs201.test.transitTests;
 
-import cs201.interfaces.agents.transit.Car;
+import junit.framework.TestCase;
 import cs201.roles.transit.PassengerRole;
 import cs201.roles.transit.PassengerRole.PassengerState;
 import cs201.structures.Structure;
 import cs201.structures.transit.BusStop;
 import cs201.test.mock.Brandon.transit.MockCar;
-import junit.framework.TestCase;
 
 public class PassengerRoleTest extends TestCase
 {
@@ -16,8 +15,8 @@ public class PassengerRoleTest extends TestCase
 	
 	public void setUp() throws Exception
 	{
-		s1 = new BusStop(0, 0, 0, 0, 0);
-		s2 = new BusStop(0, 0, 0, 0, 1);
+		s1 = new BusStop(0, 0, 0, 0, 0, null);
+		s2 = new BusStop(0, 0, 0, 0, 1, null);
 		
 		pass = new PassengerRole(s1);
 		pass.testing = true;

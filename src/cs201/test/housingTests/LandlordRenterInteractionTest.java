@@ -1,7 +1,5 @@
 package cs201.test.housingTests;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +37,7 @@ public class LandlordRenterInteractionTest {
 	@Test
 	public void test() {
 		
-		landlordRole.addProperty(new Residence(0,0,0,0,0), renterRole, 30, WeekDay.Monday);
+		landlordRole.addProperty(new Residence(0,0,0,0,0, null), renterRole, 30, WeekDay.Monday);
 		
 		
 		

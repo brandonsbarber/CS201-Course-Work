@@ -12,7 +12,5 @@ public interface MarketConsumer {
 	public void msgHereAreYourItems(List<ItemRequest> items);
 	
 	public void startInteraction(Intention intent);
-
-	public void closingTime();
 	
 }
