@@ -9,15 +9,13 @@ import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class ResidentRole extends Role implements Resident {
-	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp};
+	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent};
 	ResidentState state;
 	private Residence residence;
 	ResidentGui gui;
-	private boolean asleep;
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
-		asleep = false;
 		//residence = (Residence) myPerson.getHome();  //would be helpful to connect residence to person's home
 	}
 	
@@ -49,7 +47,7 @@ public class ResidentRole extends Role implements Resident {
 					//getPerson().goToMarket();
 					Do("I need to get food from the market. I need to implement some way to do that.");
 					return false;
-				}	
+				}
 			default: 
 				break;
 		}
@@ -70,6 +68,7 @@ public class ResidentRole extends Role implements Resident {
 		//timer, gui animation
 		myPerson.setHungerLevel(0); //clear hunger amount
 		Do("finished pickAndEatFromFridge action");
+		actionFinished();
 	}
 	
 	private void goToSleep() {
@@ -81,7 +80,6 @@ public class ResidentRole extends Role implements Resident {
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
 		if (intent == Intention.ResidenceEat) {
 			this.msgStartEating();
 		}
@@ -90,6 +88,16 @@ public class ResidentRole extends Role implements Resident {
 			stateChanged();
 			//action to prepare scheduler for sleep action
 		}
+		if (intent == Intention.ResidencePayRent){
+			state = ResidentState.payingRent;
+			stateChanged();
+		}
+	}
+	
+	private void actionFinished() {
+		isActive = false;
+		//animation to leave residence
+		//gui inactive
 	}
 	
 	private void goToFridge() { //animation
