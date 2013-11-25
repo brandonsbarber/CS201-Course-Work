@@ -48,6 +48,12 @@ public class Residence extends Structure {
 	    super(x, y, width, height, id, p);
 	    owner = null;
 	    resident = null;
+	    addFood("Food 1", 10);
+	    addFood("Food 2", 10);
+	    addFood("Food 3", 10);
+	    addFood("Food 4", 10);
+	    addFood("Food 5", 10);
+	    addFood("Food 6", 10);
 	}
 	
 	//Setters
