@@ -1,5 +1,6 @@
 package cs201.interfaces.roles.restaurant.Matt;
 
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.market.MarketStructure;
 
 public interface CashierMatt {
@@ -24,10 +25,9 @@ public interface CashierMatt {
 	 * Market indirectly messages this CashierRole upon delivering an order and asks to be paid
 	 * @param market The MarketAgent requesting to be paid
 	 * @param amount The amount to be paid
-	 * @param order The type of food ordered from the Market
-	 * @param quantity The amount of food ordered from the Market
+	 * @param item The item being delivered
 	 */
-	public abstract void msgPayBillFromMarket(MarketStructure market, double amount, String order, int quantity);
+	public abstract void msgHereIsDeliveryFromMarket(MarketStructure market, double amount, ItemRequest item);
 	
 	/**
 	 * CookRole gives this CashierRole an invoice for an order he's made from a Market
