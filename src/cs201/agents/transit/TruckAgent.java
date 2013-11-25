@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Truck;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
 
 public class TruckAgent extends VehicleAgent implements Truck
@@ -16,13 +17,13 @@ public class TruckAgent extends VehicleAgent implements Truck
 	
 	class Delivery 
 	{
-		Map<String,Integer> inventory;
+		List<ItemRequest> inventory;
 		Structure destination;
 		DeliveryState s;
 		
-		public Delivery(Map<String,Integer> inv, Structure dest)
+		public Delivery(List<ItemRequest> items, Structure dest)
 		{
-			inventory = inv;
+			inventory = items;
 			destination = dest;
 			s = DeliveryState.NotDone;
 		}
@@ -44,7 +45,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 	}
 	
 	@Override
-	public void msgMakeDeliveryRun(Map<String, Integer> inventory, Structure destination)
+	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination)
 	{
 		deliveries.add(new Delivery(inventory,destination));
 		stateChanged();
