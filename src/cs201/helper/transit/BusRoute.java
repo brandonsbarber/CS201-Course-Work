@@ -23,7 +23,7 @@ public class BusRoute
 	
 	public BusStop getNextStop()
 	{
-		if(destination > stops.size())
+		if(destination >= stops.size())
 		{
 			destination = 0;
 		}

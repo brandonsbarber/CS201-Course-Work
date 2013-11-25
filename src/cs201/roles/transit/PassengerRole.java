@@ -7,6 +7,8 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.transit.PassengerGui;
+import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.agents.transit.Vehicle;
@@ -17,16 +19,18 @@ import cs201.structures.transit.BusStop;
 
 public class PassengerRole extends Role implements Passenger
 {
-	Structure destination;
-	Structure currentLocation;
+	public boolean testing = false;
 	
-	List<Vehicle> boardingRequest;
+	public Structure destination;
+	public Structure currentLocation;
 	
-	Vehicle currentVehicle;
+	public List<Vehicle> boardingRequest;
 	
-	Car car;
+	public Vehicle currentVehicle;
 	
-	Queue<Move> waypoints;
+	private Car car;
+	
+	public Queue<Move> waypoints;
 	
 	class Move
 	{
@@ -42,17 +46,36 @@ public class PassengerRole extends Role implements Passenger
 	
 	enum MoveType {Walk,Bus,Car};
 	
-	enum PassengerState {None,Waiting,Boarding,InTransit,Arrived};
-	PassengerState state;
+	public enum PassengerState {None,Waiting,Boarding,InTransit,Arrived};
+	public PassengerState state;
 	
 	Semaphore waitingForVehicle;
+	Semaphore animationPause;
 	
-	public PassengerRole(Structure currentLocation)
+	PassengerGui gui;
+	
+	public PassengerRole(Structure curLoc)
 	{
 		boardingRequest = new ArrayList<Vehicle>();
 		waypoints = new LinkedList<Move>();
 		
+		animationPause = new Semaphore(0,true);
+		
 		state = PassengerState.None;
+		this.currentLocation = curLoc;
+		
+		waitingForVehicle = new Semaphore(0);
+	}
+	
+	public void setGui(PassengerGui gui)
+	{
+		this.gui = gui;
+		gui.setPresent(true);
+	}
+	
+	public void addCar(Car c)
+	{
+		this.car = c;
 	}
 	
 	@Override
@@ -61,6 +84,8 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
+		Do("Clearing waypoints?");
+		stateChanged();
 	}
 
 	@Override
@@ -75,6 +100,8 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
+		Do("Arrived at "+s);
+		stateChanged();
 	}
 
 	@Override
@@ -86,10 +113,13 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		if(currentLocation == destination)
+		Do("Running scheduler");
+		Do(""+waypoints.size());
+		if(currentLocation == destination && state == PassengerState.None)
 		{
+			Do("ENDING?");
 			finishMoving();
-			return true;
+			return false;
 		}
 		if(state == PassengerState.None && waypoints.isEmpty())
 		{
@@ -112,6 +142,7 @@ public class PassengerRole extends Role implements Passenger
 			moveToLocation(waypoints.peek());
 			return true;
 		}
+		Do("Reached end");
 		return false;
 	}
 
@@ -122,6 +153,7 @@ public class PassengerRole extends Role implements Passenger
 		if (car != null)
 		{
 			waypoints.add (new Move(destination, MoveType.Car));
+			return;
 		}
 		
 		List<BusStop> stops = new ArrayList<BusStop>();
@@ -134,6 +166,7 @@ public class PassengerRole extends Role implements Passenger
 		}
 		else
 		{
+			Do("Adding to waypoints");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
@@ -142,20 +175,45 @@ public class PassengerRole extends Role implements Passenger
 	{
 		//message person done moving
 		setActive(false);
-		currentVehicle = null;
-		
 	}
 	
 	private void checkBoardingRequest(Vehicle remove)
 	{
-		// TODO Auto-generated method stub
-		
+		Do("Checking boarding request");
+		if(remove instanceof Bus)
+		{
+			Bus bus = (Bus)remove;
+			BusRoute route = bus.getRoute();
+			if(route.hasStop((BusStop)waypoints.peek().s))
+			{
+				bus.msgDoneBoarding(this);
+				state = PassengerState.InTransit;
+				boardingRequest.clear();
+				gui.setPresent(false);
+			}
+		}
+		else if(remove instanceof Car)
+		{
+			Car car = (Car)remove;
+			if(car == this.car)
+			{
+				car.msgDoneBoarding(this);
+				boardingRequest.clear();
+				currentVehicle = remove;
+				state = PassengerState.InTransit;
+				gui.setPresent(false);
+			}
+		}
 	}
 	
 	private void processArrival()
 	{
+		Do("PROCESSING ARRIVAL Reaching?!");
+		Do(""+waypoints);
+		Do(""+waypoints.size());
 		if(currentLocation == waypoints.peek().s)
 		{
+			Do("Hello? Removing");
 			Structure s = waypoints.remove().s;
 			if(currentVehicle != null)
 			{
@@ -168,8 +226,10 @@ public class PassengerRole extends Role implements Passenger
 					((Bus)currentVehicle).msgLeaving(this);
 				}
 				currentVehicle = null;
-				state = PassengerState.None;
 			}
+			gui.setPresent(true);
+			gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
+			state = PassengerState.None;
 		}
 		else if (currentVehicle instanceof Bus)
 		{
@@ -182,37 +242,51 @@ public class PassengerRole extends Role implements Passenger
 		switch(point.m)
 		{
 			case Walk :
-				/*gui.doGoToStructure(point.s);*/
+				gui.doGoToLocation(point.s);
+				try
+				{
+					animationPause.acquire();
+				}
+				catch (InterruptedException e1)
+				{
+					e1.printStackTrace();
+				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;
+				Do("Waypoints after animation: "+waypoints.size());
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
-				try
+				
+				if(!testing)
 				{
-					waitingForVehicle.acquire();
-				} catch (InterruptedException e)
-				{
-					e.printStackTrace();
+					try
+					{
+						waitingForVehicle.acquire();
+						Do("Released");
+					}
+					catch(InterruptedException e)
+					{
+						e.printStackTrace();
+					}
 				}
+				
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);
-				try
-				{
-					waitingForVehicle.acquire();
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
 				break;
 		}
+		Do("Waypoints at end of call: "+waypoints.size());
 	}
 
 	@Override
 	public void closingTime() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void msgAnimationFinished()
+	{
+		animationPause.release();
 	}
 }

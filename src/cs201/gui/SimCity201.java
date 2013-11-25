@@ -7,6 +7,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketGui;
@@ -20,6 +21,7 @@ public class SimCity201 extends JFrame {
 	CardLayout cardLayout;
 	
 	public SimCity201() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(1000, 500);
 		
@@ -52,14 +54,19 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g2, "" + 1);
 		cityPanel.addStructure(r2);
 		
-		MarketStructure market = new MarketStructure(150, 40, 40, 40, 2);
-		MarketGui marketGui = new MarketGui(market, 2, this);
-		market.setStructurePanel(marketGui);
-		buildingPanels.add(marketGui, "2");
-		cityPanel.addStructure(market);
+		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
 		
-		add(BorderLayout.NORTH, cityPanel);
+		cityScrollPane.setMinimumSize(new Dimension(1000, 250));
+		cityScrollPane.setMaximumSize(new Dimension(1000, 250));
+		cityScrollPane.setPreferredSize(new Dimension(1000, 250));
+		
+		cityScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
+		add(BorderLayout.NORTH, cityScrollPane);
 		add(BorderLayout.SOUTH, buildingPanels);
+		
+		pack();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
