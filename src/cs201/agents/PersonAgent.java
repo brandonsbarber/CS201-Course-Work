@@ -109,6 +109,9 @@ public class PersonAgent extends Agent implements Person {
 		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
 			this.state = PersonState.Awake;
 		}
+		if (CityTime.timeDifference(curTime,  sleepTime) > 0) {
+			this.state = PersonState.Sleeping;
+		}
 	}
 	
 	
@@ -188,9 +191,10 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If it's time to go to work
 		if (state == PersonState.Awake && time.equalsIgnoreDay(this.workTime)) {
-			//this.state = PersonState.AtWork;
-			//this.addActionToPlanner(job, workplace, true);
-			return true;
+			if (this.addActionToPlanner(job, workplace, true)) {
+				this.state = PersonState.AtWork;
+				return true;
+			}
 		}
 		
 		// If it's time to go to sleep
@@ -210,7 +214,7 @@ public class PersonAgent extends Agent implements Person {
 					break;
 				}
 			}
-			if (performAction) {
+			if (performAction && CityDirectory.getInstance().getBanks().size() > 0) {
 				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
 				return true;
 			}
@@ -225,7 +229,7 @@ public class PersonAgent extends Agent implements Person {
 					break;
 				}
 			}
-			if (performAction) {
+			if (performAction && CityDirectory.getInstance().getRestaurants().size() > 0) {
 				boolean starving = hungerLevel >= STARVING;
 				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), starving);
 				return true;
@@ -243,8 +247,9 @@ public class PersonAgent extends Agent implements Person {
 			}
 			if (performAction) {
 				boolean starving = hungerLevel >= STARVING;
-				this.addActionToPlanner(Intention.ResidenceEat, home, starving);
-				return true;
+				if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
+					return true;
+				}
 			}
 		}
 		
@@ -253,6 +258,7 @@ public class PersonAgent extends Agent implements Person {
 			this.addActionToPlanner(Intention.ResidenceRelax, home, false);
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -313,11 +319,12 @@ public class PersonAgent extends Agent implements Person {
 	 * @param intent What the PersonAgent will do
 	 * @param location Where the PersonAgent should go
 	 * @param highPriority Whether this is high enough priority to be put at the front of the planner
+	 * @return True if Action added successfully, false if unable to add to planner
 	 */
-	private void addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
-		if (intent == null || location == null) {
-			Do("Call to addActionToPlanner had null argument(s).");
-			return;
+	private boolean addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
+		if (intent == null || intent == Intention.None || location == null) {
+			Do("Call to addActionToPlanner had bad or null argument(s).");
+			return false;
 		}
 		
 		Action temp = new Action();
@@ -329,6 +336,7 @@ public class PersonAgent extends Agent implements Person {
 			planner.add(0, temp);
 		}
 		Do("Added action " + temp + " to planner.");
+		return true;
 	}
 	
 	
@@ -694,10 +702,6 @@ public class PersonAgent extends Agent implements Person {
 		
 		public String toString() {
 			return intent + " at " + location;
-		}
-		
-		public boolean equals(Action other) {
-			return location == other.location && intent == other.intent;
 		}
 	}
 	
