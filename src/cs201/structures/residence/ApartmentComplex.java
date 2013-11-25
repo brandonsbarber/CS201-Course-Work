@@ -19,6 +19,7 @@ public class ApartmentComplex extends Structure {
 	public ApartmentComplex (int x, int y, int width, int height, int id, StructurePanel p) {
 	    super(x, y, width, height, id, p);
 	    landlord = null;
+	    apartments = null;
 	}
 	
 	// Methods
@@ -43,6 +44,13 @@ public class ApartmentComplex extends Structure {
 	    	}
 	    }
 	    return vacantApartments;
+	}
+	
+	public void addApartment(Residence r) {
+		if(apartments==null) {
+			apartments = new ArrayList<Residence>();
+		}
+		apartments.add(r);
 	}
 
 	@Override
