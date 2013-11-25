@@ -43,22 +43,17 @@ public class SettingsPanel extends JPanel implements ActionListener
 		
 		add(topPanels,BorderLayout.NORTH);
 		
-		//ConfigPanel pan = new ConfigPanel();
-		
-		//contentsScrollPane.setViewportView(pan);
-		
 		add(contentsScrollPane);
 	}
 	
-	public void addPanel (String tabTitle)
+	public void addPanel (String tabTitle,ConfigPanel panel)
 	{
 		if(!panelMap.containsKey(tabTitle))
 		{
 			panelMap.put(tabTitle, new ArrayList<ConfigPanel>());
 			categories.addItem(tabTitle);
 		}
-		ConfigPanel newPanel = new ConfigPanel();
-		panelMap.get(tabTitle).add(newPanel);
+		panelMap.get(tabTitle).add(panel);
 	}
 
 	@Override
