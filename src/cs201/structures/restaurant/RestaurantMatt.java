@@ -9,6 +9,7 @@ import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.helper.CityTime;
+import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
@@ -22,6 +23,7 @@ import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
 public class RestaurantMatt extends Restaurant {
 	private final int INITIALWAITERS = 2;
 	private final int MAXWAITERS = 4;
+	private RestaurantRotatingStand stand = new RestaurantRotatingStand();
 	
 	public RestaurantMatt(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
@@ -34,8 +36,10 @@ public class RestaurantMatt extends Restaurant {
 		CookGuiMatt cookGui = new CookGuiMatt((RestaurantCookRoleMatt) cook);
 		cookGui.setPresent(false);
 		((RestaurantCookRoleMatt) cook).setGui(cookGui);
+		((RestaurantCookRoleMatt) cook).setRotatingStand(stand);
 		this.panel.addGui(cookGui);
 		cook.setRestaurant(this);
+		
 		
 		this.cashier = new RestaurantCashierRoleMatt();
 		CashierGuiMatt cashierGui = new CashierGuiMatt((RestaurantCashierRoleMatt) cashier);
@@ -56,6 +60,7 @@ public class RestaurantMatt extends Restaurant {
 			WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
 			waiterGui.setPresent(false);
 			((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
+			((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
 			waiters.add(newWaiter);
 			this.panel.addGui(waiterGui);
 			newWaiter.setRestaurant(this);
@@ -99,6 +104,7 @@ public class RestaurantMatt extends Restaurant {
 				((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
 				waiters.add(newWaiter);
 				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
+				((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
 				this.panel.addGui(waiterGui);
 				newWaiter.setRestaurant(this);
 				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);

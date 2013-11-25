@@ -9,6 +9,8 @@ import javax.swing.Timer;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
 import cs201.helper.CityDirectory;
+import cs201.helper.Matt.RestaurantRotatingStand;
+import cs201.helper.Matt.RestaurantRotatingStand.RotatingStandOrder;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
@@ -17,7 +19,7 @@ import cs201.structures.market.MarketStructure;
 /**
  * Restaurant Cook Agent
  */
-public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt {
+public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt, ActionListener {
 	private CookGuiMatt gui = null;
 	private List<Order> orders;
 	private Map<String, Food> foods;
@@ -26,6 +28,9 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private final int MAXSTOCK = 5;
 	private final int INITIALSTOCK = 3;
 	private boolean closingTime = false;
+	private final int STANDCHECKTIMER = 3000; // 3 seconds
+	private Timer standTimer = new Timer(STANDCHECKTIMER, this);
+	private RestaurantRotatingStand stand = null;
 
 	public RestaurantCookRoleMatt() {
 		super();
@@ -39,6 +44,9 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		foods.put("Pizza", new Food("Pizza", 2800, INITIALSTOCK));
 		foods.put("Chicken", new Food("Chicken", 3300, INITIALSTOCK));
 		foods.put("Salad", new Food("Salad", 2100, INITIALSTOCK));
+		
+		standTimer.setRepeats(true);
+		standTimer.start();
 	}
 	
 	public void setGui(CookGuiMatt gui) {
@@ -261,11 +269,26 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	public CookGuiMatt getGui() {
 		return this.gui;
 	}
+	
+	public void setRotatingStand(RestaurantRotatingStand stand) {
+		this.stand = stand;
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
 		closingTime = false;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		RotatingStandOrder r = stand.removeOrder();
+		if (r == null) {
+			return;
+		} else {
+			orders.add(new Order(r.choice, r.waiter, r.tableNum));
+			stateChanged();
+		}
 	}
 
 }
