@@ -29,6 +29,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
 	public List<MyEmployee> employees = new ArrayList<MyEmployee>();
 	Map<MarketConsumer, ConsumerRecord> consumerBalance = new HashMap<MarketConsumer, ConsumerRecord>();
+	Map<Structure, StructureRecord> structureBalance = new HashMap<Structure, StructureRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	MarketManagerGui gui;
 	
@@ -54,8 +55,19 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 	}
 	
+	/**
+	 * Holds the balance for a single MarketConsumer
+	 */
 	public class ConsumerRecord {
 		MarketConsumer consumer;
+		float balance;
+	}
+	
+	/**
+	 * Holds the balance for a single Structure
+	 */
+	public class StructureRecord {
+		Structure structure;
 		float balance;
 	}
 	
@@ -312,10 +324,13 @@ public class MarketManagerRole extends Role implements MarketManager {
 		if (o.type == OrderType.INPERSON) {
 			
 			o.consumer.msgHereIsYourTotal(this, o.totalPrice);
+			consumerBalance.get(o.consumer).balance += o.totalPrice;
 			
 		} else if (o.type == OrderType.DELIVERY) {
 			
 			// TODO
+			// structure.getCashier().msgHereIsTotal
+			structureBalance.get(o.structure).balance += o.totalPrice;
 			
 		}
 	}
