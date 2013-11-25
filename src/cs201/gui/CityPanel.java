@@ -18,6 +18,7 @@ import javax.swing.Timer;
 import cs201.agents.PassengerTestAgent;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
+import cs201.gui.transit.PassengerGui;
 import cs201.gui.transit.VehicleGui;
 import cs201.helper.transit.BusRoute;
 import cs201.roles.transit.PassengerRole;
@@ -31,7 +32,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 
 	ArrayList<Structure> buildings;
 	
-	ArrayList<VehicleGui> guis;
+	ArrayList<Gui> guis;
 	
 	public enum DrivingDirection
 	{
@@ -78,7 +79,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		Timer timer = new Timer(1000/120,this);
 		
 		buildings = new ArrayList<Structure>();
-		guis = new ArrayList<VehicleGui>();
+		guis = new ArrayList<Gui>();
 		
 		stops = new ArrayList<BusStop>();
 		
@@ -92,7 +93,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			buildings.add(stop);
 		}
 		
-		BusAgent bus = new BusAgent(new BusRoute(stops),0);
+		/*BusAgent bus = new BusAgent(new BusRoute(stops),0);
 		VehicleGui busG;
 		guis.add(busG = new VehicleGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
 		
@@ -106,7 +107,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		bus2.setGui(busG2);
 		
-		bus2.startThread();
+		bus2.startThread();*/
 		
 		addMouseListener(this);
 		
@@ -121,11 +122,17 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		PassengerRole pass = new PassengerRole(startLoc);
 		
+		PassengerGui pgui = new PassengerGui(pass,this,(int)startLoc.x,(int)startLoc.y);
+		
+		pass.setGui(pgui);
+		
+		guis.add(pgui);
+		
 		PassengerTestAgent passAgent = new PassengerTestAgent(pass);
 		
 		pass.msgGoTo(endLoc);
 		
-		pass.addCar(car);
+		//pass.addCar(car);
 		
 		car.setGui(gui);
 		
@@ -238,7 +245,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			g2.fill(s);
 		}
 		
-		for(VehicleGui gui: guis)
+		for(Gui gui: guis)
 		{
 			if(gui.isPresent())
 			{

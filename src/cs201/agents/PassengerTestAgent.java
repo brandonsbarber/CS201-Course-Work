@@ -16,7 +16,6 @@ public class PassengerTestAgent extends PersonAgent
 	@Override
 	protected boolean pickAndExecuteAnAction()
 	{
-		System.out.println("Hello!");
 		return role.pickAndExecuteAnAction();
 	}
 	

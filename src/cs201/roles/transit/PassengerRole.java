@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.transit.PassengerGui;
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.agents.transit.Car;
@@ -49,16 +50,26 @@ public class PassengerRole extends Role implements Passenger
 	public PassengerState state;
 	
 	Semaphore waitingForVehicle;
+	Semaphore animationPause;
+	
+	PassengerGui gui;
 	
 	public PassengerRole(Structure curLoc)
 	{
 		boardingRequest = new ArrayList<Vehicle>();
 		waypoints = new LinkedList<Move>();
 		
+		animationPause = new Semaphore(0,true);
+		
 		state = PassengerState.None;
 		this.currentLocation = curLoc;
 		
 		waitingForVehicle = new Semaphore(0);
+	}
+	
+	public void setGui(PassengerGui gui)
+	{
+		this.gui = gui;
 	}
 	
 	public void addCar(Car c)
@@ -72,6 +83,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
+		Do("Clearing waypoints?");
 		stateChanged();
 	}
 
@@ -100,7 +112,8 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		Do("Hello??");
+		Do("Running scheduler");
+		Do(""+waypoints.size());
 		if(currentLocation == destination && state == PassengerState.None)
 		{
 			Do("ENDING?");
@@ -152,6 +165,7 @@ public class PassengerRole extends Role implements Passenger
 		}
 		else
 		{
+			Do("Adding to waypoints");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
@@ -191,9 +205,12 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void processArrival()
 	{
-		Do("Reaching?!");
+		Do("PROCESSING ARRIVAL Reaching?!");
+		Do(""+waypoints);
+		Do(""+waypoints.size());
 		if(currentLocation == waypoints.peek().s)
 		{
+			Do("Hello? Removing");
 			Structure s = waypoints.remove().s;
 			if(currentVehicle != null)
 			{
@@ -206,9 +223,8 @@ public class PassengerRole extends Role implements Passenger
 					((Bus)currentVehicle).msgLeaving(this);
 				}
 				currentVehicle = null;
-				state = PassengerState.None;
-				Do("Reaching?");
 			}
+			state = PassengerState.None;
 		}
 		else if (currentVehicle instanceof Bus)
 		{
@@ -221,9 +237,18 @@ public class PassengerRole extends Role implements Passenger
 		switch(point.m)
 		{
 			case Walk :
-				/*gui.doGoToStructure(point.s);*/
+				gui.doGoToLocation(point.s);
+				try
+				{
+					animationPause.acquire();
+				}
+				catch (InterruptedException e1)
+				{
+					e1.printStackTrace();
+				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;
+				Do("Waypoints after animation: "+waypoints.size());
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
@@ -246,12 +271,17 @@ public class PassengerRole extends Role implements Passenger
 				((BusStop)currentLocation).addPassenger(this);
 				break;
 		}
-		System.out.println("Got released");
+		Do("Waypoints at end of call: "+waypoints.size());
 	}
 
 	@Override
 	public void closingTime() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void msgAnimationFinished()
+	{
+		animationPause.release();
 	}
 }
