@@ -111,8 +111,11 @@ public abstract class Role {
 		StringBuffer output = new StringBuffer();
 		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append("] ");
-		output.append(this.myPerson.getName());
+		output.append("]");
+		if (this.myPerson != null) {
+			output.append(" ");
+			output.append(this.myPerson.getName());
+		}
 		output.append(": ");
 		output.append(msg);
 		
