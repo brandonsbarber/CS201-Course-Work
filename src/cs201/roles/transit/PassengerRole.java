@@ -247,14 +247,17 @@ public class PassengerRole extends Role implements Passenger
 		switch(point.m)
 		{
 			case Walk :
-				gui.doGoToLocation(point.s);
-				try
+				if(!testing)
 				{
-					animationPause.acquire();
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
+					gui.doGoToLocation(point.s);
+					try
+					{
+						animationPause.acquire();
+					}
+					catch (InterruptedException e1)
+					{
+						e1.printStackTrace();
+					}
 				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;

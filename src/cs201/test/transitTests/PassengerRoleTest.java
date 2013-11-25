@@ -141,9 +141,26 @@ public class PassengerRoleTest extends TestCase
 	public void testPassengerWalk()
 	{
 		pass.msgGoTo(s2);
+		assertEquals("Ensure that passenger's destination is s2.",s2,pass.destination);
+		assertEquals("Ensure that passenger's current location is s1.",s1,pass.currentLocation);
+		assertEquals("Ensure that passenger's current waypoints list is empty.",0,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current state is none.",pass.state,PassengerState.None);
 		
-		assertEquals("Passenger's destination should be s2",s2,pass.destination);
+		assertTrue("Should execute an action and return true.",pass.pickAndExecuteAnAction());
 		
+		assertEquals("Should have one waypoint for walking.",1,pass.waypoints.size());
 		
+		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Passenger's state should be arrived.",PassengerState.Arrived,pass.state);
+		assertEquals("Current location should be s2.",s2,pass.currentLocation);
+		
+		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Passenger's state should be none.",PassengerState.None,pass.state);
+		
+		assertFalse("Should return false.",pass.pickAndExecuteAnAction());
+		
+		assertFalse("Passenger shouldn't be active now.",pass.getActive());
 	}
 }
