@@ -25,7 +25,7 @@ public class MarketStructure extends Structure {
 		super(x, y, width, height, id, p);
 		
 		// Create a manager to manage this market
-		MarketManagerRole newManager = new MarketManagerRole();
+		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
 		setManager(newManager);
 		
 		// Create an initial employee
@@ -94,6 +94,13 @@ public class MarketStructure extends Structure {
 	 */
 	public MarketManagerRole getManager() {
 		return manager;
+	}
+	
+	/**
+	 * @return The delivery truck for the market.
+	 */
+	public TruckAgent getDeliveryTruck() {
+		return deliveryTruck;
 	}
 	
 	/**

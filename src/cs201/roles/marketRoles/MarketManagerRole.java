@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.agents.transit.TruckAgent;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 import cs201.structures.Structure;
+import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
 
 /**
@@ -32,6 +34,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	Map<Structure, StructureRecord> structureBalance = new HashMap<Structure, StructureRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	MarketManagerGui gui;
+	MarketStructure structure;
 	
 	public static class ItemRequest {
 		public String item;
@@ -137,11 +140,12 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public MarketManagerRole() {
-		this("");
+		this("", null);
 	}
 	
-	public MarketManagerRole(String n) {
+	public MarketManagerRole(String n, MarketStructure s) {
 		name = n;
+		structure = s;
 	}
 	
 	/*
@@ -310,7 +314,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 		} else if (o.type == OrderType.DELIVERY) {
 			
 			// The consumer wants the items delivered to him
-			// TODO
+			TruckAgent deliveryTruck = structure.getDeliveryTruck();
+			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure);
 			
 		}
 		
