@@ -230,6 +230,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		this.restaurant.closingTime();
 		this.restaurant.setOpen(false);
 		this.isActive = false;
+		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
 		this.waiters.clear();

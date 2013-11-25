@@ -158,6 +158,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		// TODO
 		this.isActive = false;
 		this.myPerson.removeRole(this);
+		this.myPerson.goOffWork();
 		this.myPerson = null;
 		DoLeaveRestaurant();
 	}

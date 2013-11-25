@@ -132,6 +132,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private void LeaveRestaurant() {
 		// TODO
 		this.isActive = false;
+		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
 		DoLeaveRestaurant();
