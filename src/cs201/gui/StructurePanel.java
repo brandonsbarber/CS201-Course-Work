@@ -60,12 +60,6 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	
 	public void paintComponent(Graphics g) { 
     	Graphics2D g2 = (Graphics2D)g;
-		
-		for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
-        }
 
         for(Gui gui : guis) {
             if (gui.isPresent()) {
@@ -76,6 +70,12 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		for(Gui gui : guis) {
+            if (gui.isPresent()) {
+                gui.updatePosition();
+            }
+        }
+		
 		repaint();  //Will have paintComponent called
 	}
 }
