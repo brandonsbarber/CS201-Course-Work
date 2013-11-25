@@ -64,7 +64,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		
 	}
 
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

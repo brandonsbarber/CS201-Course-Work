@@ -1,5 +1,7 @@
 package cs201;
 
+import javax.swing.JFrame;
+
 import cs201.gui.SimCity201;
 
 /**
@@ -11,6 +13,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		SimCity201 app = new SimCity201();
+		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		app.setResizable(false);
+		app.pack();
+		app.setVisible(true);
 	}
 
 }

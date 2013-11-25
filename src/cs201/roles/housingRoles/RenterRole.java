@@ -53,7 +53,7 @@ public class RenterRole extends Role implements Renter {
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

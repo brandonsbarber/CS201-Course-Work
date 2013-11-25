@@ -1,5 +1,7 @@
 package cs201.interfaces.roles.restaurant.Matt;
 
+import cs201.structures.market.MarketStructure;
+
 public interface CookMatt {
 	/* Messages ------------------------------------------------------------------------------- */
 	/**
@@ -15,7 +17,7 @@ public interface CookMatt {
 	 * @param type The food type being fulfilled
 	 * @param amount The amount of food being fulfilled (might not be the full amount actually ordered)
 	 */
-	public abstract void msgFulfillSupplyOrder(String type, int amount);
+	public abstract void msgFulfillSupplyOrder(String type, int amount, MarketStructure from);
 	
 	/**
 	 * WaiterRole tells this CookRole that a plated order has been picked up

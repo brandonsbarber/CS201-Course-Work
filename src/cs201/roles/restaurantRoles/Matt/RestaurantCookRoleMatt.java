@@ -8,28 +8,34 @@ import javax.swing.Timer;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
+import cs201.helper.CityDirectory;
+import cs201.helper.Matt.RestaurantRotatingStand;
+import cs201.helper.Matt.RestaurantRotatingStand.RotatingStandOrder;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.structures.market.MarketStructure;
 
 /**
  * Restaurant Cook Agent
  */
-public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt {
+public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt, ActionListener {
 	private CookGuiMatt gui = null;
 	private List<Order> orders;
 	private Map<String, Food> foods;
 	private enum OrderState { pending, cooking, done, pickup };
-	//private List<MarketAgent> markets;
 	private final int FOODTHRESHOLD = 2;
 	private final int MAXSTOCK = 5;
 	private final int INITIALSTOCK = 3;
+	private boolean closingTime = false;
+	private final int STANDCHECKTIMER = 3000; // 3 seconds
+	private Timer standTimer = new Timer(STANDCHECKTIMER, this);
+	private RestaurantRotatingStand stand = null;
 
 	public RestaurantCookRoleMatt() {
 		super();
 
 		orders = Collections.synchronizedList(new ArrayList<Order>());
-		//markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
 		foods = Collections.synchronizedMap(new Hashtable<String, Food>());
 		
 		foods.put("Steak", new Food("Steak", 3500, INITIALSTOCK)); 
@@ -38,6 +44,9 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		foods.put("Pizza", new Food("Pizza", 2800, INITIALSTOCK));
 		foods.put("Chicken", new Food("Chicken", 3300, INITIALSTOCK));
 		foods.put("Salad", new Food("Salad", 2100, INITIALSTOCK));
+		
+		standTimer.setRepeats(true);
+		standTimer.start();
 	}
 	
 	public void setGui(CookGuiMatt gui) {
@@ -46,18 +55,24 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	
 	// Messages -------------------------------------------------------------
 	@Override
+	public void msgClosingTime() {
+		closingTime = true;
+		stateChanged();
+	}
+	
+	@Override
 	public void msgHereIsAnOrder(WaiterMatt w, String choice, int tableNum) {
 		orders.add(new Order(choice, (RestaurantWaiterRoleMatt) w, tableNum));
 		stateChanged();
 	}
 	
 	@Override
-	public void msgFulfillSupplyOrder(String type, int amount) {
+	public void msgFulfillSupplyOrder(String type, int amount, MarketStructure from) {
 		Food temp = foods.get(type);
 		temp.quantity += amount;
 		temp.orderPending = false;
 		if (temp.amountOrdered > amount || amount == 0) {
-			temp.nextMarket++;
+			temp.marketsTried.add(from);
 		}
 		stateChanged();
 	}
@@ -72,18 +87,23 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {		
-		// If there is something to do'
+		// If there is something to do
+		
+		if (closingTime) {
+			LeaveRestaurant();
+			return true;
+		}
 		
 		// If food needs to be ordered
-		/*synchronized(foods) {
+		synchronized(foods) {
 			for (String f : foods.keySet()) {
 				Food temp = foods.get(f);
-				if (!temp.orderPending && temp.quantity < FOODTHRESHOLD && temp.nextMarket < markets.size()) {
+				if (!temp.orderPending && temp.quantity < FOODTHRESHOLD && temp.marketsTried.size() < CityDirectory.getInstance().getMarkets().size()) {
 					OrderFood(temp);
 					return true;
 				}
 			}
-		}*/
+		}
 		
 		synchronized(orders) {
 			for (Order o : orders) {
@@ -109,6 +129,15 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 
 	// Actions -------------------------------------------------------------
+	private void LeaveRestaurant() {
+		// TODO
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		DoLeaveRestaurant();
+	}
+	
 	private void CookOrder(Order o) {
 		Food f = foods.get(o.choice);
 		if (f.quantity == 0) {
@@ -132,13 +161,24 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 	
 	private void OrderFood(Food f) {
-		DoOrderFood(f);
 		f.amountOrdered = MAXSTOCK - f.quantity;
-		//markets.get(f.nextMarket).msgOrderSupplies(f.type, f.amountOrdered);
-		f.orderPending = true;
+		for (MarketStructure m : CityDirectory.getInstance().getMarkets()) {
+			if (!f.marketsTried.contains(m)) {
+				DoOrderFood(f, m);
+				MarketStructure market = CityDirectory.getInstance().getRandomMarket();
+				((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgOrderInvoiceFromCook(market, f.type, f.amountOrdered);
+				//market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
+				f.orderPending = true;
+				break;
+			}
+		}
 	}
 
 	// Utilities -------------------------------------------------------------
+	private void DoLeaveRestaurant() {
+		// TODO leave restaurant animation
+	}
+	
 	private void DoCookOrder(Order o) {
 		System.out.println("Cook " + this.toString() + " cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
 		gui.addCookingItem(o.choice);
@@ -154,17 +194,9 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		gui.addPlatingItem(o.choice);
 	}
 	
-	private void DoOrderFood(Food f) {
-		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from Market " + f.nextMarket + ".");
+	private void DoOrderFood(Food f, MarketStructure m) {
+		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from " + m + ".");
 	}
-	
-	/**
-	 * Adds a MarketAgent to this CookAgent
-	 * @param m The MarketAgent being added to this CookAgent's list of MarketAgents
-	 */
-	/*public void addMarket(MarketAgent m) {
-		markets.add(m);
-	}*/
 	
 	public void emptyInventory() {
 		synchronized(foods) {
@@ -185,7 +217,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		private String type;
 		private int cookTime;
 		private int quantity;
-		private int nextMarket;
+		private List<MarketStructure> marketsTried;
 		private boolean orderPending;
 		private int amountOrdered;
 		
@@ -193,7 +225,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			this.type = type;
 			this.cookTime = cookTime;
 			this.quantity = initialQuantity;
-			this.nextMarket = 0;
+			this.marketsTried = new ArrayList<MarketStructure>();
 			this.orderPending = false;
 			this.amountOrdered = 0;
 		}
@@ -234,17 +266,31 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			return (choice + " for table " + tableNum);
 		}
 	}
+	
+	public CookGuiMatt getGui() {
+		return this.gui;
+	}
+	
+	public void setRotatingStand(RestaurantRotatingStand stand) {
+		this.stand = stand;
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		// TODO maybe animate into restaurant?
+		closingTime = false;
 	}
 
 	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) {
+		RotatingStandOrder r = stand.removeOrder();
+		if (r == null) {
+			return;
+		} else {
+			orders.add(new Order(r.choice, r.waiter, r.tableNum));
+			stateChanged();
+		}
 	}
+
 }
 

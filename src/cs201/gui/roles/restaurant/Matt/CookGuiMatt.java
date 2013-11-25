@@ -7,28 +7,26 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 
 public class CookGuiMatt implements Gui {
 
 	private RestaurantCookRoleMatt role;
 	private boolean isPresent;
-
-	RestaurantGuiMatt gui;
 	
 	private List<String> cooking;
 	private List<String> plating;
 	
+	// from 500x500
 	private final int cookingAreaX = 342;
 	private final int cookingAreaY = 425;
 	private final int platingAreaX = 100;
 	private final int platingAreaY = 425;
 
-	public CookGuiMatt(RestaurantCookRoleMatt c, RestaurantGuiMatt r) {
+	public CookGuiMatt(RestaurantCookRoleMatt c) {
 		role = c;
 		isPresent = true;
-		this.gui = r;
 		cooking = Collections.synchronizedList(new ArrayList<String>());
 		plating = Collections.synchronizedList(new ArrayList<String>());
 	}

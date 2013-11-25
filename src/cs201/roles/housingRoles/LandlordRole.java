@@ -131,7 +131,7 @@ public class LandlordRole extends Role implements Landlord {
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

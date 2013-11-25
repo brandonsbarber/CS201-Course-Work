@@ -1,5 +1,7 @@
 package cs201.interfaces.roles.restaurant.Matt;
 
+import cs201.structures.market.MarketStructure;
+
 public interface CashierMatt {
 	/* Messages ------------------------------------------------------------------------------- */
 	/**
@@ -25,14 +27,13 @@ public interface CashierMatt {
 	 * @param order The type of food ordered from the Market
 	 * @param quantity The amount of food ordered from the Market
 	 */
-	public abstract void msgPayBillFromMarket(/*Market market,*/ double amount, String order, double quantity);
+	public abstract void msgPayBillFromMarket(MarketStructure market, double amount, String order, int quantity);
 	
 	/**
 	 * CookRole gives this CashierRole an invoice for an order he's made from a Market
 	 * @param market Market ordered from
-	 * @param amount Price of the order
 	 * @param order The type of food ordered from the Market
 	 * @param quantity The amount of food ordered from the Market
 	 */
-	public abstract void msgOrderInvoiceFromCook(/*Market market,*/ double amount, String order, double quantity);
+	public abstract void msgOrderInvoiceFromCook(MarketStructure market, String order, double quantity);
 }

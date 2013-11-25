@@ -9,12 +9,10 @@ import javax.swing.Timer;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.helper.Matt.MenuMatt;
+import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
-import cs201.roles.restaurantRoles.RestaurantCashierRole;
-import cs201.roles.restaurantRoles.RestaurantCookRole;
-import cs201.roles.restaurantRoles.RestaurantHostRole;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 
 import java.util.concurrent.Semaphore;
@@ -22,18 +20,20 @@ import java.util.concurrent.Semaphore;
 /**
  * Restaurant Waiter Agent
  */
-public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements WaiterMatt {
+public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements WaiterMatt {
 	//private RestaurantCookRoleMatt cook;
 	//private RestaurantHostRoleMatt host;
 	private RestaurantCashierRoleMatt cashier;
 	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private WaiterGuiMatt waiterGui;
 	private List<MyCustomer> myCustomers;
-	private enum CustomerState { none, waiting, readyToOrder, ordered, foodReady, outOfFood, askedForCheck, waiterHasCheck, leaving };
+	protected enum CustomerState { none, waiting, readyToOrder, ordered, foodReady, outOfFood, askedForCheck, waiterHasCheck, leaving };
 	private enum WaiterState { none, askingForBreak, waitingForResponse, onBreak, breakNotAllowed, breakOver };
 	private WaiterState state = WaiterState.none;
 	private Timer breakTimer;
 	private final int BREAKTIME = 15000; // 15 seconds
+	private boolean closingTime = false;
+	protected RestaurantRotatingStand stand;
 	
 
 	public RestaurantWaiterRoleMatt(RestaurantCookRoleMatt cook, RestaurantHostRoleMatt host, RestaurantCashierRoleMatt cashier) {
@@ -41,6 +41,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 
 		this.cashier = cashier;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
+		this.stand = null;
 	}
 	
 	public RestaurantWaiterRoleMatt() {
@@ -48,9 +49,16 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 
 		this.cashier = null;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
+		this.stand = null;
 	}
 	
 	// Messages -------------------------------------------------------------
+	@Override
+	public void msgClosingTime() {
+		closingTime = true;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgSeatCustomer(int tNum, CustomerMatt c) {
 		myCustomers.add(new MyCustomer(c, tNum));
@@ -157,6 +165,11 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {
+		if (closingTime) {
+			LeaveRestaurant();
+			return true;
+		}
+		
 		if (state == WaiterState.askingForBreak) {
 			AskForBreak();
 			return true;
@@ -236,6 +249,15 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	}
 
 	// Actions -------------------------------------------------------------
+	private void LeaveRestaurant() {
+		// TODO
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		DoLeaveRestaurant();
+	}
+	
 	private void AskForBreak() {
 		DoAskForBreak();
 		state = WaiterState.waitingForResponse;
@@ -267,11 +289,7 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 		m.state = CustomerState.none;
 	}
 	
-	private void GiveOrderToCook(MyCustomer m) {
-		m.state = CustomerState.none;
-		DoGiveOrderToCook(m);
-		((RestaurantCookRoleMatt) restaurant.getCook()).msgHereIsAnOrder(this, m.choice, m.tableNumber);
-	}
+	protected abstract void GiveOrderToCook(MyCustomer m);
 	
 	private void RetakeCustomerOrder(MyCustomer m) {
 		DoRetakeCustomerOrder(m);
@@ -306,6 +324,10 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	}
 
 	// Utilities -------------------------------------------------------------
+	private void DoLeaveRestaurant() {
+		// TODO leave restaurant animation
+	}
+	
 	private void DoAskForBreak() {
 		System.out.println("Waiter " + this.toString() + " asking host " + ((RestaurantHostRoleMatt) restaurant.getHost()).getName() + " to go on break.");
 		waiterGui.setWaitingForBreakResponse();
@@ -385,8 +407,19 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 		}
 	}
 	
-	private void DoGiveOrderToCook(MyCustomer m) {
+	protected void DoGiveOrderToCook(MyCustomer m) {
 		System.out.println("Waiter " + this.toString() + " giving customer " + m.customer.toString() + "'s order to the cook.");
+		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
+								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	protected void DoPutOrderOnStand(MyCustomer m) {
+		System.out.println("Waiter " + this.toString() + " putting customer " + m.customer.toString() + "'s order on rotating stand.");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
 		try {
@@ -497,6 +530,14 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 	}
 	
 	/**
+	 * Sets this Waiter's reference to the Restaurant's rotating stand
+	 * @param stand The Rotating Stand
+	 */
+	public void setRotatingStand(RestaurantRotatingStand stand) {
+		this.stand = stand;
+	}
+	
+	/**
 	 * The WaiterGui tells this WaiterAgent that it has reached its destination, freeing up this WaiterAgent
 	 * to continue working
 	 */
@@ -504,12 +545,12 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 		atTargetPosition.release();
 	}
 	
-	private class MyCustomer {
-		private CustomerMatt customer;
-		private int tableNumber;
-		private String choice;
-		private CustomerState state;
-		private double checkAmount;
+	protected class MyCustomer {
+		CustomerMatt customer;
+		int tableNumber;
+		String choice;
+		CustomerState state;
+		double checkAmount;
 		
 		public MyCustomer(CustomerMatt customer, int tableNum) {
 			this.customer = customer;
@@ -522,14 +563,8 @@ public class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements Wa
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+		// TODO maybe animate into restaurant?
+		closingTime = false;
 	}
 
 }

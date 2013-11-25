@@ -124,7 +124,7 @@ public class BankTellerRole extends Role implements BankTeller {
 	}
 
 	@Override
-	public void closingTime() {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

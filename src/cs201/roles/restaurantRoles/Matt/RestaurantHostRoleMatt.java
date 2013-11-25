@@ -10,8 +10,6 @@ import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
-import cs201.roles.restaurantRoles.RestaurantCashierRole;
-import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 
 /**
@@ -35,10 +33,15 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	
 	private List<CustomerMatt> bannedCustomers = Collections.synchronizedList(new ArrayList<CustomerMatt>());
 	
+	private boolean timeToClose;
+	private int numCustomers;
+	
 	public RestaurantHostRoleMatt() {
 		super();
 		
 		tables = Collections.synchronizedList(new ArrayList<TableMatt>(NTABLES));
+		numCustomers = 0;
+		timeToClose = false;
 		
 		int width = (int)Math.round(Math.sqrt(NTABLES));
 		for (int i = 0; i < width; i++) {
@@ -76,7 +79,18 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	
 	// Messages -------------------------------------------------------------
 	@Override
+	public void msgClosingTime() {
+		timeToClose = true;
+		stateChanged();
+	}
+	
+	@Override
 	public void msgIWantToEat(CustomerMatt c) {
+		if (timeToClose) {
+			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter because the restaurant is closed.");
+			return;
+		}
+		
 		if (!bannedCustomers.contains(c)) {
 			Integer ID = AssignCustomerID();
 			int x = 40 + (ID % 2) * 25;
@@ -84,6 +98,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			c.getGui().SetWaitingArea(x, y);
 			c.getGui().Animate();
 			waitingCustomers.add(c);
+			numCustomers++;
 		} else {
 			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter the restaurant because he was banned");
 		}
@@ -95,6 +110,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		int index = waitingCustomers.indexOf(c);
 		waitingCustomerIDs.remove(index);
 		waitingCustomers.remove(c);
+		numCustomers--;
 		stateChanged();
 	}
 	
@@ -106,6 +122,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	@Override
 	public void msgTableIsFree(WaiterMatt w, int tNum) {
+		numCustomers--;
+		
 		synchronized(tables) {
 			for (TableMatt table : tables) {
 				if (table.tableNum() == tNum) {
@@ -163,6 +181,11 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {
+		if (this.restaurant.getOpen() && timeToClose && numCustomers == 0) {
+			CloseRestaurant();
+			return true;
+		}
+		
 		synchronized(waiters) {
 			for (MyWaiter m : waiters) {
 				if (m.state == WaiterState.askingForBreak) {
@@ -203,6 +226,17 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 
 	// Actions -------------------------------------------------------------
+	private void CloseRestaurant() {
+		this.restaurant.closingTime();
+		this.restaurant.setOpen(false);
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		this.waiters.clear();
+		DoCloseRestaurant();
+	}
+	
 	private void CallWaiter(MyWaiter m, TableMatt t) {
 		t.setOccupant(waitingCustomers.get(0));
 		waitingCustomers.get(0).msgAboutToBeSeated();
@@ -223,6 +257,10 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 
 	// Utilities -------------------------------------------------------------
+	private void DoCloseRestaurant() {
+		System.out.println(this.toString() + " is closing down the Restaurant.");
+	}
+	
 	private void DoCallWaiter(WaiterMatt w, TableMatt t) {
 		System.out.println(this.toString() + " telling waiter " + w.toString() + " to seat a customer.");
 	}
@@ -266,6 +304,19 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		stateChanged();
 	}
 	
+	public void removeWaiter(WaiterMatt waiter) {
+		synchronized(waiters) {
+			for (MyWaiter m : waiters) {
+				if (m.waiter == waiter) {
+					waiters.remove(m);
+					activeWaiters--;
+					stateChanged();
+					break;
+				}
+			}
+		}
+	}
+	
 	private class MyWaiter {
 		private WaiterMatt waiter;
 		private WaiterState state;
@@ -280,14 +331,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+		// TODO maybe animate into restaurant?
+		timeToClose = false;
 	}
 
 }

@@ -2,8 +2,7 @@ package cs201.structures.restaurant;
 
 import java.util.List;
 
-import cs201.agents.PersonAgent.Intention;
-import cs201.roles.Role;
+import cs201.gui.StructurePanel;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
@@ -24,8 +23,8 @@ public abstract class Restaurant extends Structure {
 	protected int bankAccountNumber;
 	protected boolean isOpen;
 	
-	public Restaurant(int x, int y, int width, int height, int id) {
-		super(x, y, width, height, id);
+	public Restaurant(int x, int y, int width, int height, int id, StructurePanel p) {
+		super(x, y, width, height, id, p);
 		
 		this.cashier = null;
 		this.cook = null;
@@ -35,9 +34,6 @@ public abstract class Restaurant extends Structure {
 		this.bankAccountNumber = -1;
 		this.isOpen = false;
 	}
-
-	@Override
-	public abstract Role getRole(Intention role);
 	
 	/**
 	 * Returns this Restaurant's Cashier if someone is currently acting as a Cashier, null otherwise
@@ -126,5 +122,10 @@ public abstract class Restaurant extends Structure {
 	public boolean getOpen() {
 		return isOpen;
 	}
+	
+	/**
+	 * Should be called by the Host when he believes it's okay for all the other employees to go Home
+	 */
+	public abstract void closingTime();
 
 }

@@ -8,49 +8,40 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
-import cs201.structures.restaurant.RestaurantMatt;
+import cs201.helper.CityDirectory;
 
 public class SimCity201 extends JFrame {
+	private final int SIZEX = 1200;
+	private final int SIZEY	= 700;
+	
 	CityPanel cityPanel;
 	JPanel buildingPanels;
 	CardLayout cardLayout;
 	
 	public SimCity201() {
 		setVisible(true);
-		setSize(1000, 500);
+		setSize(SIZEX, SIZEY);
 		
 		setLayout(new BorderLayout());
 		
 		cityPanel = new CityPanel();
-		cityPanel.setPreferredSize(new Dimension(1000, 250));
-		cityPanel.setMaximumSize(new Dimension(1000, 250));
-		cityPanel.setMinimumSize(new Dimension(1000, 250));
+		cityPanel.setPreferredSize(new Dimension(SIZEX / 2, SIZEY));
+		cityPanel.setMaximumSize(new Dimension(SIZEX / 2, SIZEY));
+		cityPanel.setMinimumSize(new Dimension(SIZEX / 2, SIZEY));
 		
 		cardLayout = new CardLayout();
 		
 		buildingPanels = new JPanel();
 		buildingPanels.setLayout(cardLayout);
-		buildingPanels.setMinimumSize(new Dimension(1000, 250));
-		buildingPanels.setMaximumSize(new Dimension(1000, 250));
-		buildingPanels.setPreferredSize(new Dimension(1000, 250));
+		buildingPanels.setMinimumSize(new Dimension(SIZEX / 2, SIZEY));
+		buildingPanels.setMaximumSize(new Dimension(SIZEX / 2, SIZEY));
+		buildingPanels.setPreferredSize(new Dimension(SIZEX / 2, SIZEY));
 		buildingPanels.setBackground(Color.YELLOW);
 		
-		// Create initial buildings here and add them to cityPanel and buildingPanels
-		RestaurantMatt r = new RestaurantMatt(40, 40, 40, 40, 0);
-		RestaurantGuiMatt g = new RestaurantGuiMatt(r, 0, this);
-		r.setStructurePanel(g);
-		buildingPanels.add(g, "" + 0);
-		cityPanel.addStructure(r);
-		
-		RestaurantMatt r2 = new RestaurantMatt(40, 100, 40, 40, 1);
-		RestaurantGuiMatt g2 = new RestaurantGuiMatt(r, 1, this);
-		r2.setStructurePanel(g2);
-		buildingPanels.add(g2, "" + 1);
-		cityPanel.addStructure(r2);
-		
-		add(BorderLayout.NORTH, cityPanel);
-		add(BorderLayout.SOUTH, buildingPanels);
+		add(BorderLayout.WEST, cityPanel);
+		add(BorderLayout.EAST, buildingPanels);
+
+		CityDirectory.getInstance().startTime();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {

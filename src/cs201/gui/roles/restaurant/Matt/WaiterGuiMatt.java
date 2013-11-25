@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 
@@ -27,11 +27,13 @@ public class WaiterGuiMatt implements Gui {
     private BreakState breakState = BreakState.none;
     private String message = "";
     
-    private RestaurantGuiMatt panel;
+    private RestaurantConfigPanelMatt panel;
+    private boolean isPresent;
     
-    public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantGuiMatt r) {
+    public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantConfigPanelMatt r) {
         this.role = role;
         this.panel = r;
+        this.isPresent = true;
     }
 
     public void updatePosition() {
@@ -102,8 +104,12 @@ public class WaiterGuiMatt implements Gui {
 	}
 
     public boolean isPresent() {
-        return true;
+        return isPresent;
     }
+
+	public void setPresent(boolean p) {
+		isPresent = p;
+	}
     
     public boolean isOnBreak() {
     	return (breakState == BreakState.onBreak || breakState == BreakState.waitingForResponse);

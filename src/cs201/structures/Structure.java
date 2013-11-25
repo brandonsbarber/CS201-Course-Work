@@ -22,11 +22,11 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected Point parkingLocation;
 	protected CityTime closingTime;
 	
-	public Structure(int x, int y, int width, int height, int id) {
+	public Structure(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height);
 		
 		this.id = id;
-		this.panel = null;
+		this.panel = p;
 		this.guiLocation = null;
 		this.entranceLocation = null;
 		this.deliveryLocation = null;
@@ -48,6 +48,12 @@ public abstract class Structure extends Rectangle2D.Double {
 	 * @return The correct Role based upon the PersonAgent's intent at this Structure
 	 */
 	public abstract Role getRole(PersonAgent.Intention role);
+	
+	/**
+	 * Updates the time at this Structure. Used to tell people working there that it's time to close up and go home
+	 * @param time The new CityTime
+	 */
+	public abstract void updateTime(CityTime time);
 	
 	/**
 	 * When this Structure is clicked in the GUI, this Structure's panel will be shown in the card layout of the main program
@@ -109,6 +115,7 @@ public abstract class Structure extends Rectangle2D.Double {
 	 * @param time The Structure's closing time
 	 */
 	public void setClosingTime(CityTime time) {
+		this.closingTime = new CityTime();
 		this.closingTime.day = null;
 		this.closingTime.hour = time.hour;
 		this.closingTime.minute = time.minute;
@@ -120,8 +127,9 @@ public abstract class Structure extends Rectangle2D.Double {
 	 */
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
+		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append(" ");
+		output.append("] ");
 		output.append(this.id);
 		output.append(": ");
 		output.append(msg);
@@ -137,7 +145,7 @@ public abstract class Structure extends Rectangle2D.Double {
 		StringBuffer output = new StringBuffer();
 		output.append(this.getClass().getSimpleName());
 		output.append(" ");
-		output.append(id);
+		output.append(this.id);
 		
 		return output.toString();
 	}

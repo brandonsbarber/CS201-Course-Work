@@ -2,108 +2,122 @@ package cs201.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
+import cs201.interfaces.agents.Person;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
+import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
-import cs201.structures.restaurant.Restaurant;
 
 /**
  * The PersonAgent that represents all people in SimCity201
  * @author Matt Pohlmann
  *
  */
-public class PersonAgent extends Agent {
+public class PersonAgent extends Agent implements Person {
 	/**************************************************************************
 	 *                              Constants                                 *
 	 **************************************************************************/
-	private final int INITIALHUNGER = 0;
-	private final int HUNGERPERMINUTE = 1;
-	private final int INITIALMONEY = 30;
-	private final int INITIALWAKEUPHOUR = 7;
-	private final int INITIALWAKEUPMINUTE = 0;
+	private static final int HUNGERPERMINUTE = 2;
+	private static final int FULL = 0;
+	private static final int HUNGRY = 480;
+	private static final int STARVING = 840;
+	private static final int INITIALMONEY = 40;
+	private static final int MONEYTHRESHOLD = 10;
+	private static final int INITIALWAKEUPHOUR = 7;
+	private static final int INITIALWAKEUPMINUTE = 0;
+	private static final int INITIALSLEEPHOUR = 22;
+	private static final int INITIALSLEEPMINUTE = 0;
+	private static final int INITIALWORKHOUR = 8;
+	private static final int INITIALWORKMINUTE = 0;
 	
 	
 	/**************************************************************************
 	 *                                 Data                                   *
 	 **************************************************************************/
-	private String name;
-	private Semaphore animation;
-	private List<Role> roles;
-	//private PassengerRole passengerRole;
-	private List<Action> planner;
-	private CityTime time;
-	private CityTime wakeupTime;
-	private double moneyOnHand;
-	private int hungerLevel;
-	//private Vehicle vehicle;
-	private Structure home;
-	private Structure workplace;
-	private Intention job;
-	private Structure currentLocation;
-	private int bankAccountNumber;
+	private volatile String name;
+	private volatile PersonState state;
+	private volatile Semaphore animation;
+	private volatile List<Role> roles;
+	private volatile PassengerRole passengerRole;
+	private volatile List<Action> planner;
+	private volatile Action currentAction;
+	private volatile CityTime time;
+	private volatile CityTime wakeupTime;
+	private volatile CityTime sleepTime;
+	private volatile double moneyOnHand;
+	private volatile int hungerLevel;
+	private volatile Vehicle vehicle;
+	private volatile Structure home;
+	private volatile Structure workplace;
+	private volatile Intention job;
+	private volatile CityTime workTime;
+	private volatile Structure currentLocation;
+	private volatile int bankAccountNumber;
 	
 	
 	/**************************************************************************
-	 *                            Constructor/Setup                           *
+	 *                           Constructors/Setup                           *
 	 **************************************************************************/
 	public PersonAgent(String name) {
 		super();
 		
 		this.name = name;
+		this.state = PersonState.Sleeping;
 		this.animation = new Semaphore(0);
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
-		//this.passengerRole = new PassengerRole();
-		//this.passengerRole.setPerson(this);
-		this.planner = Collections.synchronizedList(new ArrayList<Action>());
+		this.passengerRole = new PassengerRole(null);
+		this.passengerRole.setPerson(this);
+		this.planner = Collections.synchronizedList(new LinkedList<Action>());
+		this.currentAction = null;
 		this.time = new CityTime();
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
+		this.sleepTime = new CityTime(INITIALSLEEPHOUR, INITIALSLEEPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
-		this.hungerLevel = INITIALHUNGER;
-		//this.vehicle = null;
-		this.setHome(null);
+		this.hungerLevel = HUNGRY;
+		this.vehicle = null;
+		this.home = null;
 		this.workplace = null;
 		this.job = Intention.None;
+		this.workTime = new CityTime(INITIALWORKHOUR, INITIALWORKMINUTE);
 		this.currentLocation = null;
 		this.bankAccountNumber = -1;
 	}
 	
-	/**
-	 * Sets up a PersonAgent with the correct information given.
-	 * MUST BE CALLED BEFORE STARTING A PERSON'S THREAD OR STRANGE BEHAVIOR WILL OCCUR
-	 * @param curTime The current time in SimCity201
-	 * @param home This PersonAgent's home
-	 * @param workplace This PersonAgent's workplace (can be null if the PersonAgent doesn't work)
-	 * @param job This PersonAgent's job (can be none if this PersonAgent doesn't work)
-	 * @param location This PersonAgent's starting location (probably his home)
-	 */
-	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location/*, Vehicle vehicle*/) {
+	public PersonAgent() {
+		Do("WARNING: A PersonAgent should never be created with the default constructor. Use PersonAgent(String) instead.");
+	}
+	
+	@Override
+	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
 		
-		this.setHome(home);		
+		this.home = home;		
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
-		//this.vehicle = vehicle;
+		this.vehicle = vehicle;
+		
+		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
+			this.state = PersonState.Awake;
+		}
 	}
 	
 	
 	/**************************************************************************
 	 *                                Messages                                *
 	 **************************************************************************/
-	/**
-	 * Updates the time so this Person can make appropriate time-based decisions
-	 * @param newTime The new time in SimCity201
-	 */
+	@Override
 	public void msgUpdateTime(CityTime newTime) {
-		int minutesPassed = (newTime.hour - time.hour) * 60 + (newTime.minute - time.minute);
-		hungerLevel += HUNGERPERMINUTE * minutesPassed;
+		int minutesPassed = CityTime.timeDifference(newTime, this.time);
+		hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
 		
 		time.day = newTime.day;
 		time.hour = newTime.hour;
@@ -117,48 +131,123 @@ public class PersonAgent extends Agent {
 	 *                               Scheduler                                *
 	 **************************************************************************/
 	@Override
-	protected boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
-		
+	protected boolean pickAndExecuteAnAction() {		
 		// If you're going somewhere, that has highest priority
-		/*if (passengerRole.getActive()) {
+		if (passengerRole.getActive()) {
 			passengerRole.pickAndExecuteAnAction();
 			return true;
-		}*/
+		}
 		
 		// If you have active roles, those have next highest priority (because you're currently
 		// doing something)
-		boolean actionPerformed = false;
+		boolean performedAction = false;
 		synchronized(roles) {
 			for (Role r : roles) {
 				if (r.getActive()) {
-					actionPerformed = r.pickAndExecuteAnAction() || actionPerformed;
+					performedAction = r.pickAndExecuteAnAction() || performedAction;
 				}
-				if (actionPerformed) {
+			}
+			if (performedAction) {
+				return true;
+			}
+		}
+		
+		// If you have an active Action (meaning you decided to perform this action and go to its
+		// location, then actually perform that Action)
+		synchronized(planner) {
+			for (Action a : planner) {
+				if (a.active) {
+					performAction(a);
 					return true;
 				}
 			}
 		}
 		
-		// If you have an active Action (meaning you decided to perform this action and go to its
-		// location then actually perform that Action)
-		if (planner.get(0).active) {
-			performAction(planner.get(0));
-			return true;
-		}
-		
 		// If you have an action in your planner, go to its location and make it active)
-		if (planner.size() > 0) {
-			goToLocation(planner.get(0));
-			return true;
+		synchronized(planner) {
+			for (Action a : planner) {
+				goToLocation(a);
+				return true;
+			}
 		}
 		
 		// If it's time to wake up in the morning
-		if (time.equalsIgnoreDay(this.wakeupTime)) {
+		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
+			this.state = PersonState.Awake;
+			boolean starving = hungerLevel >= STARVING;
 			
+			// The Residence Role will determine if there's enough time to eat at a Restaurant, or if eating at home is better
+			this.addActionToPlanner(Intention.ResidenceEat, home, starving);
+			return true;
 		}
 		
+		// If it's time to go to work
+		if (state == PersonState.Awake && time.equalsIgnoreDay(this.workTime)) {
+			//this.state = PersonState.AtWork;
+			//this.addActionToPlanner(job, workplace, true);
+			return true;
+		}
 		
+		// If it's time to go to sleep
+		if (state == PersonState.Awake && time.equalsIgnoreDay(this.sleepTime)) {
+			this.planner.clear();
+			this.state = PersonState.Sleeping;
+			this.addActionToPlanner(Intention.ResidenceSleep, home, false);
+			return true;
+		}
+		
+		// If you need to get money from the bank
+		if (state == PersonState.Awake && moneyOnHand <= MONEYTHRESHOLD) {
+			boolean performAction = true;
+			for (Action a : planner) {
+				if (a.intent == Intention.BankWithdrawMoneyCustomer) {
+					performAction = false;
+					break;
+				}
+			}
+			if (performAction) {
+				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
+				return true;
+			}
+		}
+		
+		// If you're hungry, but not at home
+		if (state == PersonState.Awake && currentLocation != home && hungerLevel >= HUNGRY) {
+			boolean performAction = true;
+			for (Action a : planner) {
+				if (a.intent == Intention.RestaurantCustomer) {
+					performAction = false;
+					break;
+				}
+			}
+			if (performAction) {
+				boolean starving = hungerLevel >= STARVING;
+				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), starving);
+				return true;
+			}
+		}
+		
+		// If you're hungry and at home
+		if (state == PersonState.Awake && currentLocation == home && hungerLevel >= HUNGRY) {
+			boolean performAction = true;
+			for (Action a : planner) {
+				if (a.intent == Intention.ResidenceEat) {
+					performAction = false;
+					break;
+				}
+			}
+			if (performAction) {
+				boolean starving = hungerLevel >= STARVING;
+				this.addActionToPlanner(Intention.ResidenceEat, home, starving);
+				return true;
+			}
+		}
+		
+		// If nothing to do, go home and relax
+		if (state == PersonState.Awake) {
+			this.addActionToPlanner(Intention.ResidenceRelax, home, false);
+			return true;
+		}
 		return false;
 	}
 	
@@ -173,29 +262,31 @@ public class PersonAgent extends Agent {
 	private void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
-			//passengerRole.msgGoTo(a.location);
-			//passengerRole.setActive(true);
+			passengerRole.msgGoTo(a.location);
+			currentLocation = null;
+			passengerRole.setActive(true);
 			Do("Going to " + a.location);
 		}
 	}
 	
 	/**
 	 * Performs a given Action
-	 * NOTE: I DON'T KNOW IF THIS WORKS YET, but it should
-	 * 
 	 * @param a The Action to be performed
 	 */
 	private void performAction(Action a) {		
-		Do("Performing Action: " + a.intent + " at " + a.location);
+		Do("Performing Action: " + a);
 		
 		Role newRole = a.location.getRole(a.intent);
 		if (newRole == null) {
+			planner.remove(a);
+			Do("Failed to perform Action: " + a);
 			return;
 		}
 		
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
+				Do("Reusing Role: " + r);
 				r.startInteraction(a.intent);
 				r.setActive(true);
 				return;
@@ -204,112 +295,115 @@ public class PersonAgent extends Agent {
 		
 		roles.add(newRole);
 		newRole.setPerson(this);
+		Do("Received new Role: " + newRole);
 		newRole.startInteraction(a.intent);
 		newRole.setActive(true);
 		
+		currentAction = a;
 		planner.remove(a);
 	}
 	
-	private void goToWork() {
+	/**
+	 * General-use Action for adding something to this PersonAgent's daily planner
+	 * @param intent What the PersonAgent will do
+	 * @param location Where the PersonAgent should go
+	 * @param highPriority Whether this is high enough priority to be put at the front of the planner
+	 */
+	private void addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
+		if (intent == null || location == null) {
+			Do("Call to addActionToPlanner had null argument(s).");
+			return;
+		}
+		
 		Action temp = new Action();
-		temp.location = workplace;
-		temp.intent = job;
-		planner.add(temp);
-		Do("Added going to work (" + workplace + ") to Planner");
+		temp.location = location;
+		temp.intent = intent;
+		if (!highPriority) {
+			planner.add(temp);
+		} else {
+			planner.add(0, temp);
+		}
+		Do("Added action " + temp + " to planner.");
 	}
 	
-	private void sleepAtHome() {
-		Action temp = new Action();
-		temp.location = getHome();
-		temp.intent = Intention.ResidenceSleep;
-		planner.add(temp);
-		Do("Added going home (" + getHome() + ") to sleep to Planner");
-	}
-	
-	private void eatAtHome() {
-		Action temp = new Action();
-		temp.location = getHome();
-		temp.intent = Intention.ResidenceEat;
-		planner.add(temp);
-		Do("Added eating at home (" + getHome() + ") to Planner");
-	}
-	
-	/*
-	private void withdrawMoneyAsCustomer() {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankWithdrawMoneyCustomer;
-		planner.add(temp);
-		Do("Added withdrawing money as customer at " + temp.location + " to Planner");
-	}
-	
-	private void depositMoneyAsCustomer() {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankDepositMoneyCustomer;
-		planner.add(temp);
-		Do("Added depositing money as customer at " + temp.location + " to Planner");
-	}
-	
-	private void withdrawMoneyAsBusiness() {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankWithdrawMoneyBusiness;
-		planner.add(temp);
-		Do("Added withdrawing money as business at " + temp.location + " to Planner");
-	}
-	
-	private void depositMoneyAsBusiness() {
-		Action temp = new Action();
-		// Pick a random bank to perform the transaction at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getBanks().size());
-		temp.location = CityDirectory.getInstance().getBanks().get(num);
-		temp.intent = Intention.BankDepositMoneyBusiness;
-		planner.add(temp);
-		Do("Added depositing money as business at " + temp.location + " to Planner");
-	}
-	
-	private void goToMarket() {
-		Action temp = new Action();
-		// Pick a random market
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getMarkets().size());
-		temp.location = CityDirectory.getInstance().getMarkets().get(num);
-		temp.intent = Intention.MarketConsumer;
-		planner.add(temp);
-		Do("Added a market run at " + temp.location + " to Planner");
-	}*/
-	
-	private void eatAtRestaurant() {
-		Action temp = new Action();
-		// Pick a random restaurant to eat at
-		Random randGenerator = new Random();
-		int num = randGenerator.nextInt(CityDirectory.getInstance().getRestaurants().size());
-		temp.location = CityDirectory.getInstance().getRestaurants().get(num);
-		temp.intent = Intention.RestaurantCustomer;
-		planner.add(temp);
-		Do("Added eating at " + temp.location + " to Planner");
-	}
 	
 	/**************************************************************************
-	 *                                Utility                                 *
-	 **************************************************************************/	
-	/**
-	 * Any work-related Role must be removed from a person who is leaving work so it can be assigned to someone else
-	 * @param toRemove The Role being removed from this PersonAgent
-	 */
+	 *                              Role Related                              *
+	 **************************************************************************/
+	@Override
 	public void removeRole(Role toRemove) {
 		roles.remove(toRemove);
+	}
+	
+	@Override
+	public void goOffWork() {
+		this.state = PersonState.Awake;
+	}
+	
+	@Override
+	public void justAte() {
+		this.hungerLevel = FULL;
+	}
+	
+	@Override
+	public void addIntermediateActions(Role from, LinkedList<Intention> intents, boolean returnToCurrentAction) {		
+		// Deactivate sending Role
+		from.setActive(false);
+		int numActivities = intents.size();
+		
+		while (intents.size() > 0) {
+			// Create a new action with high priority and put it at front of planner
+			Intention intent = intents.removeLast();
+			switch (intent) {
+			case ResidenceSleep: this.addActionToPlanner(intent, home, true); break;
+			case ResidenceEat: this.addActionToPlanner(intent, home, true); break;
+			case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
+			case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
+			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
+			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
+			default: {
+				Do("addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
+				return;
+			}
+			}
+		}
+		
+		// If Role requests that the PersonAgent return after, add that action back at the correct position
+		if (returnToCurrentAction) {
+			currentAction.active = false;
+			planner.add(numActivities, currentAction);
+		}
+	}
+	
+	@Override
+	public void addMoney(double amount) {
+		this.moneyOnHand += amount;
+	}
+	
+	@Override
+	public void removeMoney(double amount) {
+		this.moneyOnHand -= amount;
+	}
+	
+	@Override
+	public void doneMoving(Structure newLocation) {
+		currentLocation = newLocation;
+	}
+	
+	
+	/**************************************************************************
+	 *                             Getters/Setters                            *
+	 **************************************************************************/
+	/**
+	 * Gets what this PersonAgent is currently doing
+	 * @return An Action (contains an Intention intent and Structure location)
+	 */
+	public Action getCurrentAction() {
+		return this.currentAction;
 	}
 	
 	/**
@@ -329,22 +423,6 @@ public class PersonAgent extends Agent {
 	}
 	
 	/**
-	 * Adds money to this PersonAgent's money on hand
-	 * @param amount How much money to add
-	 */
-	public void addMoney(double amount) {
-		this.moneyOnHand += amount;
-	}
-	
-	/**
-	 * Removes money from this PersonAgent's money on hand
-	 * @param amount How much money to remove
-	 */
-	public void removeMoney(double amount) {
-		this.moneyOnHand -= amount;
-	}
-	
-	/**
 	 * Sets this PersonAgent's hunger level to level. Possibly used by GUI to force a PersonAgent to go eat
 	 * @param level The new hunger level. What constitutes 'hungry' TBD later
 	 */
@@ -358,6 +436,14 @@ public class PersonAgent extends Agent {
 	 */
 	public int getHungerLevel() {
 		return this.hungerLevel;
+	}
+	
+	/**
+	 * Sets this PersonAgent's workplace to workplace
+	 * @param workplace Structure representing where this PersonAgent works
+	 */
+	public void setWorkplace(Structure workplace) {
+		this.workplace = workplace;
 	}
 	
 	/**
@@ -385,6 +471,30 @@ public class PersonAgent extends Agent {
 	}
 	
 	/**
+	 * Sets this PersonAgent's Vehicle to a new Vehicle (basically only used when they buy a car)
+	 * @param newVehicle The new Vehicle
+	 */
+	public void setVehicle(Vehicle newVehicle) {
+		this.vehicle = newVehicle;
+	}
+	
+	/**
+	 * Gets this PersonAgent's vehicle if they have one
+	 * @return The Vehicle, or null if this PersonAgent has no vehicle
+	 */
+	public Vehicle getVehicle() {
+		return vehicle;
+	}
+	
+	/**
+	 * Returns what time this PersonAgent thinks it is
+	 * @return CityTime representation of the current time
+	 */
+	public CityTime getTime() {
+		return time;
+	}
+	
+	/**
 	 * Returns the time at which this PersonAgent wakes up every morning
 	 * @return a CityTime object representing this person's morning wakeup time
 	 */
@@ -402,13 +512,86 @@ public class PersonAgent extends Agent {
 	}
 	
 	/**
-	 * Received from a PassengerRole to update this Person's location in SimCity201
-	 * @param newLocation
+	 * Returns the time at which this PersonAgent sleeps every night
+	 * @return a CityTime object representing this person's bedtime
 	 */
-	public void doneMoving(Structure newLocation) {
-		currentLocation = newLocation;
+	public CityTime getSleepTime() {
+		return sleepTime;
 	}
 	
+	/**
+	 * Sets this PersonAgent's bedtime
+	 * @param time The new bedtime for this PersonAgent
+	 */
+	public void setSleepTime(CityTime time) {
+		this.sleepTime.hour = time.hour;
+		this.sleepTime.minute = time.minute;
+	}
+	
+	/**
+	 * Returns the time at which this PersonAgent goes to work
+	 * @return a CityTime object representing when this PersonAgent starts his/her work shift
+	 */
+	public CityTime getWorkTime() {
+		return workTime;
+	}
+	
+	/**
+	 * Sets when this PersonAgent goes to work
+	 * @param time The new work time for this PersonAgent
+	 */
+	public void setWorkTime(CityTime time) {
+		this.workTime.hour = time.hour;
+		this.workTime.minute = time.minute;
+	}
+	
+	/**
+	 * Returns where this PersonAgent currently is (null if the PersonAgent is traveling)
+	 * @return a Structure representing where this PersonAgent is
+	 */
+	public Structure getCurrentLocation() {
+		return this.currentLocation;
+	}
+	
+	/**
+	 * Returns this PersonAgent's home
+	 * @return Structure (should be a Residence) where this PersonAgent lives
+	 */
+	public Structure getHome()
+	{
+		return this.home;
+	}
+	
+	/**
+	 * Sets a new home for this PersonAgent
+	 * @param home The new Structure where this PersonAgent lives
+	 */
+	public void setHome(Structure home)
+	{
+		this.home = home;
+	}
+	
+	/**
+	 * Returns this PersonAgent's job in SimCity201
+	 * @return An Intention representing this PersonAgent's job
+	 */
+	public Intention getJob() {
+		return this.job;
+	}
+	
+	/**
+	 * Sets this PersonAgent's job in SimCity201. Note, this function does not check whether the
+	 * job provided is actually a job, and not something like Intention.ResidenceSleep
+	 * @param job The PersonAgent's new job
+	 */
+	public void setJob(Intention job) {
+		this.job = job;
+	}
+	
+	
+	/**************************************************************************
+	 *                                Utility                                 *
+	 **************************************************************************/
 	/**
 	 * Gets the name of this PersonAgent
 	 * @return This PersonAgent's name
@@ -448,23 +631,14 @@ public class PersonAgent extends Agent {
 	 */
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
+		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append(" ");
+		output.append("] ");
 		output.append(this.name);
 		output.append(": ");
 		output.append(msg);
 		
 		System.out.println(output.toString());
-	}
-	
-	public Structure getHome()
-	{
-		return home;
-	}
-
-	public void setHome(Structure home)
-	{
-		this.home = home;
 	}
 
 	/**
@@ -476,16 +650,19 @@ public class PersonAgent extends Agent {
 		None,
 		ResidenceSleep,
 		ResidenceEat,
+		ResidenceRelax,
 		ResidenceLandLord,
 		BankTeller,
 		BankGuard,
 		BankWithdrawMoneyCustomer,
 		BankDepositMoneyCustomer,
+		BankTakeOutLoan,
 		BankWithdrawMoneyBusiness,
 		BankDepositMoneyBusiness,
 		MarketManager,
 		MarketEmployee,
-		MarketConsumer,
+		MarketConsumerGoods,
+		MarketConsumerCar,
 		RestaurantCook,
 		RestaurantHost,
 		RestaurantWaiter,
@@ -509,10 +686,18 @@ public class PersonAgent extends Agent {
 			this.active = false;
 		}
 		
-		public Action(Structure location, Intention intent) {
-			this.location = location;
-			this.intent = intent;
-			this.active = false;
+		public String toString() {
+			return intent + " at " + location;
 		}
+		
+		public boolean equals(Action other) {
+			return location == other.location && intent == other.intent;
+		}
+	}
+	
+	private enum PersonState {
+		Sleeping,
+		Awake,
+		AtWork;
 	}
 }
