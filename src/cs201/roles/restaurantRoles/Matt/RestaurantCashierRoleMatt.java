@@ -188,7 +188,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 			if (i.market == c.market && i.order == c.choice && i.quantity >= c.quantity) {
 				currentMoney -= c.amount;
 				DoPayMarket(c);
-				//this.restaurant.getCook().m
+				((RestaurantCookRoleMatt) this.restaurant.getCook()).msgFulfillSupplyOrder(c.choice, c.quantity, c.market);
 				c.market.getManager().msgHereIsMyPayment(restaurant, (float)c.amount);
 				checks.remove(c);
 				return;
