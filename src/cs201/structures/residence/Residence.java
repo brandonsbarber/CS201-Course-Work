@@ -1,5 +1,8 @@
 package cs201.structures.residence;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import cs201.agents.PersonAgent;
@@ -12,8 +15,8 @@ import cs201.structures.Structure;
 
 public class Residence extends Structure {
 	private Resident resident;
-	private PersonAgent owner;
-	private List<Food> fridge;
+	private Role owner; //owner is either a resident or a landlord.
+	private List<Food> fridge = Collections.synchronizedList(new ArrayList<Food>());
 	private boolean hasFood;
 	
 	private class Food {
@@ -49,7 +52,7 @@ public class Residence extends Structure {
 	
 	//Setters
 	
-	public void setOwner(PersonAgent p) {
+	public void setOwner(Role p) {
 		owner = p;
 	}
 	
@@ -64,12 +67,15 @@ public class Residence extends Structure {
 	}
 	
 	public void addFood(String t, int amt) {
-		for(Food f : fridge) {
-			if(f.getType() == t) {
-				f.addMore(amt);
+		if (!fridge.isEmpty()) {
+			for(Food f : fridge) {
+				if(f.getType() == t) {
+					f.addMore(amt);
+				}
+				
 			}
-			
 		}
+		
 		
 		Food f = new Food(t, amt);
 		fridge.add(f);
@@ -77,16 +83,20 @@ public class Residence extends Structure {
 	}
 	
 	public void removeFood(String t) {
-		for(Food f : fridge) {
-			if(f.getType() == t) {
+		for(Iterator<Food> it = fridge.iterator(); it.hasNext();) {
+			Food f = it.next();
+			if (f.getType() == t) {
 				f.minusOne();
+				System.out.println("One of food removed");
 				if (f.noneLeft()) {
-					fridge.remove(f);
+					it.remove();
+					System.out.println("Food category removed");
 					if (fridge.isEmpty()) {
 						hasFood = false;
 					}	
 				}
 			}
+			
 		}
 	}
 	
@@ -102,21 +112,44 @@ public class Residence extends Structure {
 		return resident;
 	}
 	
-	public PersonAgent getOwner() {
+	public Role getOwner() {
 		return owner;
 	}
 	
+	public List<String> getFridgeContents() {
+		if (fridge.isEmpty()) {
+			return null;
+		}
+		List<String> contents = new ArrayList<String>();
+		for (Food f:fridge) {
+			if(!contents.contains(f.getType())) {
+				contents.add(f.getType());
+			}
+		}
+		return contents;
+	}
+	
 	public boolean isApartment() {
-		return owner!=resident;
+		return owner.getPerson()!=((Role)resident).getPerson();
 	}	
 
 	public boolean hasFood() {
 		return hasFood;
 	}
 	
+	
 	@Override
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
+		if (role==Intention.ResidenceEat) {
+			return (Role) resident;
+		}
+		if (role==Intention.ResidenceSleep) {
+			return (Role) resident;
+		}
+		if (role==Intention.ResidenceLandLord) {
+			return owner;
+		}
 		return null;
 	}
 

@@ -1,8 +1,10 @@
 package cs201.roles.housingRoles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.residence.LandlordGui;
 import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
@@ -10,8 +12,9 @@ import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
-	List<myProperty> myProperties;
+	List<myProperty> myProperties = new ArrayList<myProperty>();
 	double latePenalty;
+	LandlordGui gui;
 	
 	enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
 	
@@ -23,7 +26,7 @@ public class LandlordRole extends Role implements Landlord {
 	    RentState state;
 		boolean needsMaintenance;
 
-	        myProperty(Residence res, Renter ren, double a, WeekDay d) {
+	    public myProperty(Residence res, Renter ren, double a, WeekDay d) {
 	        	residence = res;
 	            renter = ren;
 	            amtDue = a;
@@ -33,6 +36,11 @@ public class LandlordRole extends Role implements Landlord {
 		public boolean needsMaintenance() {
 			return needsMaintenance;
 		}
+		
+		public void performMaintenance() {
+			residence.performMaintenance();
+			needsMaintenance = false;
+		}
 	}
 	
 	//Messages
@@ -41,6 +49,7 @@ public class LandlordRole extends Role implements Landlord {
 		for (myProperty mP : myProperties) {
 			if(mP.renter == r) {
 				mP.state = RentState.paid;
+				myPerson.addMoney(amt);
 			}
 		}
 	}
@@ -63,7 +72,7 @@ public class LandlordRole extends Role implements Landlord {
 			}
 		}
 		for (myProperty mP:myProperties) {
-			if (/*getTomorrow()*/WeekDay.Sunday == mP.dayDue && mP.state == RentState.notDue) {
+			if (WeekDay.Sunday == mP.dayDue && mP.state == RentState.notDue) {
 				mP.state = RentState.dueNotNotified;
 				return true;
 			}
@@ -114,7 +123,15 @@ public class LandlordRole extends Role implements Landlord {
 
 	private void FixProperty(myProperty mP) {
 	//perform maintenance task on property
-        mP.residence.performMaintenance(); //will likely be more specific
+        mP.performMaintenance();
+	}
+	
+	private void goToDesk() { //animation
+		gui.walkToDesk();
+	}
+	
+	private void exitOffice() { // animation
+		gui.leaveOffice();
 	}
 	
 	// Utilities
@@ -127,6 +144,9 @@ public class LandlordRole extends Role implements Landlord {
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
+		if (intent == Intention.ResidenceLandLord) {
+			//stub
+		}
 		
 	}
 

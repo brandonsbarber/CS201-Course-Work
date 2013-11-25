@@ -7,8 +7,17 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
+<<<<<<< HEAD
 import cs201.helper.CityDirectory;
+=======
+import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.gui.structures.market.MarketGui;
+import cs201.gui.structures.restaurant.RestaurantGuiMatt;
+import cs201.structures.market.MarketStructure;
+import cs201.structures.restaurant.RestaurantMatt;
+>>>>>>> master
 
 public class SimCity201 extends JFrame {
 	private final int SIZEX = 1200;
@@ -19,6 +28,7 @@ public class SimCity201 extends JFrame {
 	CardLayout cardLayout;
 	
 	public SimCity201() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(SIZEX, SIZEY);
 		
@@ -37,10 +47,23 @@ public class SimCity201 extends JFrame {
 		buildingPanels.setMaximumSize(new Dimension(SIZEX / 2, SIZEY));
 		buildingPanels.setPreferredSize(new Dimension(SIZEX / 2, SIZEY));
 		buildingPanels.setBackground(Color.YELLOW);
-		
-		add(BorderLayout.WEST, cityPanel);
-		add(BorderLayout.EAST, buildingPanels);
 
+		// Create initial buildings here and add them to cityPanel and buildingPanels
+
+		
+		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
+		
+		cityScrollPane.setMinimumSize(new Dimension(SIZEX / 2, SIZEY));
+		cityScrollPane.setMaximumSize(new Dimension(SIZEX / 2, SIZEY));
+		cityScrollPane.setPreferredSize(new Dimension(SIZEX / 2, SIZEY));
+		
+		cityScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
+		add(BorderLayout.WEST, cityScrollPane);
+		add(BorderLayout.EAST, buildingPanels);
+		
+		pack();
 		CityDirectory.getInstance().startTime();
 	}
 	

@@ -47,6 +47,9 @@ public class ApartmentComplex extends Structure {
 	@Override
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
+		if (role==Intention.ResidenceLandLord) {
+			return (Role)landlord;
+		}
 		return null;
 	}
 
