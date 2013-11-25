@@ -189,7 +189,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to work
-		if (state == PersonState.Awake && time.equalsIgnoreDay(this.workTime)) {
+		if (state == PersonState.Awake && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 60) {
 			if (this.addActionToPlanner(job, workplace, true)) {
 				this.state = PersonState.AtWork;
 				return true;

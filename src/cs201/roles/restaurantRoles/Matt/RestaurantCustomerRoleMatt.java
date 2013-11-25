@@ -22,7 +22,7 @@ import java.util.concurrent.Semaphore;
 public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implements CustomerMatt {
 	private final int EATINGDURATION = 6500;
 	private final int CHOOSINGDURATION = 2500;
-	private final int WAITINGDURATION = 8000;
+	private final int WAITINGDURATION = 6000;
 	private Timer customerTimer;
 	private CustomerGuiMatt customerGui;
 
@@ -35,8 +35,6 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	private String forceChoice;
 	
 	private int attemptedOrders;
-	private final double STARTINGMONEY = 15.00;
-	//private double money;
 	private double checkAmount;
 	
 	private Semaphore atTargetPosition = new Semaphore(0, false); // used for animation
@@ -57,7 +55,6 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	public RestaurantCustomerRoleMatt(RestaurantCashierRoleMatt cashier) {
 		super();
 		this.cashier = cashier;
-		//this.money = STARTINGMONEY;
 		this.checkAmount = 0;
 		this.attemptedOrders = 0;
 		this.forceChoice = "";
@@ -66,7 +63,6 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	public RestaurantCustomerRoleMatt() {
 		super();
 		this.cashier = null;
-		//this.money = STARTINGMONEY;
 		this.checkAmount = 0;
 		this.attemptedOrders = 0;
 		this.forceChoice = "";

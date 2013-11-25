@@ -156,12 +156,12 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 
 	// Actions -------------------------------------------------------------
 	private void LeaveRestaurant() {
-		// TODO
 		this.isActive = false;
 		this.myPerson.removeRole(this);
 		this.myPerson.goOffWork();
 		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.gui.setPresent(false);
 	}
 	
 	private void GiveCheckToWaiter(Check c) {
@@ -271,6 +271,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
+		this.gui.setPresent(true);
 		closingTime = false;
 	}
 

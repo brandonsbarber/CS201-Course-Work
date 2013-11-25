@@ -14,6 +14,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
+import cs201.helper.CityTime;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.market.MarketStructure;
@@ -91,6 +92,7 @@ public class SimCity201 extends JFrame {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(0,this);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,0,g);
 		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(11, 0));
 		buildingPanels.add(g,""+0);
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
