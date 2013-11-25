@@ -20,6 +20,8 @@ public class VehicleGui implements Gui
 	
 	private boolean fired;
 	
+	private boolean present;
+	
 	public VehicleGui(VehicleAgent vehicle,CityPanel city)
 	{
 		this.vehicle = vehicle;
@@ -28,6 +30,12 @@ public class VehicleGui implements Gui
 		destX = x;
 		destY = y;
 		fired = true;
+		present = false;
+	}
+	
+	public void setPresent(boolean present)
+	{
+		this.present = present;
 	}
 	
 	public void doGoToLocation(Structure structure)
@@ -37,6 +45,7 @@ public class VehicleGui implements Gui
 		destX = (int)structure.getX();
 		destY = (int)structure.getY();
 		fired = false;
+		present = true;
 	}
 	
 	//Make me abstract for subclasses!
@@ -70,8 +79,8 @@ public class VehicleGui implements Gui
 			if(x == destX && y == destY)
 			{
 				fired = true;
-				vehicle.msgAnimationDestinationReached();
 				vehicle.msgSetLocation(destination);
+				vehicle.msgAnimationDestinationReached();
 			}
 		}
 	}
@@ -79,6 +88,6 @@ public class VehicleGui implements Gui
 	@Override
 	public boolean isPresent()
 	{
-		return true;
+		return present;
 	}
 }

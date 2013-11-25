@@ -10,6 +10,7 @@ public class PassengerTestAgent extends PersonAgent
 	{
 		super("Blah");
 		this.role = role;
+		role.setPerson(this);
 	}
 
 	@Override

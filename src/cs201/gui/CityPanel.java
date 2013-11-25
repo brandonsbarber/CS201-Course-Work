@@ -87,6 +87,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		PassengerRole pass = new PassengerRole(startLoc);
 		
+		PassengerTestAgent passAgent = new PassengerTestAgent(pass);
+		
 		pass.msgGoTo(endLoc);
 		
 		pass.addCar(car);
@@ -95,7 +97,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		car.startThread();
 		
-		PassengerTestAgent passAgent = new PassengerTestAgent(pass);
 		passAgent.startThread();
 		
 		timer.start();

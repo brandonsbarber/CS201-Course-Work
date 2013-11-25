@@ -72,6 +72,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
+		stateChanged();
 	}
 
 	@Override
@@ -86,6 +87,8 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
+		Do("Arrived at "+s);
+		stateChanged();
 	}
 
 	@Override
@@ -97,8 +100,10 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		Do("Hello??");
 		if(currentLocation == destination && state == PassengerState.None)
 		{
+			Do("ENDING?");
 			finishMoving();
 			return false;
 		}
@@ -123,6 +128,7 @@ public class PassengerRole extends Role implements Passenger
 			moveToLocation(waypoints.peek());
 			return true;
 		}
+		Do("Reached end");
 		return false;
 	}
 
@@ -158,6 +164,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void checkBoardingRequest(Vehicle remove)
 	{
+		Do("Checking boarding request");
 		if(remove instanceof Bus)
 		{
 			Bus bus = (Bus)remove;
@@ -177,12 +184,14 @@ public class PassengerRole extends Role implements Passenger
 				car.msgDoneBoarding(this);
 				boardingRequest.clear();
 				currentVehicle = remove;
+				state = PassengerState.InTransit;
 			}
 		}
 	}
 	
 	private void processArrival()
 	{
+		Do("Reaching?!");
 		if(currentLocation == waypoints.peek().s)
 		{
 			Structure s = waypoints.remove().s;
@@ -198,6 +207,7 @@ public class PassengerRole extends Role implements Passenger
 				}
 				currentVehicle = null;
 				state = PassengerState.None;
+				Do("Reaching?");
 			}
 		}
 		else if (currentVehicle instanceof Bus)
@@ -223,6 +233,7 @@ public class PassengerRole extends Role implements Passenger
 					try
 					{
 						waitingForVehicle.acquire();
+						Do("Released");
 					}
 					catch(InterruptedException e)
 					{
