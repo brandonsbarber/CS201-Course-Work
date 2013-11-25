@@ -8,8 +8,8 @@ import cs201.agents.PersonAgent;
  *
  */
 public abstract class Role {
-	PersonAgent myPerson;
-	boolean isActive;
+	protected PersonAgent myPerson;
+	protected boolean isActive;
 	
 	public Role() {
 		myPerson = null;

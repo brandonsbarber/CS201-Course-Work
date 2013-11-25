@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Truck;
 import cs201.structures.Structure;
 
@@ -29,17 +30,24 @@ public class TruckAgent extends VehicleAgent implements Truck
 	
 	enum DeliveryState {NotDone,InProgress,Done};
 	
+	VehicleGui gui;
+	
 	public TruckAgent(Structure home)
 	{
 		homeStructure = home;
 		deliveries = new ArrayList<Delivery>();
 	}
 	
+	public void setGui(VehicleGui gui)
+	{
+		this.gui = gui;
+	}
 	
 	@Override
 	public void msgMakeDeliveryRun(Map<String, Integer> inventory, Structure destination)
 	{
 		deliveries.add(new Delivery(inventory,destination));
+		stateChanged();
 	}
 
 	@Override
@@ -75,17 +83,43 @@ public class TruckAgent extends VehicleAgent implements Truck
 	private void returnHome()
 	{
 		msgSetDestination (homeStructure);
-		//gui.doGoToDestination();
+		gui.doGoToLocation(destination);
+		try
+		{
+			animationSemaphore.acquire();
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void makeDeliveryRun(Delivery d)
 	{
 		msgSetDestination (homeStructure);
-		//gui.doGoToDestination();
+		
+		gui.doGoToLocation(destination);
+		try
+		{
+			animationSemaphore.acquire();
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 		
 		msgSetDestination (d.destination);
 		d.s = DeliveryState.InProgress;
-		//gui.doGoToDestination();
+		
+		gui.doGoToLocation(destination);
+		try
+		{
+			animationSemaphore.acquire();
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 		
 		//d.destination.msgMakeDelivery(inventory);
 		d.s = DeliveryState.Done;
