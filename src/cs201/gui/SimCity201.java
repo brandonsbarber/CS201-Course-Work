@@ -18,7 +18,7 @@ import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
-	private final int SIZEX = 1500;
+	private final int SIZEX = 1200;
 	private final int SIZEY	= 700;
 	
 	CityPanel cityPanel;
@@ -72,8 +72,8 @@ public class SimCity201 extends JFrame {
 		settingsPanel.setMaximumSize(new Dimension(SIZEX / 3, SIZEY));
 		settingsPanel.setPreferredSize(new Dimension(SIZEX / 3, SIZEY));
 		
-		add(settingsPanel,BorderLayout.WEST);
-		add(guiPanel);
+		add(BorderLayout.WEST, settingsPanel);
+		add(BorderLayout.EAST, guiPanel);
 		
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Transit",new TransitConfigPanel());
