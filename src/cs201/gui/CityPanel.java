@@ -21,6 +21,7 @@ import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.transit.PassengerGui;
 import cs201.gui.transit.VehicleGui;
+import cs201.helper.CityDirectory;
 import cs201.helper.transit.BusRoute;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
@@ -281,6 +282,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				gui.draw(g2);
 			}
 		}
+		
+		g2.setColor(Color.BLACK);
+		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height / 2);
 	}
 	
 	public void addStructure(Structure s) {

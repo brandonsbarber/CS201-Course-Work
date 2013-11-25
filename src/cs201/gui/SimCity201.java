@@ -9,12 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import cs201.agents.PersonAgent;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
 import cs201.roles.marketRoles.MarketEmployeeRole;
-import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.RestaurantMatt;
@@ -102,14 +100,14 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
 		
+		pack();
+		CityDirectory.getInstance().startTime();
+			
 		m.addInventory("Pizza", 20, 20);
 		m.getManager().msgHereIsMyOrderForDelivery(r, new ItemRequest("Pizza",1));
 		m.getManager().pickAndExecuteAnAction();
 		((MarketEmployeeRole)m.getEmployees().get(0)).pickAndExecuteAnAction();
 		m.getManager().pickAndExecuteAnAction();
-		
-		pack();
-		CityDirectory.getInstance().startTime();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
