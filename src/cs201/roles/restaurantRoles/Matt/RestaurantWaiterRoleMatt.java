@@ -250,12 +250,12 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 
 	// Actions -------------------------------------------------------------
 	private void LeaveRestaurant() {
-		// TODO
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.waiterGui.setPresent(false);
 	}
 	
 	private void AskForBreak() {
@@ -564,6 +564,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
+		this.waiterGui.setPresent(true);
 		closingTime = false;
 	}
 

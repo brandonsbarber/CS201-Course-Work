@@ -73,13 +73,14 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleMatt) cook).getGui().setPresent(true);
+				checkIfRestaurantShouldOpen();
 				return cook;
 			}
 			return null;
 		}
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
-				this.isOpen = true;
+				checkIfRestaurantShouldOpen();
 				return host;
 			}
 			return null;
@@ -89,6 +90,7 @@ public class RestaurantMatt extends Restaurant {
 				if (r.getPerson() == null) {
 					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
 					((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
+					checkIfRestaurantShouldOpen();
 					return r;
 				}
 			}
@@ -108,6 +110,7 @@ public class RestaurantMatt extends Restaurant {
 				this.panel.addGui(waiterGui);
 				newWaiter.setRestaurant(this);
 				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
+				checkIfRestaurantShouldOpen();
 				return newWaiter;
 			}
 			
@@ -116,6 +119,7 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleMatt) cashier).getGui().setPresent(true);
+				checkIfRestaurantShouldOpen();
 				return cashier;
 			}
 			return null;
@@ -134,6 +138,17 @@ public class RestaurantMatt extends Restaurant {
 			Do("Wrong Intention provided in getRole(Intention)");
 			return null;
 		}
+		}
+	}
+	
+	private void checkIfRestaurantShouldOpen() {
+		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
+			for (RestaurantWaiterRole w : waiters) {
+				if (w.getPerson() != null) {
+					this.isOpen = true;
+					return;
+				}
+			}
 		}
 	}
 

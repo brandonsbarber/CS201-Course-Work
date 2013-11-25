@@ -131,12 +131,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 
 	// Actions -------------------------------------------------------------
 	private void LeaveRestaurant() {
-		// TODO
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.gui.setPresent(false);
 	}
 	
 	private void CookOrder(Order o) {
@@ -280,6 +280,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
 		closingTime = false;
+		this.gui.setPresent(true);
 	}
 
 	@Override
