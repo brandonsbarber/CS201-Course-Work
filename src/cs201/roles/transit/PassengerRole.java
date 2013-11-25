@@ -56,7 +56,9 @@ public class PassengerRole extends Role implements Passenger
 	
 	PassengerGui gui;
 	
-	public static final int WALK_DISTANCE = 200;
+	public static final int START_WALK_DISTANCE = 200;
+	
+	private int walkDistance;
 	
 	public PassengerRole(Structure curLoc)
 	{
@@ -69,6 +71,8 @@ public class PassengerRole extends Role implements Passenger
 		this.currentLocation = curLoc;
 		
 		waitingForVehicle = new Semaphore(0);
+		
+		walkDistance = START_WALK_DISTANCE;
 		
 		busStops = new ArrayList<BusStop>();
 	}
@@ -231,7 +235,7 @@ public class PassengerRole extends Role implements Passenger
 	public boolean shouldWalk()
 	{
 		double distance = Math.sqrt(Math.pow(destination.x - currentLocation.x,2) + Math.pow(destination.y - currentLocation.y,2));
-		return distance < WALK_DISTANCE;
+		return distance < walkDistance;
 	}
 	
 	private void finishMoving()
@@ -383,5 +387,10 @@ public class PassengerRole extends Role implements Passenger
 	public Structure getCurrentLocation()
 	{
 		return currentLocation;
+	}
+
+	public void setWalkingDistance(int i)
+	{
+		walkDistance = i;
 	}
 }

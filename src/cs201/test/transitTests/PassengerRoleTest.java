@@ -47,6 +47,8 @@ public class PassengerRoleTest extends TestCase
 		
 		bus = new MockBus("Bus 1", route);
 		
+		pass.setWalkingDistance(100);
+		
 	}
 	
 	public void testPassengerOneCar()
