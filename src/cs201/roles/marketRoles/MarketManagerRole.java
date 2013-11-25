@@ -363,7 +363,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		} else if (o.type == OrderType.DELIVERY) {
 
 			RestaurantCashierRole cashier = o.structure.getCashier();
-			structureBalance.get(o.structure).balance += o.totalPrice;
+			//structureBalance.get(o.structure).balance += o.totalPrice;
 			
 		}
 	}

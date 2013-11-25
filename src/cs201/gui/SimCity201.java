@@ -9,7 +9,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import cs201.agents.PersonAgent;
+import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
+import cs201.roles.marketRoles.MarketEmployeeRole;
+import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
+import cs201.structures.market.MarketStructure;
+import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
 	private final int SIZEX = 1500;
@@ -79,7 +87,26 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("Housing",new ConfigPanel());
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
-
+		
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(0,this);
+		RestaurantMatt r = new RestaurantMatt(100,100,50,50,0,g);
+		r.setStructurePanel(g);
+		buildingPanels.add(g,""+0);
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(1,this, 50, 50);
+		MarketStructure m = new MarketStructure(225,100,50,50,1,g);
+		m.setStructurePanel(mG);
+		buildingPanels.add(mG,""+1);
+		cityPanel.addStructure(m);
+		CityDirectory.getInstance().addMarket(m);
+		
+		m.addInventory("Pizza", 20, 20);
+		m.getManager().msgHereIsMyOrderForDelivery(r, new ItemRequest("Pizza",1));
+		m.getManager().pickAndExecuteAnAction();
+		((MarketEmployeeRole)m.getEmployees().get(0)).pickAndExecuteAnAction();
+		m.getManager().pickAndExecuteAnAction();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
