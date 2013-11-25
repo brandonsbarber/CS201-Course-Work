@@ -208,13 +208,16 @@ public class MarketManagerRole extends Role implements MarketManager {
 
 		stateChanged();
 	}
-	
+		
 	/**
 	 * Sent by a restaurant's cook to order food.
 	 * @param structure The requesting Restaurant's structure
 	 * @param items A list of items
 	 */
-	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, List<ItemRequest> items) {
+	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, ItemRequest item) {
+		List<ItemRequest> items = new ArrayList<ItemRequest>();
+		items.add(item);
+		
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(restaurant, items, OrderState.PENDING, nextOrderID));
@@ -355,7 +358,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		} else if (o.type == OrderType.DELIVERY) {
 
 			RestaurantCashierRole cashier = o.structure.getCashier();
-			// TODO
+			
 			structureBalance.get(o.structure).balance += o.totalPrice;
 			
 		}
