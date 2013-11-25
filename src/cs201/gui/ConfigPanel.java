@@ -13,7 +13,6 @@ public class ConfigPanel extends JPanel
 	public ConfigPanel()
 	{
 		instance = INSTANCES++;
-		add(new JLabel(""+instance));
 	}
 	
 	public String toString()
