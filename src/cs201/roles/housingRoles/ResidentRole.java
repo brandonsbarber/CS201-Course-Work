@@ -13,9 +13,11 @@ public class ResidentRole extends Role implements Resident {
 	ResidentState state;
 	private Residence residence;
 	ResidentGui gui;
+	private boolean asleep;
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
+		asleep = false;
 		//residence = (Residence) myPerson.getHome();  //would be helpful to connect residence to person's home
 	}
 	
@@ -73,6 +75,7 @@ public class ResidentRole extends Role implements Resident {
 	private void goToSleep() {
 		goToBed(); //animation go to bed
 		state = ResidentState.sleeping;
+		isActive = false;
 		//timer/wait for wakeup
 	}
 
