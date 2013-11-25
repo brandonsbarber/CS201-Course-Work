@@ -16,6 +16,8 @@ import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattNormal;
+import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
 
 public class RestaurantMatt extends Restaurant {
 	private final int INITIALWAITERS = 2;
@@ -45,7 +47,12 @@ public class RestaurantMatt extends Restaurant {
 		
 		this.waiters = new ArrayList<RestaurantWaiterRole>();
 		for (int i = 0; i < INITIALWAITERS; i++) {
-			RestaurantWaiterRoleMatt newWaiter = new RestaurantWaiterRoleMatt();
+			RestaurantWaiterRoleMatt newWaiter;
+			if (i % 2 == 0) {
+				newWaiter = new RestaurantWaiterRoleMattNormal();
+			} else {
+				newWaiter = new RestaurantWaiterRoleMattStand();
+			}
 			WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
 			waiterGui.setPresent(false);
 			((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
@@ -82,7 +89,12 @@ public class RestaurantMatt extends Restaurant {
 			}
 			
 			if (waiters.size() < MAXWAITERS) {
-				RestaurantWaiterRole newWaiter = new RestaurantWaiterRoleMatt();
+				RestaurantWaiterRole newWaiter;
+				if (waiters.size() % 2 == 0) {
+					newWaiter = new RestaurantWaiterRoleMattNormal();
+				} else {
+					newWaiter = new RestaurantWaiterRoleMattStand();
+				}
 				WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
 				((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
 				waiters.add(newWaiter);

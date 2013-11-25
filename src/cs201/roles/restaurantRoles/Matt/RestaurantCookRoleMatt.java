@@ -189,14 +189,6 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from " + m + ".");
 	}
 	
-	/**
-	 * Adds a MarketAgent to this CookAgent
-	 * @param m The MarketAgent being added to this CookAgent's list of MarketAgents
-	 */
-	/*public void addMarket(MarketAgent m) {
-		markets.add(m);
-	}*/
-	
 	public void emptyInventory() {
 		synchronized(foods) {
 			for (String f : foods.keySet()) {

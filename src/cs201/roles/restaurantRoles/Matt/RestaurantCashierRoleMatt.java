@@ -251,12 +251,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 			this.order = order;
 			this.quantity = quantity;
 		}
-		
-		public MarketInvoice() {
-			this.market = null;
-			this.order = null;
-			this.quantity = 0;
-		}
 	}
 	
 	/**
