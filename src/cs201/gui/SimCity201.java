@@ -25,9 +25,9 @@ public class SimCity201 extends JFrame {
 		setLayout(new BorderLayout());
 		
 		cityPanel = new CityPanel();
-		cityPanel.setPreferredSize(new Dimension(2000, 500));
-		cityPanel.setMaximumSize(new Dimension(2000, 500));
-		cityPanel.setMinimumSize(new Dimension(2000, 500));
+		cityPanel.setPreferredSize(new Dimension(1000, 250));
+		cityPanel.setMaximumSize(new Dimension(1000, 250));
+		cityPanel.setMinimumSize(new Dimension(1000, 250));
 		
 		cardLayout = new CardLayout();
 		
