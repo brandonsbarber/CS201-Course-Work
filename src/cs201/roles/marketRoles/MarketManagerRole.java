@@ -13,6 +13,7 @@ import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
+import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
@@ -79,8 +80,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	int nextOrderID = 0;
 	private class Order {
 		List<ItemRequest> items;
-		MarketConsumer consumer = null;		// For INPERSON orders
-		Structure structure = null;			// For DELIVERY orders
+		MarketConsumer consumer = null;					// For INPERSON orders
+		Restaurant structure = null;			// For DELIVERY orders
 		OrderState state;
 		OrderType type;
 		float totalPrice;
@@ -100,9 +101,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 		/**
 		 * Constructs an Order object for DELIVERY orders
 		 */
-		public Order(Structure struct, List<ItemRequest> i, OrderState s, int oID) {
+		public Order(Restaurant rest, List<ItemRequest> i, OrderState s, int oID) {
 			items = i;
-			structure = struct;
+			structure = rest;
 			state = s;
 			type = OrderType.DELIVERY;
 			id = oID;
@@ -213,10 +214,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param structure The requesting Restaurant's structure
 	 * @param items A list of items
 	 */
-	public void msgHereIsMyOrderForDelivery(Structure structure, List<ItemRequest> items) {
+	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, List<ItemRequest> items) {
 		// Add the new order to the list of orders
 		synchronized(orders) {
-			orders.add(new Order(structure, items, OrderState.PENDING, nextOrderID));
+			orders.add(new Order(restaurant, items, OrderState.PENDING, nextOrderID));
 			nextOrderID++;
 		}
 		
@@ -352,9 +353,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 			consumerBalance.get(o.consumer).balance += o.totalPrice;
 			
 		} else if (o.type == OrderType.DELIVERY) {
-			
+
+			RestaurantCashierRole cashier = o.structure.getCashier();
 			// TODO
-			// structure.getCashier().msgHereIsTotal
 			structureBalance.get(o.structure).balance += o.totalPrice;
 			
 		}
