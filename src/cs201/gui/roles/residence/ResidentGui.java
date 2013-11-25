@@ -66,6 +66,15 @@ public class ResidentGui implements Gui {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void walkToFridge() {
+		//set destination to fridge from residence layout
+	}
+	
+	public void goToBed() {
+		//animation to walk to the bed
+		//animation to get in bed
+	}
 
 	@Override
 	public boolean isPresent() {

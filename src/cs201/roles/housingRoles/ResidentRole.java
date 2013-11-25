@@ -3,6 +3,7 @@ package cs201.roles.housingRoles;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.residence.ResidentGui;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
 import cs201.structures.residence.Residence;
@@ -11,6 +12,7 @@ public class ResidentRole extends Role implements Resident {
 	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp};
 	ResidentState state;
 	private Residence residence;
+	ResidentGui gui;
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
@@ -56,7 +58,7 @@ public class ResidentRole extends Role implements Resident {
 	
 	private void pickAndEatFromFridge() {
 		Do("pickAndEatFromFridge called.");
-		//animation go to fridge
+		goToFridge();//animation go to fridge
 		state = ResidentState.eating;
 		List<String> fridgeContents = residence.getFridgeContents();
 		//picks food from home's fridge list of Food and eats it. Temporarily random choice
@@ -69,7 +71,7 @@ public class ResidentRole extends Role implements Resident {
 	}
 	
 	private void goToSleep() {
-		//animation go to bed
+		goToBed(); //animation go to bed
 		state = ResidentState.sleeping;
 		//timer/wait for wakeup
 	}
@@ -86,11 +88,19 @@ public class ResidentRole extends Role implements Resident {
 			//action to prepare scheduler for sleep action
 		}
 	}
+	
+	private void goToFridge() { //animation
+		gui.walkToFridge();
+	}
+	
+	private void goToBed() {
+		gui.goToBed();
+	}
 
 	@Override
 	public void closingTime() {
 		// TODO Auto-generated method stub
-		
+		//NOT A JOB. EMPTY
 	}
 	
 	//Utility

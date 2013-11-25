@@ -1,6 +1,7 @@
 package cs201.roles.housingRoles;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.residence.RenterGui;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
@@ -8,6 +9,7 @@ import cs201.roles.Role;
 public class RenterRole extends Role implements Renter {
 	Landlord myLandlord;
 	double amtRentOwed = 0;
+	RenterGui gui;
 	
 	// Messages
 	

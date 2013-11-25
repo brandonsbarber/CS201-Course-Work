@@ -5,10 +5,11 @@ import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
 import cs201.roles.housingRoles.LandlordRole;
+import cs201.roles.housingRoles.RenterRole;
 
-public class LandlordGui implements Gui {
+public class RenterGui implements Gui {
 
-	private LandlordRole role = null;
+	private RenterRole role = null;
 	private boolean isPresent;
 	
 	private final int WIDTH = 20, HEIGHT = 20;
@@ -19,11 +20,11 @@ public class LandlordGui implements Gui {
 	private int xDestination;
 	private int yDestination;
 	
-	public LandlordGui() {
+	public RenterGui() {
 		this(null);
 	}
 	
-	public LandlordGui(LandlordRole newRole) {
+	public RenterGui(RenterRole newRole) {
 		xPos = startX;
 		yPos = startY;
 		xDestination = xPos;
@@ -53,28 +54,19 @@ public class LandlordGui implements Gui {
 			
 		}
 		return;
+
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub
-		g.setColor(Color.BLUE);
+		g.setColor(Color.ORANGE);
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("Landlord", WIDTH, HEIGHT);
+		g.drawString("Renter", WIDTH, HEIGHT);
 	}
 
-	// Animation Actions
-	
-	public void walkToDesk() {
-		// set destination equal to office locations
-	}
-	
-	public void leaveOffice() {
-		// set destination to door to exit
-	}
-	
 	@Override
 	public boolean isPresent() {
 		// TODO Auto-generated method stub

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.residence.LandlordGui;
 import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
@@ -13,6 +14,7 @@ import cs201.structures.residence.Residence;
 public class LandlordRole extends Role implements Landlord {
 	List<myProperty> myProperties = new ArrayList<myProperty>();
 	double latePenalty;
+	LandlordGui gui;
 	
 	enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
 	
@@ -122,6 +124,14 @@ public class LandlordRole extends Role implements Landlord {
 	private void FixProperty(myProperty mP) {
 	//perform maintenance task on property
         mP.performMaintenance();
+	}
+	
+	private void goToDesk() { //animation
+		gui.walkToDesk();
+	}
+	
+	private void exitOffice() { // animation
+		gui.leaveOffice();
 	}
 	
 	// Utilities
