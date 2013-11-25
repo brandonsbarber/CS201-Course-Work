@@ -3,6 +3,7 @@ package cs201.structures.market;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.agents.transit.TruckAgent;
 import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.market.MarketEmployee;
@@ -15,6 +16,7 @@ import cs201.structures.Structure;
 public class MarketStructure extends Structure {
 	MarketManagerRole manager = null;
 	MarketEmployeeRole employee = null;
+	TruckAgent deliveryTruck = null;
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
@@ -31,10 +33,8 @@ public class MarketStructure extends Structure {
 		hireEmployee(newEmployee);
 		employee = newEmployee;
 		
-		// Initialize delivery trucks
-		/*
-		 * 
-		 */
+		// Initialize delivery truck
+		TruckAgent deliveryTruck = new TruckAgent(this);
 	}
 
 	
