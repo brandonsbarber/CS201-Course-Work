@@ -1,5 +1,6 @@
 package cs201.roles.housingRoles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
@@ -10,7 +11,7 @@ import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
-	List<myProperty> myProperties;
+	List<myProperty> myProperties = new ArrayList<myProperty>();
 	double latePenalty;
 	
 	enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
@@ -23,7 +24,7 @@ public class LandlordRole extends Role implements Landlord {
 	    RentState state;
 		boolean needsMaintenance;
 
-	        myProperty(Residence res, Renter ren, double a, WeekDay d) {
+	    public myProperty(Residence res, Renter ren, double a, WeekDay d) {
 	        	residence = res;
 	            renter = ren;
 	            amtDue = a;
@@ -68,7 +69,7 @@ public class LandlordRole extends Role implements Landlord {
 			}
 		}
 		for (myProperty mP:myProperties) {
-			if (/*getTomorrow()*/WeekDay.Sunday == mP.dayDue && mP.state == RentState.notDue) {
+			if (WeekDay.Sunday == mP.dayDue && mP.state == RentState.notDue) {
 				mP.state = RentState.dueNotNotified;
 				return true;
 			}

@@ -7,7 +7,7 @@ import cs201.roles.Role;
 
 public class RenterRole extends Role implements Renter {
 	Landlord myLandlord;
-	double amtRentOwed;
+	double amtRentOwed = 0;
 	
 	// Messages
 	
@@ -26,13 +26,15 @@ public class RenterRole extends Role implements Renter {
 	public boolean pickAndExecuteAnAction() {
 		if (amtRentOwed>0) {
 			if (getPerson().getMoney()>=amtRentOwed) {
+				Do("I have "+getPerson().getMoney()+" on hand and I owe "+amtRentOwed+" for rent.");
 				PayRent(myLandlord, amtRentOwed);
 				return true;
 			}
 			else
 			{
 				//WithdrawMoneyPerson(amtRentOwed-(getPerson().getMoney()));
-				return false;
+				Do("I don't have enough money on hand to pay my rent due.");
+				return false; //temporary
 			}
 		}
 		return false;
@@ -44,6 +46,7 @@ public class RenterRole extends Role implements Renter {
 		l.msgHereIsRentPayment(this, amt);
 		amtRentOwed -= amt;
 		getPerson().removeMoney(amt);
+		Do("I paid my rent of "+amt+".");
 	}
 
 	@Override
@@ -56,6 +59,10 @@ public class RenterRole extends Role implements Renter {
 	public void closingTime() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setLandlord(Landlord l) {
+		myLandlord = l;
 	}
 
 }

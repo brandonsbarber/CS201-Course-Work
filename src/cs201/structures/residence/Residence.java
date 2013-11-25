@@ -97,19 +97,6 @@ public class Residence extends Structure {
 			}
 			
 		}
-		/*
-		for(Food f : fridge) {
-			
-			if(f.getType() == t) {
-				f.minusOne();
-				if (f.noneLeft()) {
-					fridge.remove(f);
-					if (fridge.isEmpty()) {
-						hasFood = false;
-					}	
-				}
-			
-		}}*/
 	}
 	
 	public void performMaintenance() {

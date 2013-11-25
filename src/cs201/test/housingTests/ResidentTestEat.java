@@ -39,9 +39,11 @@ public class ResidentTestEat {
 		assertTrue("Residence should now have a food item in the fridge.", residence.hasFood());
 		
 		resident.msgStartEating();
-		resident.pickAndExecuteAnAction();
+		assertTrue("Scheduler should return true", resident.pickAndExecuteAnAction());
 		
 		assertFalse("Residence should again not have food in the fridge.", residence.hasFood());
+		
+		assertFalse("Scheduler should return false", resident.pickAndExecuteAnAction());
 	}
 
 }
