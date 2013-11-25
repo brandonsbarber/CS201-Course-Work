@@ -11,10 +11,12 @@ import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
+import cs201.roles.housingRoles.RenterRole;
+import cs201.roles.housingRoles.ResidentRole;
 import cs201.structures.Structure;
 
 public class Residence extends Structure {
-	private Resident resident;
+	private ResidentRole resident;
 	private Role owner; //owner is either a resident or a landlord.
 	private List<Food> fridge = Collections.synchronizedList(new ArrayList<Food>());
 	private boolean hasFood;
@@ -62,11 +64,11 @@ public class Residence extends Structure {
 		owner = p;
 	}
 	
-	public void setResident(Resident r) {
+	public void setResident(ResidentRole r) {
 		resident = r;
 	}
 	
-	public void removeResident(Resident r) {
+	public void removeResident(ResidentRole r) {
 		if(resident == r) {
 	           resident = null;
 	        }
@@ -147,15 +149,13 @@ public class Residence extends Structure {
 	@Override
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
-		if (role==Intention.ResidenceEat) {
-			return (Role) resident;
+		if (role==Intention.ResidenceEat || role==Intention.ResidenceSleep || role==Intention.ResidencePayRent) {
+			if(isApartment()) {
+				return new RenterRole();
+			}
+			return new ResidentRole();
 		}
-		if (role==Intention.ResidenceSleep) {
-			return (Role) resident;
-		}
-		if (role==Intention.ResidenceLandLord) {
-			return owner;
-		}
+		
 		return null;
 	}
 

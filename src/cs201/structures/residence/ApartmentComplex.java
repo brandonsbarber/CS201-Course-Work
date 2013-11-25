@@ -8,11 +8,12 @@ import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.roles.Role;
+import cs201.roles.housingRoles.LandlordRole;
 import cs201.structures.Structure;
 
 public class ApartmentComplex extends Structure {
 
-	Landlord landlord;
+	LandlordRole landlord;
 	List<Residence> apartments;
 	
 	public ApartmentComplex (int x, int y, int width, int height, int id, StructurePanel p) {
@@ -22,7 +23,7 @@ public class ApartmentComplex extends Structure {
 	
 	// Methods
 	
-	public void setLandlord(Landlord l) {
+	public void setLandlord(LandlordRole l) {
 	    landlord = l;
 	}
 	
@@ -48,7 +49,7 @@ public class ApartmentComplex extends Structure {
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
 		if (role==Intention.ResidenceLandLord) {
-			return (Role)landlord;
+			return landlord;
 		}
 		return null;
 	}

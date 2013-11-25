@@ -81,5 +81,14 @@ public class ResidentGui implements Gui {
 		// TODO Auto-generated method stub
 		return isPresent;
 	}
+	
+	public void setPresent() {
+		if (isPresent) {
+			isPresent=false;
+		}
+		else {
+			isPresent=true;
+		}
+	}
 
 }
