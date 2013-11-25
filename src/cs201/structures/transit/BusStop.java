@@ -3,6 +3,7 @@ package cs201.structures.transit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
@@ -20,11 +21,14 @@ public class BusStop extends Structure
 	
 	Bus parkedBus;
 	
+	Semaphore passengerAccess;
+	
 	public BusStop(int x, int y, int width, int height, int id, StructurePanel p)
 	{
 		super(x, y, width, height, id, p);
 		waitingPassengers = Collections.synchronizedList(new ArrayList<Passenger>());
 		addRequests = new ArrayList<Passenger>();
+		passengerAccess = new Semaphore(1,true);
 	}
 
 	@Override
@@ -34,14 +38,32 @@ public class BusStop extends Structure
 		return null;
 	}
 	
+	/**
+	 * Note: Only to be used in testing!
+	 * @return
+	 */
+	public List<Passenger> getPassengerList()
+	{
+		passengerAccess.release();
+		return getPassengerList(null);
+	}
+	
 	public List<Passenger> getPassengerList(Bus bus)
 	{
-		if(parkedBus == null)
+		try
 		{
-			parkedBus = bus;
-			return waitingPassengers;
+			passengerAccess.acquire();
 		}
-		return null;
+		catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		waitingPassengers.addAll(addRequests);
+		addRequests.clear();
+		parkedBus = bus;
+		return waitingPassengers;
 	}
 	
 	public void addPassenger(Passenger p)
@@ -51,13 +73,10 @@ public class BusStop extends Structure
 	
 	public void removePassengers(Bus bus, List<Passenger> passengers)
 	{
-		if(bus == parkedBus)
-		{
-			waitingPassengers.removeAll(passengers);
-			waitingPassengers.addAll(addRequests);
-			addRequests.clear();
-			parkedBus = null;
-		}
+		waitingPassengers.removeAll(passengers);
+		parkedBus = null;
+		
+		passengerAccess.release();
 	}
 
 	@Override
