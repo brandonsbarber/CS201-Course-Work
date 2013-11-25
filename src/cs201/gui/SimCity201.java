@@ -69,7 +69,17 @@ public class SimCity201 extends JFrame {
 		add(settingsPanel,BorderLayout.WEST);
 		add(guiPanel);
 		
-		
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		settingsPanel.addPanel("Transit",new TransitConfigPanel());
+		settingsPanel.addPanel("Transit",new TransitConfigPanel());
+		settingsPanel.addPanel("Banks",new ConfigPanel());
+		settingsPanel.addPanel("Markets",new ConfigPanel());
+		settingsPanel.addPanel("Housing",new ConfigPanel());
+		settingsPanel.addPanel("Housing",new ConfigPanel());
+		settingsPanel.addPanel("Housing",new ConfigPanel());
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+
 		
 		pack();
 		CityDirectory.getInstance().startTime();
