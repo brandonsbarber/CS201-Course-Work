@@ -129,7 +129,7 @@ public class Residence extends Structure {
 	}
 	
 	public boolean isApartment() {
-		return owner!=resident;
+		return owner.getPerson()!=((Role)resident).getPerson();
 	}	
 
 	public boolean hasFood() {
