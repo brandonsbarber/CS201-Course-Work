@@ -55,4 +55,8 @@ public class MarketManagerGui implements Gui {
 	public int Y() {
 		return yPos;
 	}
+	
+	public void setRole(MarketManagerRole r) {
+		role = r;
+	}
 }

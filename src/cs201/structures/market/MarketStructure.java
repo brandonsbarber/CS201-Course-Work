@@ -5,6 +5,10 @@ import java.util.List;
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.market.MarketEmployeeGui;
+import cs201.gui.roles.market.MarketManagerGui;
+import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.gui.structures.market.MarketGui;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
@@ -28,10 +32,22 @@ public class MarketStructure extends Structure {
 		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
 		setManager(newManager);
 		
+		// Create a manager gui
+		MarketManagerGui managerGui = new MarketManagerGui();
+		newManager.setGui(managerGui);
+		managerGui.setRole(newManager);
+		p.addGui(managerGui);
+		
 		// Create an initial employee
 		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
 		hireEmployee(newEmployee);
 		employee = newEmployee;
+		
+		// Create an employee gui
+		MarketAnimationPanel panel = (MarketAnimationPanel)p;
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui(newEmployee, panel, 1, 3);
+		employee.setGui(employeeGui);
+		p.addGui(employeeGui);
 		
 		// Initialize delivery truck
 		TruckAgent deliveryTruck = new TruckAgent(this);

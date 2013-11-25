@@ -330,6 +330,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	private void dispatchOrder(Order o) {
 		
+		// Calculate the price of the order first
 		o.calculatePrice();
 		
 		// Dispatch the order based on its type
@@ -348,10 +349,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 		
 		// The order has now been sent
-		o.state = OrderState.SENT;
-		
-		// Calculate the price of the order
-		
+		o.state = OrderState.SENT;		
 		
 		// The purchaser needs to pay for the order
 		if (o.type == OrderType.INPERSON) {
