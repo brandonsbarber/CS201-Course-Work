@@ -130,7 +130,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		{
 			((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
 		}
-		//d.destination.msgMakeDelivery(inventory);
+		
 		d.s = DeliveryState.Done;
 
 	}
