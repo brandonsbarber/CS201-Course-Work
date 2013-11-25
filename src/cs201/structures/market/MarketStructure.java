@@ -29,6 +29,11 @@ public class MarketStructure extends Structure {
 		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
 		hireEmployee(newEmployee);
 		employee = newEmployee;
+		
+		// Initialize delivery trucks
+		/*
+		 * 
+		 */
 	}
 
 	
