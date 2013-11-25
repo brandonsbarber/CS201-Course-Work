@@ -58,6 +58,9 @@ public class VehicleGui implements Gui
 	{
 		g.setColor(Color.YELLOW);
 		g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
+		
+		g.setColor(Color.BLACK);
+		g.drawString(""+vehicle.getClass(),x,y);
 	}
 
 	@Override

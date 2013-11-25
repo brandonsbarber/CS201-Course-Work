@@ -36,11 +36,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 	
 	enum DeliveryState {NotDone,InProgress,Done};
 	
-	VehicleGui gui;
-	
 	public TruckAgent(Structure home)
 	{
 		homeStructure = home;
+		msgSetLocation(homeStructure);
 		deliveries = new ArrayList<Delivery>();
 		gui = new VehicleGui(this,CityPanel.INSTANCE,(int)homeStructure.x,(int)homeStructure.y);
 		CityPanel.INSTANCE.addGui(gui);
@@ -63,13 +62,16 @@ public class TruckAgent extends VehicleAgent implements Truck
 	@Override
 	protected boolean pickAndExecuteAnAction()
 	{
+		Do("Truck hello.");
 		if(deliveries.isEmpty() && currentLocation != homeStructure)
 		{
+			Do("returning home");
 			returnHome();
 			return true;
 		}
 		else
 		{
+			Do("removing");
 			for(int i = 0; i < deliveries.size(); i++)
 			{
 				if(deliveries.get(i).s == DeliveryState.Done)
@@ -82,54 +84,34 @@ public class TruckAgent extends VehicleAgent implements Truck
 			{
 				if(d.s == DeliveryState.NotDone)
 				{
+					Do("Making delivery run");
 					makeDeliveryRun(d);
 					return true;
 				}
 			}
 		}
+		Do("Reached end");
 		return false;
 	}
 
 	private void returnHome()
 	{
 		msgSetDestination (homeStructure);
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		animate();
+		gui.setPresent(false);
 	}
 
 	private void makeDeliveryRun(Delivery d)
 	{
+		gui.setPresent(true);
 		msgSetDestination (homeStructure);
-		
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		Do(""+(gui == null));
+		animate();
 		
 		msgSetDestination (d.destination);
 		d.s = DeliveryState.InProgress;
 		
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		animate();
 		
 		for(ItemRequest item : d.inventory)
 		{

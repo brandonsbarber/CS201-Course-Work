@@ -102,15 +102,7 @@ public class CarAgent extends VehicleAgent implements Car
 
 	private void goToDestination()
 	{
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		animate();
 	}
 	
 	private void processPickup(PickupRequest removed)
@@ -119,15 +111,7 @@ public class CarAgent extends VehicleAgent implements Car
 		
 		System.out.println("Setting destination. "+removed.start+" and "+removed.destination);
 		
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		animate();
 		
 		removed.p.msgPleaseBoard(this);
 		

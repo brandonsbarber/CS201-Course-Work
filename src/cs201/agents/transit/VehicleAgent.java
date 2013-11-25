@@ -13,7 +13,7 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	
 	Semaphore animationSemaphore = new Semaphore(0);
 	
-	VehicleGui gui;
+	VehicleGui gui = null;
 	
 	public void setGui(VehicleGui gui)
 	{
@@ -40,5 +40,23 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public boolean destinationReached()
 	{
 		return destination == currentLocation;
+	}
+	
+	protected void animate()
+	{
+		if(gui == null)
+		{
+			Do("GUI is null");
+			return;
+		}
+		gui.doGoToLocation(destination);
+		try
+		{
+			animationSemaphore.acquire();
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
