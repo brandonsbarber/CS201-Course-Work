@@ -8,5 +8,5 @@ import cs201.structures.Structure;
 
 public interface Truck extends Vehicle
 {
-	public void msgMakeDeliveryRun (List<ItemRequest> inventory, Structure destination);
+	public void msgMakeDeliveryRun (List<ItemRequest> inventory, Structure destination, double price);
 }

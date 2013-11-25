@@ -329,6 +329,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param o
 	 */
 	private void dispatchOrder(Order o) {
+		
+		o.calculatePrice();
+		
 		// Dispatch the order based on its type
 		if (o.type == OrderType.INPERSON) {
 			
@@ -339,7 +342,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 			
 			// The consumer wants the items delivered to him
 			TruckAgent deliveryTruck = structure.getDeliveryTruck();
-			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure);
+			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure,o.totalPrice);
 			// TODO in a sec
 			
 		}
@@ -348,7 +351,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		o.state = OrderState.SENT;
 		
 		// Calculate the price of the order
-		o.calculatePrice();
+		
 		
 		// The purchaser needs to pay for the order
 		if (o.type == OrderType.INPERSON) {

@@ -67,6 +67,11 @@ public class PassengerRole extends Role implements Passenger
 		waitingForVehicle = new Semaphore(0);
 	}
 	
+	public void isTesting()
+	{
+		testing = true;
+	}
+	
 	public void setGui(PassengerGui gui)
 	{
 		this.gui = gui;
@@ -84,7 +89,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		Do("Clearing waypoints?");
+		if(!testing){Do("Clearing waypoints?");}
 		stateChanged();
 	}
 
@@ -100,7 +105,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
-		Do("Arrived at "+s);
+		if(!testing){Do("Arrived at "+s);}
 		stateChanged();
 	}
 
@@ -113,11 +118,11 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		Do("Running scheduler");
-		Do(""+waypoints.size());
+		if(!testing){Do("Running scheduler");}
+		if(!testing){Do(""+waypoints.size());}
 		if(currentLocation == destination && state == PassengerState.None)
 		{
-			Do("ENDING?");
+			if(!testing){Do("ENDING?");}
 			finishMoving();
 			return false;
 		}
@@ -142,7 +147,7 @@ public class PassengerRole extends Role implements Passenger
 			moveToLocation(waypoints.peek());
 			return true;
 		}
-		Do("Reached end");
+		if(!testing){Do("Reached end");}
 		return false;
 	}
 
@@ -166,7 +171,7 @@ public class PassengerRole extends Role implements Passenger
 		}
 		else
 		{
-			Do("Adding to waypoints");
+			if(!testing){Do("Adding to waypoints");}
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
@@ -179,7 +184,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void checkBoardingRequest(Vehicle remove)
 	{
-		Do("Checking boarding request");
+		if(!testing){Do("Checking boarding request");}
 		if(remove instanceof Bus)
 		{
 			Bus bus = (Bus)remove;
@@ -208,12 +213,12 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void processArrival()
 	{
-		Do("PROCESSING ARRIVAL Reaching?!");
-		Do(""+waypoints);
-		Do(""+waypoints.size());
+		if(!testing){Do("PROCESSING ARRIVAL Reaching?!");}
+		if(!testing){Do(""+waypoints);}
+		if(!testing){Do(""+waypoints.size());}
 		if(currentLocation == waypoints.peek().s)
 		{
-			Do("Hello? Removing");
+			if(!testing){Do("Hello? Removing");}
 			Structure s = waypoints.remove().s;
 			if(currentVehicle != null)
 			{
@@ -253,7 +258,7 @@ public class PassengerRole extends Role implements Passenger
 				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;
-				Do("Waypoints after animation: "+waypoints.size());
+				if(!testing){Do("Waypoints after animation: "+waypoints.size());}
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
@@ -263,7 +268,7 @@ public class PassengerRole extends Role implements Passenger
 					try
 					{
 						waitingForVehicle.acquire();
-						Do("Released");
+						if(!testing){Do("Released");}
 					}
 					catch(InterruptedException e)
 					{
@@ -276,7 +281,7 @@ public class PassengerRole extends Role implements Passenger
 				((BusStop)currentLocation).addPassenger(this);
 				break;
 		}
-		Do("Waypoints at end of call: "+waypoints.size());
+		if(!testing){Do("Waypoints at end of call: "+waypoints.size());}
 	}
 
 	@Override

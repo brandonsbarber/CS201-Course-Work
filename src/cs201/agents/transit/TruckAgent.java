@@ -8,6 +8,8 @@ import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Truck;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
+import cs201.structures.market.MarketStructure;
+import cs201.structures.restaurant.Restaurant;
 
 public class TruckAgent extends VehicleAgent implements Truck
 {
@@ -20,12 +22,14 @@ public class TruckAgent extends VehicleAgent implements Truck
 		List<ItemRequest> inventory;
 		Structure destination;
 		DeliveryState s;
+		double price;
 		
-		public Delivery(List<ItemRequest> items, Structure dest)
+		public Delivery(List<ItemRequest> items, Structure dest,double price)
 		{
 			inventory = items;
 			destination = dest;
 			s = DeliveryState.NotDone;
+			this.price = price;
 		}
 	};
 	
@@ -45,9 +49,9 @@ public class TruckAgent extends VehicleAgent implements Truck
 	}
 	
 	@Override
-	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination)
+	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
 	{
-		deliveries.add(new Delivery(inventory,destination));
+		deliveries.add(new Delivery(inventory,destination,price));
 		stateChanged();
 	}
 
@@ -122,6 +126,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 			e.printStackTrace();
 		}
 		
+		for(ItemRequest item : d.inventory)
+		{
+			((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
+		}
 		//d.destination.msgMakeDelivery(inventory);
 		d.s = DeliveryState.Done;
 
