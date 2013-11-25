@@ -90,6 +90,13 @@ public class MarketStructure extends Structure {
 	}
 	
 	/**
+	 * @return The current working MarketManagerRole
+	 */
+	public MarketManagerRole getManager() {
+		return manager;
+	}
+	
+	/**
 	 * Add an inventory entry to this market. You must instantiate a MarketManager first and set him with setManager(...);
 	 * @param item A String name for the item, i.e., "chicken"
 	 * @param quantity The number of inventory items the market has in stock
