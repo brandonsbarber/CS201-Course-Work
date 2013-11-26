@@ -11,6 +11,7 @@ import cs201.helper.CityTime;
 import cs201.interfaces.agents.Person;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
 import cs201.structures.residence.Residence;
@@ -60,6 +61,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile CityTime workTime;
 	private volatile Structure currentLocation;
 	private volatile int bankAccountNumber;
+	private volatile List<ItemRequest> marketChecklist;
 	
 	
 	/**************************************************************************
@@ -88,6 +90,7 @@ public class PersonAgent extends Agent implements Person {
 		this.workTime = new CityTime(INITIALWORKHOUR, INITIALWORKMINUTE);
 		this.currentLocation = null;
 		this.bankAccountNumber = -1;
+		marketChecklist = new LinkedList<ItemRequest>();
 	}
 	
 	@Override
@@ -140,10 +143,12 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you have active roles, those have next highest priority (because you're currently
 		// doing something)
-		synchronized(roles) {
-			for (Role r : roles) {
-				if (r.getActive()) {
-					return r.pickAndExecuteAnAction();
+		if (state != PersonState.Relaxing) {
+			synchronized(roles) {
+				for (Role r : roles) {
+					if (r.getActive()) {
+						return r.pickAndExecuteAnAction();
+					}
 				}
 			}
 		}
@@ -182,7 +187,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to work
-		if (state == PersonState.Awake && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
 			if (this.addActionToPlanner(job, workplace, true)) {
 				this.state = PersonState.AtWork;
 				return true;
@@ -190,7 +195,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to sleep
-		if (state == PersonState.Awake && time.equalsIgnoreDay(this.sleepTime)) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && time.equalsIgnoreDay(this.sleepTime)) {
 			this.planner.clear();
 			this.state = PersonState.Sleeping;
 			this.addActionToPlanner(Intention.ResidenceSleep, home, false);
@@ -198,7 +203,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you need to get money from the bank
-		if (state == PersonState.Awake && moneyOnHand <= MONEYTHRESHOLD) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && moneyOnHand <= MONEYTHRESHOLD) {
 			boolean performAction = true;
 			for (Action a : planner) {
 				if (a.intent == Intention.BankWithdrawMoneyCustomer) {
@@ -208,6 +213,7 @@ public class PersonAgent extends Agent implements Person {
 			}
 			if (performAction && CityDirectory.getInstance().getBanks().size() > 0) {
 				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
+				this.state = PersonState.Awake;
 				return true;
 			}
 		}
@@ -229,7 +235,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you're hungry and at home
-		if (state == PersonState.Awake && home != null && currentLocation == home && hungerLevel >= HUNGRY) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && currentLocation == home && hungerLevel >= HUNGRY) {
 			boolean performAction = true;
 			for (Action a : planner) {
 				if (a.intent == Intention.ResidenceEat) {
@@ -240,6 +246,7 @@ public class PersonAgent extends Agent implements Person {
 			if (performAction) {
 				boolean starving = hungerLevel >= STARVING;
 				if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
+					this.state = PersonState.Awake;
 					return true;
 				}
 			}
@@ -248,6 +255,7 @@ public class PersonAgent extends Agent implements Person {
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
 			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {
+				state = PersonState.Relaxing;
 				return true;
 			}
 		}
@@ -598,6 +606,14 @@ public class PersonAgent extends Agent implements Person {
 		this.job = job;
 	}
 	
+	/**
+	 * Returns what this PersonAgent needs to buy at the Market
+	 * @return List<ItemRequest>
+	 */
+	public List<ItemRequest> getMarketChecklist() {
+		return marketChecklist;
+	}
+	
 	
 	/**************************************************************************
 	 *                                Utility                                 *
@@ -705,6 +721,7 @@ public class PersonAgent extends Agent implements Person {
 	private enum PersonState {
 		Sleeping,
 		Awake,
-		AtWork;
+		AtWork,
+		Relaxing;
 	}
 }

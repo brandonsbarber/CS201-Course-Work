@@ -184,11 +184,7 @@ public class Residence extends Structure {
 	@Override
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
-		if (role==Intention.ResidenceEat || role==Intention.ResidenceSleep || role==Intention.ResidencePayRent) {
-			/*if(isApartment()) {
-				return new RenterRole(this);
-			}
-			return new ResidentRole(this);*/
+		if (role==Intention.ResidenceEat || role==Intention.ResidenceSleep || role==Intention.ResidencePayRent || role==Intention.ResidenceRelax) {
 			return resident;
 		}
 		

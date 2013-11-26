@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -31,7 +30,6 @@ import cs201.helper.transit.BusRoute;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
-import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
@@ -131,7 +129,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		populateDrivingMap();
 		//Testing Hacks
-		
+		/*
 		stops.add(new BusStop(2*25,2*25,25,25,1, null));
 		stops.add(new BusStop(12*25,2*25,25,25,2, null));
 		stops.add(new BusStop(22*25,2*25,25,25,2, null));
@@ -152,13 +150,13 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		bus.startThread();
 		
-		/*BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
+		BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
 		VehicleGui busG2;
 		guis.add(busG2 = new VehicleGui(bus2,this,(int)stops.get(2).x,(int)stops.get(2).y));
 		
 		bus2.setGui(busG2);
 		
-		bus2.startThread();*/
+		bus2.startThread();
 		
 		CarAgent car = new CarAgent();
 		VehicleGui gui;
@@ -195,7 +193,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
 		
-		truck.startThread();
+		truck.startThread();*/
 		
 		timer.start();
 	}
@@ -367,7 +365,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		buildings.add(s);
 		
 		
-		if(s.x == 19*25)
+		/*if(s.x == 19*25)
 		{
 			PassengerRole role = new PassengerRole(buildings.get(0));
 			PassengerTestAgent agent = new PassengerTestAgent(role);
@@ -388,7 +386,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			guis.add(pgui);
 			role.msgGoTo(stops.get(3));
 			agent.startThread();
-		}
+		}*/
 		
 		
 	}

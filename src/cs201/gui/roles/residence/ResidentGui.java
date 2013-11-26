@@ -38,7 +38,7 @@ public class ResidentGui implements Gui {
 		yDestination = yPos;
 		
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
 		animating = false;
 	}
 	
@@ -72,7 +72,7 @@ public class ResidentGui implements Gui {
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("Resident", WIDTH, HEIGHT);
+		g.drawString("Resident", xPos, yPos);
 		// TODO Auto-generated method stub
 
 	}
@@ -95,6 +95,12 @@ public class ResidentGui implements Gui {
 	public void exit() {
 		xDestination = exitX;
 		yDestination = exitY;
+		animating = true;
+	}
+	
+	public void enter() {
+		xDestination = startX;
+		yDestination = startY;
 		animating = true;
 	}
 
