@@ -55,8 +55,8 @@ public abstract class VehicleGui implements Gui
 	public void doGoToLocation(Structure structure)
 	{
 		destination = structure;
-		destX = (int)structure.getX();
-		destY = (int)structure.getY();
+		destX = (int)destination.getParkingLocation().getX();
+		destY = (int)destination.getParkingLocation().getY();
 		fired = false;
 		present = true;
 	}

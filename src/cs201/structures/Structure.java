@@ -156,4 +156,9 @@ public abstract class Structure extends Rectangle2D.Double {
 		
 		return output.toString();
 	}
+
+	public void setParkingLocation(Point point)
+	{
+		parkingLocation = point;
+	}
 }
