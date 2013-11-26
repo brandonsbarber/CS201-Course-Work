@@ -32,6 +32,7 @@ import cs201.helper.transit.BusRoute;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
 import cs201.structures.transit.BusStop;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
@@ -150,7 +151,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	public CityPanel()
 	{
-		Timer timer = new Timer(1000/120,this);
+		Timer timer = new Timer(1000/240,this);
 		
 		buildings = Collections.synchronizedList(new ArrayList<Structure>());
 		guis = Collections.synchronizedList(new ArrayList<Gui>());
@@ -465,6 +466,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
 				g2.fill(new Rectangle(s.getEntranceLocation().x,s.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
 				
+				if(s instanceof Residence)
+				System.out.println("ENTRANCE LOCATION" +s.getEntranceLocation().y);
 				g2.setColor(Color.WHITE);
 				g2.drawString("P",s.getParkingLocation().x,s.getParkingLocation().y+25);
 				g2.drawString("E",s.getEntranceLocation().x,s.getEntranceLocation().y+25);

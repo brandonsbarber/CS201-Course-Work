@@ -89,8 +89,10 @@ public class PassengerGui implements Gui
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
+		System.out.println(structure);
 		fired = false;
 		present = true;
+		System.out.println(this+"Destination: "+destX+" "+destY);
 	}
 	
 	//Make me abstract for subclasses!
@@ -98,7 +100,8 @@ public class PassengerGui implements Gui
 	{
 		g.setColor(Color.RED);
 			g.drawImage (movementSprites.get(currentDirection.ordinal()),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
-
+		g.setColor(Color.BLACK);
+		g.drawString(""+destination, x,y);
 		//g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 	}
 
@@ -109,7 +112,32 @@ public class PassengerGui implements Gui
 		{
 			if(getDirection(city.getWalkingMap(),x/city.GRID_SIZE,y/city.GRID_SIZE) == WalkingDirection.None)
 			{
-				currentDirection = WalkingDirection.North;
+				int xDistance = destX - x;
+				int yDistance = destY - y;
+				
+				if(Math.abs(xDistance) > Math.abs(yDistance))
+				{
+					if(xDistance < 0)
+					{
+						currentDirection = WalkingDirection.West;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.East;
+					}
+				}
+				else
+				{
+					if(yDistance < 0)
+					{
+						currentDirection = WalkingDirection.North;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.South;
+					}
+				}
+				
 			}
 			switch(currentDirection)
 			{
@@ -128,6 +156,7 @@ public class PassengerGui implements Gui
 				default:
 					break;
 			}
+			System.out.println(this+"CURRENT LOCATION: "+x+" "+y+" DESIRED LOCATION: "+destX+" "+destY);
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0)
 			{
 				WalkingDirection[][] map = city.getWalkingMap();
@@ -147,6 +176,7 @@ public class PassengerGui implements Gui
 			}
 			if(x == destX && y == destY)
 			{
+				System.out.println("REACHED DESTINATION");
 				fired = true;
 				pass.msgAnimationFinished ();
 			}
