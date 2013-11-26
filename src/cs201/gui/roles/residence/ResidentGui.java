@@ -38,7 +38,7 @@ public class ResidentGui implements Gui {
 		yDestination = yPos;
 		
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
 		animating = false;
 	}
 	
