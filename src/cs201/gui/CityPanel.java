@@ -21,6 +21,7 @@ import cs201.agents.PassengerTestAgent;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
+import cs201.gui.CityPanel.DrivingDirection;
 import cs201.gui.transit.BusGui;
 import cs201.gui.transit.CarGui;
 import cs201.gui.transit.PassengerGui;
@@ -73,11 +74,40 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		{
 			return ordinal() > 0;
 		}
+		
+		public boolean isVertical()
+		{
+			return this == North || this == South;
+		}
+		
+		public boolean isHorizontal()
+		{
+			return this == West || this == East;
+		}
+
+		public static boolean opposites(DrivingDirection drivingDirection, DrivingDirection drivingDirection2)
+		{
+			return (drivingDirection == West && drivingDirection2 == East) || (drivingDirection == East && drivingDirection2 == West) || (drivingDirection == South && drivingDirection2 == North) || (drivingDirection == North && drivingDirection2 == South);
+		}
 	};
 	
 	private String[][] cityGrid = 
 	{
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
+		{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
+		{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},
+		{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},
+		{"G","S","3","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},
+		{"G","S","3","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},
+		{"G","S","3","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},
+		{"G","S","3","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},
+		{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},
+		{"G","S","1","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},
+		{"G","S","1","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},
+		{"G","S","1","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},
+		{"G","S","1","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},
+		{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},
+		{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},
+		{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 	
 	private List<BusStop> stops;
