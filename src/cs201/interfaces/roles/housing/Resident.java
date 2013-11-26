@@ -6,5 +6,6 @@ public interface Resident {
 	
 	public abstract void msgStartEating();
 	public abstract void msgDoneEating(); //from gui
+	public abstract void msgAnimationDone();
 	
 }

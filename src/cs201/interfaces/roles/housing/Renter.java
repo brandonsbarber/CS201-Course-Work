@@ -1,6 +1,6 @@
 package cs201.interfaces.roles.housing;
 
-public interface Renter {
+public interface Renter extends Resident{
 
 	// Messages
 	

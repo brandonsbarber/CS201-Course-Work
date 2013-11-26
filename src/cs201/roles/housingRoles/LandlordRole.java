@@ -167,6 +167,7 @@ public class LandlordRole extends Role implements Landlord {
 	private void exitOffice() { // animation
 		Do("Exiting my office");
 		isActive = false;
+		myPerson.goOffWork();
 		gui.leaveOffice();
 		this.acquireSemaphore();
 		gui.setPresent(false);
