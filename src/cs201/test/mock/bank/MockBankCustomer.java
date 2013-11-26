@@ -42,11 +42,11 @@ public class MockBankCustomer extends Mock implements BankCustomer {
 		
 	}
 
-	@Override
+	/*@Override
 	public void msgOverdrawnAccount(double actBalance) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 	@Override
 	public void msgLoanGranted() {
