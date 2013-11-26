@@ -96,7 +96,7 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		
-		//normativeWalking();
+		normativeWalking();
 		
 		CityDirectory.getInstance().startTime();
 	}
