@@ -8,6 +8,7 @@ import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityTime;
 import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.roles.Role;
@@ -73,14 +74,14 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleMatt) cook).getGui().setPresent(true);
-				checkIfRestaurantShouldOpen();
+				Do("Cook Check");
 				return cook;
 			}
 			return null;
 		}
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
-				checkIfRestaurantShouldOpen();
+				Do("Host Check");
 				return host;
 			}
 			return null;
@@ -89,8 +90,9 @@ public class RestaurantMatt extends Restaurant {
 			for (RestaurantWaiterRole r : waiters) {
 				if (r.getPerson() == null) {
 					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
+					UpdateWaiterHomePositions();
 					((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
-					checkIfRestaurantShouldOpen();
+					Do("Waiter Check 1");
 					return r;
 				}
 			}
@@ -106,11 +108,12 @@ public class RestaurantMatt extends Restaurant {
 				((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
 				waiters.add(newWaiter);
 				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
+				UpdateWaiterHomePositions();
 				((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
 				this.panel.addGui(waiterGui);
 				newWaiter.setRestaurant(this);
 				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
-				checkIfRestaurantShouldOpen();
+				Do("Waiter Check 2");
 				return newWaiter;
 			}
 			
@@ -119,7 +122,7 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleMatt) cashier).getGui().setPresent(true);
-				checkIfRestaurantShouldOpen();
+				Do("Cashier Check");
 				return cashier;
 			}
 			return null;
@@ -142,20 +145,40 @@ public class RestaurantMatt extends Restaurant {
 	}
 	
 	private void checkIfRestaurantShouldOpen() {
-		Do("Checking if open.");
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
 			for (RestaurantWaiterRole w : waiters) {
 				if (w.getPerson() != null) {
-					Do("Open!");
+					Do("Open for business!");
 					this.isOpen = true;
 					return;
 				}
 			}
 		}
 	}
+	
+	private void UpdateWaiterHomePositions() {		
+		int initialX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .48f);
+    	int initialY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .18f);
+    	int mult = (int)(RestaurantAnimationPanelMatt.WINDOWX * .024f);
+    	int offset = (int)(RestaurantAnimationPanelMatt.WINDOWX * .048f);
+    	
+    	synchronized(waiters) {
+    		for (RestaurantWaiterRoleMatt waiter : ((RestaurantHostRoleMatt) host).getActiveWaiters()) {
+    			int x = initialX - (((RestaurantHostRoleMatt) host).getNumActiveWaiters() - 1) * mult;
+    			int y = initialY;
+				waiter.getGui().SetHomePosition(x, y);
+				waiter.getGui().GoToWaitingPosition();
+				initialX += offset;
+    		}
+    	}
+    }
 
 	@Override
 	public void updateTime(CityTime time) {
+		if (!isOpen) {
+			checkIfRestaurantShouldOpen();
+		}
+		
 		if (time.equalsIgnoreDay(this.closingTime)) {
 			Do("It's closing time!");
 			if (host.getPerson() != null) {

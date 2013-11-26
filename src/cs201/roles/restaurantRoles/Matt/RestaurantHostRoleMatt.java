@@ -87,7 +87,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 	
 	@Override
-	public void msgIWantToEat(CustomerMatt c) {		
+	public synchronized void msgIWantToEat(CustomerMatt c) {		
 		if (!bannedCustomers.contains(c)) {
 			Integer ID = AssignCustomerID();
 			int x = (int)(RestaurantAnimationPanelMatt.WINDOWX * .08f) + (ID % 2) * (int)(RestaurantAnimationPanelMatt.WINDOWX * .05f);
@@ -192,25 +192,27 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			}
 		}
 		
-		synchronized(tables) {
-			for (TableMatt table : tables) {
-				if (!table.isOccupied()) {
-					if (!waitingCustomers.isEmpty()) {
-						if (waiters.size() == 0) return false;
-						int leastCustomers = Integer.MAX_VALUE;
-						MyWaiter tempWaiter = null;
-						
-						synchronized(waiters) {
-							for (MyWaiter w : waiters) {
-								if (w.state != WaiterState.onBreak && w.numberOfCustomers < leastCustomers) {
-									leastCustomers = w.numberOfCustomers;
-									tempWaiter = w;
+		if (this.restaurant.getOpen()) {
+			synchronized(tables) {
+				for (TableMatt table : tables) {
+					if (!table.isOccupied()) {
+						if (!waitingCustomers.isEmpty()) {
+							if (waiters.size() == 0) return false;
+							int leastCustomers = Integer.MAX_VALUE;
+							MyWaiter tempWaiter = null;
+							
+							synchronized(waiters) {
+								for (MyWaiter w : waiters) {
+									if (w.state != WaiterState.onBreak && w.numberOfCustomers < leastCustomers) {
+										leastCustomers = w.numberOfCustomers;
+										tempWaiter = w;
+									}
 								}
 							}
+							
+							CallWaiter(tempWaiter, table);
+							return true;
 						}
-						
-						CallWaiter(tempWaiter, table);
-						return true;
 					}
 				}
 			}
@@ -301,17 +303,16 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		stateChanged();
 	}
 	
-	public void removeWaiter(WaiterMatt waiter) {
-		synchronized(waiters) {
-			for (MyWaiter m : waiters) {
-				if (m.waiter == waiter) {
-					waiters.remove(m);
-					activeWaiters--;
-					stateChanged();
-					break;
-				}
-			}
+	public int getNumActiveWaiters() {
+		return waiters.size();
+	}
+	
+	public List<RestaurantWaiterRoleMatt> getActiveWaiters() {
+		List<RestaurantWaiterRoleMatt> active = new ArrayList<RestaurantWaiterRoleMatt>();
+		for (MyWaiter m : waiters) {
+			active.add((RestaurantWaiterRoleMatt) m.waiter);
 		}
+		return active;
 	}
 	
 	private class MyWaiter {

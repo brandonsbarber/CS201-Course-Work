@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -17,7 +19,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	String name;
 	SimCity201 city;
 	
-    private List<Gui> guis = new ArrayList<Gui>();
+    private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
     private final int ANIMATIONLENGTH = 10;
     private Timer timer;
 
@@ -60,21 +62,29 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	
 	public void paintComponent(Graphics g) { 
     	Graphics2D g2 = (Graphics2D)g;
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.draw(g2);
-            }
-        }
+    	
+    	try {
+	        for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.draw(g2);
+	            }
+	        }
+    	} catch (ConcurrentModificationException e) {
+    		return;
+    	}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
-        }
+		try {
+			for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.updatePosition();
+	            }
+	        }
+		} catch (ConcurrentModificationException e) {
+    		return;
+    	}
 		
 		repaint();  //Will have paintComponent called
 	}
