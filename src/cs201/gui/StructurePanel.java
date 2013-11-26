@@ -61,6 +61,10 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 		guis.add(g);
 	}
 	
+	public void removeGui(Gui g) {
+		guis.remove(g);
+	}
+	
 	public void paintComponent(Graphics g) { 
     	Graphics2D g2 = (Graphics2D)g;
     	

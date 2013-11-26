@@ -37,7 +37,7 @@ public class WaiterGuiMatt implements Gui {
     public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantConfigPanelMatt r) {
         this.role = role;
         this.panel = r;
-        this.isPresent = true;
+        this.isPresent = false;
     }
 
     public void updatePosition() {

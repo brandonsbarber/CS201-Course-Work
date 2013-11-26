@@ -30,7 +30,7 @@ public class RenterGui implements Gui {
 		xDestination = xPos;
 		yDestination = yPos;
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
 	}
 
 	@Override
@@ -69,8 +69,13 @@ public class RenterGui implements Gui {
 
 	@Override
 	public boolean isPresent() {
-		// TODO Auto-generated method stub
 		return isPresent;
+	}
+
+	@Override
+	public void setPresent(boolean present) {
+		isPresent = present;
+		
 	}
 
 }

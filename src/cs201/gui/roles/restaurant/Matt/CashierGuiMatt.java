@@ -22,7 +22,7 @@ public class CashierGuiMatt implements Gui {
 		role = c;
 		xPos = CASHIERX;
 		yPos = CASHIERY;
-		isPresent = true;
+		isPresent = false;
 	}
 
 	public void updatePosition() {	
