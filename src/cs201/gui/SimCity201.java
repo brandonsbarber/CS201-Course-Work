@@ -103,7 +103,7 @@ public class SimCity201 extends JFrame {
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);
 		MarketStructure m = new MarketStructure(225,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
-		m.setClosingTime(new CityTime(10, 0));
+		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
@@ -138,6 +138,11 @@ public class SimCity201 extends JFrame {
 		p7.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
 		CityDirectory.getInstance().addPerson(p7);
 		p7.startThread();
+		
+		PersonAgent p8 = new PersonAgent("Market Customer", cityPanel);
+		p8.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, m, null);
+		CityDirectory.getInstance().addPerson(p8);
+		p8.startThread();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {

@@ -82,7 +82,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {		
+	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {	
+		Do("GOING TO GET ITEMS");
+		for (ItemRequest r : items) {
+			Do("Got " + r.item + r.amount);
+		}
 		// Add the new retrieval request to the list of requests
 		requests.add(new RetrievalRequest(manager, items, id, RequestState.PENDING));
 		

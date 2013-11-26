@@ -126,7 +126,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		public void calculatePrice() {
 			float total = 0.0f;
 			for (ItemRequest item : items) {
-				InventoryEntry entry = inventory.get(item.item);
+				InventoryEntry entry = inventory.get(item.item.toLowerCase());
 				if (entry != null) {
 					total += item.amount * entry.price;
 				}
@@ -226,6 +226,11 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * Sent by MarketConsumers in-person at a Market
 	 */
 	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {		
+		Do("HOST RECEIVED ORDER FROM CUSTOMER");
+		for (ItemRequest r : items) {
+			Do("Got " + r.item + r.amount);
+		}
+		
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, nextOrderID));
@@ -284,6 +289,11 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {		
+		Do("GOT ITEMS FROM EMPLOYEE");
+		for (ItemRequest r : items) {
+			Do("Got " + r.item + r.amount);
+		}
+		
 		// Find the consumer's order in our list
 		Order theOrder = null;
 		synchronized (orders) {
@@ -331,10 +341,12 @@ public class MarketManagerRole extends Role implements MarketManager {
 	private void processOrder(Order o, MyEmployee e) {
 		// We're going to assemble a list of valid ItemRequests to our MarketEmployee
 		List<ItemRequest> itemList = new ArrayList<ItemRequest>();
-		
+		Do("PROCESSING ORDER");
 		// Go through each PersonItem in the order, check to see if we sell it, and check to see if we have any in stock
 		for (ItemRequest item : o.items) {
+			Do("CHECK ITEM " + item.item);
 			int amountWeHave = AmountInStock(item);
+			Do("We Have: " + amountWeHave);
 			if (amountWeHave > 0) {
 				item.amount = amountWeHave;
 				itemList.add(item);

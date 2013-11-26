@@ -179,7 +179,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	
 	private void PayMarket(Check c) {
 		for (MarketInvoice i : invoices) {
-			if (i.market == c.market && i.order == c.choice && i.quantity >= c.quantity) {
+			if (i.market == c.market && i.order.toLowerCase() == c.choice.toLowerCase() && i.quantity >= c.quantity) {
 				this.restaurant.removeMoney(c.amount);
 				DoPayMarket(c);
 				((RestaurantCookRoleMatt) this.restaurant.getCook()).msgFulfillSupplyOrder(c.choice, c.quantity, c.market);

@@ -92,7 +92,7 @@ public class PersonAgent extends Agent implements Person {
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
 		this.sleepTime = new CityTime(INITIALSLEEPHOUR, INITIALSLEEPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
-		this.hungerLevel = HUNGRY;
+		this.hungerLevel = 0; ////////TEMP
 		this.vehicle = null;
 		this.home = null;
 		this.workplace = null;
@@ -101,6 +101,9 @@ public class PersonAgent extends Agent implements Person {
 		this.currentLocation = null;
 		this.bankAccountNumber = -1;
 		marketChecklist = new LinkedList<ItemRequest>();
+		if (name.equals("Market Customer")) {
+			marketChecklist.add(new ItemRequest("Steak", 2));
+		}
 		inventory = new LinkedList<ItemRequest>();
 	}
 	
@@ -131,7 +134,7 @@ public class PersonAgent extends Agent implements Person {
 	@Override
 	public void msgUpdateTime(CityTime newTime) {
 		int minutesPassed = CityTime.timeDifference(newTime, this.time);
-		hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
+		//hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
 		
 		time.day = newTime.day;
 		time.hour = newTime.hour;
@@ -260,6 +263,22 @@ public class PersonAgent extends Agent implements Person {
 					this.state = PersonState.Awake;
 					return true;
 				}
+			}
+		}
+		
+		// If you you need to buy something at the market
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
+			boolean performAction = true;
+			for (Action a : planner) {
+				if (a.intent == Intention.MarketConsumerGoods) {
+					performAction = false;
+					break;
+				}
+			}
+			if (performAction && CityDirectory.getInstance().getMarkets().size() > 0) {
+				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomMarket(), false);
+				this.state = PersonState.Awake;
+				return true;
 			}
 		}
 		
