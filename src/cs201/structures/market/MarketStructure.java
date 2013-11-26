@@ -59,6 +59,14 @@ public class MarketStructure extends Structure {
 		this.deliveryTruck = new TruckAgent(this);
 		deliveryTruck.startThread();
 		
+		// Add some initial inventory
+		addInventory("Steak", 1000, 10.99f);
+		addInventory("Pasta", 1000, 7.99f);
+		addInventory("Pizza", 1000, 5.99f);
+		addInventory("Ice Cream", 1000, 1.99f);
+		addInventory("Chicken", 1000, 8.99f);
+		addInventory("Salad", 1000, 3.99f);
+		
 	}
 
 	

@@ -156,7 +156,9 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		this.isActive = false;
 		gui.doLeaveMarket();
 		pauseForAnimation();
-		gui.setPresent(false);
+		if (gui != null) {
+			gui.setPresent(false);
+		}
 	}
 	
 	/*
