@@ -431,23 +431,26 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		
 		
-		g2.setColor(Color.BLACK);
-		
-		for(int x = 0; x < cityGrid[0].length; x++)
+		if(SHOW_DEBUG)
 		{
-			for(int y = 0; y < cityGrid.length; y++)
-			{
-				g2.drawRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-				if(y == 1)
-				{
-					g2.drawString(""+x,x*GRID_SIZE,y*GRID_SIZE);
-				}
-				if(x == 0)
-				{
-					g2.drawString(""+y, x, (y+1)*GRID_SIZE);
-				}
-			}
+			g2.setColor(Color.BLACK);
 			
+			for(int x = 0; x < cityGrid[0].length; x++)
+			{
+				for(int y = 0; y < cityGrid.length; y++)
+				{
+					g2.drawRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					if(y == 1)
+					{
+						g2.drawString(""+x,x*GRID_SIZE,y*GRID_SIZE);
+					}
+					if(x == 0)
+					{
+						g2.drawString(""+y, x, (y+1)*GRID_SIZE);
+					}
+				}
+				
+			}
 		}
 		
 		for (int i = 0; i < buildings.size(); i++)
