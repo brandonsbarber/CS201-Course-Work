@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import cs201.agents.PersonAgent;
+import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
@@ -128,8 +129,13 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().startTime();
 		
 		
-		PersonAgent p7 = new PersonAgent("Person");
-		p7.setupPerson(CityDirectory.getInstance().getTime(), re, null, null, re, null);
+		PersonAgent p6 = new PersonAgent("Manager", cityPanel);
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		CityDirectory.getInstance().addPerson(p6);
+		p6.startThread();
+		
+		PersonAgent p7 = new PersonAgent("Employee", cityPanel);
+		p7.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
 		CityDirectory.getInstance().addPerson(p7);
 		p7.startThread();
 	}

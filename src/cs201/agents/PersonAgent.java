@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import cs201.gui.CityPanel;
+import cs201.gui.transit.PassengerGui;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
 import cs201.interfaces.agents.Person;
@@ -43,6 +45,7 @@ public class PersonAgent extends Agent implements Person {
 	 *                                 Data                                   *
 	 **************************************************************************/
 	private volatile String name;
+	private CityPanel panel;
 	private volatile PersonState state;
 	private volatile Semaphore animation;
 	private volatile List<Role> roles;
@@ -68,14 +71,18 @@ public class PersonAgent extends Agent implements Person {
 	/**************************************************************************
 	 *                           Constructors/Setup                           *
 	 **************************************************************************/
-	public PersonAgent(String name) {
+	public PersonAgent(String name, CityPanel p) {
 		super();
 		
 		this.name = name;
+		this.panel = p;
 		this.state = PersonState.Sleeping;
 		this.animation = new Semaphore(0);
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
 		this.passengerRole = new PassengerRole(null);
+		PassengerGui pGui = new PassengerGui(passengerRole, panel);
+		this.passengerRole.setGui(pGui);
+		this.panel.addGui(pGui);
 		this.passengerRole.setPerson(this);
 		this.planner = Collections.synchronizedList(new LinkedList<Action>());
 		this.currentAction = null;
@@ -276,6 +283,7 @@ public class PersonAgent extends Agent implements Person {
 	private void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
+			passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);

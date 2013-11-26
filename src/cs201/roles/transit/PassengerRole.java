@@ -385,6 +385,7 @@ public class PassengerRole extends Role implements Passenger
 	public void setCurrentLocation(Structure s2)
 	{
 		currentLocation = s2;
+		gui.setLocation((int)currentLocation.x, (int)currentLocation.y);
 	}
 
 	public Structure getCurrentLocation()
