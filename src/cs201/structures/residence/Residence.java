@@ -16,6 +16,7 @@ import cs201.roles.Role;
 import cs201.roles.housingRoles.LandlordRole;
 import cs201.roles.housingRoles.RenterRole;
 import cs201.roles.housingRoles.ResidentRole;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
 
 public class Residence extends Structure {
@@ -131,6 +132,7 @@ public class Residence extends Structure {
 				f.minusOne();
 				System.out.println("One of food removed");
 				if (f.noneLeft()) {
+					resident.getPerson().getMarketChecklist().add(new ItemRequest(f.getType(), 10));
 					it.remove();
 					System.out.println("Food category removed");
 					if (fridge.isEmpty()) {
