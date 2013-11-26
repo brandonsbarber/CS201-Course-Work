@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.residence.LandlordGui;
 
 public class ApartmentComplexAnimationPanel extends StructurePanel {
 
@@ -57,6 +58,10 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void informLandlord(LandlordGui lGui) {
+		lGui.setDesk(deskX, deskY);
 	}
 
 }
