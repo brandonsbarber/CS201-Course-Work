@@ -84,7 +84,6 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	
 	public void msgHereIsYourTotal(MarketManager manager, float amount) {
-		Do("GOT TOTAL");
 		// Add the bill to our list
 		marketBills.add(new MarketBill(manager, amount, MarketBillState.OUTSTANDING));
 		
@@ -92,10 +91,6 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void msgHereAreYourItems(List<ItemRequest> items) {
-		Do("GOT ITEMS");
-		for (ItemRequest r : items) {
-			Do("Got " + r.item + r.amount);
-		}
 		// We bought everything on our list
 		myPerson.getMarketChecklist().clear();
 		
@@ -108,10 +103,6 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void startInteraction(Intention intent) {
-		Do("I WANT TO ORDER THESE ITEMS");
-		for (ItemRequest r : myPerson.getMarketChecklist()) {
-			Do("Got " + r.item + r.amount);
-		}
 		
 		leaveMarket = false;
 		

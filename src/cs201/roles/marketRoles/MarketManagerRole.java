@@ -13,7 +13,6 @@ import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
-import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
@@ -226,11 +225,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * Sent by MarketConsumers in-person at a Market
 	 */
 	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {		
-		Do("HOST RECEIVED ORDER FROM CUSTOMER");
-		for (ItemRequest r : items) {
-			Do("Got " + r.item + r.amount);
-		}
-		
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, nextOrderID));
@@ -289,10 +283,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {		
-		Do("GOT ITEMS FROM EMPLOYEE");
-		for (ItemRequest r : items) {
-			Do("Got " + r.item + r.amount);
-		}
 		
 		// Find the consumer's order in our list
 		Order theOrder = null;
@@ -341,12 +331,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 	private void processOrder(Order o, MyEmployee e) {
 		// We're going to assemble a list of valid ItemRequests to our MarketEmployee
 		List<ItemRequest> itemList = new ArrayList<ItemRequest>();
-		Do("PROCESSING ORDER");
+		
 		// Go through each PersonItem in the order, check to see if we sell it, and check to see if we have any in stock
 		for (ItemRequest item : o.items) {
-			Do("CHECK ITEM " + item.item);
 			int amountWeHave = AmountInStock(item);
-			Do("We Have: " + amountWeHave);
 			if (amountWeHave > 0) {
 				item.amount = amountWeHave;
 				itemList.add(item);

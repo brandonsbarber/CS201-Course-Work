@@ -85,10 +85,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 */
 	
 	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {	
-		Do("GOING TO GET ITEMS");
-		for (ItemRequest r : items) {
-			Do("Got " + r.item + r.amount);
-		}
 		// Add the new retrieval request to the list of requests
 		requests.add(new RetrievalRequest(manager, items, id, RequestState.PENDING));
 		
@@ -130,11 +126,8 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			doGetItem(item);
 		}
 		
-		Do("Got Items01w8e0198");
-		
 		// Walk to the manager
 		if (gui != null) {
-			Do("GOTO MANAGER");
 			gui.doGoToManager();
 			pauseForAnimation();
 		}
