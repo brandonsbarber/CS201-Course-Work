@@ -26,8 +26,8 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private Map<String, Food> foods;
 	private enum OrderState { pending, cooking, done, pickup };
 	private final int FOODTHRESHOLD = 2;
-	private final int MAXSTOCK = 5;
-	private final int INITIALSTOCK = 3;
+	private final int MAXSTOCK = 25;
+	private final int INITIALSTOCK = 20;
 	private boolean closingTime = false;
 	private final int STANDCHECKTIMER = 3000; // 3 seconds
 	private Timer standTimer = new Timer(STANDCHECKTIMER, this);
