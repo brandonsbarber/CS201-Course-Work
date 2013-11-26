@@ -306,7 +306,7 @@ public class PersonAgent extends Agent implements Person {
 	 * Uses a PassengerRole to go to a location in SimCity201 if the PersonAgent is not already there
 	 * @param a The associated Action denoting where to go and what to do when getting there
 	 */
-	private void goToLocation(Action a) {
+	public void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
 			Do("Going to " + a.location);
@@ -402,7 +402,7 @@ public class PersonAgent extends Agent implements Person {
 	@Override
 	public void addIntermediateActions(Role from, LinkedList<Intention> intents, boolean returnToCurrentAction) {		
 		// Deactivate sending Role
-		from.setActive(false);
+		if(from != null){from.setActive(false);}
 		int numActivities = intents.size();
 		
 		while (intents.size() > 0) {

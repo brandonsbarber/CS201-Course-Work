@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -95,7 +96,9 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		
-		normativeWalking();
+		//normativeWalking();
+		
+		CityDirectory.getInstance().startTime();
 	}
 	
 	private void normativeRestaurant() {
