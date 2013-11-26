@@ -13,6 +13,7 @@ public class CarGui extends VehicleGui
 	public CarGui(VehicleAgent vehicle, CityPanel city, int x, int y)
 	{
 		super(vehicle, city, x, y);
+		
 	}
 
 	public CarGui(CarAgent car, CityPanel cityPanel)
