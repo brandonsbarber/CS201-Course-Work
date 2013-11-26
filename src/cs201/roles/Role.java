@@ -1,6 +1,7 @@
 package cs201.roles;
 
 import cs201.agents.PersonAgent;
+import cs201.gui.Gui;
 
 /**
  * Base class for all Roles in SimCity201
@@ -72,7 +73,6 @@ public abstract class Role {
 	public String getName() {
 		return (myPerson != null) ? myPerson.getName() : "NULL";
 	}
-	
 	
 	/**
 	 * A String representation of this Role (i.e. BankTellerRole Jim)

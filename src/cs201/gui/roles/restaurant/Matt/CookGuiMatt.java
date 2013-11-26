@@ -26,7 +26,7 @@ public class CookGuiMatt implements Gui {
 
 	public CookGuiMatt(RestaurantCookRoleMatt c) {
 		role = c;
-		isPresent = true;
+		isPresent = false;
 		cooking = Collections.synchronizedList(new ArrayList<String>());
 		plating = Collections.synchronizedList(new ArrayList<String>());
 	}
