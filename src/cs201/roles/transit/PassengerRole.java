@@ -240,6 +240,10 @@ public class PassengerRole extends Role implements Passenger
 		//message person done moving
 		setActive(false);
 		gui.setPresent(false);
+		if(myPerson != null)
+		{
+			myPerson.doneMoving(currentLocation);
+		}
 	}
 	
 	private void checkBoardingRequest(Vehicle remove)
