@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import cs201.agents.PersonAgent;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
@@ -125,51 +126,11 @@ public class SimCity201 extends JFrame {
 		pack();
 		CityDirectory.getInstance().startTime();
 		
-		/*
-		 * Delivery Truck testing
-		m.addInventory("Pizza", 20, 20);
-		m.getManager().msgHereIsMyOrderForDelivery(r, new ItemRequest("Pizza",1));
-		m.getManager().pickAndExecuteAnAction();
-		((MarketEmployeeRole)m.getEmployees().get(0)).pickAndExecuteAnAction();
-		m.getManager().pickAndExecuteAnAction();
-		*/
 		
-		/*
-		PersonAgent p = new PersonAgent("Cashier");
-		p.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
-		CityDirectory.getInstance().addPerson(p);
-		p.startThread();
-		
-		PersonAgent p2 = new PersonAgent("Cook");
-		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
-		CityDirectory.getInstance().addPerson(p2);
-		p2.startThread();
-		
-		PersonAgent p3 = new PersonAgent("Waiter 1");
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
-		CityDirectory.getInstance().addPerson(p3);
-		p3.startThread();
-		
-		PersonAgent p4 = new PersonAgent("Host");
-		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
-		CityDirectory.getInstance().addPerson(p4);
-		p4.startThread();
-		
-		PersonAgent p5 = new PersonAgent("Customer 1");
-		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
-		CityDirectory.getInstance().addPerson(p5);
-		p5.startThread();
-		
-		PersonAgent p6 = new PersonAgent("Waiter 2");
-		p6.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
-		CityDirectory.getInstance().addPerson(p6);
-		p6.startThread();
-		
-		PersonAgent p7 = new PersonAgent("Customer 2");
-		p7.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		PersonAgent p7 = new PersonAgent("Person");
+		p7.setupPerson(CityDirectory.getInstance().getTime(), re, null, null, re, null);
 		CityDirectory.getInstance().addPerson(p7);
 		p7.startThread();
-		*/
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
