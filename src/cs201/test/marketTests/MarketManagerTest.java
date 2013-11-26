@@ -4,31 +4,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import javax.swing.JFrame;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import cs201.gui.roles.market.MarketEmployeeGui;
-import cs201.gui.roles.market.MarketManagerGui;
-import cs201.gui.structures.market.MarketAnimationPanel;
-import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.roles.marketRoles.MarketManagerRole.ConsumerRecord;
+import cs201.roles.marketRoles.MarketManagerRole.StructureRecord;
 import cs201.test.mock.market.MockMarketConsumer;
 import cs201.test.mock.market.MockMarketEmployee;
+import cs201.test.mock.market.MockRestaurant;
 
 public class MarketManagerTest {
 
 	MarketManagerRole manager;
 	MockMarketEmployee employee;
 	MockMarketConsumer consumer;
+	MockRestaurant restaurant;
 	
 	/**
 	 * Run before each test case. Instantiates a MarketManagerRole, a MockEmployee, and a MockConsumer. Introduces the manager to the new employee.
@@ -36,7 +30,7 @@ public class MarketManagerTest {
 	@Before
 	public void setUp() throws Exception {
 		System.out.println("========== NEW TEST ==========");
-		
+				
 		// Create the unit under test- our MarketManagerRole
 		manager = new MarketManagerRole();
 		assertNotNull("new MarketManagerRole() returned a null MarketManager", manager);
@@ -53,6 +47,9 @@ public class MarketManagerTest {
 		// Tell the MarketManager about the employee
 		manager.addEmployee(employee);
 		assertEquals("The MarketManager's employee list does not have exactly one employee.", manager.employees.size(), 1);
+		
+		// Create a restaurant to place an order (in certain tests)
+		restaurant = new MockRestaurant(0, 0, 0, 0, 0, null);
 	}
 
 	/**
@@ -87,7 +84,10 @@ public class MarketManagerTest {
 		// Ensure that the MarketConsumer got 2 messages: msgHereAreYourItems and msgHereIsYourTotal
 		assertTrue("The MarketConsumer should get a hereAreYourItems message.", consumer.log.getFirstEventWhichContainsString("Received msgHereAreYourItems with 4 chicken") != null);
 		assertTrue("The MarketConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 27.96") != null);
-		
+	
+		// Ensure that the MarketManager updated the balance for the consumer's account (should be 0.0, since the MockMarketConsumer just automatically pays the bill)
+		ConsumerRecord record = manager.consumerBalance.get(consumer);
+		assertTrue("The MarketConsumer should have updated the balance for the consumer account.", record.balance == 0.0f);
 	}
 	
 	/**
@@ -129,7 +129,40 @@ public class MarketManagerTest {
 		
 		// Ensure that the MarketManager updated the balance for the consumer's account (should be 0.0, since the MockMarketConsumer just automatically pays the bill)
 		ConsumerRecord record = manager.consumerBalance.get(consumer);
-		assertTrue("The MarketConsumer should have updated the balance for the consumer account.", record.balance == 0.0f);
+		assertTrue("The MarketManager should have updated the balance for the consumer account.", record.balance == 0.0f);
+	}
+	
+	/**
+	 * Another basic test. Checks to see if the MarketManager can handle orders from a restaurant, tell an employee to retrieve the items, dispatch a delivery truck, and bill the
+	 * restaurant for the correct price.
+	 */
+	@Test
+	public void structureTest() {
+		// Give the market a starting amount of steak for inventory
+		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 10.0f));
+		
+		// Create our order by creating an item request
+		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("steak", 10);
+		
+		// Give the market manager our order
+		manager.msgHereIsMyOrderForDelivery(restaurant, item1);
+		
+		// Check to see if our new order is in the MarketManager's list of orders
+		assertEquals("The MarketManager should have added the order to his list of orders.", manager.orders.size(), 1);
+		
+		// Call the MarketManager's scheduler once to dispatch an employee
+		assertTrue("The MarketManager's scheduler should have processed the first order and returned true.", manager.pickAndExecuteAnAction());
+		
+		// Ensure that the MarketManager sent a retrieval message to the MarketEmployee
+		assertTrue("The MarketEmployee's log should have a msgRetrieveItems.", employee.log.getFirstEventWhichContainsString("Received msgRetrieveItems") != null);
+		
+		// Call the MarketManager's scheduler once to dispatch a delivery truck
+		assertTrue("The MarketManager's scheduler should have dispatched a delivery truck and returned true.", manager.pickAndExecuteAnAction());
+		
+		// The rest of the process is out of our hands- the delivery truck delivers the food and bills the Restaurant
+		// But lets make sure the MarketManager has updated the outstanding balance for the Restaurant
+		StructureRecord record = manager.structureBalance.get(restaurant);
+		assertTrue("The MarketManager should have updated the balance for the restaurant account.", record.balance == 100.0f);
 	}
 
 }

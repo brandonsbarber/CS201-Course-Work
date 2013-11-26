@@ -352,9 +352,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 		} else if (o.type == OrderType.DELIVERY) {
 			
 			// The consumer wants the items delivered to him
-			TruckAgent deliveryTruck = structure.getDeliveryTruck();
-			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure,o.totalPrice);
-			// TODO in a sec
+			if (structure != null) {
+				TruckAgent deliveryTruck = structure.getDeliveryTruck();
+				deliveryTruck.msgMakeDeliveryRun(o.items, o.structure,o.totalPrice);
+			}
 			
 		}
 		
@@ -377,9 +378,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		} else if (o.type == OrderType.DELIVERY) {
 
 			// The delivery truck will bill the market when it delivers
-			
-			RestaurantCashierRole cashier = o.structure.getCashier();
-			
+						
 			// Charge the order to the structure's balance
 			StructureRecord record = structureBalance.get(o.structure);
 			if (record != null) {
