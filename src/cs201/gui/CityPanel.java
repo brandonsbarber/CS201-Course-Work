@@ -134,8 +134,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	{
 			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","G"},{"G","7","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","5","G"},{"G","ST","38","ST","8","8","ST","38","ST","8","8","ST","18","ST","8","8","ST","38","ST","8","8","ST","18","ST","G"},{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},{"G","ST","36","ST","6","6","ST","36","ST","6","6","ST","16","ST","6","6","ST","36","6","6","6","ST","16","ST","G"},{"G","7","T","27","2","2","25","T","27","2","2","25","T","27","2","2","25","T","27","2","2","25","T","5","G"},{"G","ST","18","ST","8","8","ST","18","ST","8","8","ST","38","ST","8","8","ST","18","ST","8","8","ST","38","ST","G"},{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},{"G","ST","16","ST","6","6","ST","16","ST","6","6","ST","36","ST","6","6","ST","16","ST","6","6","ST","36","ST","G"},{"G","7","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","5","G"},{"G","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
 	};
-	
-	private List<BusStop> stops;
 
 	private static final boolean SHOW_DEBUG = true;
 	
@@ -147,8 +145,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		buildings = Collections.synchronizedList(new ArrayList<Structure>());
 		guis = Collections.synchronizedList(new ArrayList<Gui>());
 		
-		stops = new ArrayList<BusStop>();
-		
 		if(INSTANCE == null)
 		{
 			INSTANCE = this;
@@ -157,77 +153,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		addMouseListener(this);
 		
 		populateDrivingMap();
-		//Testing Hacks
-		
-		stops.add(new BusStop(22*25,13*25,25,25,1, null));
-		stops.add(new BusStop(12*25,13*25,25,25,2, null));
-		stops.add(new BusStop(2*25,13*25,25,25,3, null));
-		stops.add(new BusStop(22*25,1*25,25,25,4, null));
-		stops.add(new BusStop(12*25,1*25,25,25,5, null));
-		stops.add(new BusStop(2*25,1*25,25,25,6, null));
-		
-		for(BusStop stop : stops)
-		{
-			buildings.add(stop);
-			stop.setParkingLocation(new Point((int)stop.x,((int)stop.y==25?2*25:12*25)));
-			stop.setEntranceLocation(new Point((int)stop.x,(int)stop.y));
-		}
-		
-		BusAgent bus = new BusAgent(new BusRoute(stops),0);
-		VehicleGui busG;
-		guis.add(busG = new BusGui(bus,this,(int)stops.get(0).getParkingLocation().x,(int)stops.get(0).getParkingLocation().y));
-		
-		bus.setGui(busG);
-		
-		bus.startThread();
-		/*
-		BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
-		VehicleGui busG2;
-		guis.add(busG2 = new VehicleGui(bus2,this,(int)stops.get(2).x,(int)stops.get(2).y));
-		
-		bus2.setGui(busG2);
-		
-		bus2.startThread();
-		
-		
-		
-		Structure startLoc = new BusStop(18*25,2*25,25,25,1, null);
-		Structure endLoc = new BusStop(50,50,25,25,2, null);
-		
-		PassengerRole pass = new PassengerRole(stops.get(0));
-		
-		pass.setBusStops(stops);
-		
-		PassengerGui pgui = new PassengerGui(pass,this);
-		
-		pass.setGui(pgui);
-		
-		guis.add(pgui);
-		
-		PassengerTestAgent passAgent = new PassengerTestAgent(pass);
-		
-		pass.msgGoTo(stops.get(5));
-		
-		CarAgent car = new CarAgent();
-		VehicleGui gui;
-		guis.add(gui = new CarGui(car,this));
-		
-		pass.addCar(car);
-		
-		car.setGui(gui);
-		
-		car.startThread();
-		
-		passAgent.startThread();
-		
-		TruckAgent truck = new TruckAgent(stops.get(0));
-		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(1),1);
-		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
-		
-		truck.startThread();*/
-		
+
 		timer.start();
 	}
 	
@@ -552,25 +478,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			location.y = upY*GRID_SIZE;
 			s.setParkingLocation(location);
 		}
-		
-		/*
-		CarAgent car = new CarAgent();
-		VehicleGui gui;
-		guis.add(gui = new CarGui(car,this));
-		
-		car.setGui(gui);
-		
-		car.startThread();
-		
-		PassengerRole role = new PassengerRole(stops.get(1));
-		PassengerTestAgent agent = new PassengerTestAgent(role);
-		role.setBusStops(stops);
-		//role.addCar(car);
-		PassengerGui pgui = new PassengerGui(role,this);
-		role.setGui(pgui);
-		guis.add(pgui);
-		role.msgGoTo(s);
-		agent.startThread();*/
 	}
 	
 	public void addStructure(Structure s, Point parking,Point entrance)
