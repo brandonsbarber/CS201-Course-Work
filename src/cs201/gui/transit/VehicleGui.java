@@ -144,6 +144,7 @@ public abstract class VehicleGui implements Gui
 		if(validDirections.size() == 1)
 		{
 			currentDirection = validDirections.get(0);
+			return;
 		}
 		
 		else if(validDirections.size() == 3)
@@ -153,6 +154,7 @@ public abstract class VehicleGui implements Gui
 				for(DrivingDirection dir : validDirections)
 				{
 					currentDirection = dir;
+					return;
 				}
 			}
 			else
@@ -169,7 +171,6 @@ public abstract class VehicleGui implements Gui
 		}
 		if(validDirections.size() == 2)
 		{
-			System.out.println(""+DrivingDirection.opposites(validDirections.get(0),validDirections.get(1)));
 			if(DrivingDirection.opposites(validDirections.get(0),validDirections.get(1)))
 			{
 				if(validDirections.get(0).isHorizontal())
@@ -177,10 +178,12 @@ public abstract class VehicleGui implements Gui
 					if(x > destX)
 					{
 						currentDirection = DrivingDirection.West;
+						return;
 					}
 					else
 					{
 						currentDirection = DrivingDirection.East;
+						return;
 					}
 				}
 				else
@@ -188,10 +191,12 @@ public abstract class VehicleGui implements Gui
 					if(y > destY)
 					{
 						currentDirection = DrivingDirection.North;
+						return;
 					}
 					else
 					{
 						currentDirection = DrivingDirection.South;
+						return;
 					}
 				}
 			}
@@ -208,6 +213,7 @@ public abstract class VehicleGui implements Gui
 						}
 					}
 					currentDirection = dir;
+					return;
 				}
 				else if(y == destY)
 				{
@@ -220,10 +226,20 @@ public abstract class VehicleGui implements Gui
 						}
 					}
 					currentDirection = dir;
+					return;
 				}
 				else
 				{
-					
+					DrivingDirection dir = DrivingDirection.None;
+					for(DrivingDirection d : validDirections)
+					{
+						if(d.isHorizontal())
+						{
+							dir = d;
+						}
+					}
+					currentDirection = dir;
+					return;
 				}
 			}
 		}		
