@@ -23,8 +23,13 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 	
 	private final int deskWidth = 70;
 	private final int deskHeight = 40;
-	private final int deskX = 70;
-	private final int deskY = 30;
+	private final int deskX = 250;
+	private final int deskY = 100;
+	
+	private final int chairWidth = 20;
+	private final int chairHeight = 20;
+	private final int chairX = deskX+(deskWidth/2)-(chairWidth/2);
+	private final int chairY = deskX+(deskHeight)+5;
 	
 	private List<Gui> guis = new ArrayList<Gui>();
 	
@@ -40,6 +45,9 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 		
 		g2.setColor(Color.darkGray);
 		g2.fillRect(deskX, deskY, deskWidth, deskHeight);
+		
+		g2.setColor(Color.WHITE);
+		g2.drawString("Desk", deskX, deskY+deskHeight);
 		
 	    for(Gui gui : guis) {
 	        if (gui.isPresent()) {
@@ -61,7 +69,7 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 	}
 	
 	public void informLandlord(LandlordGui lGui) {
-		lGui.setDesk(deskX, deskY);
+		lGui.setChair(chairX, chairY);
 	}
 
 }

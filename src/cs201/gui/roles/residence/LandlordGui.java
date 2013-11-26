@@ -19,8 +19,8 @@ public class LandlordGui implements Gui {
 	private int xDestination;
 	private int yDestination;
 	
-	private int deskX;
-	private int deskY;
+	private int chairX;
+	private int chairY;
 	
 	
 	public LandlordGui() {
@@ -71,10 +71,10 @@ public class LandlordGui implements Gui {
 
 	// Animation Actions
 	
-	public void walkToDesk() {
+	public void sitAtDesk() {
 		// set destination equal to office locations
-		xDestination = deskX;
-		yDestination = deskY;
+		xDestination = chairX;
+		yDestination = chairY;
 	}
 	
 	public void leaveOffice() {
@@ -91,9 +91,9 @@ public class LandlordGui implements Gui {
 		isPresent = bool;
 	}
 	
-	public void setDesk(int x, int y) {
-		deskX = x;
-		deskY = y;
+	public void setChair(int x, int y) {
+		chairX = x;
+		chairY = y;
 	}
 
 }

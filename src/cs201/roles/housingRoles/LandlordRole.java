@@ -166,7 +166,7 @@ public class LandlordRole extends Role implements Landlord {
 	
 	private void goToDesk() { //animation
 		Do("Walking to my desk.");
-		gui.walkToDesk();
+		gui.sitAtDesk();
 		this.acquireSemaphore();
 	}
 	
