@@ -153,6 +153,22 @@ public class SimCity201 extends JFrame {
 		p8.startThread();
 	}
 	
+	private void normativeRestaurant() {
+		// One customer eats, pays, and leaves
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 0));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+	}
+	
 	public void displayStructurePanel(StructurePanel bp) {
 		cardLayout.show(buildingPanels, bp.getName());
 	}

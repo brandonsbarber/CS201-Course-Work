@@ -33,7 +33,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 		setMaximumSize(new Dimension(1000, 250));
 		setPreferredSize(new Dimension(1000, 250));
 		
-		JLabel j = new JLabel(name);
+		JLabel j = new JLabel(this.getClass().getSimpleName() + " " + name);
 		add(j);
 		
         timer = new Timer(ANIMATIONLENGTH, this);
