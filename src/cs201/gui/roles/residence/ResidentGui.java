@@ -72,7 +72,7 @@ public class ResidentGui implements Gui {
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("Resident", WIDTH, HEIGHT);
+		g.drawString("Resident", xPos, yPos);
 		// TODO Auto-generated method stub
 
 	}

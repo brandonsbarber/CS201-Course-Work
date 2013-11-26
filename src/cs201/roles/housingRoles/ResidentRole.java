@@ -58,7 +58,7 @@ public class ResidentRole extends Role implements Resident {
 					return false;
 				}
 			case relaxing:
-				
+				actionFinished();
 				break;
 			default: 
 				break;
