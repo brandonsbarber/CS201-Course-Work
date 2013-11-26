@@ -65,6 +65,11 @@ public class MarketManagerRole extends Role implements MarketManager {
 	public class ConsumerRecord {
 		MarketConsumer consumer;
 		float balance;
+		
+		public ConsumerRecord(MarketConsumer c, float b) {
+			consumer = c;
+			balance = b;
+		}
 	}
 	
 	/**
@@ -73,6 +78,11 @@ public class MarketManagerRole extends Role implements MarketManager {
 	public class StructureRecord {
 		Structure structure;
 		float balance;
+		
+		public StructureRecord(Structure s, float b) {
+			structure = s;
+			balance = b;
+		}
 	}
 	
 	enum OrderState {PENDING, PROCESSING, READY, SENT};
@@ -356,12 +366,26 @@ public class MarketManagerRole extends Role implements MarketManager {
 			
 			// The delivery truck will bill the market when it delivers
 			//o.consumer.msgHereIsYourTotal(this, o.totalPrice);
-			consumerBalance.get(o.consumer).balance += o.totalPrice;
+			
+			// Charge the order to the consumer's balance
+			ConsumerRecord record = consumerBalance.get(o.consumer);
+			if (record != null) {
+				consumerBalance.get(o.consumer).balance += o.totalPrice;
+			} else {
+				consumerBalance.put(o.consumer, new ConsumerRecord(o.consumer, o.totalPrice));
+			}
 			
 		} else if (o.type == OrderType.DELIVERY) {
 
 			RestaurantCashierRole cashier = o.structure.getCashier();
-			//structureBalance.get(o.structure).balance += o.totalPrice;
+			
+			// Charge the order to the structure's balance
+			StructureRecord record = structureBalance.get(o.structure);
+			if (record != null) {
+				structureBalance.get(o.structure).balance += o.totalPrice;
+			} else {
+				structureBalance.put(o.structure, new StructureRecord(o.structure, o.totalPrice));
+			}
 			
 		}
 	}
