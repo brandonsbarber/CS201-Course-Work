@@ -144,7 +144,7 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeDriving()
 	{
-		//One person walks from Market to Restaurant
+		//One person drives from Market to Restaurant
 				MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 				MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 				m.setStructurePanel(mG);
@@ -171,6 +171,11 @@ public class SimCity201 extends JFrame {
 				p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
 				CityDirectory.getInstance().addPerson(p1);
 				p1.startThread();
+	}
+	
+	private void normativeBus()
+	{
+		
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
