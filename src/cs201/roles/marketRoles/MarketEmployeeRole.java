@@ -3,7 +3,6 @@ package cs201.roles.marketRoles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
@@ -21,6 +20,8 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 */
 	String name = "";
 	List<RetrievalRequest> requests = Collections.synchronizedList(new ArrayList<RetrievalRequest>());
+	MarketEmployeeGui gui;
+	Semaphore animation = new Semaphore(0, true);
 	
 	enum RequestState {PENDING, PROCESSED};
 	private class RetrievalRequest {
@@ -31,15 +32,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		
 		public RetrievalRequest(MarketManager m, List<ItemRequest> i, int id, RequestState s) {
 			items = i;
-			id = id;
+			this.id = id;
 			state = s;
 			manager = m;
 		}
 	}
-	
-	MarketEmployeeGui gui;
-	Semaphore animation = new Semaphore(0, true);
-	
 	
 	/*
 	 * ********** CONSTRUCTORS **********
@@ -165,6 +162,13 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	
 	public void setGui(MarketEmployeeGui g) {
 		gui = g;
+	}
+	
+	/**
+	 * Returns true if this role has a backing PersonAgent, false if it's currently set to null.
+	 */
+	public boolean hasAPerson() {
+		return this.getPerson() != null;	
 	}
 
 }
