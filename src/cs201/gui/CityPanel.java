@@ -402,8 +402,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	}
 	
 	public DrivingDirection[][] drivingMap;
-
-
+	
+	public DrivingDirection[][] getDrivingMap()
+	{
+		return drivingMap;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
