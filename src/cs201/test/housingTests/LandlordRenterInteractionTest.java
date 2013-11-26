@@ -36,7 +36,7 @@ public class LandlordRenterInteractionTest extends TestCase {
 		assertFalse("Landlord should have a property now.", landlord.getMyProperties().isEmpty());
 		assertTrue("Landlord scheduler should return true. It's Monday and rent for the renter is due Tuesday.", landlord.pickAndExecuteAnAction());
 		assertTrue("Landlord scheduler should return true. Now that rent is due, he should request the rent.", landlord.pickAndExecuteAnAction());
-		assertEquals("Renter log should contain received msgRentDueYouOwe", renter.log.getLastLoggedEvent(), new LoggedEvent("received msgRentDueYouOwe. Amount: "+30.0));
+		assertNotNull("Renter log should contain received msgRentDueYouOwe", renter.log.getFirstEventWhichContainsString("received msgRentDueYouOwe. Amount: "+30.0));
 
 	}
 
