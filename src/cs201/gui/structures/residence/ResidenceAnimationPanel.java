@@ -34,9 +34,6 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	private final int tableX = 70;
 	private final int tableY = 30;
 	
-	
-	private List<Gui> guis = new ArrayList<Gui>();
-	
 	public ResidenceAnimationPanel(int i, SimCity201 sc) {
 		super(i, sc);
 		// TODO Auto-generated constructor stub
@@ -46,8 +43,8 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		setVisible(true);
 	}
 	
+	@Override
 	public void paintComponent(Graphics g) {
-		
 		Graphics2D g2 = (Graphics2D)g;
 		
 		g2.setColor(getBackground());
@@ -63,11 +60,6 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		g2.fillRect(bedX, bedY, bedWidth, bedHeight); // draws bed
 		
 		super.paintComponent(g);
-
-	}
-	
-	public void addGui(Gui gui) {
-	    guis.add(gui);
 	}
 	
 	public void informResident(ResidentGui gui) {
@@ -75,12 +67,6 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		gui.setFridge(fridgeX, fridgeY);
 		gui.setTable(tableX, tableY);
 		gui.setExit(entranceY);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
