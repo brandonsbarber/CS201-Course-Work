@@ -36,6 +36,21 @@ public class ResidentTest extends TestCase {
 		resident.startInteraction(Intention.ResidenceEat);
 		assertEquals("Resident state should be hungry.",resident.getState(), ResidentState.hungry);
 		assertTrue("Resident scheduler should return true. Now hungry.", resident.pickAndExecuteAnAction());
+		assertEquals("Resident state should be doingNothing.",resident.getState(), ResidentState.doingNothing);
+		assertFalse("Resident scheduler should return false. Nothing to do.", resident.pickAndExecuteAnAction());
+
+		resident.startInteraction(Intention.ResidenceSleep);
+		assertEquals("Resident state should be readyToSleep.",resident.getState(), ResidentState.readyToSleep);
+		assertTrue("Resident scheduler should return true. Now readyToSleep.", resident.pickAndExecuteAnAction());
+		assertFalse("Resident scheduler should return false. Nothing to do.", resident.pickAndExecuteAnAction());
+		
+		resident.startInteraction(Intention.ResidenceRelax);
+		assertEquals("Resident state should be relaxing.",resident.getState(), ResidentState.relaxing);
+		assertTrue("Resident scheduler should return true. Now relaxing.", resident.pickAndExecuteAnAction());
+		assertEquals("Resident state should be doingNothing.",resident.getState(), ResidentState.doingNothing);
+		assertFalse("Resident scheduler should return false. Nothing to do.", resident.pickAndExecuteAnAction());
+		
+		
 	}
 
 }

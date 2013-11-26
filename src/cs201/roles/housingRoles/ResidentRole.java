@@ -123,6 +123,7 @@ public class ResidentRole extends Role implements Resident {
 	
 	private void actionFinished() {
 		Do("Action finished. Leaving.");
+		state = ResidentState.doingNothing;
 		isActive = false;
 		if(!isTest) {
 			gui.exit(); //animation to leave residence
@@ -142,8 +143,11 @@ public class ResidentRole extends Role implements Resident {
 	}
 	
 	private void goToBed() {
-		gui.goToBed();
-		this.acquireSemaphore();
+		if(!isTest) {
+			gui.goToBed();
+			this.acquireSemaphore();
+		}
+		
 	}
 
 	@Override
