@@ -1,7 +1,9 @@
 package cs201.roles.housingRoles;
 
+import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
+import cs201.roles.housingRoles.ResidentRole.ResidentState;
 import cs201.structures.residence.Residence;
 
 public class RenterRole extends ResidentRole implements Renter {
@@ -57,6 +59,15 @@ public class RenterRole extends ResidentRole implements Renter {
 		amtRentOwed -= amt;
 		getPerson().removeMoney(amt);
 		Do("I paid my rent of "+amt+".");
+	}
+	
+	@Override
+	public void startInteraction(Intention intent) {
+		if (intent == Intention.ResidencePayRent){
+			state = ResidentState.payingRent;
+			stateChanged();
+		}
+		super.startInteraction(intent);
 	}
 
 	

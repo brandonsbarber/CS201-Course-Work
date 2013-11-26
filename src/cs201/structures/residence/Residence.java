@@ -21,6 +21,7 @@ import cs201.structures.Structure;
 public class Residence extends Structure {
 	private ResidentRole resident;
 	private Role owner; //owner is either a resident or a landlord.
+	private ApartmentComplex complex;
 	private List<Food> fridge = Collections.synchronizedList(new ArrayList<Food>());
 	private boolean hasFood;
 	private boolean isApartment;
@@ -63,6 +64,8 @@ public class Residence extends Structure {
 	    	owner = resident;
 	    }
 	    
+	    complex = null;
+	    
 	    ResidentGui rGui = new ResidentGui(resident);
 	    resident.setGui(rGui);
 	    panel.addGui(rGui);
@@ -82,12 +85,14 @@ public class Residence extends Structure {
 		owner = o;
 	}
 	
-	public void setLandlord(LandlordRole l) {
+	public void setApartmentComplex(ApartmentComplex newComplex) {
 		if (isApartment) {
-			owner = l;
+			LandlordRole l = newComplex.getLandlord();
+			
+			owner = (Role)l;
+			complex = newComplex;
 			((RenterRole)resident).setLandlord(l);
 		}
-		
 	}
 	
 	public void setResident(ResidentRole r) {

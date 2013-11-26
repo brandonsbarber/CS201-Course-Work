@@ -87,6 +87,10 @@ public class LandlordGui implements Gui {
 		return isPresent;
 	}
 	
+	public void setPresent(boolean bool) {
+		isPresent = bool;
+	}
+	
 	public void setDesk(int x, int y) {
 		deskX = x;
 		deskY = y;
