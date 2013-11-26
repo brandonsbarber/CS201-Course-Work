@@ -776,4 +776,9 @@ public class PersonAgent extends Agent implements Person {
 		AtWork,
 		Relaxing;
 	}
+
+	public PassengerRole getPassengerRole()
+	{
+		return passengerRole;
+	}
 }
