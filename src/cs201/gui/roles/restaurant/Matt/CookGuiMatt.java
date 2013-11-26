@@ -18,11 +18,13 @@ public class CookGuiMatt implements Gui {
 	private List<String> cooking;
 	private List<String> plating;
 	
-	// from 500x500
+	private final int COOKSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
+	private final int COOKX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .5f);
+	private final int COOKY = (int)(RestaurantAnimationPanelMatt.WINDOWY * 1.0f);
 	private final int cookingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .684f);
-	private final int cookingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .84f);
+	private final int cookingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
 	private final int platingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .2f);
-	private final int platingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .84f);
+	private final int platingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
 
 	public CookGuiMatt(RestaurantCookRoleMatt c) {
 		role = c;
@@ -55,6 +57,9 @@ public class CookGuiMatt implements Gui {
 				y += 13;
 			}
 		}
+		
+		g.setColor(Color.GREEN);
+		g.fillRect(COOKX, COOKY, COOKSIZE, COOKSIZE);
 	}
 	
 	public void addCookingItem(String food) {

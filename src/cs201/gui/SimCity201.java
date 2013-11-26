@@ -98,11 +98,13 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeRestaurant() {
 		// One customer eats, pays, and leaves
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
-		r.setClosingTime(new CityTime(14, 0));
+		r.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
@@ -135,8 +137,9 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();
 		
-		PersonAgent p5 = new PersonAgent("Waiter", cityPanel);
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		p5.setWakeupTime(new CityTime(8, 15));
 		CityDirectory.getInstance().addPerson(p5);
 		p5.startThread();
 	}

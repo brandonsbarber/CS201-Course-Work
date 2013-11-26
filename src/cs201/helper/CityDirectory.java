@@ -55,6 +55,10 @@ public class CityDirectory implements ActionListener {
 		System.out.println("[SimCity201] Time: " + time);
 	}
 	
+	public void setStartTime(CityTime newTime) {
+		time = newTime;
+	}
+	
 	public void setTimerOut(int newTimerOut) {
 		cityTimer.setDelay(newTimerOut);
 		cityTimer.setInitialDelay(newTimerOut);
