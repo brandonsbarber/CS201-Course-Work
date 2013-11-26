@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Matt.HostGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
@@ -28,6 +29,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	
+	private HostGuiMatt gui;
+	
 	private List<MyWaiter> waiters = Collections.synchronizedList(new ArrayList<MyWaiter>());
 	private enum WaiterState { working, askingForBreak, onBreak };
 	private int activeWaiters = 0;
@@ -43,6 +46,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		tables = Collections.synchronizedList(new ArrayList<TableMatt>(NTABLES));
 		numCustomers = 0;
 		timeToClose = false;
+		gui = null;
 		
 		int width = (int)Math.round(Math.sqrt(NTABLES));
 		for (int i = 0; i < width; i++) {
@@ -235,6 +239,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		this.waiters.clear();
 		DoCloseRestaurant();
 		this.myPerson = null;
+		this.gui.setPresent(false);
 	}
 	
 	private void CallWaiter(MyWaiter m, TableMatt t) {
@@ -327,10 +332,19 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			this.numberOfCustomers = 0;
 		}
 	}
+	
+	public void setGui(HostGuiMatt g) {
+		gui = g;
+	}
+
+	public HostGuiMatt getGui() {
+		return gui;
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
+		this.gui.setPresent(true);
 		timeToClose = false;
 	}
 

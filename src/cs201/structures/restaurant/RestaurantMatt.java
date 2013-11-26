@@ -7,6 +7,7 @@ import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
+import cs201.gui.roles.restaurant.Matt.HostGuiMatt;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityTime;
@@ -31,6 +32,10 @@ public class RestaurantMatt extends Restaurant {
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
+		HostGuiMatt hostGui = new HostGuiMatt((RestaurantHostRoleMatt) host);
+		hostGui.setPresent(false);
+		((RestaurantHostRoleMatt) host).setGui(hostGui);
+		this.panel.addGui(hostGui);
 		host.setRestaurant(this);
 		
 		this.cook = new RestaurantCookRoleMatt();

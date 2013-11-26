@@ -19,8 +19,8 @@ public class CookGuiMatt implements Gui {
 	private List<String> plating;
 	
 	private final int COOKSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
-	private final int COOKX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .5f);
-	private final int COOKY = (int)(RestaurantAnimationPanelMatt.WINDOWY * 1.0f);
+	private final int COOKX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .47f);
+	private final int COOKY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .95f);
 	private final int cookingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .684f);
 	private final int cookingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
 	private final int platingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .2f);
@@ -40,6 +40,8 @@ public class CookGuiMatt implements Gui {
 	public void draw(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		
+		g.drawString("Cook", COOKX, COOKY);
+		
 		int x = cookingAreaX;
 		int y = cookingAreaY;
 		synchronized(cooking) {
@@ -58,7 +60,7 @@ public class CookGuiMatt implements Gui {
 			}
 		}
 		
-		g.setColor(Color.GREEN);
+		g.setColor(Color.WHITE);
 		g.fillRect(COOKX, COOKY, COOKSIZE, COOKSIZE);
 	}
 	
