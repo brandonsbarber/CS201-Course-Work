@@ -2,10 +2,19 @@ package cs201.roles.housingRoles;
 
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
+import cs201.structures.residence.Residence;
 
 public class RenterRole extends ResidentRole implements Renter {
-	Landlord myLandlord;
+	LandlordRole myLandlord;
 	double amtRentOwed = 0;
+	
+	public RenterRole() {
+		super();
+	}
+	
+	public RenterRole(Residence r) {
+		super(r);
+	}
 	
 	// Messages
 	
@@ -51,8 +60,12 @@ public class RenterRole extends ResidentRole implements Renter {
 	}
 
 	
-	public void setLandlord(Landlord l) {
+	public void setLandlord(LandlordRole l) {
 		myLandlord = l;
+	}
+	
+	public LandlordRole getLandlord() {
+		return myLandlord;
 	}
 
 }

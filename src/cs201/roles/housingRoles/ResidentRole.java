@@ -19,6 +19,11 @@ public class ResidentRole extends Role implements Resident {
 		//residence = (Residence) myPerson.getHome();  //would be helpful to connect residence to person's home
 	}
 	
+	public ResidentRole(Residence res) {
+		residence = res;
+		state = ResidentState.doingNothing;
+	}
+	
 	//Messages
 	
 	public void msgStartEating() {
@@ -118,5 +123,9 @@ public class ResidentRole extends Role implements Resident {
 	
 	public void setResidence(Residence newResidence) {
 		residence = newResidence;
+	}
+	
+	public void setGui(ResidentGui newGui) {
+		gui = newGui;
 	}
 }

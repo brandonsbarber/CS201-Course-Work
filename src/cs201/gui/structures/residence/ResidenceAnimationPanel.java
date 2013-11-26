@@ -11,6 +11,7 @@ import java.util.List;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.residence.ResidentGui;
 
 public class ResidenceAnimationPanel extends StructurePanel {
 
@@ -67,6 +68,13 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	
 	public void addGui(Gui gui) {
 	    guis.add(gui);
+	}
+	
+	public void informResident(ResidentGui gui) {
+		gui.setBed(bedX, bedY);
+		gui.setFridge(fridgeX, fridgeY);
+		gui.setTable(tableX, tableY);
+		gui.setExit(entranceY);
 	}
 
 	@Override

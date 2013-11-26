@@ -8,9 +8,12 @@ import java.util.List;
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.residence.ResidentGui;
+import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
+import cs201.roles.housingRoles.LandlordRole;
 import cs201.roles.housingRoles.RenterRole;
 import cs201.roles.housingRoles.ResidentRole;
 import cs201.structures.Structure;
@@ -20,6 +23,7 @@ public class Residence extends Structure {
 	private Role owner; //owner is either a resident or a landlord.
 	private List<Food> fridge = Collections.synchronizedList(new ArrayList<Food>());
 	private boolean hasFood;
+	private boolean isApartment;
 	
 	private class Food {
 		private String type;
@@ -46,10 +50,24 @@ public class Residence extends Structure {
 		}
 	}
 	
-	public Residence(int x, int y, int width, int height, int id, StructurePanel p) {
+	public Residence(int x, int y, int width, int height, int id, StructurePanel p, boolean isApartment) {
 	    super(x, y, width, height, id, p);
-	    owner = null;
-	    resident = null;
+	    
+	    
+	    if (isApartment) {
+	    	resident = new RenterRole(this);
+	    	owner = null;
+	    }
+	    else {
+	    	resident = new ResidentRole(this);
+	    	owner = resident;
+	    }
+	    
+	    ResidentGui rGui = new ResidentGui(resident);
+	    resident.setGui(rGui);
+	    panel.addGui(rGui);
+	    ((ResidenceAnimationPanel)panel).informResident(rGui);
+	    
 	    addFood("Food 1", 10);
 	    addFood("Food 2", 10);
 	    addFood("Food 3", 10);
@@ -60,12 +78,23 @@ public class Residence extends Structure {
 	
 	//Setters
 	
-	public void setOwner(Role p) {
-		owner = p;
+	public void setOwner(Role o) {
+		owner = o;
+	}
+	
+	public void setLandlord(LandlordRole l) {
+		if (isApartment) {
+			owner = l;
+			((RenterRole)resident).setLandlord(l);
+		}
+		
 	}
 	
 	public void setResident(ResidentRole r) {
 		resident = r;
+		if (!isApartment) {
+			owner = r;
+		}
 	}
 	
 	public void removeResident(ResidentRole r) {
@@ -138,7 +167,8 @@ public class Residence extends Structure {
 	}
 	
 	public boolean isApartment() {
-		return owner.getPerson()!=((Role)resident).getPerson();
+		//return owner.getPerson()!=((Role)resident).getPerson();
+		return isApartment;
 	}	
 
 	public boolean hasFood() {
@@ -150,10 +180,11 @@ public class Residence extends Structure {
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
 		if (role==Intention.ResidenceEat || role==Intention.ResidenceSleep || role==Intention.ResidencePayRent) {
-			if(isApartment()) {
-				return new RenterRole();
+			/*if(isApartment()) {
+				return new RenterRole(this);
 			}
-			return new ResidentRole();
+			return new ResidentRole(this);*/
+			return resident;
 		}
 		
 		return null;
