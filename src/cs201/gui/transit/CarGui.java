@@ -18,7 +18,6 @@ public class CarGui extends VehicleGui
 	public CarGui(CarAgent car, CityPanel cityPanel)
 	{
 		super(car,cityPanel);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
