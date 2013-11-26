@@ -196,6 +196,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
+		Do("Leaving work.");
 	}
 	
 	private void DoGiveCheckToWaiter(Check c) {

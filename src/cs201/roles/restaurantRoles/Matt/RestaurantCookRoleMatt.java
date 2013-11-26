@@ -181,22 +181,22 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 	
 	private void DoCookOrder(Order o) {
-		System.out.println("Cook " + this.toString() + " cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
+		Do("Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime + " for Table " + o.tableNum);
 		gui.addCookingItem(o.choice);
 	}
 	
 	private void DoOutOfFood(Food f) {
-		System.out.println("Cook " + this.toString() + " out of " + f.type + "!");
+		Do("Out of " + f.type + "!");
 	}
 	
 	private void DoInformWaiter(Order o) {
-		System.out.println("Cook " + this.toString() + " telling waiter " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
+		Do("Telling " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
 		gui.removeCookingItem(o.choice);
 		gui.addPlatingItem(o.choice);
 	}
 	
 	private void DoOrderFood(Food f, MarketStructure m) {
-		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from " + m + ".");
+		Do("Ordering " + f.type + " from " + m + ".");
 	}
 	
 	public void emptyInventory() {
