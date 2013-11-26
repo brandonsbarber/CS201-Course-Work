@@ -31,8 +31,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	String name = "";
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
 	public List<MyEmployee> employees = new ArrayList<MyEmployee>();
-	Map<MarketConsumer, ConsumerRecord> consumerBalance = new HashMap<MarketConsumer, ConsumerRecord>();
-	Map<Structure, StructureRecord> structureBalance = new HashMap<Structure, StructureRecord>();
+	public Map<MarketConsumer, ConsumerRecord> consumerBalance = new HashMap<MarketConsumer, ConsumerRecord>();
+	public Map<Structure, StructureRecord> structureBalance = new HashMap<Structure, StructureRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	MarketManagerGui gui;
 	MarketStructure structure;
@@ -63,8 +63,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * Holds the balance for a single MarketConsumer
 	 */
 	public class ConsumerRecord {
-		MarketConsumer consumer;
-		float balance;
+		public MarketConsumer consumer;
+		public float balance;
 		
 		public ConsumerRecord(MarketConsumer c, float b) {
 			consumer = c;
@@ -76,8 +76,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * Holds the balance for a single Structure
 	 */
 	public class StructureRecord {
-		Structure structure;
-		float balance;
+		public Structure structure;
+		public float balance;
 		
 		public StructureRecord(Structure s, float b) {
 			structure = s;
@@ -363,10 +363,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		
 		// The purchaser needs to pay for the order
 		if (o.type == OrderType.INPERSON) {
-			
-			// The delivery truck will bill the market when it delivers
-			//o.consumer.msgHereIsYourTotal(this, o.totalPrice);
-			
+						
 			// Charge the order to the consumer's balance
 			ConsumerRecord record = consumerBalance.get(o.consumer);
 			if (record != null) {
@@ -375,8 +372,12 @@ public class MarketManagerRole extends Role implements MarketManager {
 				consumerBalance.put(o.consumer, new ConsumerRecord(o.consumer, o.totalPrice));
 			}
 			
+			o.consumer.msgHereIsYourTotal(this, o.totalPrice);
+			
 		} else if (o.type == OrderType.DELIVERY) {
 
+			// The delivery truck will bill the market when it delivers
+			
 			RestaurantCashierRole cashier = o.structure.getCashier();
 			
 			// Charge the order to the structure's balance

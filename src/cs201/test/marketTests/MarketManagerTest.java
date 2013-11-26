@@ -20,6 +20,7 @@ import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.roles.marketRoles.MarketManagerRole;
+import cs201.roles.marketRoles.MarketManagerRole.ConsumerRecord;
 import cs201.test.mock.market.MockMarketConsumer;
 import cs201.test.mock.market.MockMarketEmployee;
 
@@ -124,7 +125,11 @@ public class MarketManagerTest {
 		
 		// Ensure that the MarketConsumer got 2 messages: msgHereAreYourItems and msgHereIsYourTotal
 		assertTrue("The MarketConsumer should get a hereAreYourItems message.", consumer.log.getFirstEventWhichContainsString("Received msgHereAreYourItems with 4 chicken 6 steak") != null);
-		assertTrue("The MarektConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 99.90") != null);
+		assertTrue("The MarketConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 99.90") != null);
+		
+		// Ensure that the MarketManager updated the balance for the consumer's account (should be 0.0, since the MockMarketConsumer just automatically pays the bill)
+		ConsumerRecord record = manager.consumerBalance.get(consumer);
+		assertTrue("The MarketConsumer should have updated the balance for the consumer account.", record.balance == 0.0f);
 	}
 
 }
