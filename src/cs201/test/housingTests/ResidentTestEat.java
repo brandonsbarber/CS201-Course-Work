@@ -25,7 +25,7 @@ public class ResidentTestEat {
 		residence = new Residence(0, 0, 0, 0, 0, animationPanel, false);
 		resident = (ResidentRole)residence.getResident();
 		
-		person = new PersonAgent("TestPerson");
+		person = new PersonAgent("TestPerson", null);
 		person.setHome(residence);
 		resident.setResidence(residence);
 		resident.setPerson(person);

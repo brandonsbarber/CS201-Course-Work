@@ -34,6 +34,7 @@ public class LandlordRole extends Role implements Landlord {
 	            renter = ren;
 	            amtDue = amt;
 	            dayDue = d;
+	            state = RentState.notDue;
 	        }
 		
 		public boolean needsMaintenance() {
@@ -141,14 +142,14 @@ public class LandlordRole extends Role implements Landlord {
 	//Actions
 	
 	private void RequestRent(myProperty mP) {
-		Do("Requesting rent of "+mP.amtDue+" from "+((RenterRole)mP.renter).getName());
-        mP.renter.msgRentDueYouOwe(mP.amtDue);
+		Do("Requesting rent of "+mP.amtDue+" from "+mP.renter.toString());
+        mP.renter.msgRentDueYouOwe(this, mP.amtDue);
         mP.state = RentState.dueNotified;
 	}
 
 	private void RequestLateRent(myProperty mP) {
-		Do("Requesting additional late rent penalty of "+latePenalty+" from "+((RenterRole)mP.renter).getName());
-        mP.renter.msgRentLateYouOweAdditional(latePenalty);
+		Do("Requesting additional late rent penalty of "+latePenalty+" from "+mP.renter.toString());
+        mP.renter.msgRentLateYouOweAdditional(this, latePenalty);
         mP.state = RentState.lateNotified;
 	}
 
@@ -198,5 +199,9 @@ public class LandlordRole extends Role implements Landlord {
 	
 	public Gui getGui() {
 		return gui;
+	}
+
+	public List<myProperty> getMyProperties() {
+		return myProperties;
 	}
 }
