@@ -80,8 +80,8 @@ public class BankTellerRole extends Role implements BankTeller {
     // Messages
     //================================================================================
 
-	public void msgOpenAccount(BankCustomerRole cust, int actNum, double startingBalance) {
-	    currentCustomer = new MyCustomer(cust, AccountType.PERSONAL, actNum, CustomerAction.OpenAccount, startingBalance);
+	public void msgOpenAccount(BankCustomerRole cust, double startingBalance) {
+	    currentCustomer = new MyCustomer(cust, AccountType.PERSONAL, -1, CustomerAction.OpenAccount, startingBalance);
 	    stateChanged();
 	}
 	
@@ -147,17 +147,18 @@ public class BankTellerRole extends Role implements BankTeller {
 	}
 	
 	private void withdrawMoney() {
-	    if (centralBank.getActBalance( currentCustomer.getActType(), currentCustomer.getActNumber() ) >= currentCustomer.getTransAmount()) {
+	    //if (centralBank.getActBalance( currentCustomer.getActType(), currentCustomer.getActNumber() ) >= currentCustomer.getTransAmount()) {
 	        centralBank.takeMoneyFromAccount( currentCustomer.getActType(), currentCustomer.getActNumber(), 
 	        		currentCustomer.getTransAmount() );
 	        currentCustomer.getCustomer().msgMoneyIsWithdrawn();
-	    }
-	    else { // Overdrawn account, give them remaining balance
+	    //} // TODO: (v2/non-norms) Figure out how we're handling overdrawn accounts
+	        
+	    /*else { // Overdrawn account, give them remaining balance
 	    	centralBank.takeMoneyFromAccount( currentCustomer.getActType(), currentCustomer.getActNumber(), 
 	    			centralBank.getActBalance( currentCustomer.getActType(), currentCustomer.getActNumber()) );
 	    	currentCustomer.getCustomer().msgOverdrawnAccount(centralBank.getActBalance(currentCustomer.getActType(), 
 	    			currentCustomer.getActNumber()));
-	    }
+	    }*/
 	    
 	    BankStructure.getGuard().msgDoneWithCustomer(this);
 	}

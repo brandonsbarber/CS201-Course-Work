@@ -8,7 +8,7 @@ public interface BankTeller {
     // Messages: Mock Tellers & Teller Role must implement
     //================================================================================
 	
-	public void msgOpenAccount(BankCustomerRole cust, int actNum, double startingBalance);
+	public void msgOpenAccount(BankCustomerRole cust, double startingBalance);
 	
 	public void msgOpenAccount(/* Params for business opening account */); // TODO
 	

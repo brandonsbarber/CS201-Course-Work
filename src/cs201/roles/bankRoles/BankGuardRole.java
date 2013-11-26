@@ -1,6 +1,7 @@
 package cs201.roles.bankRoles;
 
 import java.awt.List;
+import java.util.ArrayList;
 import java.util.Queue;
 
 import cs201.agents.PersonAgent.Intention;
@@ -15,19 +16,29 @@ public class BankGuardRole extends Role implements BankGuard {
     // Member Variables
     //================================================================================
 	
+	String name = "";
+	
 	Queue<BankCustomerRole> waitingCustomers;
-	//List<BankTellerRole> bankTellers;
+	ArrayList<BankTellerRole> bankTellers = new ArrayList<BankTellerRole>();
+	
+	//================================================================================
+    // Constructor
+    //================================================================================
+	
+	BankGuardRole(String name) {
+		this.name = name;
+	}
 	
 	//================================================================================
     // Scheduler
     //================================================================================
 	
 	public boolean pickAndExecuteAnAction() {
-		for(BankCustomerRole cust : waitingCustomers) {
-			// Do action
+		for(BankTellerRole teller : bankTellers) {
+			escortToTeller(waitingCustomers.element(), teller);
 		}
 		if (!Bank.getOpen()) { // May not need this rule if we just allow customers to finish up
-			    escortCustomersOut();
+			escortCustomersOut();
 		}
         return false;
 	}
@@ -50,6 +61,12 @@ public class BankGuardRole extends Role implements BankGuard {
     // Actions
     //================================================================================
 
+	@Override
+	public void startInteraction(Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	private void escortToTeller(BankCustomerRole cust, BankTellerRole teller) {
 	    waitingCustomers.peek().msgSeeTeller(teller);
 	    waitingCustomers.remove();
@@ -64,13 +81,9 @@ public class BankGuardRole extends Role implements BankGuard {
 
 
 	@Override
-	public void startInteraction(Intention intent) {
+	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
-	}}
+}

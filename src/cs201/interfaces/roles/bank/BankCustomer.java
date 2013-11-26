@@ -16,7 +16,7 @@ public interface BankCustomer {
 	
 	public void msgMoneyIsWithdrawn(/*int newBalance*/); // TODO
 	
-	public void msgOverdrawnAccount(double actBalance);
+	//public void msgOverdrawnAccount(double actBalance);
 	
 	public void msgLoanGranted();
 

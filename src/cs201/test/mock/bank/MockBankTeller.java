@@ -18,8 +18,7 @@ public class MockBankTeller extends Mock implements BankTeller {
     //================================================================================
 	
 	@Override
-	public void msgOpenAccount(BankCustomerRole cust, int actNum,
-			double startingBalance) {
+	public void msgOpenAccount(BankCustomerRole cust, double startingBalance) {
 		// TODO Auto-generated method stub
 		
 	}
