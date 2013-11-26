@@ -85,6 +85,7 @@ public class PassengerGui implements Gui
 	
 	public void doGoToLocation(Structure structure)
 	{
+		System.out.println("GOING TO "+structure.getEntranceLocation());
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
@@ -267,44 +268,96 @@ public class PassengerGui implements Gui
 			}
 			else
 			{
+				int dX = destX - x;
+				int dY = destY - y;
+				
+				WalkingDirection towardsX = dX > 0?WalkingDirection.East:WalkingDirection.West;
+				WalkingDirection towardsY = dY > 0?WalkingDirection.South:WalkingDirection.North;
+				
 				if(x == destX)
 				{
 					WalkingDirection dir = WalkingDirection.None;
+					WalkingDirection toRemove = WalkingDirection.None;
 					for(WalkingDirection d : validDirections)
 					{
-						if(!d.isHorizontal())
+						if(!d.isHorizontal() && d == towardsY)
 						{
 							dir = d;
 						}
+						else if(!d.isHorizontal() && d != towardsY)
+						{
+							toRemove = d;
+						}
 					}
-					currentDirection = dir;
-					return;
+					if(toRemove != WalkingDirection.None)
+					{
+						validDirections.remove(toRemove);
+						dir = validDirections.get(0);
+					}
+					
+					if(dir != WalkingDirection.None)
+					{
+						currentDirection = dir;
+						return;
+					}
 				}
 				else if(y == destY)
 				{
 					WalkingDirection dir = WalkingDirection.None;
+					WalkingDirection toRemove = WalkingDirection.None;
 					for(WalkingDirection d : validDirections)
 					{
-						if(!d.isVertical())
+						if(!d.isVertical() && d == towardsX)
 						{
 							dir = d;
 						}
+						else if(!d.isVertical() && d != towardsX)
+						{
+							toRemove = d;
+						}
 					}
-					currentDirection = dir;
-					return;
+					if(toRemove != WalkingDirection.None)
+					{
+						validDirections.remove(toRemove);
+						dir = validDirections.get(0);
+					}
+					
+					if(dir != WalkingDirection.None)
+					{
+						currentDirection = dir;
+						return;
+					}
 				}
 				else
 				{
 					WalkingDirection dir = WalkingDirection.None;
+					WalkingDirection toRemove = WalkingDirection.None;
 					for(WalkingDirection d : validDirections)
 					{
-						if(d.isHorizontal())
+						if(d.isVertical()  && d == towardsY)
 						{
 							dir = d;
 						}
+						else if(d.isVertical() && d != towardsY)
+						{
+							toRemove = d;
+						}
 					}
-					currentDirection = dir;
-					return;
+					if(toRemove != WalkingDirection.None)
+					{
+						validDirections.remove(toRemove);
+						dir = validDirections.get(0);
+					}
+					
+					if(dir != WalkingDirection.None)
+					{
+						currentDirection = dir;
+						return;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.North;
+					}
 				}
 			}
 		}		

@@ -96,6 +96,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	public void addCar(Car c)
 	{
+		Do("I have a car");
 		this.car = c;
 	}
 	
@@ -215,8 +216,6 @@ public class PassengerRole extends Role implements Passenger
 			stops.add(closest);
 		}
 		
-		
-		
 		if(!shouldWalk() && stops.size() == 2)
 		{
 			Do("Populating waypoints for bus");
@@ -235,6 +234,7 @@ public class PassengerRole extends Role implements Passenger
 	public boolean shouldWalk()
 	{
 		double distance = Math.sqrt(Math.pow(destination.x - currentLocation.x,2) + Math.pow(destination.y - currentLocation.y,2));
+		Do(""+(distance < walkDistance));
 		return distance < walkDistance;
 	}
 	

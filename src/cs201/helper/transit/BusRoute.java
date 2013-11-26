@@ -41,5 +41,15 @@ public class BusRoute
 		}
 		return false;
 	}
+
+	public BusStop getCurrentLocation()
+	{
+		int index = destination - 1;
+		if(index < 0)
+		{
+			index = stops.size()-1;
+		}
+		return stops.get(index);
+	}
 	
 }
