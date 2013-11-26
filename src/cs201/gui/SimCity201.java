@@ -1,4 +1,4 @@
-package cs201.gui;
+ package cs201.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -194,11 +194,10 @@ public class SimCity201 extends JFrame {
 		cityPanel.addGui(cGui);
 		car.startThread();
 	
-		/*PersonAgent p1 = new PersonAgent("Walker",cityPanel);
+		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
->>>>>>> de30da101634b21f746133e97d53abb15ca7d337*/
 	}
 	
 	private void normativeBus()
@@ -230,31 +229,19 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
 		
-		/*RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-<<<<<<< HEAD
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
-=======
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
->>>>>>> de30da101634b21f746133e97d53abb15ca7d337
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
-		
-<<<<<<< HEAD
-		PersonAgent p1 = new PersonAgent("Host", cityPanel);
-		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
-		p1.setHungerEnabled(false);
-		p1.setHungerLevel(0);
-=======
+
 		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		p1.getPassengerRole().setBusStops(stops);
->>>>>>> de30da101634b21f746133e97d53abb15ca7d337
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();*/
+		p1.startThread();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
