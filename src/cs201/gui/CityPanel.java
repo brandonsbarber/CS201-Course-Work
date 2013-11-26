@@ -466,8 +466,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
 				g2.fill(new Rectangle(s.getEntranceLocation().x,s.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
 				
-				if(s instanceof Residence)
-					System.out.println("ENTRANCE LOCATION" +s.getEntranceLocation().y);
 				g2.setColor(Color.WHITE);
 				g2.drawString("P",s.getParkingLocation().x,s.getParkingLocation().y+25);
 				g2.drawString("E",s.getEntranceLocation().x,s.getEntranceLocation().y+25);

@@ -85,14 +85,11 @@ public class PassengerGui implements Gui
 	
 	public void doGoToLocation(Structure structure)
 	{
-		System.out.println("Going to location. "+structure);
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
-		System.out.println(structure);
 		fired = false;
 		present = true;
-		System.out.println(this+"Destination: "+destX+" "+destY);
 	}
 	
 	//Make me abstract for subclasses!
@@ -156,7 +153,6 @@ public class PassengerGui implements Gui
 				default:
 					break;
 			}
-			System.out.println(this+"CURRENT LOCATION: "+x+" "+y+" DESIRED LOCATION: "+destX+" "+destY);
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0)
 			{
 				WalkingDirection[][] map = city.getWalkingMap();
@@ -176,7 +172,6 @@ public class PassengerGui implements Gui
 			}
 			if(x == destX && y == destY)
 			{
-				System.out.println("REACHED DESTINATION");
 				fired = true;
 				pass.msgAnimationFinished ();
 			}
