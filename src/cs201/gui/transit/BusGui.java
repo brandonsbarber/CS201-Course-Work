@@ -23,6 +23,6 @@ public class BusGui extends VehicleGui
 		g.setColor(Color.BLACK);
 		g.drawString(""+getVehicle().getClass(),getX(),getY());
 		
-		g.drawString(""+((BusAgent)getVehicle()).getNumPassengers(),getX()+CityPanel.GRID_SIZE,getY()+CityPanel.GRID_SIZE);
+		g.drawString(""+((BusAgent)getVehicle()).getNumPassengers(),getX(),getY()+CityPanel.GRID_SIZE);
 	}
 }
