@@ -40,14 +40,14 @@ public class BankCustomerRole extends Role implements BankCustomer {
     //================================================================================
 	
 	public boolean pickAndExecuteAnAction() {
-		if (state == CustomerState.EnteringBank) {
+		/*if (state == CustomerState.EnteringBank) {
 			addToWaitingList();
 		}
 		if (state == CustomerState.WalkingToTeller) {
 			goToTeller();
 		}
 		if (state == CustomerState.TalkingToTeller && 
-		   (/*myPerson.getAccountNumber() == null ||*/ intent == Intention.OpenAccount)) {
+		   (/*myPerson.getAccountNumber() == null ||*/ /*intent == Intention.OpenAccount)) {
 			openBankAccount();
 		}
 		if (state == CustomerState.TalkingToTeller && intent == Intention.WithdrawMoney) {
@@ -58,7 +58,7 @@ public class BankCustomerRole extends Role implements BankCustomer {
 		}
 		if (state == CustomerState.TalkingToTeller && intent == Intention.TakeOutLoan) {
 			takeOutLoan();
-		}
+		}*/
         return false;
 	}
 	
@@ -75,21 +75,33 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	    //myPerson.setBankAccount(actNum);
 	}
 	
-	public void msgMoneyIsDeposited(int newBalance) {
-	    accountBalance = newBalance;
+	public void msgMoneyIsDeposited(/*int newBalance*/) {
+	    //accountBalance = newBalance;
 	}
 	
-	public void msgMoneyIsWithdrawn(int newBalance) {
-	    accountBalance = newBalance;
+	public void msgMoneyIsWithdrawn(/*int newBalance*/) {
+	    //accountBalance = newBalance;
 	}
 	
-	public void msgLoanIsGranted(int loanAmount) {
-	    //myPerson.setMoney(myPerson.getMoney() + loanAmount);
+	public void msgOverdrawnAccount(double actBalance) {
+		// TODO Auto-generated method stub
+		
 	}
 	
-	public void msgLeaveBank() {
-	    state = CustomerState.LeavingBank;
+	public void msgLoanGranted() {
+		// TODO Auto-generated method stub
+		
 	}
+
+	public void msgLoanDenied() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void msgClosingTime() {
+		// TODO Auto-generated method stub
+		state = CustomerState.LeavingBank;
+	}
+	
 	
 	//================================================================================
     // Actions
@@ -123,12 +135,6 @@ public class BankCustomerRole extends Role implements BankCustomer {
 
 	@Override
 	public void startInteraction(cs201.agents.PersonAgent.Intention intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
 	}

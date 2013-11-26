@@ -3,7 +3,8 @@ package cs201.roles.bankRoles;
 import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.bank.BankTeller;
 import cs201.roles.Role;
-import cs201.structures.bank.Bank;
+import cs201.structures.bank.BankStructure;
+import cs201.structures.bank.BankStructure.AccountType;
 
 
 public class BankTellerRole extends Role implements BankTeller {
@@ -13,23 +14,46 @@ public class BankTellerRole extends Role implements BankTeller {
     //================================================================================
 	
 	MyCustomer currentCustomer;
-	TellerState state;
+	
+	BankStructure centralBank;
 	
 	public enum CustomerAction { OpenAccount, WithdrawMoney, DepositMoney, TakeOutLoan }
 	private class MyCustomer {
-	    BankCustomerRole currentCustomer;
+	    BankCustomerRole customer;
 	    CustomerAction action;
 	    int accountNumber;
+	    AccountType accountType;
 	    double availableBalance;
 	    double transactionAmount;
-	}
-	
-	public enum TellerState {
-	    Unoccupied,
-	    OpeningAccount,
-	    WithdrawingMoney,
-	    DepositingMoney,
-	    AssessingLoan
+	    
+	    public MyCustomer(BankCustomerRole cust, AccountType actType, int actNum, 
+	    		CustomerAction action, double amount) {
+	    	this.customer = cust;
+	    	this.accountType = actType;
+	    	this.accountNumber = actNum;
+	    	this.action = action;
+	    	this.transactionAmount = amount;
+	    }
+	    
+	    public CustomerAction getAction() {
+	    	return action;
+	    }
+	    
+	    public int getActNumber() {
+	    	return accountNumber;
+	    }
+	    
+	    public double getTransAmount() {
+	    	return transactionAmount;
+	    }
+	    
+	    public AccountType getActType() {
+	    	return accountType;
+	    }
+
+		public BankCustomerRole getCustomer() {
+			return customer;
+		}
 	}
 	
 	//================================================================================
@@ -37,95 +61,117 @@ public class BankTellerRole extends Role implements BankTeller {
     //================================================================================
 	
 	public boolean pickAndExecuteAnAction() {
-		/*if (currentCustomer.state == OpenAccount) {
+		if (currentCustomer.getAction() == CustomerAction.OpenAccount) {
 			openAccount();
 		}
-		if (currentCustomer.state == WithdrawMoney) {
+		if (currentCustomer.getAction() == CustomerAction.WithdrawMoney) {
 			withdrawMoney();
 		}
-		if (currentCustomer.state == DepositMoney) {
+		if (currentCustomer.getAction() == CustomerAction.DepositMoney) {
 			depositMoney();
 		}
-		if (currentCustomer.state == TakeOutLoan) {
+		if (currentCustomer.getAction() == CustomerAction.TakeOutLoan) {
 			assessLoan();
-		}*/
+		}
         return false;
 	}
 	
 	//================================================================================
     // Messages
     //================================================================================
-	
-	public void msgOpenAccount(BankCustomerRole cust, double startingBalance) {
-	    //currentCustomer = new MyCustomer(cust, CustomerAction.OpenAccount, startingBalance);
+
+	public void msgOpenAccount(BankCustomerRole cust, int actNum, double startingBalance) {
+	    currentCustomer = new MyCustomer(cust, AccountType.PERSONAL, actNum, CustomerAction.OpenAccount, startingBalance);
 	    stateChanged();
 	}
 	
+	public void msgOpenAccount(/* Params for business opening account */) {
+		
+	}
+	
 	public void msgDepositMoney(BankCustomerRole cust, int actNum, double amtToDeposit) {
-	    //currentCustomer = new MyCustomer(cust, CustomerAction.DepositMoney, actNum, amtToDeposit);
+	    currentCustomer = new MyCustomer(cust, AccountType.PERSONAL, actNum, CustomerAction.DepositMoney, amtToDeposit);
 	    stateChanged();
 	}
 	
 	public void msgWithdrawMoney(BankCustomerRole cust, int actNum, double amtToWithdraw) {
-	    //currentCustomer = new MyCustomer(cust, CustomerAction.WithdrawMoney, actNum, amtToWithdraw);
+	    currentCustomer = new MyCustomer(cust, AccountType.PERSONAL, actNum, CustomerAction.WithdrawMoney, amtToWithdraw);
 	    stateChanged();
 	}
 	
 	public void msgRequestMoney(BankCustomerRole cust, int actNum, double amtRequested) {
-	    //currentCustomer = new MyCustomer(cust, CustomerAction.TakeOutLoan, actNum, amtRequested);
+	    currentCustomer = new MyCustomer(cust, AccountType.PERSONAL, actNum, CustomerAction.TakeOutLoan, amtRequested);
 	    stateChanged();
+	}
+	
+	public void msgClosingTime() {
+		// TODO: Figure out what to do with this function
+		
 	}
 	
 	//================================================================================
     // Actions
     //================================================================================
 
+	public void startInteraction(Intention intent) {
+		// TODO: Figure out what to do with this function
+	}
+	
 	private void openAccount() {
-	    // Create an account number
+	    // (1) Create an account number
+	    int newActNumber = (int)(1000 * Math.random());
+		
+		// (2) Open account in central bank using this account number & balance
+	    if(currentCustomer.getActType() == AccountType.PERSONAL) {
+	    	centralBank.addPersonalAccount(  newActNumber, currentCustomer.getTransAmount()  );
+	    } else if (currentCustomer.getActType() == AccountType.BUSINESS) {
+	    	centralBank.addBusinessAccount(  newActNumber, currentCustomer.getTransAmount()  );
+	    }
 	    
-	    //Bank.addAccount(actNum, currentCustomer.transactionAmount);
-	    //currentCustomer.getCustomer().msgAccountIsOpened(actNum); 
-	    //Bank.getGuard.msgDoneWithCustomer(this);
+	    // (3) Let customer know their account has been opened
+	    currentCustomer.getCustomer().msgAccountIsOpened(  currentCustomer.getActNumber()  );
+	    
+	    // (4) Let guard know you are ready for next customer
+	    BankStructure.getGuard().msgDoneWithCustomer(this);
 	}
 	
 	private void depositMoney() {
-	    //Bank.addMoneyToAccount(currentCustomer.getAccountNum(), currentCustomer.getTransactionAmount());
+	    centralBank.addMoneyToAccount(  
+	    		currentCustomer.getActType(), 
+	    		currentCustomer.getActNumber(), 
+	    		currentCustomer.getTransAmount()  
+	    );
 	    
-	    //myCustomer.getCustomer.msgMoneyIsDeposited(Bank.getAccountBalance(currentCustomer.getAccountNum)); 
-	    Bank.getGuard().msgDoneWithCustomer(this);
+	    currentCustomer.getCustomer().msgMoneyIsDeposited();
+	    BankStructure.getGuard().msgDoneWithCustomer(this);
 	}
 	
 	private void withdrawMoney() {
-	    /*if (Bank.getAccountBalance(currentCustomer.getAccountNum) > transationAmount) {
-	        Bank.subtractMoneyFromAccount(currentCustomer.getAccountNum, currentCustomer.getTransactionAmount);
-	        myCustomer.getCustomer.msgMoneyIsWithdrawn(Bank.getAccountBalance(currentCustomer.getAccountNum));
+	    if (centralBank.getActBalance( currentCustomer.getActType(), currentCustomer.getActNumber() ) >= currentCustomer.getTransAmount()) {
+	        centralBank.takeMoneyFromAccount( currentCustomer.getActType(), currentCustomer.getActNumber(), 
+	        		currentCustomer.getTransAmount() );
+	        currentCustomer.getCustomer().msgMoneyIsWithdrawn();
 	    }
 	    else { // Overdrawn account, give them remaining balance
-	        Bank.subtractMoneyFromAccount(currentCustomer.getAccountNum, Bank.getAccountBalance(currentCustomer.getAccountNum));
-	        myCustomer.getCustomer.msgOverdrawnAccount();
+	    	centralBank.takeMoneyFromAccount( currentCustomer.getActType(), currentCustomer.getActNumber(), 
+	    			centralBank.getActBalance( currentCustomer.getActType(), currentCustomer.getActNumber()) );
+	    	currentCustomer.getCustomer().msgOverdrawnAccount(centralBank.getActBalance(currentCustomer.getActType(), 
+	    			currentCustomer.getActNumber()));
 	    }
-	    Bank.getGuard.msgDoneWithCustomer(this);*/
+	    
+	    BankStructure.getGuard().msgDoneWithCustomer(this);
 	}
 	
-	private void takeOutLoan() {
-	    /*if (Bank.getBankBalance > currentCustomer.getTransactionAmount) {
-	        myCustomer.getCustomer.msgLoanGranted();
+	private void assessLoan() {
+	    if (centralBank.getBankBalance() > currentCustomer.getTransAmount()) {
+	        currentCustomer.getCustomer().msgLoanGranted();
 	    }
+	    
 	    else {
-	         myCustomer.getCustomer.msgLoanDenied();
+	    	currentCustomer.getCustomer().msgLoanDenied();
 	    }
-	    Bank.getGuard().msgDoneWithCustomer(this);*/
+	    
+	    BankStructure.getGuard().msgDoneWithCustomer(this);
 	}
-
-	@Override
-	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

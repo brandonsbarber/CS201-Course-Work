@@ -12,11 +12,15 @@ public interface BankCustomer {
 	
 	public void msgAccountIsOpened(int actNum);
 	
-	public void msgMoneyIsDeposited(int newBalance);
+	public void msgMoneyIsDeposited(/*int newBalance*/); // TODO
 	
-	public void msgMoneyIsWithdrawn(int newBalance);
+	public void msgMoneyIsWithdrawn(/*int newBalance*/); // TODO
 	
-	public void msgLoanIsGranted(int loanAmount);
+	public void msgOverdrawnAccount(double actBalance);
+	
+	public void msgLoanGranted();
+
+	public void msgLoanDenied();
 	
 	public void msgClosingTime();
 	
