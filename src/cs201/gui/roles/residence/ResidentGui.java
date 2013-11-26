@@ -12,17 +12,19 @@ public class ResidentGui implements Gui {
 	private boolean isPresent;
 	
 	private final int WIDTH = 20, HEIGHT = 20;
-	private final int startX = 100, startY = 100;
+	private final int startX = 0, startY = 250;
 	
-	private int fridgeX, fridgeY;
-	private int exitX, exitY;
-	private int bedX, bedY;
-	private int tableX, tableY;
+	private int fridgeX = 0, fridgeY = 0;
+	private int exitX = -20, exitY = 0;
+	private int bedX = 0, bedY = 0;
+	private int tableX = 0, tableY = 0;
 	
 	private int xPos;
 	private int yPos;
 	private int xDestination;
 	private int yDestination;
+	
+	boolean animating;
 	
 	
 	public ResidentGui() {
@@ -34,8 +36,10 @@ public class ResidentGui implements Gui {
 		yPos = startY;
 		xDestination = xPos;
 		yDestination = yPos;
+		
 		role = newRole;
 		isPresent = true;
+		animating = false;
 	}
 	
 	@Override
@@ -55,8 +59,9 @@ public class ResidentGui implements Gui {
 			yPos--;
 		}
 		
-		if (xPos==xDestination && yPos==yDestination) {
-			
+		if (xPos==xDestination && yPos==yDestination && animating == true) {
+			role.msgAnimationDone();
+			animating = false;
 		}
 		return;
 	}
@@ -76,17 +81,21 @@ public class ResidentGui implements Gui {
 		//set destination to fridge from residence layout
 		xDestination = fridgeX;
 		yDestination = fridgeY;
+		animating = true;
 	}
 	
 	public void goToBed() {
 		//animation to walk to the bed
 		xDestination = bedX;
 		yDestination = bedY;
+		animating = true;
 		//animation to get in bed
 	}
 	
 	public void exit() {
-		
+		xDestination = exitX;
+		yDestination = exitY;
+		animating = true;
 	}
 
 	@Override
@@ -95,13 +104,8 @@ public class ResidentGui implements Gui {
 		return isPresent;
 	}
 	
-	public void setPresent() {
-		if (isPresent) {
-			isPresent=false;
-		}
-		else {
-			isPresent=true;
-		}
+	public void setPresent(boolean bool) {
+		isPresent = bool;
 	}
 	
 	public void setBed(int x, int y) {

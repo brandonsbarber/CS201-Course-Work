@@ -140,18 +140,11 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you have active roles, those have next highest priority (because you're currently
 		// doing something)
-		boolean activeRole = false;
 		synchronized(roles) {
 			for (Role r : roles) {
 				if (r.getActive()) {
-					activeRole = true;
-					if (r.pickAndExecuteAnAction()) {
-						return true;
-					}
+					return r.pickAndExecuteAnAction();
 				}
-			}
-			if (activeRole) {
-				return true;
 			}
 		}
 		
@@ -189,7 +182,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to work
-		if (state == PersonState.Awake && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 60) {
+		if (state == PersonState.Awake && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
 			if (this.addActionToPlanner(job, workplace, true)) {
 				this.state = PersonState.AtWork;
 				return true;
@@ -298,7 +291,7 @@ public class PersonAgent extends Agent implements Person {
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
-				Do("Reusing Role: " + r);
+				//Do("Reusing Role: " + r);
 				r.startInteraction(a.intent);
 				r.setActive(true);
 				haveRole = true;
@@ -309,7 +302,7 @@ public class PersonAgent extends Agent implements Person {
 		if (!haveRole) {
 			roles.add(newRole);
 			newRole.setPerson(this);
-			Do("Received new Role: " + newRole);
+			//Do("Received new Role: " + newRole);
 			newRole.startInteraction(a.intent);
 			newRole.setActive(true);
 		}
@@ -339,7 +332,7 @@ public class PersonAgent extends Agent implements Person {
 		} else {
 			planner.add(0, temp);
 		}
-		Do("Added action " + temp + " to planner.");
+		//Do("Added action " + temp + " to planner.");
 		return true;
 	}
 	

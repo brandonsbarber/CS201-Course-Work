@@ -122,4 +122,9 @@ public class BusAgent extends VehicleAgent implements Bus
 		s.removePassengers(this,justBoarded);
 		justBoarded.clear();
 	}
+
+	public int getNumPassengers()
+	{
+		return passengers.size();
+	}
 }

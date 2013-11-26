@@ -19,7 +19,7 @@ public class RestaurantRotatingStand {
 	
 	public RotatingStandOrder removeOrder() {
 		if (orders.size() > 0) {
-			return orders.get(0);
+			return orders.remove(0);
 		}
 		return null;
 	}

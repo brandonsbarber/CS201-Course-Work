@@ -36,6 +36,10 @@ public class ResidentRole extends Role implements Resident {
 		stateChanged();
 	}
 	
+	public void msgAnimationDone() {
+		myPerson.animationRelease();
+	}
+	
 	//Scheduler
 	
 	public boolean pickAndExecuteAnAction() {
@@ -85,6 +89,7 @@ public class ResidentRole extends Role implements Resident {
 
 	@Override
 	public void startInteraction(Intention intent) {
+		this.gui.setPresent(true);
 		if (intent == Intention.ResidenceEat) {
 			this.msgStartEating();
 		}
@@ -101,16 +106,19 @@ public class ResidentRole extends Role implements Resident {
 	
 	private void actionFinished() {
 		isActive = false;
-		//animation to leave residence
-		//gui inactive
+		gui.exit(); //animation to leave residence
+		this.acquireSemaphore();
+		gui.setPresent(false); //gui inactive
 	}
 	
 	private void goToFridge() { //animation
 		gui.walkToFridge();
+		this.acquireSemaphore();
 	}
 	
 	private void goToBed() {
 		gui.goToBed();
+		this.acquireSemaphore();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package cs201.gui.structures.residence;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
@@ -35,6 +36,10 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
+		
+		g2.setColor(Color.darkGray);
+		g2.fillRect(deskX, deskY, deskWidth, deskHeight);
+		
 	    for(Gui gui : guis) {
 	        if (gui.isPresent()) {
 	            gui.updatePosition();

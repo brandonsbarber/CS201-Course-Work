@@ -92,7 +92,7 @@ public class SimCity201 extends JFrame {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(0,this);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,0,g);
 		r.setStructurePanel(g);
-		r.setClosingTime(new CityTime(9, 30));
+		r.setClosingTime(new CityTime(10, 30));
 		buildingPanels.add(g,""+0);
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
@@ -103,6 +103,13 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+1);
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
+		
+		MarketAnimationPanel mG2 = new MarketAnimationPanel(1,this, 50, 50);
+		MarketStructure m2 = new MarketStructure(19*25,9*25,50,50,1,mG2);
+		m.setStructurePanel(mG2);
+		buildingPanels.add(mG2,""+2);
+		cityPanel.addStructure(m2);
+		CityDirectory.getInstance().addMarket(m2);
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -126,7 +133,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p2);
 		p2.startThread();
 		
-		PersonAgent p3 = new PersonAgent("Waiter");
+		PersonAgent p3 = new PersonAgent("Waiter 1");
 		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
@@ -135,6 +142,21 @@ public class SimCity201 extends JFrame {
 		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer 1");
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		p5.startThread();
+		
+		PersonAgent p6 = new PersonAgent("Waiter 2");
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		CityDirectory.getInstance().addPerson(p6);
+		p6.startThread();
+		
+		PersonAgent p7 = new PersonAgent("Customer 2");
+		p7.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p7);
+		p7.startThread();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {

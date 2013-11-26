@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import cs201.gui.CityPanel;
+import cs201.gui.transit.TruckGui;
 import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Truck;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
@@ -41,7 +42,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		homeStructure = home;
 		msgSetLocation(homeStructure);
 		deliveries = new ArrayList<Delivery>();
-		gui = new VehicleGui(this,CityPanel.INSTANCE,(int)homeStructure.x,(int)homeStructure.y);
+		gui = new TruckGui(this,CityPanel.INSTANCE,(int)homeStructure.x,(int)homeStructure.y);
 		CityPanel.INSTANCE.addGui(gui);
 		
 	}

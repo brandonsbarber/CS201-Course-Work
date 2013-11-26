@@ -21,9 +21,6 @@ import java.util.concurrent.Semaphore;
  * Restaurant Waiter Agent
  */
 public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole implements WaiterMatt {
-	//private RestaurantCookRoleMatt cook;
-	//private RestaurantHostRoleMatt host;
-	private RestaurantCashierRoleMatt cashier;
 	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private WaiterGuiMatt waiterGui;
 	private List<MyCustomer> myCustomers;
@@ -39,7 +36,6 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	public RestaurantWaiterRoleMatt(RestaurantCookRoleMatt cook, RestaurantHostRoleMatt host, RestaurantCashierRoleMatt cashier) {
 		super();
 
-		this.cashier = cashier;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
 		this.stand = null;
 	}
@@ -47,7 +43,6 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	public RestaurantWaiterRoleMatt() {
 		super();
 
-		this.cashier = null;
 		myCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
 		this.stand = null;
 	}
@@ -308,7 +303,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	private void GetCustomerCheck(MyCustomer m) {
 		DoGetCustomerCheck(m);
 		m.state = CustomerState.none;
-		cashier.msgComputeCheck(this, m.customer, m.choice);
+		((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgComputeCheck(this, m.customer, m.choice);
 	}
 	
 	private void GiveCustomerCheck(MyCustomer m) {
@@ -484,7 +479,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGiveCustomerCheck(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " retrieving check from " + cashier.toString() + " for customer " + m.customer.toString() + ".");
+		System.out.println("Waiter " + this.toString() + " retrieving check from " + ((RestaurantCashierRoleMatt) this.restaurant.getCashier()).toString() + " for customer " + m.customer.toString() + ".");
 		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX,
 								cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY + cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
 		waiterGui.setMessage("");
