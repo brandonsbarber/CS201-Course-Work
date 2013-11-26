@@ -68,9 +68,7 @@ public class WaiterGuiMatt implements Gui {
         g.fillRect(xPos, yPos, WAITERSIZE, WAITERSIZE);
         
         g.setColor(Color.black);
-		if (message.length() > 0) {
-			g.drawString(message, xPos, yPos);
-		}
+        g.drawString("Waiter " + (message != "" ? "(" + message + ")" : ""), xPos, yPos);
     }
     
     public void setMessage(String what) {

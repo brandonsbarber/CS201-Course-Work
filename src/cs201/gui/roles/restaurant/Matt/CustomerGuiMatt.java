@@ -74,9 +74,7 @@ public class CustomerGuiMatt implements Gui {
 		g.fillRect(xPos, yPos, CUSTOMERSIZE, CUSTOMERSIZE);
 		
 		g.setColor(Color.black);
-		if (eating.length() > 0) {
-			g.drawString(eating, xPos, yPos);
-		}
+		g.drawString("Customer " + (eating != "" ? "(" + eating + ")" : ""), xPos, yPos);
 	}
 
 	public boolean isPresent() {
