@@ -57,6 +57,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
+		Do("Passenger "+p+" has boarded");
 		passengers.add(p);
 		justBoarded.add(p);
 		sem.release();

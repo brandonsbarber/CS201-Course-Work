@@ -40,6 +40,7 @@ public class CarAgent extends VehicleAgent implements Car
 	@Override
 	public void msgCallCar(Passenger p, Structure s, Structure d)
 	{
+		Do("Called by "+p+" to pickup at "+s+" and go to "+d);
 		pickups.add(new PickupRequest(p,s,d));
 		stateChanged();
 	}
@@ -47,12 +48,14 @@ public class CarAgent extends VehicleAgent implements Car
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
+		Do("Passenger "+p+" is done boarding");
 		sem.release();
 	}
 
 	@Override
 	public void msgLeaving(Passenger p)
 	{
+		Do("Passenger "+p+" has left");
 		sem.release();
 	}
 

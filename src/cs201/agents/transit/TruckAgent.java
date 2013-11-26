@@ -54,6 +54,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 	@Override
 	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
 	{
+		Do("Told to make delivery run to: "+destination+" with "+inventory+" and price of $"+price);
 		deliveries.add(new Delivery(inventory,destination,price));
 		stateChanged();
 	}
@@ -90,6 +91,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 
 	private void returnHome()
 	{
+		Do("Returning home.");
 		msgSetDestination (homeStructure);
 		animate();
 		gui.setPresent(false);
@@ -105,6 +107,8 @@ public class TruckAgent extends VehicleAgent implements Truck
 		d.s = DeliveryState.InProgress;
 		
 		animate();
+		
+		Do("Arrived at destination, messaging with items.");
 		
 		for(ItemRequest item : d.inventory)
 		{
