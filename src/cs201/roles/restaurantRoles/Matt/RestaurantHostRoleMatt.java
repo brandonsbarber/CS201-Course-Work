@@ -97,7 +97,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			waitingCustomers.add(c);
 			numCustomers++;
 		} else {
-			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter the restaurant because he was banned");
+			Do(c.toString() + " cannot enter the restaurant because he was banned");
+			return;
 		}
 		stateChanged();
 	}
@@ -257,18 +258,18 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	// Utilities -------------------------------------------------------------
 	private void DoCloseRestaurant() {
-		System.out.println(this.toString() + " is closing down the Restaurant.");
+		Do("Closing down the restaurant.");
 	}
 	
 	private void DoCallWaiter(WaiterMatt w, TableMatt t) {
-		System.out.println(this.toString() + " telling waiter " + w.toString() + " to seat a customer.");
+		Do("Telling " + w.toString() + " to seat a customer.");
 	}
 	
 	private void DoPutWaiterOnBreak(MyWaiter m, boolean breakAllowed) {
 		if (breakAllowed) {
-			System.out.println("Waiter " + m.waiter.toString() + " is allowed to go on break.");
+			Do(m.waiter.toString() + " is allowed to go on break.");
 		} else {
-			System.out.println("Waiter " + m.waiter.toString() + " is not allowed to go on break.");
+			Do(m.waiter.toString() + " is not allowed to go on break.");
 		}
 	}
 	
