@@ -5,6 +5,7 @@ import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.residence.LandlordGui;
+import cs201.gui.roles.residence.ResidentGui;
 import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
@@ -13,7 +14,7 @@ import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
 	List<myProperty> myProperties = new ArrayList<myProperty>();
-	double latePenalty;
+	double latePenalty = 40;
 	LandlordGui gui;
 	
 	enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
@@ -26,10 +27,10 @@ public class LandlordRole extends Role implements Landlord {
 	    RentState state;
 		boolean needsMaintenance;
 
-	    public myProperty(Residence res, Renter ren, double a, WeekDay d) {
+	    public myProperty(Residence res, Renter ren, double amt, WeekDay d) {
 	        	residence = res;
 	            renter = ren;
-	            amtDue = a;
+	            amtDue = amt;
 	            dayDue = d;
 	        }
 		
@@ -43,6 +44,11 @@ public class LandlordRole extends Role implements Landlord {
 		}
 	}
 	
+	public LandlordRole() {
+		
+	}
+	
+	
 	//Messages
 	
 	public void msgHereIsRentPayment(Renter r, double amt) {
@@ -52,6 +58,7 @@ public class LandlordRole extends Role implements Landlord {
 				myPerson.addMoney(amt);
 			}
 		}
+		stateChanged();
 	}
 
 	public void msgPropertyNeedsMaintenance(Renter r, Residence res) {
@@ -60,11 +67,15 @@ public class LandlordRole extends Role implements Landlord {
 				mP.needsMaintenance = true;
 			}
 		}
+		stateChanged();
 	}
 	
 	// Scheduler
 	
 	public boolean pickAndExecuteAnAction() {
+		int currentDay = myPerson.getTime().day.ordinal();
+		currentDay = (currentDay + 1) % WeekDay.values().length;
+		WeekDay tomorrow = WeekDay.values()[currentDay];
 		for (myProperty mP:myProperties) {
 			if (mP.state == RentState.paid) {
 				mP.state = RentState.notDue;
@@ -72,14 +83,14 @@ public class LandlordRole extends Role implements Landlord {
 			}
 		}
 		for (myProperty mP:myProperties) {
-			if (WeekDay.Sunday == mP.dayDue && mP.state == RentState.notDue) {
+			if (tomorrow == mP.dayDue && mP.state == RentState.notDue) {
 				mP.state = RentState.dueNotNotified;
 				return true;
 			}
 		}
 		
 		for (myProperty mP:myProperties) {
-			if (/*getToday()*/WeekDay.Sunday == mP.dayDue && mP.state == RentState.dueNotified) {
+			if (myPerson.getTime().day == mP.dayDue && mP.state == RentState.dueNotified) {
 				mP.state = RentState.lateNotNotified;
 				return true;
 			}
@@ -146,6 +157,7 @@ public class LandlordRole extends Role implements Landlord {
 		// TODO Auto-generated method stub
 		if (intent == Intention.ResidenceLandLord) {
 			//stub
+			goToDesk();
 		}
 		
 	}
@@ -154,5 +166,9 @@ public class LandlordRole extends Role implements Landlord {
 	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setGui(LandlordGui newGui) {
+		gui = newGui;
 	}
 }
