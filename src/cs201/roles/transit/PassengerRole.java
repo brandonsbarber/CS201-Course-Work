@@ -294,7 +294,14 @@ public class PassengerRole extends Role implements Passenger
 					((Bus)currentVehicle).msgLeaving(this);
 				}
 				currentVehicle = null;
-				gui.setLocation(currentLocation.getParkingLocation().x, currentLocation.getParkingLocation().y);
+				if(currentLocation.getParkingLocation() != null)
+				{
+					gui.setLocation(currentLocation.getParkingLocation().x, currentLocation.getParkingLocation().y);
+				}
+				else
+				{
+					gui.setLocation((int)currentLocation.x, (int)currentLocation.y);
+				}
 			}
 			else
 			{

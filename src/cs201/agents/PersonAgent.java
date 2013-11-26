@@ -62,6 +62,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile Structure currentLocation;
 	private volatile int bankAccountNumber;
 	private volatile List<ItemRequest> marketChecklist;
+	private volatile List<ItemRequest> inventory;
 	
 	
 	/**************************************************************************
@@ -91,6 +92,7 @@ public class PersonAgent extends Agent implements Person {
 		this.currentLocation = null;
 		this.bankAccountNumber = -1;
 		marketChecklist = new LinkedList<ItemRequest>();
+		inventory = new LinkedList<ItemRequest>();
 	}
 	
 	@Override
@@ -612,6 +614,14 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public List<ItemRequest> getMarketChecklist() {
 		return marketChecklist;
+	}
+	
+	/**
+	 * Returns what items this PersonAgent has on him right now
+	 * @return List<ItemRequest>
+	 */
+	public List<ItemRequest> getInventory() {
+		return inventory;
 	}
 	
 	
