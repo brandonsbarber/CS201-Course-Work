@@ -26,7 +26,6 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	public StructurePanel(int i, SimCity201 sc) {
 		
 		name = "" + i;
-		System.out.println("NAme in constructor: "+name);
 		city = sc;
 		
 		setBackground(Color.LIGHT_GRAY);
