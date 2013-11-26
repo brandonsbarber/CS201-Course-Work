@@ -79,7 +79,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	// Messages -------------------------------------------------------------
 	@Override
 	public void msgIsHungry() {
-		System.out.println("Customer " + this.toString() + " is hungry.");
+		Do("I'm hungry.");
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
@@ -87,7 +87,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	@Override
 	public void msgAboutToBeSeated() {
 		state = AgentState.AboutToBeSeated;
-		System.out.println("Customer " + this.getName() + " about to be seated.");
+		Do("About to be seated.");
 		stateChanged();
 	}
 
@@ -221,7 +221,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 
 	private void ChooseFood() {
 		if (attemptedOrders >= 2) {
-			System.out.println("Customer " + this.getName() + " tried to order twice and didn't receive anything, so he's leaving the restaurant.");
+			Do("Tried to order twice and didn't receive anything, so I'm leaving the restaurant.");
 			LeaveRestaurant();
 			return;
 		}
@@ -267,7 +267,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 
 	// Utilities -------------------------------------------------------------
 	private void DoGoToRestaurant() {
-		System.out.println("Customer " + this.toString() + " going to restaurant.");
+		Do("Going to restaurant.");
 		customerGui.DoGoToRestaurant();
 		try {
 			atTargetPosition.acquire();
@@ -299,7 +299,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoWaitTimeTooLong() {
-		System.out.println("Customer " + this.getName() + " decided that he waited too long. He's leaving the restaurant.");
+		Do("Wait time too long. I'm leaving the restaurant.");
 		
 		customerGui.DoExitRestaurant();
 		try {
@@ -308,11 +308,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 			e.printStackTrace();
 		}
 		
-		System.out.println("Customer " + this.getName() + " has left the restaurant.");
+		Do("Has left the restaurant.");
 	}
 	
 	private void DoSitDown() {
-		System.out.println("Customer " + getName() + " is sitting down.");
+		Do("Sitting down.");
 		customerGui.Animate();
 		try {
 			atTargetPosition.acquire();
@@ -322,7 +322,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoChooseFood() {
-		System.out.println("Customer " + this.toString() + " is choosing his food.");
+		Do("Choosing food.");
 		customerGui.setMessage("");
 	}
 	
@@ -345,7 +345,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 						choice = null;
 					} while (menu.size() > 0);
 					if (choice == null) {
-						System.out.println("Customer " + getName() + " cannot afford anything! He is leaving the restaurant.");
+						Do("Can't afford anything! I'm is leaving the restaurant.");
 						event = AgentEvent.cannotAffordAnything;
 						stateChanged();
 						return;
@@ -361,16 +361,16 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoHailWaiter() {
-		System.out.println("Customer " + this.toString() + " is hailing his waiter, " + waiter.toString() + ".");
+		Do("Hailing his waiter, " + waiter.toString() + ".");
 	}
 	
 	private void DoOrderFood() {
-		System.out.println("Customer " + this.toString() + " is ordering.");
+		Do("Ordering.");
 		customerGui.setMessage(choice + "?");
 	}
 	
 	private void DoEatFood() {
-		System.out.println("Customer " + this.toString() + " is eating.");
+		Do("Eating.");
 		customerGui.setMessage(choice);
 	}
 	
@@ -389,11 +389,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoAskForCheck() {
-		System.out.println("Customer " + this.toString() + " is asking his waiter, " + waiter.toString() + ", for the bill.");
+		Do("Asking " + waiter.toString() + " for the bill.");
 	}
 	
 	private void DoPayCheck() {
-		System.out.println("Customer " + this.toString() + " is going to the Cashier, " + cashier.toString() + ", to pay his bill.");
+		Do("Going to " + cashier.toString() + " to pay bill.");
 		customerGui.DoGoToCashier();
 		try {
 			atTargetPosition.acquire();
@@ -403,14 +403,14 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoLeaveRestaurant() {
-		System.out.println("Customer " + this.toString() + " is leaving the restaurant.");
+		Do("Leaving the restaurant.");
 		customerGui.DoExitRestaurant();
 		try {
 			atTargetPosition.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Customer " + this.toString() + " has left the restaurant.");
+		Do("Has left the restaurant.");
 	}
 	
 	private void DeactivateRole() {

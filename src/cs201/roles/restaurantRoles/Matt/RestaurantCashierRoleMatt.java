@@ -23,7 +23,6 @@ import cs201.structures.market.MarketStructure;
  */
 public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements CashierMatt {
 
-	private final double STARTINGMONEY = 50;
 	private MenuMatt menu;
 	public List<Check> checks; // TEMPORARILY PUBLIC FOR TESTING
 	private List<MarketInvoice> invoices;
@@ -31,7 +30,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	public enum CheckType { none, restaurant, market }; // TEMPORARILY PUBLIC FOR TESTING
 	private CashierGuiMatt gui;
 	public HostMatt host; // TEMPORARILY PUBLIC FOR TESTING
-	private double currentMoney;
 	private boolean closingTime = false;
 
 	public RestaurantCashierRoleMatt(HostMatt host) {
@@ -41,8 +39,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		invoices = Collections.synchronizedList(new ArrayList<MarketInvoice>());
 		menu = new MenuMatt();
 		this.host = host;
-		currentMoney = STARTINGMONEY;
-		System.out.printf("Cashier " + this.getName() + " has $%.2f.\n", currentMoney);
 	}
 	
 	public RestaurantCashierRoleMatt() {
@@ -52,8 +48,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		invoices = Collections.synchronizedList(new ArrayList<MarketInvoice>());
 		menu = new MenuMatt();
 		this.host = null;
-		currentMoney = STARTINGMONEY;
-		System.out.printf("Cashier " + this.getName() + " has $%.2f.\n", currentMoney);
 	}
 	
 	public void setHost(HostMatt host) {
@@ -173,7 +167,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	
 	private void GiveCustomerChange(Check c) {
 		boolean checkPaidInFull = c.customerPaid >= c.amount;
-		currentMoney += checkPaidInFull ? c.amount : c.customerPaid;
+		this.restaurant.addMoney(checkPaidInFull ? c.amount : c.customerPaid);
 		double change = checkPaidInFull ? c.customerPaid - c.amount : 0;
 		DoGiveCustomerChange(c);
 		c.customer.msgHereIsYourChange(change);
@@ -186,7 +180,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	private void PayMarket(Check c) {
 		for (MarketInvoice i : invoices) {
 			if (i.market == c.market && i.order == c.choice && i.quantity >= c.quantity) {
-				currentMoney -= c.amount;
+				this.restaurant.removeMoney(c.amount);
 				DoPayMarket(c);
 				((RestaurantCookRoleMatt) this.restaurant.getCook()).msgFulfillSupplyOrder(c.choice, c.quantity, c.market);
 				c.market.getManager().msgHereIsMyPayment(restaurant, (float)c.amount);
@@ -202,22 +196,23 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
+		Do("Leaving work.");
 	}
 	
 	private void DoGiveCheckToWaiter(Check c) {
-		System.out.println("Cashier " + this.toString() + " giving check back to Waiter " + c.waiter.toString() + " for Customer " + c.customer.toString() + ".");
+		Do("Giving check back to " + c.waiter.toString() + " for " + c.customer.toString() + ".");
 	}
 	
 	private void DoGiveCustomerChange(Check c) {
-		System.out.println("Cashier " + this.toString() + " giving change to Customer " + c.customer.toString() + ".");
+		Do("Giving change to " + c.customer.toString() + ".");
 		if (c.customerPaid < c.amount) {
-			System.out.println("Cashier " + this.toString() + " says that Customer " + c.customer.toString() + " didn't have enough to pay his check!");
+			Do("Says that " + c.customer.toString() + " didn't have enough to pay his check!");
 		}
-		System.out.printf("\tCashier now has $%.2f.\n", currentMoney);
+		Do(this.restaurant.toString() + " now has " + String.format("$%.2f.", this.restaurant.getCurrentRestaurantMoney()));
 	}
 	
 	private void DoPayMarket(Check c) {
-		System.out.printf("Cashier " + this.toString() + " paying bill to Market " + /*c.market.toString() +*/ " for $%.2f.\n\tCashier now has $%.2f.\n", c.amount, currentMoney);
+		Do("Paying bill to " + c.market.toString() + String.format(" for $%.2f.\n\t%s now has $%.2f.\n", c.amount, this.restaurant.toString(), this.restaurant.getCurrentRestaurantMoney()));
 	}
 	
 	public class Check { // TEMPORARILY PUBLIC FOR TESTING

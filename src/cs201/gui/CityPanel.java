@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -37,9 +39,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 
 	public static CityPanel INSTANCE = null;
 	
-	ArrayList<Structure> buildings;
+	List<Structure> buildings;
 	
-	ArrayList<Gui> guis;
+	List<Gui> guis;
 	
 	public enum DrivingDirection
 	{
@@ -85,8 +87,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	{
 		Timer timer = new Timer(1000/120,this);
 		
-		buildings = new ArrayList<Structure>();
-		guis = new ArrayList<Gui>();
+		buildings = Collections.synchronizedList(new ArrayList<Structure>());
+		guis = Collections.synchronizedList(new ArrayList<Gui>());
 		
 		stops = new ArrayList<BusStop>();
 		
@@ -309,14 +311,22 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			g2.fill(s);
 		}
 		
-		for(Gui gui: guis)
+		try
 		{
-			if(gui.isPresent())
+			for(Gui gui: guis)
 			{
-				gui.updatePosition();
-				gui.draw(g2);
+				if(gui.isPresent())
+				{
+					gui.updatePosition();
+					gui.draw(g2);
+				}
 			}
 		}
+		catch(ConcurrentModificationException e)
+		{
+			
+		}
+		
 		
 		g2.setColor(Color.BLACK);
 		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height / 2 + bounds.height / 10);
@@ -353,7 +363,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 	}
 	
-	public ArrayList<Structure> getStructures() {
+	public List<Structure> getStructures() {
 		return buildings;
 	}
 	

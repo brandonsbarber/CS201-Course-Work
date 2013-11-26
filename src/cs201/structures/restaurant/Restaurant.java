@@ -15,6 +15,8 @@ import cs201.structures.Structure;
  *
  */
 public abstract class Restaurant extends Structure {
+	private final double INITIALMONEY = 100;
+	
 	protected RestaurantCashierRole cashier;
 	protected RestaurantCookRole cook;
 	protected RestaurantHostRole host;
@@ -30,7 +32,7 @@ public abstract class Restaurant extends Structure {
 		this.cook = null;
 		this.host = null;
 		this.waiters = null;
-		this.moneyOnHand = 0;
+		this.moneyOnHand = INITIALMONEY;
 		this.bankAccountNumber = -1;
 		this.isOpen = false;
 	}

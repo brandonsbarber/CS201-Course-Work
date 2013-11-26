@@ -15,6 +15,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	
 	VehicleGui gui = null;
 	
+	private static int INSTANCES = 0;
+	private int instance;
+	
+	public VehicleAgent()
+	{
+		instance = ++INSTANCES;
+	}
+	
 	public void setGui(VehicleGui gui)
 	{
 		this.gui = gui;
@@ -56,5 +64,22 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	protected void Do(String msg) {
+		StringBuffer output = new StringBuffer();
+		output.append("[");
+		output.append(this.getClass().getSimpleName());
+		output.append("] ");
+		output.append(this.instance);
+		output.append(": ");
+		output.append(msg);
+		
+		System.out.println(output.toString());
+	}
+
+	public int getInstance()
+	{
+		return instance;
 	}
 }
