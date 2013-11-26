@@ -247,7 +247,7 @@ public class PassengerRoleTest extends TestCase
 		
 		assertFalse("Should not walk",pass.shouldWalk());
 		
-		assertEquals("Should have three waypoints for walking,bus,walking.",3,pass.waypoints.size());
+		assertEquals("Should have three waypoints for walking,bus,walking,walking.",4,pass.waypoints.size());
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 		
@@ -259,7 +259,7 @@ public class PassengerRoleTest extends TestCase
 		
 		assertEquals("Passenger's state should be none.",PassengerState.None,pass.state);
 		
-		assertEquals("Should have two waypoints for bus,walking.",2,pass.waypoints.size());
+		assertEquals("Should have two waypoints for bus,walking,walking.",3,pass.waypoints.size());
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 
@@ -278,17 +278,28 @@ public class PassengerRoleTest extends TestCase
 		pass.msgReachedDestination(s3);
 		
 		assertEquals("Ensure that passenger's current location is s3.",s3,pass.currentLocation);
-		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current waypoints list is three.",3,pass.waypoints.size());
 		assertEquals("Ensure that passenger's current state is Arrived.",pass.state,PassengerState.Arrived);
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 		
 		assertEquals("Ensure that passenger's current location is s3.",s3,pass.currentLocation);
-		assertEquals("Ensure that passenger's current waypoints list is one.",1,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
 		assertEquals("Ensure that passenger's current state is none.",pass.state,PassengerState.None);
 		
 		assertEquals("Bus should now have no passengers.",0,bus.passengers.size());
 		assertEquals("Bus should now have two log calls.",2,bus.log.size());
+		
+		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Ensure that passenger's current location is s3.",s3,pass.currentLocation);
+		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current state is Arrived.",pass.state,PassengerState.Arrived);
+		
+		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Ensure that passenger's current state is none.",pass.state,PassengerState.None);
+		assertEquals("Ensure that passenger's current waypoints list is one.",1,pass.waypoints.size());
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 		
@@ -323,7 +334,7 @@ public class PassengerRoleTest extends TestCase
 		
 		assertFalse("Should not walk",pass.shouldWalk());
 		
-		assertEquals("Should have three waypoints for walking,bus,walking.",3,pass.waypoints.size());
+		assertEquals("Should have four waypoints for walking,bus,walking,walking.",4,pass.waypoints.size());
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 		
@@ -335,7 +346,7 @@ public class PassengerRoleTest extends TestCase
 		
 		assertEquals("Passenger's state should be none.",PassengerState.None,pass.state);
 		
-		assertEquals("Should have two waypoints for bus,walking.",2,pass.waypoints.size());
+		assertEquals("Should have three waypoints for bus,walking,walking.",3,pass.waypoints.size());
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 
@@ -354,13 +365,13 @@ public class PassengerRoleTest extends TestCase
 		pass.msgReachedDestination(s2);
 		
 		assertEquals("Ensure that passenger's current location is s2.",s2,pass.currentLocation);
-		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current waypoints list is three.",3,pass.waypoints.size());
 		assertEquals("Ensure that passenger's current state is Arrived.",pass.state,PassengerState.Arrived);
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 
 		assertEquals("Ensure that passenger's current location is s2.",s2,pass.currentLocation);
-		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current waypoints list is three.",3,pass.waypoints.size());
 		assertEquals("Ensure that passenger's current state is none.",pass.state,PassengerState.InTransit);
 		
 		assertEquals("Bus should now have two log calls.",2,bus.log.size());
@@ -368,17 +379,28 @@ public class PassengerRoleTest extends TestCase
 		pass.msgReachedDestination(s3);
 		
 		assertEquals("Ensure that passenger's current location is s3.",s3,pass.currentLocation);
-		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current waypoints list is three.",3,pass.waypoints.size());
 		assertEquals("Ensure that passenger's current state is Arrived.",pass.state,PassengerState.Arrived);
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 		
 		assertEquals("Ensure that passenger's current location is s3.",s3,pass.currentLocation);
-		assertEquals("Ensure that passenger's current waypoints list is one.",1,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
 		assertEquals("Ensure that passenger's current state is none.",pass.state,PassengerState.None);
 		
 		assertEquals("Bus should now have no passengers.",0,bus.passengers.size());
 		assertEquals("Bus should now have three log calls.",3,bus.log.size());
+		
+		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Ensure that passenger's current location is s3.",s3,pass.currentLocation);
+		assertEquals("Ensure that passenger's current waypoints list is two.",2,pass.waypoints.size());
+		assertEquals("Ensure that passenger's current state is Arrived.",pass.state,PassengerState.Arrived);
+		
+		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Ensure that passenger's current state is none.",pass.state,PassengerState.None);
+		assertEquals("Ensure that passenger's current waypoints list is one.",1,pass.waypoints.size());
 		
 		assertTrue("Should return true.",pass.pickAndExecuteAnAction());
 		
