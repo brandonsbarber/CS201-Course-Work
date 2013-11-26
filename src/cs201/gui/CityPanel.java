@@ -176,6 +176,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		{
 			buildings.add(stop);
 			stop.setParkingLocation(new Point((int)stop.x,(int)stop.y));
+			stop.setEntranceLocation(new Point((int)stop.x,(int)stop.y));
 		}
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);
@@ -233,7 +234,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		truck.startThread();*/
 		
-		addStructure(new BusStop(14*25,14*25,25,25,7,null));
 		
 		timer.start();
 	}
@@ -454,6 +454,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			
 			g2.setColor(Color.BLUE);
 			g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
+			g2.fill(new Rectangle(s.getEntranceLocation().x,s.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
 		}
 		
 		try
@@ -484,11 +485,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		location.x = (int)s.getX();
 		location.y = (int)s.getY();
 		
+		//Calculating street entrance
 		int leftX = location.x/GRID_SIZE - 2;
 		int rightX = (int)((1.0*location.x+s.width)/GRID_SIZE) + 1;
 		int upY = location.y/GRID_SIZE - 2;
 		int downY = (int)((1.0*location.y+s.height)/GRID_SIZE) + 1;
-		System.out.println("DownY: "+downY);
 		
 		if(downY < drivingMap.length && drivingMap[downY][location.x/GRID_SIZE].isValid())
 		{
@@ -506,6 +507,37 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			s.setParkingLocation(location);
 		}
 		else if(upY >= 0 && drivingMap[upY][location.x/GRID_SIZE].isValid())
+		{
+			location.y = upY*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		
+		location = new Point();
+		location.x = (int)s.getX();
+		location.y = (int)s.getY();
+		
+		//Calculating sidewalk entrance
+		leftX = location.x/GRID_SIZE - 1;
+		rightX = (int)((1.0*location.x+s.width)/GRID_SIZE);
+		upY = location.y/GRID_SIZE - 1;
+		downY = (int)((1.0*location.y+s.height)/GRID_SIZE);
+		
+		if(downY < walkingMap.length && walkingMap[downY][location.x/GRID_SIZE].isValid())
+		{
+			location.y = downY*GRID_SIZE;
+			s.setEntranceLocation(location);
+		}
+		else if(leftX >= 0 && walkingMap[location.y/GRID_SIZE][leftX].isValid())
+		{
+			location.x = leftX*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		else if(rightX < walkingMap[0].length && walkingMap[location.y/GRID_SIZE][rightX].isValid())
+		{
+			location.x = rightX*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		else if(upY >= 0 && walkingMap[upY][location.x/GRID_SIZE].isValid())
 		{
 			location.y = upY*GRID_SIZE;
 			s.setParkingLocation(location);
@@ -575,6 +607,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	public DrivingDirection[][] getDrivingMap()
 	{
 		return drivingMap;
+	}
+	
+	public WalkingDirection[][] getWalkingMap()
+	{
+		return walkingMap;
 	}
 	
 	@Override
