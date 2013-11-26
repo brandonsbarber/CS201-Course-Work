@@ -97,7 +97,6 @@ public class MarketStructure extends Structure {
 	public Role getRole(Intention role) {
 		switch (role) {
 		case MarketManager:
-			isOpen = true;
 			return manager;
 			
 		case MarketEmployee:
@@ -110,6 +109,13 @@ public class MarketStructure extends Structure {
 			
 		}
 		return null;
+	}
+	
+	private void checkIfOpen() {
+		if (manager.getPerson() != null && employee.getPerson() != null) {
+			isOpen = true;
+			Do("Open for business.");
+		}
 	}
 	
 	/**
@@ -164,6 +170,9 @@ public class MarketStructure extends Structure {
 
 	@Override
 	public void updateTime(CityTime time) {
+		if (!isOpen) {
+			checkIfOpen();
+		}
 		
 		if (time.equalsIgnoreDay(this.closingTime)) {
 			// Message everyone to go home

@@ -102,6 +102,7 @@ public class SimCity201 extends JFrame {
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);
 		MarketStructure m = new MarketStructure(225,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(17, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
