@@ -9,4 +9,11 @@ public interface MarketEmployee {
 	
 	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id);
 	
+	/**
+	 * Should return whether or not this MarketEmployee has a backing PersonAgent.
+	 * This is used to determine whether the employee role has been fulfilled.
+	 * A MockMarketEmployee should just return false
+	 */
+	public boolean hasAPerson();
+	
 }

@@ -18,7 +18,7 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	
 	// The reference to the MarketStructure this config panel will be controlling
 	MarketStructure structure;
-	
+
 	JButton addInventoryButton;
 	
 	public MarketConfigPanel() {
@@ -52,13 +52,13 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	private void processAddInventory() {
 		// Create the add inventory dialog box
 		JTextField itemField = new JTextField();
-		JTextField amountField = new JTextField();
+		JTextField quantityField = new JTextField();
 		JTextField priceField = new JTextField();
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Item: "),
 				itemField,
 				new JLabel("Quantity: "),
-				amountField,
+				quantityField,
 				new JLabel("Price: "),
 				priceField
 		};
@@ -68,7 +68,7 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		
 		// Get the results
 		String item = itemField.getText();
-		String amount = amountField.getText();
+		String quantity = quantityField.getText();
 		String price = priceField.getText();
 		
 		// Get the item type
@@ -78,11 +78,11 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		}
 		
 		// Parse the amount
-		int amountValue;
+		int quantityValue;
 		try {
-			amountValue = Integer.parseInt(amount);
+			quantityValue = Integer.parseInt(quantity);
 		} catch (NumberFormatException exception) {
-			JOptionPane.showMessageDialog(this, "Please enter a valid integer for the amount.", "Error", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Please enter a valid integer for the quantity.", "Error", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		
@@ -96,10 +96,10 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		}
 		
 		// Add the new inventory item to the structure
-		structure.addInventory(item, amountValue, priceValue);
+		structure.addInventory(item, quantityValue, priceValue);
 		
 		// Confirm the add
-		String confirmation = "Successfully added " + amountValue + " " + item + "(s) at $" + String.format("%.2f", amountValue) + " each to the market's inventory!";
+		String confirmation = "Successfully added " + quantityValue + " " + item + "(s) at $" + String.format("%.2f", priceValue) + " each to the market's inventory!";
 		JOptionPane.showMessageDialog(this, confirmation);	
 	}
 

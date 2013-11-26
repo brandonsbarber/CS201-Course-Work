@@ -448,5 +448,15 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 		return employeeList;
 	}
-
+	
+	/**
+	 * Gets an unfulfilled MarketEmployeeRole from this manager's list of employees.
+	 * An unfulfilled role is one without a PersonAgent.
+	 * @return A MarketEmployeeRole if there is a job available, null if not
+	 */
+	public MarketEmployeeRole getUnfulfilledEmployeeRole() {
+		// TODO
+		return null;
+	}
+	
 }
