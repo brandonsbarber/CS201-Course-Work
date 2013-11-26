@@ -22,6 +22,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	List<RetrievalRequest> requests = Collections.synchronizedList(new ArrayList<RetrievalRequest>());
 	MarketEmployeeGui gui;
 	Semaphore animation = new Semaphore(0, true);
+	boolean timeToGoHome = false;
 	
 	enum RequestState {PENDING, PROCESSED};
 	private class RetrievalRequest {
@@ -55,6 +56,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
+		// Time to go home
+		if (timeToGoHome) {
+			leaveMarket();
+			return true;
+		}
+		
 		// If there's a PENDING retrieval request, process it
 		RetrievalRequest pendingRequest = null;
 		pendingRequest = findNextPendingRetrievalRequest();
@@ -83,16 +90,33 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
+		
+		timeToGoHome = true;
+		
+		stateChanged();
 	}
 	
+	/**
+	 * The person has entered the building.
+	 */
 	public void startInteraction(Intention intent) {
-		
+		// Set their gui to present
+		gui.setPresent(true);
+		timeToGoHome = false;
 	}
 	
 	/*
 	 * ********** ACTIONS **********
 	 */
+	
+	private void leaveMarket() {
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+//		gui.doLeave()
+		gui.setPresent(false);
+	}
 	
 	private void processRequest(RetrievalRequest request) {
 		// For each item in the request, go "retrieve" it, through animation

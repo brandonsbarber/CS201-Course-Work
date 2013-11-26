@@ -36,6 +36,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	MarketManagerGui gui;
 	MarketStructure structure;
+	boolean timeToLeave = false;
 	
 	public static class ItemRequest {
 		public String item;
@@ -164,6 +165,21 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
+		// If its time to leave, leave
+		if (timeToLeave) {
+			boolean inPersonOrder = false;
+			for (Order order : orders) {
+				if (order.type == OrderType.INPERSON && order.state != OrderState.SENT) {
+					inPersonOrder = true;
+					break;
+				}
+			}
+			if (!inPersonOrder) {
+				leaveMarket();
+				return true;
+			}
+		}
+		
 		// Dispatch a ready order
 		Order order = null;
 		synchronized (orders) {
@@ -304,7 +320,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
+
+
 		
 	}
 	
@@ -388,6 +405,22 @@ public class MarketManagerRole extends Role implements MarketManager {
 			}
 			
 		}
+	}
+	
+	private void leaveMarket() {
+
+		// Message all the employees and let them know its time to go home
+		for (MyEmployee employee : employees) {
+			employee.employee.msgClosingTime();
+		}
+		
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+//		gui.doLeave()
+		gui.setPresent(false);
+		
 	}
 
 	/*

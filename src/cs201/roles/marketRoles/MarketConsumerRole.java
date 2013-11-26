@@ -14,6 +14,7 @@ import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
+import cs201.structures.market.MarketStructure;
 
 public class MarketConsumerRole extends Role implements MarketConsumer {
 	
@@ -22,6 +23,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	String name = "";
 	List<MarketBill> marketBills = Collections.synchronizedList( new ArrayList<MarketBill>() );
+	MarketStructure structure;
 	
 	enum MarketBillState {OUTSTANDING, PAID};
 	class MarketBill {
@@ -56,6 +58,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
+		
 		// If there are any market bills to pay, pay them
 		synchronized(marketBills) {
 			for (MarketBill bill : marketBills) {
@@ -82,17 +85,31 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void msgHereAreYourItems(List<ItemRequest> items) {
+		// We bought everything on our list
+		myPerson.getMarketChecklist().clear();
+		
+		// Add the new items to our inventory
+		for (ItemRequest item : items) {
+			myPerson.getInventory().add(item);
+		}
+		
 		stateChanged();
 	}
 	
 	public void startInteraction(Intention intent) {
-		// Walk to the marketManager
-		if (gui != null)
-			gui.doWalkToManager();
-		pauseForAnimation();
 		
-		// Go through my inventory and create an ItemRequest for everything that I'm low on
-		// TODO
+		// Walk to the marketManager
+		if (gui != null) {
+				gui.doWalkToManager();
+				pauseForAnimation();
+		}
+		
+		if (this.structure.isOpen()) {
+			structure.getManager().msgHereIsMyOrder(this,  myPerson.getMarketChecklist());
+		} else {
+			leaveMarket();
+		}
+		
 	}
 
 	public void msgClosingTime() {
@@ -112,6 +129,16 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		if (person != null) {
 			this.getPerson().removeMoney(mb.amount);
 		}
+		
+		// Once we've paid we can leave
+		leaveMarket();
+	}
+	
+	private void leaveMarket() {
+		this.isActive = false;
+//		gui.doLeave()
+//		pauseForAnimation();
+		gui.setPresent(false);
 	}
 	
 	/*
@@ -137,6 +164,10 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	
 	public void setGui(MarketConsumerGui g) {
 		gui = g;
+	}
+	
+	public void setStructure(MarketStructure s) {
+		structure = s;
 	}
 
 }

@@ -16,4 +16,6 @@ public interface MarketEmployee {
 	 */
 	public boolean hasAPerson();
 	
+	public void msgClosingTime();
+	
 }

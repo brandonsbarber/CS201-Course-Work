@@ -33,4 +33,8 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 	public boolean hasAPerson() {
 		return false;
 	}
+
+	public void msgClosingTime() {
+		
+	}
 }

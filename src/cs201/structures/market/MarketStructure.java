@@ -5,6 +5,7 @@ import java.util.List;
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.market.MarketConsumerGui;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
@@ -13,6 +14,7 @@ import cs201.helper.CityTime;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
+import cs201.roles.marketRoles.MarketConsumerRole;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.structures.Structure;
@@ -21,12 +23,16 @@ public class MarketStructure extends Structure {
 	MarketManagerRole manager = null;
 	MarketEmployeeRole employee = null;
 	TruckAgent deliveryTruck = null;
+	StructurePanel panel = null;
+	boolean isOpen = false;
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
 	 */
 	public MarketStructure(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
+
+		panel = p;
 				
 		// Create a manager to manage this market
 		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
@@ -36,7 +42,7 @@ public class MarketStructure extends Structure {
 		MarketManagerGui managerGui = new MarketManagerGui();
 		newManager.setGui(managerGui);
 		managerGui.setRole(newManager);
-		p.addGui(managerGui);
+		panel.addGui(managerGui);
 		
 		// Create an initial employee
 		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
@@ -47,7 +53,7 @@ public class MarketStructure extends Structure {
 		MarketAnimationPanel panel = (MarketAnimationPanel)p;
 		MarketEmployeeGui employeeGui = new MarketEmployeeGui(newEmployee, panel, 1, 3);
 		employee.setGui(employeeGui);
-		p.addGui(employeeGui);
+		panel.addGui(employeeGui);
 		
 		// Initialize delivery truck
 		this.deliveryTruck = new TruckAgent(this);
@@ -91,12 +97,35 @@ public class MarketStructure extends Structure {
 	public Role getRole(Intention role) {
 		switch (role) {
 		case MarketManager:
+			isOpen = true;
 			return manager;
 			
 		case MarketEmployee:
 			return employee;
+			
+		case MarketConsumerGoods:
+		case MarketConsumerCar:			
+			
+			return createConsumer();
+			
 		}
 		return null;
+	}
+	
+	/**
+	 * Creates a new MarketConsumerRole with a corresponding gui element, and adds it to the panel
+	 */
+	public MarketConsumerRole createConsumer() {
+		MarketConsumerRole newConsumer = new MarketConsumerRole();
+		
+		// Create a consumer gui and add it to the panel
+		MarketConsumerGui newGui = new MarketConsumerGui();
+		newConsumer.setGui(newGui);
+		newGui.setRole(newConsumer);
+		panel.addGui(newGui);
+		newConsumer.setStructure(this);
+		
+		return newConsumer;
 	}
 	
 	/**
@@ -135,8 +164,17 @@ public class MarketStructure extends Structure {
 
 	@Override
 	public void updateTime(CityTime time) {
-		// TODO Auto-generated method stub
 		
+		if (time.equalsIgnoreDay(this.closingTime)) {
+			// Message everyone to go home
+			manager.msgClosingTime();
+			isOpen = false;
+		}
+		
+	}
+	
+	public boolean isOpen() {
+		return isOpen;
 	}
 
 }

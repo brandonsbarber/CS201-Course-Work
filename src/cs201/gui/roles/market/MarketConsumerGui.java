@@ -30,7 +30,7 @@ public class MarketConsumerGui implements Gui {
 		role = c;
 		xPos = START_X;
 		yPos = START_Y;
-		isPresent = true;
+		isPresent = false;
 	}
 
 	public void updatePosition() {
