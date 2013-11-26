@@ -20,8 +20,8 @@ public class LandlordRenterInteractionTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		renterPerson = new PersonAgent("Renter");
-		landlordPerson = new PersonAgent("Landlord");
+		renterPerson = new PersonAgent("Renter", null);
+		landlordPerson = new PersonAgent("Landlord", null);
 		renterRole = new RenterRole();
 		landlordRole = new LandlordRole();
 		

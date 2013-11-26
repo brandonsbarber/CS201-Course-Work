@@ -80,9 +80,11 @@ public class PersonAgent extends Agent implements Person {
 		this.animation = new Semaphore(0);
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
 		this.passengerRole = new PassengerRole(null);
-		PassengerGui pGui = new PassengerGui(passengerRole, panel);
-		this.passengerRole.setGui(pGui);
-		this.panel.addGui(pGui);
+		if (p != null) {
+			PassengerGui pGui = new PassengerGui(passengerRole, panel,0,0);
+			this.passengerRole.setGui(pGui);
+			this.panel.addGui(pGui);
+		}
 		this.passengerRole.setPerson(this);
 		this.planner = Collections.synchronizedList(new LinkedList<Action>());
 		this.currentAction = null;
