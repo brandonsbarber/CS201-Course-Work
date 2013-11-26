@@ -379,12 +379,17 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		location.y = (int)s.getY();
 		
 		int leftX = location.x/GRID_SIZE - 2;
-		int rightX = location.x/GRID_SIZE + 2;
+		int rightX = (int)((1.0*location.x+s.width)/GRID_SIZE) + 1;
 		int upY = location.y/GRID_SIZE - 2;
-		int downY = location.y/GRID_SIZE + 2;
-
+		int downY = (int)((1.0*location.y+s.height)/GRID_SIZE) + 1;
+		System.out.println("DownY: "+downY);
 		
-		if(leftX >= 0 && drivingMap[location.y/GRID_SIZE][leftX].isValid())
+		if(downY < drivingMap.length && drivingMap[downY][location.x/GRID_SIZE].isValid())
+		{
+			location.y = downY*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		else if(leftX >= 0 && drivingMap[location.y/GRID_SIZE][leftX].isValid())
 		{
 			location.x = leftX*GRID_SIZE;
 			s.setParkingLocation(location);
@@ -399,11 +404,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			location.y = upY*GRID_SIZE;
 			s.setParkingLocation(location);
 		}
-		else if(downY < drivingMap.length && drivingMap[downY][location.x/GRID_SIZE].isValid())
-		{
-			location.y = downY*GRID_SIZE;
-			s.setParkingLocation(location);
-		}
+		
 		
 		CarAgent car = new CarAgent();
 		VehicleGui gui;

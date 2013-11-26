@@ -221,6 +221,7 @@ public class PassengerRole extends Role implements Passenger
 			Do("Populating waypoints for bus");
 			waypoints.add(new Move(stops.get(0),MoveType.Walk));
 			waypoints.add(new Move(stops.get(1),MoveType.Bus));
+			waypoints.add(new Move(stops.get(1),MoveType.Walk));
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 		else
@@ -293,9 +294,13 @@ public class PassengerRole extends Role implements Passenger
 					((Bus)currentVehicle).msgLeaving(this);
 				}
 				currentVehicle = null;
+				gui.setLocation(currentLocation.getParkingLocation().x, currentLocation.getParkingLocation().y);
+			}
+			else
+			{
+				gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
 			}
 			gui.setPresent(true);
-			gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
 			state = PassengerState.None;
 		}
 		else if (currentVehicle instanceof Bus)
