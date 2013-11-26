@@ -14,6 +14,7 @@ import java.util.Queue;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import cs201.gui.CityPanel;
 import cs201.gui.CityPanel.DrivingDirection;
@@ -27,11 +28,13 @@ public class PassengerGui implements Gui
 	class MyPoint extends Point
 	{
 		MyPoint prev;
+		WalkingDirection move;
 		
-		public MyPoint(int i, int j, MyPoint previous)
+		public MyPoint(int i, int j, MyPoint previous,WalkingDirection moveDir)
 		{
 			super(i,j);
 			prev = previous;
+			move = moveDir;
 		}
 		
 		public boolean equals(MyPoint p)
@@ -41,7 +44,6 @@ public class PassengerGui implements Gui
 	}
 	
 	public static ArrayList<BufferedImage> movementSprites;
-	
 	
 	private PassengerRole pass;
 	
@@ -106,7 +108,6 @@ public class PassengerGui implements Gui
 	
 	public void doGoToLocation(Structure structure)
 	{
-		System.out.println("GOING TO "+structure.getEntranceLocation());
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
@@ -120,36 +121,14 @@ public class PassengerGui implements Gui
 	{
 		WalkingDirection[][] map = city.getWalkingMap();
 		
-		for(int y = 0; y < map.length; y++)
-		{
-			for(int x = 0; x < map[y].length; x++)
-			{
-				if(map[y][x].isValid())
-				{
-					System.out.print(map[y][x].ordinal());
-				}
-				else
-				{
-					System.out.print(" ");
-				}
-			}
-			System.out.println();
-		}
+		moves = new Stack<WalkingDirection>();
 		
 		Queue<MyPoint> location = new LinkedList<MyPoint>();
-		Queue<WalkingDirection> move = new LinkedList<WalkingDirection>();
 		
 		ArrayList<MyPoint> visitedPoints = new ArrayList<MyPoint>();
 		
-		MyPoint startLoc = new MyPoint(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE,null);
-		MyPoint destination = new MyPoint(destX/CityPanel.GRID_SIZE,destY/CityPanel.GRID_SIZE,null);
-		
-		System.out.println("StartLoc: "+startLoc);
-		
-		System.out.println("Destination: "+destination);
-		
-		
-		Stack<MyPoint> solution = new Stack<MyPoint>();
+		MyPoint startLoc = new MyPoint(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE,null,WalkingDirection.None);
+		MyPoint destination = new MyPoint(destX/CityPanel.GRID_SIZE,destY/CityPanel.GRID_SIZE,null,WalkingDirection.None);
 		
 		location.add(startLoc);
 		visitedPoints.add(startLoc);
@@ -158,14 +137,12 @@ public class PassengerGui implements Gui
 		while(!location.isEmpty())
 		{
 			MyPoint p = location.remove();
-			System.out.println("CURRENT POINT: "+p);
 			if(p.equals(destination))
 			{
-				System.out.println("WE FOUND A WINNER");
 				MyPoint head = p;
 				while(head != null)
 				{
-					System.out.println(head.x+" "+head.y);
+					moves.add(head.move);
 					head = head.prev;
 				}
 				break;
@@ -196,8 +173,15 @@ public class PassengerGui implements Gui
 			}
 		}
 		
-		System.out.println("End of loop.");
-		
+		if(moves.isEmpty())
+		{
+			JOptionPane.showMessageDialog(null,""+pass.getName()+": I cannot find a path.");
+		}
+		else
+		{
+			//clear first element
+			moves.pop();
+		}
 	}
 
 	private MyPoint getPointFromDirection(MyPoint p, WalkingDirection dir)
@@ -205,15 +189,15 @@ public class PassengerGui implements Gui
 		switch(dir)
 		{
 		case East:
-			return new MyPoint(p.x+1,p.y,p);
+			return new MyPoint(p.x+1,p.y,p,dir);
 		case North:
-			return new MyPoint(p.x,p.y-1,p);
+			return new MyPoint(p.x,p.y-1,p,dir);
 		case South:
-			return new MyPoint(p.x,p.y+1,p);
+			return new MyPoint(p.x,p.y+1,p,dir);
 		case West:
-			return new MyPoint(p.x-1,p.y,p);
+			return new MyPoint(p.x-1,p.y,p,dir);
 		default:
-			return new MyPoint(p.x,p.y-1,p);
+			return new MyPoint(p.x,p.y-1,p,WalkingDirection.North);
 		
 		}
 	}
@@ -240,35 +224,6 @@ public class PassengerGui implements Gui
 				pass.msgAnimationFinished ();
 				return;
 			}
-			if(getDirection(city.getWalkingMap(),x/city.GRID_SIZE,y/city.GRID_SIZE) == WalkingDirection.None)
-			{
-				int xDistance = destX - x;
-				int yDistance = destY - y;
-				
-				if(Math.abs(xDistance) > Math.abs(yDistance))
-				{
-					if(xDistance < 0)
-					{
-						currentDirection = WalkingDirection.West;
-					}
-					else
-					{
-						currentDirection = WalkingDirection.East;
-					}
-				}
-				else
-				{
-					if(yDistance < 0)
-					{
-						currentDirection = WalkingDirection.North;
-					}
-					else
-					{
-						currentDirection = WalkingDirection.South;
-					}
-				}
-				
-			}
 			switch(currentDirection)
 			{
 				case East:
@@ -286,23 +241,12 @@ public class PassengerGui implements Gui
 				default:
 					break;
 			}
-			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0)
+			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
-				WalkingDirection[][] map = city.getWalkingMap();
-				
-				WalkingDirection square = getDirection(map,x/city.GRID_SIZE,y/city.GRID_SIZE);
-				
-				if(currentDirection != square)
-				{
-					currentDirection = square;
-				}
-				switch(square)
-				{
-				case Turn:
-					junction(map,x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
-					break;
-				}
+				currentDirection = moves.pop();
+				return;
 			}
+			
 		}
 	}
 	
