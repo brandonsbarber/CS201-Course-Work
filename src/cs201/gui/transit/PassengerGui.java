@@ -99,6 +99,7 @@ public class PassengerGui implements Gui
 			g.drawImage (movementSprites.get(currentDirection.ordinal()),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
 		g.setColor(Color.BLACK);
 		g.drawString(""+destination, x,y);
+		g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
 		//g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 	}
 
