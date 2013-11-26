@@ -85,7 +85,6 @@ public class PassengerGui implements Gui
 	
 	public void doGoToLocation(Structure structure)
 	{
-		System.out.println("Going to location. "+structure);
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
@@ -98,7 +97,8 @@ public class PassengerGui implements Gui
 	{
 		g.setColor(Color.RED);
 			g.drawImage (movementSprites.get(currentDirection.ordinal()),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
-
+		g.setColor(Color.BLACK);
+		g.drawString(""+destination, x,y);
 		//g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 	}
 
@@ -109,7 +109,32 @@ public class PassengerGui implements Gui
 		{
 			if(getDirection(city.getWalkingMap(),x/city.GRID_SIZE,y/city.GRID_SIZE) == WalkingDirection.None)
 			{
-				currentDirection = WalkingDirection.North;
+				int xDistance = destX - x;
+				int yDistance = destY - y;
+				
+				if(Math.abs(xDistance) > Math.abs(yDistance))
+				{
+					if(xDistance < 0)
+					{
+						currentDirection = WalkingDirection.West;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.East;
+					}
+				}
+				else
+				{
+					if(yDistance < 0)
+					{
+						currentDirection = WalkingDirection.North;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.South;
+					}
+				}
+				
 			}
 			switch(currentDirection)
 			{

@@ -32,6 +32,7 @@ import cs201.helper.transit.BusRoute;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
 import cs201.structures.transit.BusStop;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
@@ -145,12 +146,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private List<BusStop> stops;
 
-	private static final boolean SHOW_DEBUG = false;
+	private static final boolean SHOW_DEBUG = true;
 	
 	
 	public CityPanel()
 	{
-		Timer timer = new Timer(1000/120,this);
+		Timer timer = new Timer(1000/240,this);
 		
 		buildings = Collections.synchronizedList(new ArrayList<Structure>());
 		guis = Collections.synchronizedList(new ArrayList<Gui>());
@@ -167,23 +168,23 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		populateDrivingMap();
 		//Testing Hacks
 		
-		stops.add(new BusStop(22*25,12*25,25,25,1, null));
-		stops.add(new BusStop(12*25,12*25,25,25,2, null));
-		stops.add(new BusStop(2*25,12*25,25,25,3, null));
-		stops.add(new BusStop(22*25,2*25,25,25,4, null));
-		stops.add(new BusStop(12*25,2*25,25,25,5, null));
-		stops.add(new BusStop(2*25,2*25,25,25,6, null));
+		stops.add(new BusStop(22*25,13*25,25,25,1, null));
+		stops.add(new BusStop(12*25,13*25,25,25,2, null));
+		stops.add(new BusStop(2*25,13*25,25,25,3, null));
+		stops.add(new BusStop(22*25,1*25,25,25,4, null));
+		stops.add(new BusStop(12*25,1*25,25,25,5, null));
+		stops.add(new BusStop(2*25,1*25,25,25,6, null));
 		
 		for(BusStop stop : stops)
 		{
 			buildings.add(stop);
-			stop.setParkingLocation(new Point((int)stop.x,(int)stop.y));
+			stop.setParkingLocation(new Point((int)stop.x,((int)stop.y==25?2*25:12*25)));
 			stop.setEntranceLocation(new Point((int)stop.x,(int)stop.y));
 		}
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);
 		VehicleGui busG;
-		guis.add(busG = new BusGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
+		guis.add(busG = new BusGui(bus,this,(int)stops.get(0).getParkingLocation().x,(int)stops.get(0).getParkingLocation().y));
 		
 		bus.setGui(busG);
 		
@@ -464,6 +465,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				g2.setColor(Color.BLUE);
 				g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
 				g2.fill(new Rectangle(s.getEntranceLocation().x,s.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
+				
+				g2.setColor(Color.WHITE);
+				g2.drawString("P",s.getParkingLocation().x,s.getParkingLocation().y+25);
+				g2.drawString("E",s.getEntranceLocation().x,s.getEntranceLocation().y+25);
+				
 			}
 		}
 		
@@ -565,12 +571,21 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		PassengerRole role = new PassengerRole(stops.get(1));
 		PassengerTestAgent agent = new PassengerTestAgent(role);
 		role.setBusStops(stops);
-		role.addCar(car);
+		//role.addCar(car);
 		PassengerGui pgui = new PassengerGui(role,this);
 		role.setGui(pgui);
 		guis.add(pgui);
 		role.msgGoTo(s);
 		agent.startThread();
+	}
+	
+	public void addStructure(Structure s, Point parking,Point entrance)
+	{
+		buildings.add(s);
+		s.setParkingLocation(parking);
+		s.setEntranceLocation(entrance);
+		
+		
 	}
 	
 	public List<Structure> getStructures() {

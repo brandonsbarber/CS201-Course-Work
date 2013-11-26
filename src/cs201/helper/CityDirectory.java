@@ -14,6 +14,7 @@ import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.structures.bank.Bank;
 import cs201.structures.market.MarketStructure;
+import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.Restaurant;
 
@@ -45,6 +46,7 @@ public class CityDirectory implements ActionListener {
 	private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	private List<MarketStructure> markets = Collections.synchronizedList(new ArrayList<MarketStructure>());
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
+	private List<ApartmentComplex> apartments = Collections.synchronizedList(new ArrayList<ApartmentComplex>());
 	
 	// SimCity201 Time Stuff
 	public void startTime() {
@@ -94,6 +96,12 @@ public class CityDirectory implements ActionListener {
 		
 		synchronized(residences) {
 			for (Residence r : residences) {
+				r.updateTime(time);
+			}
+		}
+		
+		synchronized(apartments) {
+			for (ApartmentComplex r : apartments) {
 				r.updateTime(time);
 			}
 		}
@@ -205,4 +213,23 @@ public class CityDirectory implements ActionListener {
 		
 		return null;
 	}	
+	
+	// Apartment Stuff
+	public void addApartment(ApartmentComplex newApartment) {
+		apartments.add(newApartment);
+	}
+	
+	public List<ApartmentComplex> getApartments() {
+		return apartments;
+	}
+	
+	public ApartmentComplex getApartmentWithID(int id) {
+		for (ApartmentComplex r : apartments) {
+			if (r.getId() == id) {
+				return r;
+			}
+		}
+		
+		return null;
+	}
 }
