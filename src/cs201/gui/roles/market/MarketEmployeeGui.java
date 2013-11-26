@@ -38,9 +38,7 @@ public class MarketEmployeeGui implements Gui {
 	Position ultimateDestination = null;
 	Position nextPosition = null;
 	Position homePosition = null;
-	
-	private enum IsleMovementState {MOVE_OUT_OF_ISLE, MOVE_TO_ISLE, MOVE_TO_SHELF};
-	
+		
 	private boolean animating = false;
 	
 	MarketAnimationPanel animPanel;
@@ -200,6 +198,13 @@ public class MarketEmployeeGui implements Gui {
 	
 	public void doGoHome() {
 		guiMoveFromCurrentPositionTo(homePosition);
+	}
+	
+	public void doLeaveMarket() {
+		animating = true;
+		guiMoveFromCurrentPositionTo(new Position(1, 1));
+		ultimateDestination = new Position(-1, -1);
+		positionQueue.add(ultimateDestination);
 	}
 	
 	private int isleNumber(int x) {

@@ -116,8 +116,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
-//		gui.doLeave()
-		gui.setPresent(false);
+		if (gui != null) {
+			gui.doLeaveMarket();
+			pauseForAnimation();
+			gui.setPresent(false);
+		}
 	}
 	
 	private void processRequest(RetrievalRequest request) {
