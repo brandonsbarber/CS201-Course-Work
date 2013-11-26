@@ -97,6 +97,12 @@ public class ResidentGui implements Gui {
 		yDestination = exitY;
 		animating = true;
 	}
+	
+	public void enter() {
+		xDestination = startX;
+		yDestination = startY;
+		animating = true;
+	}
 
 	@Override
 	public boolean isPresent() {

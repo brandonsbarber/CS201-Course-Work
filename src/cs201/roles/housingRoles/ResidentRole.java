@@ -107,6 +107,8 @@ public class ResidentRole extends Role implements Resident {
 				break;
 		}
 		this.gui.setPresent(true);
+		gui.enter();
+		this.acquireSemaphore();
 	}
 	
 	private void actionFinished() {
