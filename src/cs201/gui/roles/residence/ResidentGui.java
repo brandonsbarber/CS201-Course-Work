@@ -14,6 +14,11 @@ public class ResidentGui implements Gui {
 	private final int WIDTH = 20, HEIGHT = 20;
 	private final int startX = 100, startY = 100;
 	
+	private int fridgeX, fridgeY;
+	private int exitX, exitY;
+	private int bedX, bedY;
+	private int tableX, tableY;
+	
 	private int xPos;
 	private int yPos;
 	private int xDestination;
@@ -69,11 +74,19 @@ public class ResidentGui implements Gui {
 	
 	public void walkToFridge() {
 		//set destination to fridge from residence layout
+		xDestination = fridgeX;
+		yDestination = fridgeY;
 	}
 	
 	public void goToBed() {
 		//animation to walk to the bed
+		xDestination = bedX;
+		yDestination = bedY;
 		//animation to get in bed
+	}
+	
+	public void exit() {
+		
 	}
 
 	@Override
@@ -89,6 +102,25 @@ public class ResidentGui implements Gui {
 		else {
 			isPresent=true;
 		}
+	}
+	
+	public void setBed(int x, int y) {
+		bedX = x;
+		bedY = y;
+	}
+	
+	public void setFridge(int x, int y) {
+		fridgeX = x;
+		fridgeY = y;
+	}
+	
+	public void setTable(int x, int y) {
+		tableX = x;
+		tableY = y;
+	}
+	
+	public void setExit(int y) {
+		exitY = y;
 	}
 
 }

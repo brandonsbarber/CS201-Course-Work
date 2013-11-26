@@ -14,6 +14,7 @@ public class BusAgent extends VehicleAgent implements Bus
 {
 	List<Passenger> passengers;
 	List<Passenger> justBoarded;
+	List<Passenger> removalList;
 	
 	BusRoute route;
 	
@@ -23,6 +24,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	{
 		passengers = Collections.synchronizedList(new ArrayList<Passenger>());
 		justBoarded = new ArrayList<Passenger>();
+		removalList = new ArrayList<Passenger>();
 		this.route = route;
 		sem = new Semaphore(0);
 		
@@ -44,7 +46,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		passengers.remove(p);
+		removalList.add(p);
 		sem.release();
 	}
 
@@ -99,6 +101,9 @@ public class BusAgent extends VehicleAgent implements Bus
 				e.printStackTrace();
 			}
 		}
+		passengers.removeAll(removalList);
+		removalList.clear();
+		
 		List<Passenger> newPassengers = s.getPassengerList(this);
 		
 		for(Passenger pass : newPassengers)
