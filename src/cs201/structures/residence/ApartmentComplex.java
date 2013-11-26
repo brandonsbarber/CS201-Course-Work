@@ -5,6 +5,10 @@ import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.residence.LandlordGui;
+import cs201.gui.roles.residence.ResidentGui;
+import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
+import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.roles.Role;
@@ -18,8 +22,14 @@ public class ApartmentComplex extends Structure {
 	
 	public ApartmentComplex (int x, int y, int width, int height, int id, StructurePanel p) {
 	    super(x, y, width, height, id, p);
-	    landlord = null;
+	    
+	    landlord = new LandlordRole();
 	    apartments = null;
+	    
+	    LandlordGui lGui = new LandlordGui(landlord);
+	    landlord.setGui(lGui);
+	    panel.addGui(lGui);
+	    ((ApartmentComplexAnimationPanel)panel).informLandlord(lGui);
 	}
 	
 	// Methods

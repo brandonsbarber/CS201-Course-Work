@@ -8,7 +8,7 @@ import cs201.gui.StructurePanel;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
-import cs201.gui.structures.market.MarketGui;
+import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
@@ -126,7 +126,7 @@ public class MarketStructure extends Structure {
 	 * @param quantity The number of inventory items the market has in stock
 	 * @param price A float price
 	 */
-	public void addInventory(String item, int quantity, int price) {
+	public void addInventory(String item, int quantity, float price) {
 		if (manager != null) {
 			manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry(item, quantity, price));
 		}

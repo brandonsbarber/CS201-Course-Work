@@ -19,6 +19,10 @@ public class LandlordGui implements Gui {
 	private int xDestination;
 	private int yDestination;
 	
+	private int deskX;
+	private int deskY;
+	
+	
 	public LandlordGui() {
 		this(null);
 	}
@@ -69,6 +73,8 @@ public class LandlordGui implements Gui {
 	
 	public void walkToDesk() {
 		// set destination equal to office locations
+		xDestination = deskX;
+		yDestination = deskY;
 	}
 	
 	public void leaveOffice() {
@@ -79,6 +85,11 @@ public class LandlordGui implements Gui {
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
 		return isPresent;
+	}
+	
+	public void setDesk(int x, int y) {
+		deskX = x;
+		deskY = y;
 	}
 
 }

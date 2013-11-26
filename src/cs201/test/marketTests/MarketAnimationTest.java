@@ -66,6 +66,7 @@ public class MarketAnimationTest {
 		MarketConsumerGui consumer = new MarketConsumerGui();
 		animationPanel.addGui(consumer);
 		
+		// Just make the employees walk to random shelves
 		consumer.doWalkToManager();
 		Random generator = new Random();
 		while(true) {
