@@ -28,9 +28,9 @@ public class CarGui extends VehicleGui
 		g.fillRect(getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 		
 		g.setColor(Color.BLACK);
-		g.drawString(""+getVehicle().getClass(),getX(),getY());
+		g.drawString(""+getVehicle().getClass().getSimpleName(),getX(),getY());
 		
-		g.drawString(""+((CarAgent)getVehicle()).getPassenger(),getX()+CityPanel.GRID_SIZE,getY()+CityPanel.GRID_SIZE);
+		g.drawString(""+((CarAgent)getVehicle()).getPassenger().getClass().getSimpleName(),getX()+CityPanel.GRID_SIZE,getY()+CityPanel.GRID_SIZE);
 	}
 
 }
