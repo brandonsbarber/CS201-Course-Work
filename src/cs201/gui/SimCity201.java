@@ -16,14 +16,20 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
+import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.transit.BusGui;
 import cs201.gui.transit.CarGui;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
+import cs201.helper.CityTime.WeekDay;
 import cs201.helper.transit.BusRoute;
+import cs201.interfaces.roles.housing.Renter;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
+import cs201.structures.residence.ApartmentComplex;
+import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 
@@ -210,6 +216,49 @@ public class SimCity201 extends JFrame {
 		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p6);
 		p6.startThread();
+	}
+	
+	private void normativeApartmentComplex() {
+		ApartmentComplexAnimationPanel acap = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
+		ApartmentComplex ac = new ApartmentComplex(14*25, 9*25, 25, 25, Structure.getNextInstance(), acap);
+		ac.setStructurePanel(acap);
+		ac.setClosingTime(new CityTime(14, 0));
+		buildingPanels.add(acap,""+ac.getId());
+		cityPanel.addStructure(ac, new Point(14*25,7*25), new Point(14*25, 8*25));
+		CityDirectory.getInstance().addApartment(ac);
+		
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res = new Residence(14*25, 10*25, 25, 25, Structure.getNextInstance(), resPanel, true);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(12*25, 10*25), new Point(13*25, 10*25));
+		CityDirectory.getInstance().addResidence(res);
+		
+		ResidenceAnimationPanel resPanel2 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res2 = new Residence(15*25, 9*25, 25, 25, Structure.getNextInstance(), resPanel2, true);
+		res2.setStructurePanel(resPanel2);
+		buildingPanels.add(resPanel2, ""+res2.getId());
+		cityPanel.addStructure(res2, new Point(17*25, 9*25), new Point(16*25, 9*25));
+		CityDirectory.getInstance().addResidence(res2);
+		
+		PersonAgent p1 = new PersonAgent("Renter",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		CityDirectory.getInstance().addPerson(p1);
+		
+		PersonAgent p2 = new PersonAgent("Landlord",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), res2, ac, Intention.ResidenceLandLord, res2, null);
+		CityDirectory.getInstance().addPerson(p2);
+		
+		ac.addApartment(res);
+		ac.getLandlord().addProperty(res, (Renter)res.getResident(), 30, WeekDay.Tuesday);
+		res.setApartmentComplex(ac);
+		
+		ac.addApartment(res2);
+		ac.getLandlord().addProperty(res2, (Renter)res2.getResident(), 30, WeekDay.Friday);		
+		res.setApartmentComplex(ac);
+		
+		p1.startThread();
+		p2.startThread();
 	}
 	
 	private void normativeWalking()
