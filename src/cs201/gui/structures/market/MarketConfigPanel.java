@@ -95,7 +95,7 @@ public class MarketConfigPanel extends JPanel implements ActionListener {
 		
 		// Confirm the add
 		String confirmation = "Successfully added " + amountValue + " " + item + "(s) at $" + String.format("%.2f", amountValue) + " each to the market's inventory!";
-		JOptionPane.showMessageDialog(this, confirmation);
+		JOptionPane.showMessageDialog(this, confirmation);	
 	}
 
 }
