@@ -16,6 +16,7 @@ public class LandlordRole extends Role implements Landlord {
 	List<myProperty> myProperties = new ArrayList<myProperty>();
 	double latePenalty = 40;
 	LandlordGui gui;
+	boolean closingTime;
 	
 	enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
 	
@@ -70,12 +71,28 @@ public class LandlordRole extends Role implements Landlord {
 		stateChanged();
 	}
 	
+	@Override
+	public void msgClosingTime() {
+		closingTime=true;
+		stateChanged();
+	}	
+	
+	public void msgAnimationDone() {
+		myPerson.animationRelease();
+	}
+	
 	// Scheduler
 	
 	public boolean pickAndExecuteAnAction() {
+		if (closingTime) {
+			exitOffice();
+			return false;
+		}
+		
 		int currentDay = myPerson.getTime().day.ordinal();
 		currentDay = (currentDay + 1) % WeekDay.values().length;
 		WeekDay tomorrow = WeekDay.values()[currentDay];
+		
 		for (myProperty mP:myProperties) {
 			if (mP.state == RentState.paid) {
 				mP.state = RentState.notDue;
@@ -123,31 +140,41 @@ public class LandlordRole extends Role implements Landlord {
 	//Actions
 	
 	private void RequestRent(myProperty mP) {
+		Do("Requesting rent of "+mP.amtDue+" from "+((RenterRole)mP.renter).getName());
         mP.renter.msgRentDueYouOwe(mP.amtDue);
         mP.state = RentState.dueNotified;
 	}
 
 	private void RequestLateRent(myProperty mP) {
+		Do("Requesting additional late rent penalty of "+latePenalty+" from "+((RenterRole)mP.renter).getName());
         mP.renter.msgRentLateYouOweAdditional(latePenalty);
         mP.state = RentState.lateNotified;
 	}
 
 	private void FixProperty(myProperty mP) {
 	//perform maintenance task on property
+		Do("Performing maintenance.");
         mP.performMaintenance();
 	}
 	
 	private void goToDesk() { //animation
+		Do("Walking to my desk.");
 		gui.walkToDesk();
+		this.acquireSemaphore();
 	}
 	
 	private void exitOffice() { // animation
+		Do("Exiting my office");
+		isActive = false;
 		gui.leaveOffice();
+		this.acquireSemaphore();
+		gui.setPresent(false);
 	}
 	
 	// Utilities
 	
 	public void addProperty(Residence res, Renter renter, double rentAmount, WeekDay rentDueDate) {
+		Do("Added a new property to my list of properties.");
         myProperty mP = new myProperty(res, renter, rentAmount, rentDueDate);
         myProperties.add(mP);
 	}
@@ -162,11 +189,6 @@ public class LandlordRole extends Role implements Landlord {
 		
 	}
 
-	@Override
-	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public void setGui(LandlordGui newGui) {
 		gui = newGui;

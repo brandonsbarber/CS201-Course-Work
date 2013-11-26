@@ -9,16 +9,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import cs201.agents.PersonAgent;
-import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketConfigPanel;
+import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
-import cs201.roles.marketRoles.MarketEmployeeRole;
-import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
+import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
+import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.RestaurantMatt;
 
 public class SimCity201 extends JFrame {
@@ -91,28 +90,37 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		
-		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(0,this);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,0,g);
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(10, 30));
-		buildingPanels.add(g,""+0);
+		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
-		CityDirectory.getInstance().addRestaurant(r);
+		CityDirectory.getInstance().addRestaurant(r);		
 		
-		MarketAnimationPanel mG = new MarketAnimationPanel(1,this, 50, 50);
-		MarketStructure m = new MarketStructure(225,100,50,50,1,mG);
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);System.out.println(mG.hashCode());
+		MarketStructure m = new MarketStructure(225,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
-		buildingPanels.add(mG,""+1);
+		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
 		marketConfigPanel1.setStructure(m);
 		
-		MarketAnimationPanel mG2 = new MarketAnimationPanel(2,this, 50, 50);
-		MarketStructure m2 = new MarketStructure(19*25,9*25,50,50,2,mG2);
+		/*
+		MarketAnimationPanel mG2 = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);
+		MarketStructure m2 = new MarketStructure(19*25,9*25,50,50,Structure.getNextInstance(),mG2);
 		m2.setStructurePanel(mG2);
-		buildingPanels.add(mG2,""+2);
+		buildingPanels.add(mG2,""+m2.getId());
 		cityPanel.addStructure(m2);
 		CityDirectory.getInstance().addMarket(m2);
+		*/
+		
+		ResidenceAnimationPanel rap = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence re = new Residence(19*25 ,9*25 ,50 ,50, Structure.getNextInstance(), rap, false);
+		re.setStructurePanel(rap);
+		buildingPanels.add(rap, "" + re.getId());
+		cityPanel.addStructure(re);
+		CityDirectory.getInstance().addResidence(re);
 		
 		pack();
 		CityDirectory.getInstance().startTime();

@@ -321,15 +321,16 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
+		Do("Leaving work.");
 	}
 	
 	private void DoAskForBreak() {
-		System.out.println("Waiter " + this.toString() + " asking host " + ((RestaurantHostRoleMatt) restaurant.getHost()).getName() + " to go on break.");
+		Do("Asking " + (RestaurantHostRoleMatt) restaurant.getHost() + " to go on break.");
 		waiterGui.setWaitingForBreakResponse();
 	}
 	
 	private void DoGoOnBreak() {
-		System.out.println("Waiter " + this.toString() + " going on break.");
+		Do("Going on break.");
 		waiterGui.GoToBreakPosition();
 	}
 	
@@ -347,11 +348,11 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGoOffBreak() {
-		System.out.println("Waiter " + this.toString() + "'s break is over. Returning to work.");
+		Do("Break is over. Returning to work.");
 	}
 	
 	private void DoBreakNotAllowed() {
-		System.out.println("Waiter " + this.toString() + " says his break was denied. :(");
+		Do("Break was denied. :(");
 		state = WaiterState.none;
 		waiterGui.setOffBreak();
 	}
@@ -365,17 +366,8 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		}
 	}
 	
-	private void DoGoToCustomer(MyCustomer m) {
-		waiterGui.GoToCustomer(m.customer);
-		try {
-			atTargetPosition.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void DoSeatCustomer(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " seating customer " + m.customer.toString() + ".");	
+		Do("Seating " + m.customer.toString() + ".");
 		
 		for (TableMatt t : ((RestaurantHostRoleMatt) restaurant.getHost()).getTables()) {
 			if (t.tableNum() == m.tableNumber) {
@@ -393,7 +385,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoTakeCustomerOrder(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " taking customer " + m.customer.toString() + "'s order.");
+		Do("Taking " + m.customer.toString() + "'s order.");
 		waiterGui.GoToCustomer(m.customer);
 		try {
 			atTargetPosition.acquire();
@@ -403,7 +395,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	protected void DoGiveOrderToCook(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " giving customer " + m.customer.toString() + "'s order to the cook.");
+		Do("Giving " + m.customer.toString() + "'s order to the cook.");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
 		try {
@@ -414,7 +406,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	protected void DoPutOrderOnStand(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " putting customer " + m.customer.toString() + "'s order on rotating stand.");
+		Do("Putting " + m.customer.toString() + "'s order on rotating stand.");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
 		try {
@@ -425,7 +417,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoRetakeCustomerOrder(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " retaking customer " + m.customer.toString() + "'s order");
+		Do("Retaking " + m.customer.toString() + "'s order");
 		waiterGui.setMessage("!" + m.choice + "!");
 		waiterGui.GoToCustomer(m.customer);
 		try {
@@ -437,7 +429,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoFeedCustomer(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " bringing food to customer " + m.customer.toString() + ".");
+		Do("Bringing food to " + m.customer.toString() + ".");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.PLATINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.PLATINGAREA_Y);
 		try {
@@ -458,7 +450,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGetCustomerCheck(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " getting check for " + m.customer.toString() + ".");
+		Do("Getting check for " + m.customer.toString() + ".");
 		waiterGui.GoToCustomer(m.customer);
 		waiterGui.setMessage("");
 		try {
@@ -479,7 +471,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGiveCustomerCheck(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " retrieving check from " + ((RestaurantCashierRoleMatt) this.restaurant.getCashier()).toString() + " for customer " + m.customer.toString() + ".");
+		Do("Retrieving check from " + ((RestaurantCashierRoleMatt) this.restaurant.getCashier()).toString() + " for customer " + m.customer.toString() + ".");
 		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX,
 								cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY + cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
 		waiterGui.setMessage("");
@@ -500,7 +492,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoCustomerLeaving(MyCustomer m) {
-		System.out.println("Waiter " + this.toString() + " telling host that customer " + m.customer.toString() + " is leaving.");
+		Do("Telling host that " + m.customer.toString() + " is leaving.");
 	}
 	
 	private void DoGoToEntrance() {

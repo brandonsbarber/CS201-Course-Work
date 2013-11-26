@@ -38,7 +38,7 @@ public class ApartmentComplex extends Structure {
 	    landlord = l;
 	}
 	
-	public Landlord getLandlord() {
+	public LandlordRole getLandlord() {
 	    return landlord;
 	}
 	

@@ -29,8 +29,6 @@ public class LandlordRenterInteractionTest {
 		renterRole.setLandlord(landlordRole);
 		landlordRole.setPerson(landlordPerson);
 		
-		
-		
 		renterRole.getPerson().addMoney(40);
 	}
 

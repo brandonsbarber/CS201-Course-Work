@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public abstract class StructurePanel extends JPanel implements ActionListener {
-	String name;
+	private String name;
 	SimCity201 city;
 	
     private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
@@ -24,6 +24,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
     private Timer timer;
 
 	public StructurePanel(int i, SimCity201 sc) {
+		
 		name = "" + i;
 		city = sc;
 		

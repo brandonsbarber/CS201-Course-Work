@@ -27,7 +27,7 @@ public class MarketStructure extends Structure {
 	 */
 	public MarketStructure(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
-		
+				
 		// Create a manager to manage this market
 		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
 		setManager(newManager);
@@ -52,6 +52,7 @@ public class MarketStructure extends Structure {
 		// Initialize delivery truck
 		this.deliveryTruck = new TruckAgent(this);
 		deliveryTruck.startThread();
+		
 	}
 
 	
