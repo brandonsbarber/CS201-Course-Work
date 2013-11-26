@@ -73,7 +73,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private String[][] cityGrid = 
 	{
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
+			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","4","4","4","4","T","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 	
 	private List<BusStop> stops;
@@ -99,9 +99,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		//Testing Hacks
 		
 		stops.add(new BusStop(2*25,2*25,25,25,1, null));
-		stops.add(new BusStop(7*25,2*25,25,25,2, null));
-		stops.add(new BusStop(7*25,7*25,25,25,3, null));
-		stops.add(new BusStop(2*25,7*25,25,25,4, null));
+		stops.add(new BusStop(22*25,2*25,25,25,2, null));
+		stops.add(new BusStop(22*25,12*25,25,25,3, null));
+		stops.add(new BusStop(2*25,12*25,25,25,4, null));
 		
 		for(BusStop stop : stops)
 		{
@@ -234,10 +234,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				{
 					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
 				}
+				else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
+				{
+					g2.setColor(Color.GRAY.darker());
+				}
 				
 				if(drivingMap[y][x].isValid())
 				{
-					g2.setColor(Color.BLUE);
+					//g2.setColor(Color.BLUE);
 				}
 				
 				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
