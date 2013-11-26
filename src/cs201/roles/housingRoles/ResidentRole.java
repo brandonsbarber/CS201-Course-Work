@@ -3,6 +3,7 @@ package cs201.roles.housingRoles;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.Gui;
 import cs201.gui.roles.residence.ResidentGui;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
@@ -148,5 +149,9 @@ public class ResidentRole extends Role implements Resident {
 	
 	public void setGui(ResidentGui newGui) {
 		gui = newGui;
+	}
+	
+	public Gui getGui() {
+		return gui;
 	}
 }

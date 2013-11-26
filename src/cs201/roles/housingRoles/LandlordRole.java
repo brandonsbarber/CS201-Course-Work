@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.Gui;
 import cs201.gui.roles.residence.LandlordGui;
 import cs201.gui.roles.residence.ResidentGui;
 import cs201.helper.CityTime.WeekDay;
@@ -192,5 +193,9 @@ public class LandlordRole extends Role implements Landlord {
 	
 	public void setGui(LandlordGui newGui) {
 		gui = newGui;
+	}
+	
+	public Gui getGui() {
+		return gui;
 	}
 }

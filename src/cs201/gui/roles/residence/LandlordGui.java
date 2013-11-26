@@ -33,7 +33,7 @@ public class LandlordGui implements Gui {
 		xDestination = xPos;
 		yDestination = yPos;
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
 	}
 
 	@Override
