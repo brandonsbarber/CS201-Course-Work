@@ -13,7 +13,7 @@ public class MockBankCustomer extends Mock implements BankCustomer {
 	public MockBankCustomer(String name) {
 		super(name);
 	}
-	
+
 	//================================================================================
     // MOCK: Messages
     //================================================================================
@@ -65,35 +65,6 @@ public class MockBankCustomer extends Mock implements BankCustomer {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void msgMoneyIsDeposited() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgMoneyIsWithdrawn() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgOverdrawnAccount(double actBalance) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgLoanGranted() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgLoanDenied() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 }

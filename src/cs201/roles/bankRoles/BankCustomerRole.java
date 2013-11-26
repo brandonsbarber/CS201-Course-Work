@@ -10,11 +10,14 @@ public class BankCustomerRole extends Role implements BankCustomer {
     // Member Variables
     //================================================================================
 	
-	BankTellerRole myTeller;
+	String name = "";
+	
 	int accountNumber;
-	double accountBalance;
-	Intention intent;
-	CustomerState state = CustomerState.EnteringBank;
+	//double accountBalance;
+	
+	BankTellerRole myTeller;
+	CustomerAction intent;
+	CustomerState state;
 	
 	public enum CustomerState {
 	    EnteringBank,
@@ -28,12 +31,23 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	    LeavingBank
 	};
 	
-	public enum Intention {
+	public enum CustomerAction {
 	    OpenAccount,
 	    WithdrawMoney,
 	    DepositMoney,
 	    TakeOutLoan
 	};
+	
+	//================================================================================
+    // Constructors
+    //================================================================================
+	
+	public BankCustomerRole(String name, CustomerAction action) {
+		this.name = name;
+		this.state = CustomerState.EnteringBank;
+		this.intent = action;
+		this.accountNumber = myPerson.getBankAccountNumber();
+	}
 	
 	//================================================================================
     // Scheduler
