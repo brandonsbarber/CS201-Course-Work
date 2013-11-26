@@ -24,6 +24,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	String name = "";
 	List<MarketBill> marketBills = Collections.synchronizedList( new ArrayList<MarketBill>() );
 	MarketStructure structure;
+	boolean leaveMarket = false;
 	
 	enum MarketBillState {OUTSTANDING, PAID};
 	class MarketBill {
@@ -69,6 +70,11 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 			}
 		}
 		
+		if (leaveMarket) {
+			leaveMarket();
+			return true;
+		}
+		
 		return false;
 	}
 
@@ -78,6 +84,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	
 	public void msgHereIsYourTotal(MarketManager manager, float amount) {
+		Do("GOT TOTAL");
 		// Add the bill to our list
 		marketBills.add(new MarketBill(manager, amount, MarketBillState.OUTSTANDING));
 		
@@ -85,6 +92,10 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void msgHereAreYourItems(List<ItemRequest> items) {
+		Do("GOT ITEMS");
+		for (ItemRequest r : items) {
+			Do("Got " + r.item + r.amount);
+		}
 		// We bought everything on our list
 		myPerson.getMarketChecklist().clear();
 		
@@ -97,17 +108,24 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void startInteraction(Intention intent) {
+		Do("I WANT TO ORDER THESE ITEMS");
+		for (ItemRequest r : myPerson.getMarketChecklist()) {
+			Do("Got " + r.item + r.amount);
+		}
+		
+		leaveMarket = false;
 		
 		// Walk to the marketManager
 		if (gui != null) {
-				gui.doWalkToManager();
-				pauseForAnimation();
+			gui.setPresent(true);
+			gui.doWalkToManager();
+			pauseForAnimation();
 		}
 		
 		if (this.structure.isOpen()) {
 			structure.getManager().msgHereIsMyOrder(this,  myPerson.getMarketChecklist());
 		} else {
-			leaveMarket();
+			leaveMarket = true;
 		}
 		
 	}
@@ -136,8 +154,8 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	
 	private void leaveMarket() {
 		this.isActive = false;
-//		gui.doLeave()
-//		pauseForAnimation();
+		gui.doLeaveMarket();
+		pauseForAnimation();
 		gui.setPresent(false);
 	}
 	
