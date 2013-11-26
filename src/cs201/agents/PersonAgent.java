@@ -58,6 +58,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile CityTime sleepTime;
 	private volatile double moneyOnHand;
 	private volatile int hungerLevel;
+	private volatile boolean hungerEnabled;
 	private volatile Vehicle vehicle;
 	private volatile Structure home;
 	private volatile Structure workplace;
@@ -93,6 +94,7 @@ public class PersonAgent extends Agent implements Person {
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
 		this.sleepTime = new CityTime(INITIALSLEEPHOUR, INITIALSLEEPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
+		this.hungerEnabled = true;
 		this.hungerLevel = HUNGRY;
 		this.vehicle = null;
 		this.home = null;
@@ -135,7 +137,9 @@ public class PersonAgent extends Agent implements Person {
 	@Override
 	public void msgUpdateTime(CityTime newTime) {
 		int minutesPassed = CityTime.timeDifference(newTime, this.time);
-		hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
+		if (hungerEnabled) {
+			hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
+		}
 		
 		time.day = newTime.day;
 		time.hour = newTime.hour;
@@ -486,6 +490,14 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public int getHungerLevel() {
 		return this.hungerLevel;
+	}
+	
+	/**
+	 * Sets whether this person should get hungry over time
+	 * @param hungerEnable boolean
+	 */
+	public void setHungerEnabled(boolean hungerEnable) {
+		hungerEnabled = hungerEnabled;
 	}
 	
 	/**
