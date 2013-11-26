@@ -71,8 +71,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		}
 		
 		// If there's nothing else to do, go home
-		if (gui != null)
+		if (gui != null) {
 			gui.doGoHome();
+			pauseForAnimation();
+		}
 		
 		return false;
 	}
