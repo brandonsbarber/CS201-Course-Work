@@ -63,7 +63,7 @@ public class PassengerRoleTest extends TestCase
 		
 		assertTrue("Should execute an action and return true.",pass.pickAndExecuteAnAction());
 		
-		assertEquals("Should have one waypoint for a car.",1,pass.waypoints.size());
+		assertEquals("Should have two waypoints for a car.",2,pass.waypoints.size());
 		
 		pass.pickAndExecuteAnAction();
 		
@@ -95,10 +95,18 @@ public class PassengerRoleTest extends TestCase
 		
 		assertEquals("Car should have three log calls. ",3,car.log.size());
 		
-		assertEquals("waypoints should be empty.",0,pass.waypoints.size());
+		assertEquals("waypoints should have one entry.",1,pass.waypoints.size());
 		
-		assertFalse("Passenger should return false to stop execution.",pass.pickAndExecuteAnAction());
+		assertTrue("Passenger should return true to walk.",pass.pickAndExecuteAnAction());
 		
+		assertEquals("Passenger's state should be arrived.",PassengerState.Arrived,pass.state);
+		
+		assertTrue("Passenger should return true .",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Passenger's state should be none.",PassengerState.None,pass.state);
+
+		assertFalse("Passenger should return false .",pass.pickAndExecuteAnAction());
+
 		assertFalse("Should not be active.",pass.getActive());
 	}
 	
@@ -114,7 +122,7 @@ public class PassengerRoleTest extends TestCase
 		
 		assertTrue("Should execute an action and return true.",pass.pickAndExecuteAnAction());
 		
-		assertEquals("Should have one waypoint for a car.",1,pass.waypoints.size());
+		assertEquals("Should have two waypoints for a car.",2,pass.waypoints.size());
 		
 		pass.pickAndExecuteAnAction();
 		
@@ -153,10 +161,18 @@ public class PassengerRoleTest extends TestCase
 		
 		assertEquals("Car should have three log calls. ",3,car.log.size());
 		
-		assertEquals("waypoints should be empty.",0,pass.waypoints.size());
+		assertEquals("waypoints should have one entry.",1,pass.waypoints.size());
 		
-		assertFalse("Passenger should return false to stop execution.",pass.pickAndExecuteAnAction());
+		assertTrue("Passenger should return true to walk.",pass.pickAndExecuteAnAction());
 		
+		assertEquals("Passenger's state should be arrived.",PassengerState.Arrived,pass.state);
+		
+		assertTrue("Passenger should return true .",pass.pickAndExecuteAnAction());
+		
+		assertEquals("Passenger's state should be none.",PassengerState.None,pass.state);
+
+		assertFalse("Passenger should return false .",pass.pickAndExecuteAnAction());
+
 		assertFalse("Should not be active.",pass.getActive());
 	}
 	

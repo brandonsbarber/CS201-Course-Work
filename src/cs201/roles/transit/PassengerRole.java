@@ -171,6 +171,7 @@ public class PassengerRole extends Role implements Passenger
 		{
 			Do("Populating waypoints for car");
 			waypoints.add (new Move(destination, MoveType.Car));
+			waypoints.add (new Move(destination,MoveType.Walk));
 			return;
 		}
 		
