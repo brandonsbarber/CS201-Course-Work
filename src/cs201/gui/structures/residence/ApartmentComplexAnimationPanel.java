@@ -3,9 +3,13 @@ package cs201.gui.structures.residence;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JPanel;
 
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
@@ -39,23 +43,17 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 		
+		g2.setColor(getBackground());
+		g2.fillRect(0, 0, WINDOWX, WINDOWY); //clear screen
+		
 		g2.setColor(Color.darkGray);
 		g2.fillRect(deskX, deskY, deskWidth, deskHeight);
 		
 		g2.setColor(Color.WHITE);
 		g2.drawString("Desk", deskX, deskY+deskHeight);
 		
-	    for(Gui gui : guis) {
-	        if (gui.isPresent()) {
-	            gui.updatePosition();
-	            gui.draw(g2);
-	        }
-	    }
+	    super.paintComponent(g);
 
-	}
-
-	public void addGui(Gui gui) {
-	    guis.add(gui);
 	}
 	
 	@Override

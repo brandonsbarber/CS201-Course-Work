@@ -6,10 +6,12 @@ import java.util.List;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.Gui;
 import cs201.gui.roles.residence.LandlordGui;
+import cs201.gui.roles.residence.ResidentGui;
 import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
+import cs201.roles.housingRoles.LandlordRole.RentState;
 import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
@@ -177,6 +179,15 @@ public class LandlordRole extends Role implements Landlord {
 		gui.setPresent(false);
 	}
 	
+	private void enter() {
+		Do("Entering my Apartment Complex Office");
+		//isActive = true;
+		this.gui.setPresent(true);
+		gui.enter();
+		this.acquireSemaphore();
+		Do("Passed semaphore in role enter()");
+	}
+	
 	// Utilities
 	
 	public void addProperty(Residence res, Renter renter, double rentAmount, WeekDay rentDueDate) {
@@ -190,6 +201,7 @@ public class LandlordRole extends Role implements Landlord {
 		// TODO Auto-generated method stub
 		if (intent == Intention.ResidenceLandLord) {
 			//stub
+			enter();
 			goToDesk();
 		}
 		

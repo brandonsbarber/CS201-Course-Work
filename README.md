@@ -53,6 +53,7 @@ SimCity201 Project Repository for Team 21
      + Market Manager Role (and Gui)
      + Market Consumer Role (and Gui)
      + Market Config Panel
+     + A* Implementation in MarketGUI
      + Unit Testing of Above Code
  + **Skyler Lloyd:**
    + Housing
