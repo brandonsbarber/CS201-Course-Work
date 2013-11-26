@@ -19,6 +19,8 @@ import cs201.agents.PassengerTestAgent;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
+import cs201.gui.transit.BusGui;
+import cs201.gui.transit.CarGui;
 import cs201.gui.transit.PassengerGui;
 import cs201.gui.transit.VehicleGui;
 import cs201.helper.CityDirectory;
@@ -99,8 +101,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		//Testing Hacks
 		
 		stops.add(new BusStop(2*25,2*25,25,25,1, null));
+		stops.add(new BusStop(12*25,2*25,25,25,2, null));
 		stops.add(new BusStop(22*25,2*25,25,25,2, null));
 		stops.add(new BusStop(22*25,12*25,25,25,3, null));
+		stops.add(new BusStop(12*25,12*25,25,25,3, null));
 		stops.add(new BusStop(2*25,12*25,25,25,4, null));
 		
 		for(BusStop stop : stops)
@@ -110,7 +114,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);
 		VehicleGui busG;
-		guis.add(busG = new VehicleGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
+		guis.add(busG = new BusGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
 		
 		bus.setGui(busG);
 		
@@ -126,7 +130,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		CarAgent car = new CarAgent();
 		VehicleGui gui;
-		guis.add(gui = new VehicleGui(car,this));
+		guis.add(gui = new CarGui(car,this));
 		
 		Structure startLoc = new BusStop(18*25,2*25,25,25,1, null);
 		Structure endLoc = new BusStop(50,50,25,25,2, null);
@@ -289,7 +293,34 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	}
 	
 	public void addStructure(Structure s) {
+		//testing hacks
 		buildings.add(s);
+		
+		
+		if(s.x == 19*25)
+		{
+			PassengerRole role = new PassengerRole(buildings.get(0));
+			PassengerTestAgent agent = new PassengerTestAgent(role);
+			role.setBusStops(stops);
+			PassengerGui pgui = new PassengerGui(role,this);
+			role.setGui(pgui);
+			guis.add(pgui);
+			role.msgGoTo(s);
+			agent.startThread();
+		}
+		else
+		{
+			PassengerRole role = new PassengerRole(s);
+			PassengerTestAgent agent = new PassengerTestAgent(role);
+			role.setBusStops(stops);
+			PassengerGui pgui = new PassengerGui(role,this);
+			role.setGui(pgui);
+			guis.add(pgui);
+			role.msgGoTo(stops.get(3));
+			agent.startThread();
+		}
+		
+		
 	}
 	
 	public ArrayList<Structure> getStructures() {

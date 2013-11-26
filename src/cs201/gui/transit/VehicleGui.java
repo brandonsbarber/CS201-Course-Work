@@ -9,7 +9,7 @@ import cs201.gui.CityPanel;
 import cs201.gui.Gui;
 import cs201.structures.Structure;
 
-public class VehicleGui implements Gui
+public abstract class VehicleGui implements Gui
 {
 	private VehicleAgent vehicle;
 	
@@ -29,9 +29,9 @@ public class VehicleGui implements Gui
 	
 	public VehicleGui(VehicleAgent vehicle,CityPanel city, int x, int y)
 	{
-		this.vehicle = vehicle;
-		this.x = x;
-		this.y = y;
+		this.setVehicle(vehicle);
+		this.setX(x);
+		this.setY(y);
 		destX = x;
 		destY = y;
 		fired = true;
@@ -52,42 +52,34 @@ public class VehicleGui implements Gui
 		present = true;
 	}
 	
-	//Make me abstract for subclasses!
-	public void draw(Graphics2D g)
-	{
-		g.setColor(Color.YELLOW);
-		g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
-		
-		g.setColor(Color.BLACK);
-		g.drawString(""+vehicle.getClass(),x,y);
-	}
+	public abstract void draw(Graphics2D g);
 
 	@Override
 	public void updatePosition()
 	{
 		if(!fired)
 		{
-			if(x < destX)
+			if(getX() < destX)
 			{
-				x ++;
+				setX(getX() + 1);
 			}
-			else if(x > destX)
+			else if(getX() > destX)
 			{
-				x --;
+				setX(getX() - 1);
 			}
-			if(y < destY)
+			if(getY() < destY)
 			{
-				y ++;
+				setY(getY() + 1);
 			}
-			else if(y > destY)
+			else if(getY() > destY)
 			{
-				y --;
+				setY(getY() - 1);
 			}
-			if(x == destX && y == destY)
+			if(getX() == destX && getY() == destY)
 			{
 				fired = true;
-				vehicle.msgSetLocation(destination);
-				vehicle.msgAnimationDestinationReached();
+				getVehicle().msgSetLocation(destination);
+				getVehicle().msgAnimationDestinationReached();
 			}
 		}
 	}
@@ -96,5 +88,29 @@ public class VehicleGui implements Gui
 	public boolean isPresent()
 	{
 		return present;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public VehicleAgent getVehicle() {
+		return vehicle;
+	}
+
+	public void setVehicle(VehicleAgent vehicle) {
+		this.vehicle = vehicle;
 	}
 }
