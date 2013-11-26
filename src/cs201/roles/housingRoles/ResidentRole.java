@@ -72,15 +72,17 @@ public class ResidentRole extends Role implements Resident {
 		List<String> fridgeContents = residence.getFridgeContents();
 		//picks food from home's fridge list of Food and eats it. Temporarily random choice
 		int rand = (int)Math.random()*fridgeContents.size();
-		residence.removeFood(fridgeContents.get(rand));
+		String foodToEat = fridgeContents.get(rand);
+		residence.removeFood(foodToEat);
 		
 		//timer, gui animation
 		myPerson.setHungerLevel(0); //clear hunger amount
-		Do("finished pickAndEatFromFridge action");
+		Do("Finished pickAndEatFromFridge action. I ate one of my "+foodToEat+"s from the fridge.");
 		actionFinished();
 	}
 	
 	private void goToSleep() {
+		Do("Going to sleep");
 		goToBed(); //animation go to bed
 		state = ResidentState.sleeping;
 		isActive = false;
@@ -89,22 +91,26 @@ public class ResidentRole extends Role implements Resident {
 
 	@Override
 	public void startInteraction(Intention intent) {
+		switch (intent) {
+			case ResidenceEat:
+				this.msgStartEating();
+				break;
+			case ResidenceSleep:
+				state = ResidentState.readyToSleep;
+				stateChanged();
+				break;
+			case ResidenceRelax:
+				state = ResidentState.doingNothing;
+				stateChanged();
+				break;
+			default:
+				break;
+		}
 		this.gui.setPresent(true);
-		if (intent == Intention.ResidenceEat) {
-			this.msgStartEating();
-		}
-		if (intent == Intention.ResidenceSleep) {
-			state = ResidentState.readyToSleep;
-			stateChanged();
-			//action to prepare scheduler for sleep action
-		}
-		if (intent == Intention.ResidencePayRent){
-			state = ResidentState.payingRent;
-			stateChanged();
-		}
 	}
 	
 	private void actionFinished() {
+		Do("Action finished. Leaving.");
 		isActive = false;
 		gui.exit(); //animation to leave residence
 		this.acquireSemaphore();
@@ -112,6 +118,7 @@ public class ResidentRole extends Role implements Resident {
 	}
 	
 	private void goToFridge() { //animation
+		Do("Going to the fridge.");
 		gui.walkToFridge();
 		this.acquireSemaphore();
 	}
