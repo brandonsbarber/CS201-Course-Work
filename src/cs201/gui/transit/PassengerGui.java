@@ -107,6 +107,12 @@ public class PassengerGui implements Gui
 	{
 		if(!fired)
 		{
+			if(x == destX && y == destY)
+			{
+				fired = true;
+				pass.msgAnimationFinished ();
+				return;
+			}
 			if(getDirection(city.getWalkingMap(),x/city.GRID_SIZE,y/city.GRID_SIZE) == WalkingDirection.None)
 			{
 				int xDistance = destX - x;
@@ -169,11 +175,6 @@ public class PassengerGui implements Gui
 					junction(map,x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 					break;
 				}
-			}
-			if(x == destX && y == destY)
-			{
-				fired = true;
-				pass.msgAnimationFinished ();
 			}
 		}
 	}

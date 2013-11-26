@@ -76,6 +76,13 @@ public abstract class VehicleGui implements Gui
 	{
 		if(!fired)
 		{
+			if(getX() == destX && getY() == destY)
+			{
+				fired = true;
+				getVehicle().msgSetLocation(destination);
+				getVehicle().msgAnimationDestinationReached();
+				return;
+			}
 			switch(currentDirection)
 			{
 				case East:
@@ -105,12 +112,6 @@ public abstract class VehicleGui implements Gui
 					junction(map,x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 					break;
 				}
-			}
-			if(getX() == destX && getY() == destY)
-			{
-				fired = true;
-				getVehicle().msgSetLocation(destination);
-				getVehicle().msgAnimationDestinationReached();
 			}
 		}
 	}
