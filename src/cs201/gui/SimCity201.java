@@ -85,7 +85,8 @@ public class SimCity201 extends JFrame {
 		add(BorderLayout.SOUTH, settingsPanel);
 		add(BorderLayout.NORTH, guiPanel);
 		
-		normativeRestaurant();
+		//normativeRestaurant();
+		normativeRestaurantTwoCustomersTwoWaiters();
 		//normativeBus();
 		
 		pack();
@@ -134,10 +135,71 @@ public class SimCity201 extends JFrame {
 		p4.startThread();
 		
 		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 30));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
-		p5.setWakeupTime(new CityTime(8, 15));
 		CityDirectory.getInstance().addPerson(p5);
 		p5.startThread();
+	}
+	
+	private void normativeRestaurantTwoCustomersTwoWaiters() {
+		// One customer eats, pays, and leaves
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter 1", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p4b = new PersonAgent("Waiter 2", cityPanel);
+		p4b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4b.setHungerEnabled(false);
+		p4b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4b);
+		p4b.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 30));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		p5.startThread();
+		
+		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
+		p6.setWakeupTime(new CityTime(8, 30));
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p6);
+		p6.startThread();
 	}
 	
 	private void normativeWalking()

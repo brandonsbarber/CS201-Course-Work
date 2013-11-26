@@ -497,7 +497,7 @@ public class PersonAgent extends Agent implements Person {
 	 * @param hungerEnable boolean
 	 */
 	public void setHungerEnabled(boolean hungerEnable) {
-		hungerEnabled = hungerEnabled;
+		hungerEnabled = hungerEnable;
 	}
 	
 	/**
