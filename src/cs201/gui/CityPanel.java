@@ -99,8 +99,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		{"G","S","3","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},
 		{"G","S","3","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},
 		{"G","S","3","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},
-		{"G","S","3","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},
-		{"G","S","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},
+		{"G","S","3","S","S","S","S","3C","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","G"},
+		{"G","S","T","2","2","2","2C","T","2","2","2","2","T","2","2","2","2","T","2","2","2","2","T","S","G"},
 		{"G","S","1","S","S","S","S","1","S","S","S","S","3","S","S","S","S","1","S","S","S","S","3","S","G"},
 		{"G","S","1","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},
 		{"G","S","1","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},
@@ -222,7 +222,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				
 				if(Character.isDigit(cityGrid[y][x].charAt(0)))
 				{
-					int val = Integer.parseInt(cityGrid[y][x]);
+					int val = Integer.parseInt(cityGrid[y][x].substring(0,1));
 					switch(val)
 					{
 						case 1:dir = DrivingDirection.North;break;
@@ -267,10 +267,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				{
 					g2.setColor(Color.GRAY.darker());
 				}
-				else if(cityGrid[y][x].equals("C"))
-				{
-					g2.setColor(Color.GRAY.brighter());
-				}
 				else if(cityGrid[y][x].equals("S"))
 				{
 					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
@@ -281,6 +277,25 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				}
 				
 				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				
+				if(cityGrid[y][x].contains("C"))
+				{
+					g2.setColor(Color.GRAY.brighter());
+					for(int i = 0; i < 5 ; i++)
+					{
+						if(i % 2 == 0)
+						{
+							if(drivingMap[y][x].isVertical())
+							{
+								g2.fillRect(x*GRID_SIZE+i*5,y*GRID_SIZE,5,GRID_SIZE);
+							}
+							else
+							{
+								g2.fillRect(x*GRID_SIZE,y*GRID_SIZE+i*5,GRID_SIZE,5);
+							}
+						}
+					}
+				}
 				
 				if(drivingMap[y][x].isValid())
 				{
