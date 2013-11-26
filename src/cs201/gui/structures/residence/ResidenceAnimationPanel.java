@@ -51,13 +51,18 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		g2.fillRect(0, 0, WINDOWX, WINDOWY); //clear the screen
 		
 		g2.setColor(Color.GRAY);
-		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth); // draws refrigerator
+		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);// draws refrigerator
 		
 		g2.setColor(Color.GREEN);
 		g2.fillRect(tableX, tableY, tableWidth, tableHeight); // draws dining table
 		
 		g2.setColor(Color.BLUE);
 		g2.fillRect(bedX, bedY, bedWidth, bedHeight); // draws bed
+		
+		g2.setColor(Color.WHITE);
+		g2.drawString("Fridge", fridgeX, fridgeY+fridgeWidth);
+		g2.drawString("Table", tableX, tableY+tableHeight);
+		g2.drawString("Bed", bedX, bedY+bedHeight);
 		
 		super.paintComponent(g);
 	}

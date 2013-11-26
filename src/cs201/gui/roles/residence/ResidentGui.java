@@ -84,6 +84,12 @@ public class ResidentGui implements Gui {
 		animating = true;
 	}
 	
+	public void walkToTable() {
+		xDestination = tableX;
+		yDestination = tableY;
+		animating = true;
+	}
+	
 	public void goToBed() {
 		//animation to walk to the bed
 		xDestination = bedX;

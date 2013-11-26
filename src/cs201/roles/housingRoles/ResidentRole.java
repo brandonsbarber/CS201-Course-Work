@@ -80,7 +80,8 @@ public class ResidentRole extends Role implements Resident {
 		String foodToEat = fridgeContents.get(rand);
 		residence.removeFood(foodToEat);
 		
-		//timer, gui animation
+		
+		eatAtTable();//timer?, gui animation
 		myPerson.setHungerLevel(0); //clear hunger amount
 		Do("Finished pickAndEatFromFridge action. I ate one of my "+foodToEat+"s from the fridge.");
 		actionFinished();
@@ -139,7 +140,14 @@ public class ResidentRole extends Role implements Resident {
 			gui.walkToFridge();
 			this.acquireSemaphore();
 		}
-		
+	}
+	
+	private void eatAtTable() {
+		Do("Going to the table to eat.");
+		if(!isTest) {
+			gui.walkToTable();
+			this.acquireSemaphore();
+		}
 	}
 	
 	private void goToBed() {
