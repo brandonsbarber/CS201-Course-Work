@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -140,6 +142,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		for(BusStop stop : stops)
 		{
 			buildings.add(stop);
+			stop.setParkingLocation(new Point((int)stop.x,(int)stop.y));
 		}
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);
@@ -196,6 +199,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
 		
 		truck.startThread();*/
+		
+		addStructure(new BusStop(14*25,14*25,25,25,7,null));
 		
 		timer.start();
 	}
@@ -337,8 +342,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		for (int i = 0; i < buildings.size(); i++)
 		{
+			g2.setColor(Color.BLACK);
 			Structure s = buildings.get(i);
 			g2.fill(s);
+			
+			g2.setColor(Color.BLUE);
+			g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
 		}
 		
 		try
@@ -365,43 +374,54 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	public void addStructure(Structure s) {
 		//testing hacks
 		buildings.add(s);
+		Point location = new Point();
+		location.x = (int)s.getX();
+		location.y = (int)s.getY();
 		
+		int leftX = location.x/GRID_SIZE - 2;
+		int rightX = location.x/GRID_SIZE + 2;
+		int upY = location.y/GRID_SIZE - 2;
+		int downY = location.y/GRID_SIZE + 2;
+
 		
-		/*if(s.x == 19*25)
+		if(leftX >= 0 && drivingMap[location.y/GRID_SIZE][leftX].isValid())
 		{
-			PassengerRole role = new PassengerRole(buildings.get(0));
-			PassengerTestAgent agent = new PassengerTestAgent(role);
-			role.setBusStops(stops);
-			PassengerGui pgui = new PassengerGui(role,this);
-			role.setGui(pgui);
-			guis.add(pgui);
-			role.msgGoTo(s);
-			agent.startThread();
-		}*/
-		if(true)
+			location.x = leftX*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		else if(rightX < drivingMap[0].length && drivingMap[location.y/GRID_SIZE][rightX].isValid())
 		{
-			CarAgent car = new CarAgent();
-			VehicleGui gui;
-			guis.add(gui = new CarGui(car,this));
-			
-			car.setGui(gui);
-			
-			car.startThread();
-			
-			PassengerRole role = new PassengerRole(stops.get(1));
-			PassengerTestAgent agent = new PassengerTestAgent(role);
-			role.setBusStops(stops);
-			role.addCar(car);
-			PassengerGui pgui = new PassengerGui(role,this);
-			role.setGui(pgui);
-			guis.add(pgui);
-			role.msgGoTo(s);
-			agent.startThread();
-			
-			
+			location.x = rightX*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		else if(upY >= 0 && drivingMap[upY][location.x/GRID_SIZE].isValid())
+		{
+			location.y = upY*GRID_SIZE;
+			s.setParkingLocation(location);
+		}
+		else if(downY < drivingMap.length && drivingMap[downY][location.x/GRID_SIZE].isValid())
+		{
+			location.y = downY*GRID_SIZE;
+			s.setParkingLocation(location);
 		}
 		
+		CarAgent car = new CarAgent();
+		VehicleGui gui;
+		guis.add(gui = new CarGui(car,this));
 		
+		car.setGui(gui);
+		
+		car.startThread();
+		
+		PassengerRole role = new PassengerRole(stops.get(1));
+		PassengerTestAgent agent = new PassengerTestAgent(role);
+		role.setBusStops(stops);
+		role.addCar(car);
+		PassengerGui pgui = new PassengerGui(role,this);
+		role.setGui(pgui);
+		guis.add(pgui);
+		role.msgGoTo(s);
+		agent.startThread();
 	}
 	
 	public List<Structure> getStructures() {
