@@ -29,6 +29,8 @@ public class RestaurantMatt extends Restaurant {
 	
 	public RestaurantMatt(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
+		this.panel.addGui(stand);
+		stand.setPresent(true);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();

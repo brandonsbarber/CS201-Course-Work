@@ -400,22 +400,26 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		Do("Giving " + m.customer.toString() + "'s order to the cook.");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
+		waiterGui.setMessage(m.choice + "?");
 		try {
 			atTargetPosition.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		waiterGui.setMessage("");
 	}
 	
 	protected void DoPutOrderOnStand(MyCustomer m) {
 		Do("Putting " + m.customer.toString() + "'s order on rotating stand.");
-		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
-								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
+		waiterGui.GoToLocation(cs201.helper.Matt.RestaurantRotatingStand.STANDX,
+								cs201.helper.Matt.RestaurantRotatingStand.STANDY);
+		waiterGui.setMessage(m.choice + "?");
 		try {
 			atTargetPosition.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		waiterGui.setMessage("");
 	}
 	
 	private void DoRetakeCustomerOrder(MyCustomer m) {
