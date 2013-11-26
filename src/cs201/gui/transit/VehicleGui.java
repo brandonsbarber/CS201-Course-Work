@@ -52,7 +52,15 @@ public abstract class VehicleGui implements Gui
 		present = true;
 	}
 	
-	public abstract void draw(Graphics2D g);
+	public void draw(Graphics2D g)
+	{
+		drawBody(g);
+		
+		g.setColor(Color.BLACK);
+		g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+	}
+	
+	public abstract void drawBody(Graphics2D g);
 
 	@Override
 	public void updatePosition()

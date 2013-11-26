@@ -15,14 +15,12 @@ public class BusGui extends VehicleGui
 	}
 
 	@Override
-	public void draw(Graphics2D g)
+	public void drawBody(Graphics2D g)
 	{
 		g.setColor(Color.YELLOW);
 		g.fillRect(getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 		
 		g.setColor(Color.BLACK);
-		g.drawString(""+getVehicle().getClass().getSimpleName(),getX(),getY());
-		
 		g.drawString(""+((BusAgent)getVehicle()).getNumPassengers(),getX(),getY()+CityPanel.GRID_SIZE);
 	}
 }
