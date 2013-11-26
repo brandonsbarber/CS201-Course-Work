@@ -11,6 +11,7 @@ import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
+import cs201.roles.housingRoles.LandlordRole.RentState;
 import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {
@@ -19,9 +20,9 @@ public class LandlordRole extends Role implements Landlord {
 	LandlordGui gui;
 	boolean closingTime;
 	
-	enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
+	public enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
 	
-	private class myProperty {
+	public class myProperty {
 		Residence residence;
 	    Renter renter;
 	    double amtDue;
@@ -44,6 +45,10 @@ public class LandlordRole extends Role implements Landlord {
 		public void performMaintenance() {
 			residence.performMaintenance();
 			needsMaintenance = false;
+		}
+
+		public RentState getState() {
+			return state;
 		}
 	}
 	
@@ -96,7 +101,7 @@ public class LandlordRole extends Role implements Landlord {
 		WeekDay tomorrow = WeekDay.values()[currentDay];
 		
 		for (myProperty mP:myProperties) {
-			if (mP.state == RentState.paid) {
+			if (tomorrow != mP.dayDue && mP.state == RentState.paid) {
 				mP.state = RentState.notDue;
 				return true;
 			}
@@ -143,14 +148,14 @@ public class LandlordRole extends Role implements Landlord {
 	
 	private void RequestRent(myProperty mP) {
 		Do("Requesting rent of "+mP.amtDue+" from "+mP.renter.toString());
+		mP.state = RentState.dueNotified;
         mP.renter.msgRentDueYouOwe(this, mP.amtDue);
-        mP.state = RentState.dueNotified;
 	}
 
 	private void RequestLateRent(myProperty mP) {
 		Do("Requesting additional late rent penalty of "+latePenalty+" from "+mP.renter.toString());
+		mP.state = RentState.lateNotified;
         mP.renter.msgRentLateYouOweAdditional(this, latePenalty);
-        mP.state = RentState.lateNotified;
 	}
 
 	private void FixProperty(myProperty mP) {

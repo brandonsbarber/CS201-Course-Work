@@ -7,7 +7,7 @@ import cs201.roles.housingRoles.ResidentRole.ResidentState;
 import cs201.structures.residence.Residence;
 
 public class RenterRole extends ResidentRole implements Renter {
-	LandlordRole myLandlord;
+	Landlord myLandlord;
 	double amtRentOwed = 0;
 	
 	public RenterRole() {
@@ -71,12 +71,16 @@ public class RenterRole extends ResidentRole implements Renter {
 	}
 
 	
-	public void setLandlord(LandlordRole l) {
+	public void setLandlord(Landlord l) {
 		myLandlord = l;
 	}
 	
-	public LandlordRole getLandlord() {
+	public Landlord getLandlord() {
 		return myLandlord;
+	}
+
+	public double getAmtOwed() {
+		return amtRentOwed;
 	}
 
 }

@@ -10,10 +10,11 @@ import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class ResidentRole extends Role implements Resident {
-	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent, relaxing};
+	public enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent, relaxing};
 	ResidentState state;
 	private Residence residence;
 	ResidentGui gui;
+	boolean isTest = false;
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
@@ -110,24 +111,34 @@ public class ResidentRole extends Role implements Resident {
 			default:
 				break;
 		}
-		this.gui.setPresent(true);
+		
 		Do("Entering residence");
-		gui.enter();
-		this.acquireSemaphore();
+		if(!isTest) {
+			this.gui.setPresent(true);
+			gui.enter();
+			this.acquireSemaphore();
+		}
+		
 	}
 	
 	private void actionFinished() {
 		Do("Action finished. Leaving.");
 		isActive = false;
-		gui.exit(); //animation to leave residence
-		this.acquireSemaphore();
-		gui.setPresent(false); //gui inactive
+		if(!isTest) {
+			gui.exit(); //animation to leave residence
+			this.acquireSemaphore();
+			gui.setPresent(false); //gui inactive
+		}
+		
 	}
 	
 	private void goToFridge() { //animation
 		Do("Going to the fridge.");
-		gui.walkToFridge();
-		this.acquireSemaphore();
+		if(!isTest) {
+			gui.walkToFridge();
+			this.acquireSemaphore();
+		}
+		
 	}
 	
 	private void goToBed() {
@@ -153,5 +164,13 @@ public class ResidentRole extends Role implements Resident {
 	
 	public Gui getGui() {
 		return gui;
+	}
+	
+	public ResidentState getState() {
+		return state;
+	}
+	
+	public void setTest(boolean bool) {
+		isTest = bool;
 	}
 }
