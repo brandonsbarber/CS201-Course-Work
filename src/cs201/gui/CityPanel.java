@@ -91,9 +91,70 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 	};
 	
+	public enum WalkingDirection
+	{
+		None,North,South,East,West,Turn;
+		
+		public WalkingDirection turnRight()
+		{
+			if(this == North)
+			{
+				return East;
+			}
+			else if(this == East)
+			{
+				return South;
+			}
+			else if(this == South)
+			{
+				return West;
+			}
+			else if(this == West)
+			{
+				return North;
+			}
+			
+			return this;
+		}
+		
+		public boolean isValid()
+		{
+			return ordinal() > 0;
+		}
+		
+		public boolean isVertical()
+		{
+			return this == North || this == South;
+		}
+		
+		public boolean isHorizontal()
+		{
+			return this == West || this == East;
+		}
+
+		public static boolean opposites(WalkingDirection drivingDirection, WalkingDirection drivingDirection2)
+		{
+			return (drivingDirection == West && drivingDirection2 == East) || (drivingDirection == East && drivingDirection2 == West) || (drivingDirection == South && drivingDirection2 == North) || (drivingDirection == North && drivingDirection2 == South);
+		}
+	};
+	
 	private String[][] cityGrid = 
 	{
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","S","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","S","G"},{"G","S","3C","S","S","S","S","3C","S","S","S","S","1C","S","S","S","S","3C","S","S","S","S","1C","S","G"},{"G","S","3","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","3","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G"},{"G","S","3C","S","S","S","S","3C","S","S","S","S","1C","S","S","S","S","3C","S","S","S","S","1C","S","G"},{"G","S","T","2C","2","2","2C","T","2C","2","2","2C","T","2C","2","2","2C","T","2C","2","2","2C","T","S","G"},{"G","S","1C","S","S","S","S","1C","S","S","S","S","3C","S","S","S","S","1C","S","S","S","S","3C","S","G"},{"G","S","1","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1","S","G","G","S","1","S","G","G","S","3","S","G","G","S","1","S","G","G","S","3","S","G"},{"G","S","1C","S","S","S","S","1C","S","S","S","S","3C","S","S","S","S","1C","S","S","S","S","3C","S","G"},{"G","S","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","S","G"},{"G","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","G"},{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
+		{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
+		{"G","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","G"},
+		{"G","7","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","5","G"},
+		{"G","ST","3C","ST","8","8","ST","3C","ST","8","8","ST","1C","ST","8","8","ST","3C","ST","8","8","ST","1C","ST","G"},
+		{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},
+		{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},
+		{"G","ST","3C","ST","6","6","ST","3C","ST","6","6","ST","1C","ST","6","6","ST","3C","6","6","6","ST","1C","ST","G"},
+		{"G","7","T","2C","2","2","2C","T","2C","2","2","2C","T","2C","2","2","2C","T","2C","2","2","2C","T","5","G"},
+		{"G","ST","1C","ST","8","8","ST","1C","ST","8","8","ST","3C","ST","8","8","ST","1C","ST","8","8","ST","3C","ST","G"},
+		{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},
+		{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},
+		{"G","ST","1C","ST","6","6","ST","1C","ST","6","6","ST","3C","ST","6","6","ST","1C","ST","6","6","ST","3C","ST","G"},
+		{"G","7","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","4C","4","4","4C","T","5","G"},
+		{"G","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","G"},
+		{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 	
 	private List<BusStop> stops;
@@ -199,12 +260,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	private void populateDrivingMap()
 	{
 		drivingMap = new DrivingDirection[cityGrid.length][cityGrid[0].length];
+		walkingMap = new WalkingDirection[cityGrid.length][cityGrid[0].length];
 		
 		for(int y = 0; y < cityGrid.length; y++)
 		{
 			for(int x = 0; x < cityGrid[y].length; x++)
 			{
 				DrivingDirection dir = DrivingDirection.None;
+				WalkingDirection wDir = WalkingDirection.None;
 				
 				if(Character.isDigit(cityGrid[y][x].charAt(0)))
 				{
@@ -217,19 +280,35 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 						case 4:dir = DrivingDirection.West;break;
 						default:dir = DrivingDirection.None;break;
 					}
+					switch(val)
+					{
+					case 5:wDir = WalkingDirection.North;break;
+					case 6:wDir = WalkingDirection.East;break;
+					case 7:wDir = WalkingDirection.South;break;
+					case 8:wDir = WalkingDirection.West;break;
+					default:wDir = WalkingDirection.None;break;
+					}
 				}
 				else
 				{
 					if(cityGrid[y][x].equals("T"))
 					{
 						dir = DrivingDirection.Turn;
+						wDir = WalkingDirection.None;
+					}
+					else if(cityGrid[y][x].equals("ST"))
+					{
+						dir = DrivingDirection.None;
+						wDir = WalkingDirection.Turn;
 					}
 					else
 					{
 						dir = DrivingDirection.None;
+						wDir = WalkingDirection.None;
 					}
 				}
 				drivingMap[y][x] = dir;
+				walkingMap[y][x] = wDir;
 			}
 		}
 	}
@@ -254,7 +333,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				{
 					g2.setColor(Color.GRAY.darker());
 				}
-				else if(cityGrid[y][x].equals("S"))
+				else if(cityGrid[y][x].equals("ST") || Character.isDigit(cityGrid[y][x].charAt(0)) && Integer.parseInt(cityGrid[y][x].substring(0,1)) > 4)
 				{
 					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
 				}
@@ -316,7 +395,39 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 						g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
 						g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
 					}
-					
+				}
+				if(walkingMap[y][x].isValid())
+				{
+					if(walkingMap[y][x] == WalkingDirection.North)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+
+					}
+					else if(walkingMap[y][x] == WalkingDirection.South)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
+						
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+					}
+					else if(walkingMap[y][x] == WalkingDirection.West)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+					}
+					else if(walkingMap[y][x] == WalkingDirection.East)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+					}
 				}
 			}
 		}
@@ -466,6 +577,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	}
 	
 	public DrivingDirection[][] drivingMap;
+	public WalkingDirection[][] walkingMap;
 	
 	public DrivingDirection[][] getDrivingMap()
 	{
