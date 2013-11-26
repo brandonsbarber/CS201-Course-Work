@@ -164,8 +164,22 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
-		// Process the next available order
+		// Dispatch a ready order
 		Order order = null;
+		synchronized (orders) {
+			for (Order o : orders) {
+				if (o.state == OrderState.READY) {
+					order = o;
+				}
+			}
+		}
+		if (order != null) { // if we found an order that is READY
+			dispatchOrder(order);
+			return true;
+		}
+		
+		// Process the next available order
+		order = null;
 		synchronized (orders) {
 			for (Order o : orders) {
 				if (o.state == OrderState.PENDING) {
@@ -182,20 +196,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 		if (employee != null && order != null) {	// if we found an order and an available employee,
 			// process the order
 			processOrder(order, employee);
-			return true;
-		}
-		
-		// Dispatch a ready order
-		order = null;
-		synchronized (orders) {
-			for (Order o : orders) {
-				if (o.state == OrderState.READY) {
-					order = o;
-				}
-			}
-		}
-		if (order != null) { // if we found an order that is READY
-			dispatchOrder(order);
 			return true;
 		}
 		
@@ -329,8 +329,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 		o.state = OrderState.PROCESSING;
 		
 		// Send the employee a message to retrieve the items
-		e.employee.msgRetrieveItems(this, itemList, o.id);
 		e.state = EmployeeState.BUSY;
+		e.employee.msgRetrieveItems(this, itemList, o.id);
 		
 	}
 	
