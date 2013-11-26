@@ -12,8 +12,8 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
 	
 	private static final int DEFAULTWINDOWX = 480;
 	private static final int DEFAULTWINDOWY = 480;
-    private static int WINDOWX = DEFAULTWINDOWX;
-    private static int WINDOWY = DEFAULTWINDOWY;
+    public static int WINDOWX = DEFAULTWINDOWX;
+    public static int WINDOWY = DEFAULTWINDOWY;
     
     // TABLES
     private final int TABLESIZE = (WINDOWX < WINDOWY) ? (int)(WINDOWX * .1f) : (int)(WINDOWY * .1f);

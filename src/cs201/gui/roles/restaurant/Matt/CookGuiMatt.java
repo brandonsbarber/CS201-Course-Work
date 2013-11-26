@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 
 public class CookGuiMatt implements Gui {
@@ -19,10 +19,10 @@ public class CookGuiMatt implements Gui {
 	private List<String> plating;
 	
 	// from 500x500
-	private final int cookingAreaX = 342;
-	private final int cookingAreaY = 425;
-	private final int platingAreaX = 100;
-	private final int platingAreaY = 425;
+	private final int cookingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .684f);
+	private final int cookingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .84f);
+	private final int platingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .2f);
+	private final int platingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .84f);
 
 	public CookGuiMatt(RestaurantCookRoleMatt c) {
 		role = c;

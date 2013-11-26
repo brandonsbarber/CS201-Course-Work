@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
@@ -47,7 +48,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < width; j++) {
 				TableMatt tempTable = new TableMatt(i*width + j + 1);
-				tempTable.setPos(150 + i*150, 150+j*150);
+				tempTable.setPos((int)(RestaurantAnimationPanelMatt.WINDOWX * .3f) + i*(int)(RestaurantAnimationPanelMatt.WINDOWX * .3f),
+						(int)(RestaurantAnimationPanelMatt.WINDOWY * .3f) + j*(int)(RestaurantAnimationPanelMatt.WINDOWY * .3f));
 				tables.add(tempTable);
 			}
 		}
@@ -85,16 +87,11 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 	
 	@Override
-	public void msgIWantToEat(CustomerMatt c) {
-		/*if (timeToClose || !this.restaurant.getOpen()) {
-			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter because the restaurant is closed.");
-			return;
-		}*/
-		
+	public void msgIWantToEat(CustomerMatt c) {		
 		if (!bannedCustomers.contains(c)) {
 			Integer ID = AssignCustomerID();
-			int x = 40 + (ID % 2) * 25;
-			int y = 40 + (ID / 2) * 25;
+			int x = (int)(RestaurantAnimationPanelMatt.WINDOWX * .08f) + (ID % 2) * (int)(RestaurantAnimationPanelMatt.WINDOWX * .05f);
+			int y = (int)(RestaurantAnimationPanelMatt.WINDOWY * .08f) + (ID / 2) * (int)(RestaurantAnimationPanelMatt.WINDOWY * .05f);
 			c.getGui().SetWaitingArea(x, y);
 			c.getGui().Animate();
 			waitingCustomers.add(c);
