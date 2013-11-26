@@ -94,7 +94,12 @@ public class SimCity201 extends JFrame {
 	}
 	
 	private void normativeRestaurant() {
-		// One customer eats, pays, and leaves
+		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
+		 * when all of them have arrived at the Restaurant. At 8:30AM a single Customer comes
+		 * and a normative Restaurant scenario starts where he orders food and leaves when done.
+		 * The Restaurant closes at 1:15PM (should be right after the Customer leaves), and all
+		 * the employees go home.
+		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
@@ -142,7 +147,12 @@ public class SimCity201 extends JFrame {
 	}
 	
 	private void normativeRestaurantTwoCustomersTwoWaiters() {
-		// One customer eats, pays, and leaves
+		/* A normal Waiter and rotating stand Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
+		 * when the Host, Cashier, Cook, and at least one Waiter have arrived at the Restaurant. At 8:30AM two Customers come
+		 * and a normative Restaurant scenario starts where they both order food and leave when done.
+		 * The Restaurant closes at 1:15PM (should be right after the Customers leave), and all the
+		 * employees go home.
+		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
