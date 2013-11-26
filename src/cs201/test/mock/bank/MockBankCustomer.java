@@ -13,34 +13,58 @@ public class MockBankCustomer extends Mock implements BankCustomer {
 	public MockBankCustomer(String name) {
 		super(name);
 	}
-	
+
 	//================================================================================
     // MOCK: Messages
     //================================================================================
 	
+	@Override
 	public void msgSeeTeller(BankTellerRole teller) {
-	    // (1) Log the message
-		String msg = "BankCustomer: " + this.name + ": "; // TODO
+		// TODO Auto-generated method stub
+		
 	}
-	
+
+	@Override
 	public void msgAccountIsOpened(int actNum) {
-	    //myPerson.setBankAccount(actNum); // TODO
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public void msgMoneyIsDeposited(int newBalance) {
-	    //accountBalance = newBalance; // TODO
+
+	@Override
+	public void msgMoneyIsDeposited() {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public void msgMoneyIsWithdrawn(int newBalance) {
-	    //accountBalance = newBalance; // TODO
+
+	@Override
+	public void msgMoneyIsWithdrawn() {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public void msgLoanIsGranted(int loanAmount) {
-	    //myPerson.setMoney(myPerson.getMoney() + loanAmount); // TODO
+
+	@Override
+	public void msgOverdrawnAccount(double actBalance) {
+		// TODO Auto-generated method stub
+		
 	}
-	
+
+	@Override
+	public void msgLoanGranted() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgLoanDenied() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void msgClosingTime() {
-		// TODO
+		// TODO Auto-generated method stub
+		
 	}
+	
 	
 }

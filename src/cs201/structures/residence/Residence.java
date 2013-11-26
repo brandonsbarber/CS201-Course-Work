@@ -72,12 +72,12 @@ public class Residence extends Structure {
 	    panel.addGui(rGui);
 	    ((ResidenceAnimationPanel)panel).informResident(rGui);
 	    
-	    addFood("Food 1", 10);
-	    addFood("Food 2", 10);
-	    addFood("Food 3", 10);
-	    addFood("Food 4", 10);
-	    addFood("Food 5", 10);
-	    addFood("Food 6", 10);
+	    addFood("Steak", 10);
+	    addFood("Pizza", 10);
+	    addFood("Pasta", 10);
+	    addFood("Ice Cream", 10);
+	    addFood("Chicken", 10);
+	    addFood("Salad", 10);
 	}
 	
 	//Setters
@@ -179,6 +179,10 @@ public class Residence extends Structure {
 	}	
 
 	public boolean hasFood() {
+		for(ItemRequest i:resident.getPerson().getInventory()) { //
+			addFood(i.item, i.amount);
+		}
+		resident.getPerson().getInventory().clear();
 		return hasFood;
 	}
 	

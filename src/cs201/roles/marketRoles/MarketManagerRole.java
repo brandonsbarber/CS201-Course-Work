@@ -315,14 +315,13 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		// animate inside market
+		this.gui.setPresent(true);
 	}
 
 	public void msgClosingTime() {
-
-
-		
+		timeToLeave = true;
+		stateChanged();
 	}
 	
 	/*

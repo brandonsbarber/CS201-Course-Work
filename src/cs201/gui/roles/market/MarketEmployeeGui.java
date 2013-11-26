@@ -61,7 +61,7 @@ public class MarketEmployeeGui implements Gui {
 		homePosition = new Position(startX, startY);
 		xPos = homePosition.getXInPixels();
 		yPos = homePosition.getYInPixels();
-		isPresent = true;
+		isPresent = false;
 		animPanel = a;
 		
 		// Create a new A* Traversal object and connect to our animation panel's grid

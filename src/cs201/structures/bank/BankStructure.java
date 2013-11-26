@@ -25,7 +25,7 @@ public class BankStructure extends Structure {
 	static boolean isOpen;
 	double bankBalance;
 	
-	public enum AccountTypes { BUSINESS, PERSONAL }
+	public enum AccountType { BUSINESS, PERSONAL }
 	Map<Integer, java.lang.Double> personalAccounts = new HashMap<Integer, java.lang.Double>();
 	Map<Integer, java.lang.Double> businessAccounts = new HashMap<Integer, java.lang.Double>();
 	
@@ -52,6 +52,42 @@ public class BankStructure extends Structure {
     // Accessor Methods
     //================================================================================
 	
+	public void addPersonalAccount(int actNum, double startingBal) {
+		// Add account to Hash table
+		personalAccounts.put(actNum, startingBal);
+		
+		// Update bank balance
+		this.bankBalance = this.getBankBalance();
+	}
+	
+	public void addBusinessAccount(int actNum, double startingBal) {
+		// Add account to Hash table
+		businessAccounts.put(actNum, startingBal);
+		
+		// Update bank balance
+		this.bankBalance = this.getBankBalance();
+	}
+	
+	public void addMoneyToAccount(AccountType type, int actNum, double addedBal) {
+		if (type == AccountType.PERSONAL && personalAccounts.get(actNum) != null) {
+			personalAccounts.put(actNum, addedBal + personalAccounts.get(actNum));
+		} 
+		
+		else if (type == AccountType.BUSINESS && personalAccounts.get(actNum) != null) {
+			businessAccounts.put(actNum, addedBal + personalAccounts.get(actNum));
+		}
+	}
+	
+	public void takeMoneyFromAccount(AccountType type, int actNum, double subtractedBal) {
+		if (type == AccountType.PERSONAL && personalAccounts.get(actNum) != null) {
+			personalAccounts.put(actNum, personalAccounts.get(actNum) - subtractedBal);
+		} 
+		
+		else if (type == AccountType.BUSINESS && personalAccounts.get(actNum) != null) {
+			businessAccounts.put(actNum, personalAccounts.get(actNum) - subtractedBal);
+		}
+	}
+	
 	public Role getRole(Intention role) {
 		
 		switch(role) {
@@ -68,6 +104,16 @@ public class BankStructure extends Structure {
 		}
 		
 		return null;
+	}
+	
+	public double getActBalance(AccountType type, int actNum) {
+		if (type == AccountType.PERSONAL) {
+			return personalAccounts.get(actNum);
+		} 
+		
+		else {
+			return businessAccounts.get(actNum);
+		}
 	}
 	
 	/**

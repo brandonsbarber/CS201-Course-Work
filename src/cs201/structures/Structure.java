@@ -161,4 +161,9 @@ public abstract class Structure extends Rectangle2D.Double {
 	{
 		parkingLocation = point;
 	}
+	
+	public void setEntranceLocation(Point point)
+	{
+		entranceLocation = point;
+	}
 }

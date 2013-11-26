@@ -2,8 +2,12 @@ package cs201.gui.transit;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import cs201.gui.CityPanel;
+import cs201.gui.CityPanel.DrivingDirection;
+import cs201.gui.CityPanel.WalkingDirection;
 import cs201.gui.Gui;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
@@ -21,6 +25,10 @@ public class PassengerGui implements Gui
 	
 	private boolean present;
 	
+	private CityPanel city;
+	
+	private WalkingDirection currentDirection;
+	
 
 	public PassengerGui(PassengerRole pass,CityPanel city)
 	{
@@ -30,12 +38,14 @@ public class PassengerGui implements Gui
 	public PassengerGui(PassengerRole pass,CityPanel city, int x, int y)
 	{
 		this.pass = pass;
+		this.city = city;
 		this.x = x;
 		this.y = y;
 		destX = x;
 		destY = y;
 		fired = true;
 		present = false;
+		currentDirection = WalkingDirection.None;
 	}
 	
 	public PassengerGui(PassengerRole pass,CityPanel city, Structure s)
@@ -52,8 +62,8 @@ public class PassengerGui implements Gui
 	{
 		System.out.println("Going to location. "+structure);
 		destination = structure;
-		destX = (int)structure.getX();
-		destY = (int)structure.getY();
+		destX = (int)structure.getEntranceLocation().x;
+		destY = (int)structure.getEntranceLocation().y;
 		fired = false;
 		present = true;
 	}
@@ -70,21 +80,43 @@ public class PassengerGui implements Gui
 	{
 		if(!fired)
 		{
-			if(x < destX)
+			if(getDirection(city.getWalkingMap(),x/city.GRID_SIZE,y/city.GRID_SIZE) == WalkingDirection.None)
 			{
-				x ++;
+				currentDirection = WalkingDirection.North;
 			}
-			else if(x > destX)
+			switch(currentDirection)
 			{
-				x --;
+				case East:
+					x++;
+					break;
+				case North:
+					y--;
+					break;
+				case South:
+					y++;
+					break;
+				case West:
+					x--;
+					break;
+				default:
+					break;
 			}
-			if(y < destY)
+			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0)
 			{
-				y ++;
-			}
-			else if(y > destY)
-			{
-				y --;
+				WalkingDirection[][] map = city.getWalkingMap();
+				
+				WalkingDirection square = getDirection(map,x/city.GRID_SIZE,y/city.GRID_SIZE);
+				
+				if(currentDirection != square)
+				{
+					currentDirection = square;
+				}
+				switch(square)
+				{
+				case Turn:
+					junction(map,x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+					break;
+				}
 			}
 			if(x == destX && y == destY)
 			{
@@ -92,6 +124,146 @@ public class PassengerGui implements Gui
 				pass.msgAnimationFinished ();
 			}
 		}
+	}
+	
+	private void junction(WalkingDirection[][] map, int x2, int y2)
+	{
+		List<WalkingDirection> validDirections = new ArrayList<WalkingDirection>();
+		
+		int leftX = x2-1;
+		int rightX = x2+1;
+		int upY = y2 - 1;
+		int downY = y2 + 1;
+		
+		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == WalkingDirection.West)
+		{
+			validDirections.add(WalkingDirection.West);
+		}
+		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == WalkingDirection.East)
+		{
+			validDirections.add(WalkingDirection.East);
+		}
+		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == WalkingDirection.North)
+		{
+			validDirections.add(WalkingDirection.North);
+		}
+		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == WalkingDirection.South)
+		{
+			validDirections.add(WalkingDirection.South);
+		}
+		
+		if(validDirections.size() == 1)
+		{
+			currentDirection = validDirections.get(0);
+			return;
+		}
+		
+		else if(validDirections.size() == 3)
+		{
+			if(x != destX)
+			{
+				for(WalkingDirection dir : validDirections)
+				{
+					currentDirection = dir;
+					return;
+				}
+			}
+			else
+			{
+				for(int i = 0; i < validDirections.size(); i++)
+				{
+					WalkingDirection dir = validDirections.get(i);
+					if(dir == WalkingDirection.West || dir == WalkingDirection.East)
+					{
+						validDirections.remove(dir);
+					}
+				}
+			}
+		}
+		if(validDirections.size() == 2)
+		{
+			if(WalkingDirection.opposites(validDirections.get(0),validDirections.get(1)))
+			{
+				if(validDirections.get(0).isHorizontal())
+				{
+					if(x > destX)
+					{
+						currentDirection = WalkingDirection.West;
+						return;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.East;
+						return;
+					}
+				}
+				else
+				{
+					if(y > destY)
+					{
+						currentDirection = WalkingDirection.North;
+						return;
+					}
+					else
+					{
+						currentDirection = WalkingDirection.South;
+						return;
+					}
+				}
+			}
+			else
+			{
+				if(x == destX)
+				{
+					WalkingDirection dir = WalkingDirection.None;
+					for(WalkingDirection d : validDirections)
+					{
+						if(!d.isHorizontal())
+						{
+							dir = d;
+						}
+					}
+					currentDirection = dir;
+					return;
+				}
+				else if(y == destY)
+				{
+					WalkingDirection dir = WalkingDirection.None;
+					for(WalkingDirection d : validDirections)
+					{
+						if(!d.isVertical())
+						{
+							dir = d;
+						}
+					}
+					currentDirection = dir;
+					return;
+				}
+				else
+				{
+					WalkingDirection dir = WalkingDirection.None;
+					for(WalkingDirection d : validDirections)
+					{
+						if(d.isHorizontal())
+						{
+							dir = d;
+						}
+					}
+					currentDirection = dir;
+					return;
+				}
+			}
+		}		
+	}
+
+	private WalkingDirection getDirection(WalkingDirection[][] map, int x, int y)
+	{
+		return map[y][x];
+	}
+	
+	private boolean inBounds(WalkingDirection[][] map, int x2, int y2)
+	{
+		return y2 < map.length && y2 >= 0 && x2 >= 0 && x2 < map[y2].length;
 	}
 
 	@Override

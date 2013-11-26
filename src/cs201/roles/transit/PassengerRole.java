@@ -90,7 +90,6 @@ public class PassengerRole extends Role implements Passenger
 	public void setGui(PassengerGui gui)
 	{
 		this.gui = gui;
-		gui.setPresent(true);
 	}
 	
 	public void addCar(Car c)
@@ -385,6 +384,7 @@ public class PassengerRole extends Role implements Passenger
 	public void setCurrentLocation(Structure s2)
 	{
 		currentLocation = s2;
+		gui.setLocation((int)currentLocation.x, (int)currentLocation.y);
 	}
 
 	public Structure getCurrentLocation()

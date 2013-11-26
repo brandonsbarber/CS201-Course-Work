@@ -57,7 +57,7 @@ public class BankGuardRole extends Role implements BankGuard {
 	
 	private void escortCustomersOut() {
 	    for (BankCustomerRole cust : waitingCustomers) {
-	        waitingCustomers.peek().msgLeaveBank();
+	        waitingCustomers.peek().msgClosingTime();
 	        waitingCustomers.remove();
 	    }
 	}
