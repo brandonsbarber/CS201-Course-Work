@@ -15,6 +15,10 @@ import cs201.structures.residence.Residence;
 
 public class ResidenceAnimationTest1 {
 
+	JFrame frame;
+	ResidenceAnimationPanel resPanel;
+	Residence residence;
+	
 	@Before
 	public void setUp() throws Exception {
 		
@@ -36,6 +40,7 @@ public class ResidenceAnimationTest1 {
 	@Test
 	public void test() {
 		
+		residence.getResident().msgStartEating();
 	}
 
 }
