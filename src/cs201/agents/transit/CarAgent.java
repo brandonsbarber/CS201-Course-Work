@@ -125,4 +125,9 @@ public class CarAgent extends VehicleAgent implements Car
 		
 		msgSetDestination(removed.destination);
 	}
+
+	public Passenger getPassenger()
+	{
+		return p;
+	}
 }

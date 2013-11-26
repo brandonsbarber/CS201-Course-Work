@@ -19,6 +19,8 @@ import cs201.agents.PassengerTestAgent;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
+import cs201.gui.transit.BusGui;
+import cs201.gui.transit.CarGui;
 import cs201.gui.transit.PassengerGui;
 import cs201.gui.transit.VehicleGui;
 import cs201.helper.CityDirectory;
@@ -99,8 +101,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		//Testing Hacks
 		
 		stops.add(new BusStop(2*25,2*25,25,25,1, null));
+		stops.add(new BusStop(12*25,2*25,25,25,2, null));
 		stops.add(new BusStop(22*25,2*25,25,25,2, null));
 		stops.add(new BusStop(22*25,12*25,25,25,3, null));
+		stops.add(new BusStop(12*25,12*25,25,25,3, null));
 		stops.add(new BusStop(2*25,12*25,25,25,4, null));
 		
 		for(BusStop stop : stops)
@@ -110,7 +114,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);
 		VehicleGui busG;
-		guis.add(busG = new VehicleGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
+		guis.add(busG = new BusGui(bus,this,(int)stops.get(0).x,(int)stops.get(0).y));
 		
 		bus.setGui(busG);
 		
@@ -126,7 +130,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		CarAgent car = new CarAgent();
 		VehicleGui gui;
-		guis.add(gui = new VehicleGui(car,this));
+		guis.add(gui = new CarGui(car,this));
 		
 		Structure startLoc = new BusStop(18*25,2*25,25,25,1, null);
 		Structure endLoc = new BusStop(50,50,25,25,2, null);
@@ -143,9 +147,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		PassengerTestAgent passAgent = new PassengerTestAgent(pass);
 		
-		pass.msgGoTo(stops.get(1));
+		pass.msgGoTo(stops.get(5));
 		
-		//pass.addCar(car);
+		pass.addCar(car);
 		
 		car.setGui(gui);
 		
@@ -153,13 +157,13 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		passAgent.startThread();
 		
-		//TruckAgent truck = new TruckAgent(stops.get(0));
+		TruckAgent truck = new TruckAgent(stops.get(0));
 		
-		//truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(1),1);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(1),1);
 		
-		//truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
 		
-		//truck.startThread();
+		truck.startThread();
 		
 		timer.start();
 	}
@@ -239,12 +243,42 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					g2.setColor(Color.GRAY.darker());
 				}
 				
+				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				
 				if(drivingMap[y][x].isValid())
 				{
-					//g2.setColor(Color.BLUE);
+					if(drivingMap[y][x] == DrivingDirection.North)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+
+					}
+					else if(drivingMap[y][x] == DrivingDirection.South)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
+						
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+					}
+					else if(drivingMap[y][x] == DrivingDirection.West)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+					}
+					else if(drivingMap[y][x] == DrivingDirection.East)
+					{
+						g2.setColor(Color.BLACK);
+						g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
+						g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+					}
+					
 				}
-				
-				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 			}
 		}
 		
@@ -289,7 +323,34 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	}
 	
 	public void addStructure(Structure s) {
+		//testing hacks
 		buildings.add(s);
+		
+		
+		if(s.x == 19*25)
+		{
+			PassengerRole role = new PassengerRole(buildings.get(0));
+			PassengerTestAgent agent = new PassengerTestAgent(role);
+			role.setBusStops(stops);
+			PassengerGui pgui = new PassengerGui(role,this);
+			role.setGui(pgui);
+			guis.add(pgui);
+			role.msgGoTo(s);
+			agent.startThread();
+		}
+		else
+		{
+			PassengerRole role = new PassengerRole(s);
+			PassengerTestAgent agent = new PassengerTestAgent(role);
+			role.setBusStops(stops);
+			PassengerGui pgui = new PassengerGui(role,this);
+			role.setGui(pgui);
+			guis.add(pgui);
+			role.msgGoTo(stops.get(3));
+			agent.startThread();
+		}
+		
+		
 	}
 	
 	public ArrayList<Structure> getStructures() {
