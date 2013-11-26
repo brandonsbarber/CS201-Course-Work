@@ -129,13 +129,13 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		populateDrivingMap();
 		//Testing Hacks
-		/*
-		stops.add(new BusStop(2*25,2*25,25,25,1, null));
-		stops.add(new BusStop(12*25,2*25,25,25,2, null));
-		stops.add(new BusStop(22*25,2*25,25,25,2, null));
-		stops.add(new BusStop(22*25,12*25,25,25,3, null));
-		stops.add(new BusStop(12*25,12*25,25,25,3, null));
-		stops.add(new BusStop(2*25,12*25,25,25,4, null));
+		
+		stops.add(new BusStop(22*25,12*25,25,25,1, null));
+		stops.add(new BusStop(12*25,12*25,25,25,2, null));
+		stops.add(new BusStop(2*25,12*25,25,25,3, null));
+		stops.add(new BusStop(22*25,2*25,25,25,4, null));
+		stops.add(new BusStop(12*25,2*25,25,25,5, null));
+		stops.add(new BusStop(2*25,2*25,25,25,6, null));
 		
 		for(BusStop stop : stops)
 		{
@@ -149,7 +149,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		bus.setGui(busG);
 		
 		bus.startThread();
-		
+		/*
 		BusAgent bus2 = new BusAgent(new BusRoute(stops),2);
 		VehicleGui busG2;
 		guis.add(busG2 = new VehicleGui(bus2,this,(int)stops.get(2).x,(int)stops.get(2).y));
