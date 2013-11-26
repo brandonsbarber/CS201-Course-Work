@@ -123,6 +123,7 @@ public class SimCity201 extends JFrame {
 		m.getManager().pickAndExecuteAnAction();
 		*/
 		
+		/*
 		PersonAgent p = new PersonAgent("Cashier");
 		p.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
 		CityDirectory.getInstance().addPerson(p);
@@ -157,6 +158,7 @@ public class SimCity201 extends JFrame {
 		p7.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p7);
 		p7.startThread();
+		*/
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
