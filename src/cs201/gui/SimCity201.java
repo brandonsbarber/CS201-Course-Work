@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
@@ -79,11 +80,12 @@ public class SimCity201 extends JFrame {
 		add(BorderLayout.SOUTH, settingsPanel);
 		add(BorderLayout.NORTH, guiPanel);
 		
+		MarketConfigPanel marketConfigPanel1 = new MarketConfigPanel();
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Transit",new TransitConfigPanel());
 		settingsPanel.addPanel("Transit",new TransitConfigPanel());
 		settingsPanel.addPanel("Banks",new ConfigPanel());
-		settingsPanel.addPanel("Markets",new ConfigPanel());
+		settingsPanel.addPanel("Markets",marketConfigPanel1);
 		settingsPanel.addPanel("Housing",new ConfigPanel());
 		settingsPanel.addPanel("Housing",new ConfigPanel());
 		settingsPanel.addPanel("Housing",new ConfigPanel());
@@ -104,11 +106,13 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
+		marketConfigPanel1.setStructure(m);
 		
 		MarketAnimationPanel mG2 = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);
 		MarketStructure m2 = new MarketStructure(19*25,9*25,50,50,Structure.getNextInstance(),mG2);
 		m2.setStructurePanel(mG2);
 		buildingPanels.add(mG2,""+m2.getId());
+		
 		cityPanel.addStructure(m2);
 		CityDirectory.getInstance().addMarket(m2);
 		

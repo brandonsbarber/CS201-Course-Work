@@ -57,4 +57,16 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 			e.printStackTrace();
 		}
 	}
+	
+	protected void Do(String msg) {
+		StringBuffer output = new StringBuffer();
+		output.append("[");
+		output.append(this.getClass().getSimpleName());
+		output.append("] ");
+		//output.append(this.name);
+		output.append(": ");
+		output.append(msg);
+		
+		System.out.println(output.toString());
+	}
 }

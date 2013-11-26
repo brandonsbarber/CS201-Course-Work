@@ -10,25 +10,30 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import cs201.gui.ConfigPanel;
 import cs201.roles.Role;
 import cs201.structures.market.MarketStructure;
 
-public class MarketConfigPanel extends JPanel implements ActionListener {
+public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	
 	// The reference to the MarketStructure this config panel will be controlling
 	MarketStructure structure;
 	
 	JButton addInventoryButton;
 	
-	public MarketConfigPanel(MarketStructure s) {
-		// Hook up this config panel to a certain structure
-		structure = s;
+	public MarketConfigPanel() {
+		super();
 		
 		// GUI Elements
 		addInventoryButton = new JButton("Add inventory");
 		addInventoryButton.addActionListener(this);
 		addInventoryButton.setEnabled(true);
-		this.add(addInventoryButton);
+		super.add(addInventoryButton);
+	}
+	
+	public void setStructure(MarketStructure s) {
+		// Hook up this config panel to a certain structure
+		structure = s;
 	}
 
 	public void setPersonEnabled(Role role) {
