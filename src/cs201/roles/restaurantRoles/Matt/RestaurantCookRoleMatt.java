@@ -178,6 +178,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
+		Do("Leaving work.");
 	}
 	
 	private void DoCookOrder(Order o) {
