@@ -128,8 +128,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			doGetItem(item);
 		}
 		
+		Do("Got Items01w8e0198");
+		
 		// Walk to the manager
 		if (gui != null) {
+			Do("GOTO MANAGER");
 			gui.doGoToManager();
 			pauseForAnimation();
 		}

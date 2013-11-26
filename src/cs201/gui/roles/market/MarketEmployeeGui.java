@@ -192,6 +192,7 @@ public class MarketEmployeeGui implements Gui {
 			if (guiMoveFromCurrentPositionTo(new Position(x, 14)))
 				return;
 		}
+		//guiMoveFromCurrentPositionTo(new Position(10, 14));
 		// There isn't a spot, so just release the semaphore
 		if (role != null)
 			role.animationFinished();
