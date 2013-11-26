@@ -86,10 +86,10 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	
 	@Override
 	public void msgIWantToEat(CustomerMatt c) {
-		if (timeToClose) {
+		/*if (timeToClose || !this.restaurant.getOpen()) {
 			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter because the restaurant is closed.");
 			return;
-		}
+		}*/
 		
 		if (!bannedCustomers.contains(c)) {
 			Integer ID = AssignCustomerID();
@@ -106,9 +106,9 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 	
 	@Override
-	public void msgWaitTimeTooLong(CustomerMatt c) {
-		int index = waitingCustomers.indexOf(c);
-		waitingCustomerIDs.remove(index);
+	public synchronized void msgWaitTimeTooLong(CustomerMatt c) {
+		waitingCustomerIDs.remove(waitingCustomers.indexOf(c));
+		
 		waitingCustomers.remove(c);
 		numCustomers--;
 		stateChanged();
@@ -181,7 +181,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {
-		if (this.restaurant.getOpen() && timeToClose && numCustomers == 0) {
+		if (timeToClose && numCustomers == 0) {
 			CloseRestaurant();
 			return true;
 		}
@@ -232,9 +232,9 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
-		this.myPerson = null;
 		this.waiters.clear();
 		DoCloseRestaurant();
+		this.myPerson = null;
 	}
 	
 	private void CallWaiter(MyWaiter m, TableMatt t) {

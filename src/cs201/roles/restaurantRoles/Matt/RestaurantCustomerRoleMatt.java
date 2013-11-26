@@ -22,7 +22,7 @@ import java.util.concurrent.Semaphore;
 public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implements CustomerMatt {
 	private final int EATINGDURATION = 6500;
 	private final int CHOOSINGDURATION = 2500;
-	private final int WAITINGDURATION = 6000;
+	private final int WAITINGDURATION = 6500;
 	private Timer customerTimer;
 	private CustomerGuiMatt customerGui;
 

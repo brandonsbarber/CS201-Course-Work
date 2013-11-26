@@ -92,7 +92,7 @@ public class SimCity201 extends JFrame {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(0,this);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,0,g);
 		r.setStructurePanel(g);
-		r.setClosingTime(new CityTime(11, 0));
+		r.setClosingTime(new CityTime(9, 30));
 		buildingPanels.add(g,""+0);
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
@@ -116,22 +116,22 @@ public class SimCity201 extends JFrame {
 		m.getManager().pickAndExecuteAnAction();
 		*/
 		
-		PersonAgent p = new PersonAgent("MyPerson");
+		PersonAgent p = new PersonAgent("Cashier");
 		p.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
 		CityDirectory.getInstance().addPerson(p);
 		p.startThread();
 		
-		PersonAgent p2 = new PersonAgent("MyPerson");
+		PersonAgent p2 = new PersonAgent("Cook");
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
 		CityDirectory.getInstance().addPerson(p2);
 		p2.startThread();
 		
-		PersonAgent p3 = new PersonAgent("MyPerson");
+		PersonAgent p3 = new PersonAgent("Waiter");
 		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
 		
-		PersonAgent p4 = new PersonAgent("MyPerson");
+		PersonAgent p4 = new PersonAgent("Host");
 		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();

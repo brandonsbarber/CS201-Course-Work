@@ -142,9 +142,11 @@ public class RestaurantMatt extends Restaurant {
 	}
 	
 	private void checkIfRestaurantShouldOpen() {
+		Do("Checking if open.");
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
 			for (RestaurantWaiterRole w : waiters) {
 				if (w.getPerson() != null) {
+					Do("Open!");
 					this.isOpen = true;
 					return;
 				}
