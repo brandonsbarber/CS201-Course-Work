@@ -126,7 +126,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		public void calculatePrice() {
 			float total = 0.0f;
 			for (ItemRequest item : items) {
-				InventoryEntry entry = inventory.get(item.item);
+				InventoryEntry entry = inventory.get(item.item.toLowerCase());
 				if (entry != null) {
 					total += item.amount * entry.price;
 				}
