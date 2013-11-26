@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JOptionPane;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.transit.PassengerGui;
 import cs201.helper.transit.BusRoute;

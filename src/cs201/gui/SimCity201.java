@@ -11,10 +11,12 @@ import javax.swing.JScrollPane;
 
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
+import cs201.agents.transit.CarAgent;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.gui.transit.CarGui;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
 import cs201.structures.Structure;
@@ -134,8 +136,14 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p6);
 		p6.startThread();
 		
+		CarAgent car = new CarAgent();
+		CarGui cGui = new CarGui(car, cityPanel);
+		car.setGui(cGui);
+		car.startThread();
+		cityPanel.addGui(cGui);
+		
 		PersonAgent p7 = new PersonAgent("Employee", cityPanel);
-		p7.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p7.setupPerson(CityDirectory.getInstance().getTime(), re, m, Intention.MarketEmployee, re, car);
 		CityDirectory.getInstance().addPerson(p7);
 		p7.startThread();
 		

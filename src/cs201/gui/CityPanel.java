@@ -146,7 +146,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private List<BusStop> stops;
 
-	private static final boolean SHOW_DEBUG = true;
+	private static final boolean SHOW_DEBUG = false;
 	
 	
 	public CityPanel()
@@ -559,7 +559,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			s.setParkingLocation(location);
 		}
 		
-		
+		/*
 		CarAgent car = new CarAgent();
 		VehicleGui gui;
 		guis.add(gui = new CarGui(car,this));
@@ -576,7 +576,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		role.setGui(pgui);
 		guis.add(pgui);
 		role.msgGoTo(s);
-		agent.startThread();
+		agent.startThread();*/
 	}
 	
 	public void addStructure(Structure s, Point parking,Point entrance)

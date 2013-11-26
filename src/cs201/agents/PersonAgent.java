@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import cs201.agents.transit.CarAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.transit.PassengerGui;
 import cs201.helper.CityDirectory;
@@ -115,6 +116,9 @@ public class PersonAgent extends Agent implements Person {
 		this.job = job;
 		this.currentLocation = location;
 		this.vehicle = vehicle;
+		if (vehicle != null) {
+			passengerRole.addCar((CarAgent) vehicle);
+		}
 		
 		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
 			this.state = PersonState.Awake;
@@ -301,11 +305,11 @@ public class PersonAgent extends Agent implements Person {
 	private void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
+			Do("Going to " + a.location);
 			passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);
-			Do("Going to " + a.location);
 		}
 	}
 	
