@@ -1,9 +1,10 @@
 package cs201.test.mock.housing;
 
+import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
-import cs201.test.mock.Mock;
+import cs201.test.mock.LoggedEvent;
 
-public class MockRenter extends Mock implements Renter {
+public class MockRenter extends MockResident implements Renter {
 
 	public MockRenter(String name) {
 		super(name);
@@ -11,33 +12,25 @@ public class MockRenter extends Mock implements Renter {
 	}
 
 	@Override
-	public void msgRentDueYouOwe(double amt) {
+	public void msgRentDueYouOwe(Landlord l, double amt) {
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void msgRentLateYouOweAdditional(double amt) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void msgStartEating() {
-		// TODO Auto-generated method stub
+		String string = "received msgRentDueYouOwe. Amount: "+amt;
+		System.out.println(string);
+		log.add(new LoggedEvent(string));
 		
+		//automatically pay
+		l.msgHereIsRentPayment(this, amt);
 	}
 
 	@Override
-	public void msgDoneEating() {
+	public void msgRentLateYouOweAdditional(Landlord l, double amt) {
 		// TODO Auto-generated method stub
+		String string = "received msgRentLateYouOweAdditional. Amount: "+amt;
+		System.out.println(string);
+		log.add(new LoggedEvent(string));
 		
-	}
-
-	@Override
-	public void msgAnimationDone() {
-		// TODO Auto-generated method stub
-		
+		//automaticaly pay
+		l.msgHereIsRentPayment(this, amt);
 	}
 
 }

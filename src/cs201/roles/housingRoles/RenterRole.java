@@ -20,12 +20,12 @@ public class RenterRole extends ResidentRole implements Renter {
 	
 	// Messages
 	
-	public void msgRentDueYouOwe (double amt) {
+	public void msgRentDueYouOwe (Landlord l, double amt) {
 		amtRentOwed += amt;
 		stateChanged();
 	}
 
-	public void msgRentLateYouOweAdditional (double amt) {
+	public void msgRentLateYouOweAdditional (Landlord l, double amt) {
 		amtRentOwed += amt;
 		stateChanged();
 	}
