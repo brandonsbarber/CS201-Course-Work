@@ -3,13 +3,9 @@ package cs201.gui.structures.residence;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;

@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,8 +16,6 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.gui.structures.market.MarketAnimationPanel;
-import cs201.gui.structures.market.MarketConfigPanel;
-import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.transit.BusGui;
 import cs201.gui.transit.CarGui;
@@ -27,7 +24,6 @@ import cs201.helper.CityTime;
 import cs201.helper.transit.BusRoute;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
-import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 

@@ -6,12 +6,10 @@ import java.util.List;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.Gui;
 import cs201.gui.roles.residence.LandlordGui;
-import cs201.gui.roles.residence.ResidentGui;
 import cs201.helper.CityTime.WeekDay;
 import cs201.interfaces.roles.housing.Landlord;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.Role;
-import cs201.roles.housingRoles.LandlordRole.RentState;
 import cs201.structures.residence.Residence;
 
 public class LandlordRole extends Role implements Landlord {

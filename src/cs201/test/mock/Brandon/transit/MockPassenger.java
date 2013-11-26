@@ -2,7 +2,6 @@ package cs201.test.mock.Brandon.transit;
 
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.interfaces.roles.transit.Passenger;
-import cs201.roles.Role;
 import cs201.structures.Structure;
 import cs201.test.mock.LoggedEvent;
 import cs201.test.mock.Mock;

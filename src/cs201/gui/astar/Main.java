@@ -1,5 +1,5 @@
 package cs201.gui.astar;
-import java.util.concurrent.*;
+import java.util.concurrent.Semaphore;
 public class Main
 {
 	public static void main(String [] args){

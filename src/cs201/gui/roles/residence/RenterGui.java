@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.roles.housingRoles.LandlordRole;
 import cs201.roles.housingRoles.RenterRole;
 
 public class RenterGui implements Gui {

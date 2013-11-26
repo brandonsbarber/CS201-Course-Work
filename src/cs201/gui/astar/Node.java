@@ -1,5 +1,4 @@
 package cs201.gui.astar;
-import java.util.*;
 
 public interface Node {
     public boolean goalTest(Object o);

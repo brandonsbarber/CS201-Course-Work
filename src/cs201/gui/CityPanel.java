@@ -18,13 +18,8 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import cs201.agents.transit.BusAgent;
-import cs201.gui.transit.BusGui;
-import cs201.gui.transit.VehicleGui;
 import cs201.helper.CityDirectory;
-import cs201.helper.transit.BusRoute;
 import cs201.structures.Structure;
-import cs201.structures.transit.BusStop;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {

@@ -4,11 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
-import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.residence.ResidentGui;

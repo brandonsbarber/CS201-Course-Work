@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.residence.ResidentGui;

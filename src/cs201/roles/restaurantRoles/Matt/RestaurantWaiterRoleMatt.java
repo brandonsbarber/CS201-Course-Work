@@ -2,7 +2,11 @@ package cs201.roles.restaurantRoles.Matt;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.Timer;
 
@@ -14,8 +18,6 @@ import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
-
-import java.util.concurrent.Semaphore;
 
 /**
  * Restaurant Waiter Agent

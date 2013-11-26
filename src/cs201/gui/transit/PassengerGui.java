@@ -2,17 +2,14 @@ package cs201.gui.transit;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import cs201.gui.CityPanel;
-import cs201.gui.CityPanel.DrivingDirection;
 import cs201.gui.CityPanel.WalkingDirection;
 import cs201.gui.Gui;
 import cs201.roles.transit.PassengerRole;

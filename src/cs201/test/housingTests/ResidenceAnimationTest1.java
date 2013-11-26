@@ -1,7 +1,5 @@
 package cs201.test.housingTests;
 
-import static org.junit.Assert.*;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 

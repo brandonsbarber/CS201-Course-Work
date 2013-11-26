@@ -3,7 +3,6 @@ package cs201.helper;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -11,7 +10,6 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
-import cs201.agents.PersonAgent.Intention;
 import cs201.structures.bank.Bank;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;

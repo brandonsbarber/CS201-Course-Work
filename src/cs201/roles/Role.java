@@ -1,7 +1,6 @@
 package cs201.roles;
 
 import cs201.agents.PersonAgent;
-import cs201.gui.Gui;
 
 /**
  * Base class for all Roles in SimCity201

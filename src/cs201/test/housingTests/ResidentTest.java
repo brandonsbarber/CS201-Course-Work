@@ -1,5 +1,7 @@
 package cs201.test.housingTests;
 
+import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +11,6 @@ import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.roles.housingRoles.ResidentRole;
 import cs201.roles.housingRoles.ResidentRole.ResidentState;
 import cs201.structures.residence.Residence;
-import junit.framework.TestCase;
 
 public class ResidentTest extends TestCase {
 

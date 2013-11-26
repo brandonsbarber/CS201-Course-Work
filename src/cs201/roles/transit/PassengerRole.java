@@ -1,12 +1,10 @@
 package cs201.roles.transit;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
-
-import javax.swing.JOptionPane;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.transit.PassengerGui;

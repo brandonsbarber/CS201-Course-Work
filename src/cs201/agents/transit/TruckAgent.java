@@ -2,7 +2,6 @@ package cs201.agents.transit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import cs201.gui.CityPanel;
 import cs201.gui.transit.TruckGui;

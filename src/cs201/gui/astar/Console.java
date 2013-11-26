@@ -8,7 +8,8 @@ package cs201.gui.astar;
  * @author (G. Michael Schneider and Judith L. Gersting) 
  * @version (2000)
  */
-import java.io.*; 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Console {
 

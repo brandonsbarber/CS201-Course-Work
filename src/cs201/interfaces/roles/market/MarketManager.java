@@ -4,7 +4,6 @@ import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
-import cs201.structures.Structure;
 import cs201.structures.restaurant.Restaurant;
 
 public interface MarketManager {

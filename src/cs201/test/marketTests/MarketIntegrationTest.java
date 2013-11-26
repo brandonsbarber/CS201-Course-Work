@@ -1,6 +1,7 @@
 package cs201.test.marketTests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -17,12 +18,9 @@ import cs201.gui.roles.market.MarketConsumerGui;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.gui.structures.market.MarketAnimationPanel;
-import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.roles.marketRoles.MarketConsumerRole;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
-import cs201.test.mock.market.MockMarketConsumer;
-import cs201.test.mock.market.MockMarketEmployee;
 
 public class MarketIntegrationTest {
 

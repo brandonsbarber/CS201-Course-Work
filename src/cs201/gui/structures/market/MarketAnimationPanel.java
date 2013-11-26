@@ -3,16 +3,8 @@ package cs201.gui.structures.market;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import javax.swing.JPanel;
-import javax.swing.Timer;
-
-import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 

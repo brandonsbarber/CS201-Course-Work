@@ -8,11 +8,10 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import cs201.agents.transit.VehicleAgent;
 import cs201.agents.transit.BusAgent;
+import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.CityPanel.DrivingDirection;
-import cs201.gui.CityPanel.WalkingDirection;
 
 public class BusGui extends VehicleGui
 {

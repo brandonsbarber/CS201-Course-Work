@@ -1,7 +1,5 @@
 package cs201.gui.astar;
-import java.util.*;
-import java.lang.Math;
-import java.util.concurrent.*;
+import java.util.concurrent.Semaphore;
 
 public class Position {
     int x;

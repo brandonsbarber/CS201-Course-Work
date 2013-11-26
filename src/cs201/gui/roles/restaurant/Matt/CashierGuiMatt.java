@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
 
 public class CashierGuiMatt implements Gui {
 

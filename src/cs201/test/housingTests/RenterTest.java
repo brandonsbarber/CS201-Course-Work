@@ -1,17 +1,16 @@
 package cs201.test.housingTests;
 
+import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
-import cs201.roles.housingRoles.LandlordRole;
 import cs201.roles.housingRoles.RenterRole;
 import cs201.structures.residence.Residence;
 import cs201.test.mock.housing.MockLandlord;
-import cs201.test.mock.housing.MockRenter;
-import junit.framework.TestCase;
 
 public class RenterTest extends TestCase {
 

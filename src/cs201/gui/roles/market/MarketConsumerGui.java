@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
 import cs201.roles.marketRoles.MarketConsumerRole;
-import cs201.roles.marketRoles.MarketEmployeeRole;
-import cs201.roles.marketRoles.MarketManagerRole;
 
 public class MarketConsumerGui implements Gui {
 

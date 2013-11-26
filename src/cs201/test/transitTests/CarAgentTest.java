@@ -2,7 +2,6 @@ package cs201.test.transitTests;
 
 import junit.framework.TestCase;
 import cs201.agents.transit.CarAgent;
-import cs201.interfaces.roles.transit.Passenger;
 import cs201.test.mock.Brandon.transit.MockPassenger;
 
 public class CarAgentTest extends TestCase
