@@ -9,7 +9,7 @@ import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class ResidentRole extends Role implements Resident {
-	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent};
+	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent, relaxing};
 	ResidentState state;
 	private Residence residence;
 	ResidentGui gui;
@@ -57,6 +57,9 @@ public class ResidentRole extends Role implements Resident {
 					Do("I need to get food from the market. I need to implement some way to do that.");
 					return false;
 				}
+			case relaxing:
+				
+				break;
 			default: 
 				break;
 		}
@@ -100,7 +103,7 @@ public class ResidentRole extends Role implements Resident {
 				stateChanged();
 				break;
 			case ResidenceRelax:
-				state = ResidentState.doingNothing;
+				state = ResidentState.relaxing;
 				stateChanged();
 				break;
 			default:
