@@ -96,7 +96,7 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		
-		normativeWalking();
+		normativeDriving();
 		
 		CityDirectory.getInstance().startTime();
 	}
@@ -140,6 +140,37 @@ public class SimCity201 extends JFrame {
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
+	}
+	
+	private void normativeDriving()
+	{
+		//One person walks from Market to Restaurant
+				MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+				MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+				m.setStructurePanel(mG);
+				m.setClosingTime(new CityTime(18, 0));
+				buildingPanels.add(mG,""+m.getId());
+				cityPanel.addStructure(m);
+				CityDirectory.getInstance().addMarket(m);
+				
+				RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+				RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+				r.setStructurePanel(g);
+				r.setClosingTime(new CityTime(14, 0));
+				buildingPanels.add(g,""+r.getId());
+				cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+				CityDirectory.getInstance().addRestaurant(r);
+				
+				CarAgent car = new CarAgent();
+				CarGui cGui = new CarGui(car,cityPanel);
+				car.setGui(cGui);
+				cityPanel.addGui(cGui);
+				car.startThread();
+				
+				PersonAgent p1 = new PersonAgent("Walker",cityPanel);
+				p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
+				CityDirectory.getInstance().addPerson(p1);
+				p1.startThread();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
