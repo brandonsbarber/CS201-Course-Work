@@ -90,7 +90,6 @@ public class PassengerRole extends Role implements Passenger
 	public void setGui(PassengerGui gui)
 	{
 		this.gui = gui;
-		gui.setPresent(true);
 	}
 	
 	public void addCar(Car c)
