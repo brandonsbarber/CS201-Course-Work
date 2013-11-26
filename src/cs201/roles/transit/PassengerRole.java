@@ -104,6 +104,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
+		Do("Received message to go to: "+s);
 		stateChanged();
 	}
 
@@ -111,6 +112,7 @@ public class PassengerRole extends Role implements Passenger
 	public void msgPleaseBoard(Vehicle v)
 	{
 		boardingRequest.add(v);
+		Do("Received message to board: "+v);
 		waitingForVehicle.release();
 	}
 
@@ -119,6 +121,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
+		Do("Received message arrived at destination: "+s);
 		stateChanged();
 	}
 
@@ -166,6 +169,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		if (car != null)
 		{
+			Do("Populating waypoints for car");
 			waypoints.add (new Move(destination, MoveType.Car));
 			return;
 		}
@@ -213,12 +217,14 @@ public class PassengerRole extends Role implements Passenger
 		
 		if(!shouldWalk() && stops.size() == 2)
 		{
+			Do("Populating waypoints for bus");
 			waypoints.add(new Move(stops.get(0),MoveType.Walk));
 			waypoints.add(new Move(stops.get(1),MoveType.Bus));
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 		else
 		{
+			Do("Populating waypoints for walking");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
@@ -267,6 +273,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	private void processArrival()
 	{
+		Do("Processing arrival at "+currentLocation);
 		if(currentLocation == waypoints.peek().s)
 		{
 			Structure s = waypoints.remove().s;
@@ -354,6 +361,7 @@ public class PassengerRole extends Role implements Passenger
 
 	public void msgAnimationFinished()
 	{
+		Do("Animation has finished");
 		animationPause.release();
 	}
 

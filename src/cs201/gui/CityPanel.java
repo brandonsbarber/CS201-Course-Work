@@ -153,13 +153,13 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		passAgent.startThread();
 		
-		TruckAgent truck = new TruckAgent(stops.get(0));
+		//TruckAgent truck = new TruckAgent(stops.get(0));
 		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(1),1);
+		//truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(1),1);
 		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
+		//truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), stops.get(2),1);
 		
-		truck.startThread();
+		//truck.startThread();
 		
 		timer.start();
 	}
