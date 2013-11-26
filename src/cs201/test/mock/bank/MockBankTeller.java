@@ -32,4 +32,23 @@ public class MockBankTeller extends Mock implements BankTeller {
 	public void msgRequestMoney(BankCustomerRole cust, int actNum, double amtRequested) {
 	    // TODO
 	}
+
+	@Override
+	public void msgOpenAccount(BankCustomerRole cust, int actNum,
+			double startingBalance) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgOpenAccount() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgClosingTime() {
+		// TODO Auto-generated method stub
+		
+	}
 }
