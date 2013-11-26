@@ -146,7 +146,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private List<BusStop> stops;
 
-	private static final boolean SHOW_DEBUG = false;
+	private static final boolean SHOW_DEBUG = true;
 	
 	
 	public CityPanel()
@@ -459,6 +459,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			g2.setColor(Color.BLACK);
 			Structure s = buildings.get(i);
 			g2.fill(s);
+			
+			g2.setColor(Color.WHITE);
+			g2.drawString(""+s.getId(),(int)s.x,(int)(s.y + s.height));
 			
 			if(SHOW_DEBUG)
 			{
