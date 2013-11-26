@@ -100,7 +100,7 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);		
 		
-		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);System.out.println(mG.hashCode());
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this, 50, 50);
 		MarketStructure m = new MarketStructure(225,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		buildingPanels.add(mG,""+m.getId());
