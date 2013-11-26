@@ -2,8 +2,14 @@ package cs201.gui.transit;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import cs201.gui.CityPanel;
 import cs201.gui.CityPanel.DrivingDirection;
@@ -14,6 +20,9 @@ import cs201.structures.Structure;
 
 public class PassengerGui implements Gui
 {
+	public static ArrayList<BufferedImage> movementSprites;
+	
+	
 	private PassengerRole pass;
 	
 	private Structure destination;
@@ -46,6 +55,22 @@ public class PassengerGui implements Gui
 		fired = true;
 		present = false;
 		currentDirection = WalkingDirection.None;
+		
+		movementSprites = new ArrayList<BufferedImage>();
+		try
+		{
+			movementSprites.add(null);
+			movementSprites.add(WalkingDirection.North.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_North.png")));
+			movementSprites.add(WalkingDirection.South.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_South.png")));
+			movementSprites.add(WalkingDirection.East.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_East.png")));
+			movementSprites.add(WalkingDirection.West.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_West.png")));
+		}
+		catch(Exception e)
+		{
+			System.out.println("ERROR");
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public PassengerGui(PassengerRole pass,CityPanel city, Structure s)
@@ -72,7 +97,9 @@ public class PassengerGui implements Gui
 	public void draw(Graphics2D g)
 	{
 		g.setColor(Color.RED);
-		g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
+			g.drawImage (movementSprites.get(currentDirection.ordinal()),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
+
+		//g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 	}
 
 	@Override

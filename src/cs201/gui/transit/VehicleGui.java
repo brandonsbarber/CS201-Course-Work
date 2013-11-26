@@ -27,7 +27,7 @@ public abstract class VehicleGui implements Gui
 	
 	private CityPanel city;
 
-	private DrivingDirection currentDirection;
+	protected DrivingDirection currentDirection;
 	
 	public VehicleGui(VehicleAgent vehicle,CityPanel city)
 	{
