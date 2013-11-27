@@ -101,7 +101,7 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving)\n6) Market Restaurant Delivery (to show truck)\n7) Apartment Complex\nYour choice: ");
+			System.out.print("Which scenario would you like to run?\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving)\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
 			String choice = in.nextLine();
 			try
 			{
@@ -114,7 +114,8 @@ public class SimCity201 extends JFrame {
 					case 4: normativeWalking(); running = false; break;
 					case 5: normativeDriving(); running = false; break;
 					case 6: normativeMarketRestaurantDelivery(); running = false; break;
-					case 7: normativeApartmentComplex(); running = false; break;
+					case 7: normativeResidence(); running = false; break;
+					case 8: normativeApartmentComplex(); running = false; break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
@@ -250,6 +251,13 @@ public class SimCity201 extends JFrame {
 	}
 	
 	private void normativeApartmentComplex() {
+		/* 
+		 * Creates a Landlord who lives in a Residence that he owns and a Renter who lives in a Residence
+		 * that he pays rent on. Every morning at 7am, the Renter will check if he has to pay any rent. The Landlord
+		 * goes to work at 8am at the ApartmentComplex, where he checks if any of the Renters in his list of properties needs to pay rent.
+		 * The Renter we've created has to pay his rent on Tuesdays, so the Landlord will notify him of his rent due
+		 * on Monday. Otherwise, both will act as regular residents in their homes.
+		 */
 		ApartmentComplexAnimationPanel acap = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
 		ApartmentComplex ac = new ApartmentComplex(14*25, 9*25, 25, 25, Structure.getNextInstance(), acap);
 		ac.setStructurePanel(acap);
@@ -286,6 +294,26 @@ public class SimCity201 extends JFrame {
 		
 		p1.startThread();
 		p2.startThread();
+	}
+	
+	private void normativeResidence() {
+		/*
+		 * Creates a Residence and a Resident who inhabits that residence. Each morning at 7am, that Resident will
+		 * eat from his refrigerator to start the day. If he has nothing else to do, he will relax at home until he
+		 * gets hungry or has something else to do. At 10pm he will go to sleep in his bed.
+		 */
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res = new Residence(14*25, 10*25, 25, 25, Structure.getNextInstance(), resPanel, false);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(12*25, 10*25), new Point(13*25, 10*25));
+		CityDirectory.getInstance().addResidence(res);
+		
+		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		CityDirectory.getInstance().addPerson(p1);
+		
+		p1.startThread();
 	}
 	
 	private void normativeWalking()

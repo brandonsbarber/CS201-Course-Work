@@ -77,7 +77,7 @@ public class BusAgentTest extends TestCase
 		ArrayList<BusStop> myStops = new ArrayList<BusStop>();
 		myStops.add((BusStop)s1);
 		
-		bus = new BusAgent(new BusRoute(myStops), 0);
+		BusAgent bus = new BusAgent(new BusRoute(myStops), 0);
 		
 		assertTrue(bus.pickAndExecuteAnAction());
 		
@@ -109,5 +109,31 @@ public class BusAgentTest extends TestCase
 	public void testOnePassengerOneStop()
 	{
 		MockPassenger p = new MockPassenger("Passenger 1");
+		
+		((BusStop)s1).addPassenger(p);
+		
+		assertTrue(bus.pickAndExecuteAnAction());
+		
+		assertEquals("Initial location should be s2",s2,bus.currentLocation);
+		assertEquals("Destination should be s2.",s2,bus.destination);
+		assertEquals("Bus should have no passengers.",0,bus.passengers.size());
+		
+		assertTrue(bus.pickAndExecuteAnAction());
+		
+		assertEquals("Initial location should be s3",s3,bus.currentLocation);
+		assertEquals("Destination should be s3.",s3,bus.destination);
+		assertEquals("Bus should have no passengers.",0,bus.passengers.size());
+		
+		assertTrue(bus.pickAndExecuteAnAction());
+		
+		assertEquals("Initial location should be s4",s4,bus.currentLocation);
+		assertEquals("Destination should be s4.",s4,bus.destination);
+		assertEquals("Bus should have no passengers.",0,bus.passengers.size());
+		
+		assertTrue(bus.pickAndExecuteAnAction());
+		
+		assertEquals("Initial location should be s1",s1,bus.currentLocation);
+		assertEquals("Destination should be s1.",s1,bus.destination);
+		assertEquals("Bus should have no passengers.",0,bus.passengers.size());
 	}
 }
