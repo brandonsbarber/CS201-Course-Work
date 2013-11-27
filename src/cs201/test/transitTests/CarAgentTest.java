@@ -52,6 +52,8 @@ public class CarAgentTest extends TestCase
 		assertEquals("Passenger's log should have two entries",2,pass.log.size());
 		assertEquals("Car's location should be s2",s2,car.currentLocation);
 		assertEquals("Car's passenger should be null",null,car.p);
+		
+		assertFalse("Scheduler should return false",car.pickAndExecuteAnAction());
 	}
 	
 	public void testTwoPassengerOneCarSequential()
@@ -103,8 +105,69 @@ public class CarAgentTest extends TestCase
 		
 		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
 		
+		assertEquals("Passenger2's log should have two entries",2,pass2.log.size());
+		assertEquals("Car's location should be s2",s2,car.currentLocation);
+		assertEquals("Car's passenger should be null",null,car.p);
+		
+		assertFalse("Scheduler should return false",car.pickAndExecuteAnAction());
+	}
+	
+	public void testTwoPassengerOneCarSimultaneous()
+	{
+		assertEquals("Passenger should have no logs",0,pass.log.size());
+		assertTrue("Car should not have a passenger",car.p == null);
+		
+		car.msgCallCar(pass, s1, s2);
+		
+		assertEquals("Car should have a pickup request",1,car.pickups.size());
+		assertEquals("Car's destination should be null",null, car.destination);
+		
+		//Second passenger
+		assertEquals("Passenger2 should have no logs",0,pass2.log.size());
+		assertTrue("Car should not have a passenger",car.p == null);
+		
+		car.msgCallCar(pass2, s1, s2);
+		
+		assertEquals("Car should have two pickup request",2,car.pickups.size());
+		assertEquals("Car's destination should be null",null, car.destination);
+		
+		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
+
+		assertEquals("Car's location should be s1",s1,car.currentLocation);
+		assertEquals("Car's destination should be s2",s2,car.destination);
+		assertEquals("Car's passenger should be pass",pass,car.p);
+		
+		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
+		
+		assertEquals("Car's location should be s2",s2,car.currentLocation);
+		assertEquals("Car's passenger should be pass",pass,car.p);
+		
+		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
+		
 		assertEquals("Passenger's log should have two entries",2,pass.log.size());
 		assertEquals("Car's location should be s2",s2,car.currentLocation);
 		assertEquals("Car's passenger should be null",null,car.p);
+		
+		assertEquals("Car should have a pickup request",1,car.pickups.size());
+		assertEquals("Car's destination should be s2",s2,car.destination);
+		
+		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
+
+		assertEquals("Car's location should be s1",s1,car.currentLocation);
+		assertEquals("Car's destination should be s2",s2,car.destination);
+		assertEquals("Car's passenger should be pass2",pass2,car.p);
+		
+		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
+		
+		assertEquals("Car's location should be s2",s2,car.currentLocation);
+		assertEquals("Car's passenger should be pass2",pass2,car.p);
+		
+		assertTrue("Scheduler should be true",car.pickAndExecuteAnAction());
+		
+		assertEquals("Passenger2's log should have two entries",2,pass2.log.size());
+		assertEquals("Car's location should be s2",s2,car.currentLocation);
+		assertEquals("Car's passenger should be null",null,car.p);
+		
+		assertFalse("Scheduler should return false",car.pickAndExecuteAnAction());
 	}
 }
