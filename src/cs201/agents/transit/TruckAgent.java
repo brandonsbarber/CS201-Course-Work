@@ -12,6 +12,11 @@ import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class TruckAgent extends VehicleAgent implements Truck
 {
 	Structure homeStructure;
@@ -36,6 +41,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 	
 	enum DeliveryState {NotDone,InProgress,Done};
 	
+	/**
+	 * Creates a truck agent with the given home structure
+	 * @param home home structure for the truck
+	 */
 	public TruckAgent(Structure home)
 	{
 		homeStructure = home;
@@ -45,11 +54,21 @@ public class TruckAgent extends VehicleAgent implements Truck
 		CityPanel.INSTANCE.addGui(gui);
 	}
 	
+	/**
+	 * Sets the GUI of the truck
+	 * @param gui the gui to use
+	 */
 	public void setGui(VehicleGui gui)
 	{
 		this.gui = gui;
 	}
 	
+	/**
+	 * Adds a delivery notification for the truck to do
+	 * @param inventory the inventory that will be carried
+	 * @param destination where to drive
+	 * @param price the price of the goods
+	 */
 	@Override
 	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
 	{
@@ -57,7 +76,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		deliveries.add(new Delivery(inventory,destination,price));
 		stateChanged();
 	}
-
+	
 	@Override
 	protected boolean pickAndExecuteAnAction()
 	{
@@ -89,6 +108,9 @@ public class TruckAgent extends VehicleAgent implements Truck
 		return false;
 	}
 
+	/*
+	 * Returns the truck to home position
+	 */
 	private void returnHome()
 	{
 		msgSetDestination (homeStructure);
@@ -96,6 +118,9 @@ public class TruckAgent extends VehicleAgent implements Truck
 		gui.setPresent(false);
 	}
 
+	/*
+	 * Moves Truck to home, then delivery location, and delivers
+	 */
 	private void makeDeliveryRun(Delivery d)
 	{
 		gui.setPresent(true);
