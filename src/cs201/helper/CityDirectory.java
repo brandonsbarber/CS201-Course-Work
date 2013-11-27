@@ -23,7 +23,10 @@ import cs201.structures.restaurant.Restaurant;
  * 
  * Note:: This class CANNOT be instantiated, only accessed.
  * 
- * @author Matt Pohlmann
+ * This class keeps track of every Structure and PersonAgent in SimCity201. Additionally, it handles updating the time for all of
+ * these objects as well.
+ * 
+ * @author Matthew Pohlmann
  *
  */
 public class CityDirectory implements ActionListener {
