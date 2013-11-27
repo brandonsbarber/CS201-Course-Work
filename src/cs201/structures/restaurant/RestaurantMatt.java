@@ -81,14 +81,12 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleMatt) cook).getGui().setPresent(true);
-				Do("Cook Check");
 				return cook;
 			}
 			return null;
 		}
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
-				Do("Host Check");
 				return host;
 			}
 			return null;
@@ -99,7 +97,6 @@ public class RestaurantMatt extends Restaurant {
 					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
 					UpdateWaiterHomePositions();
 					((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
-					Do("Waiter Check 1");
 					return r;
 				}
 			}
@@ -120,7 +117,6 @@ public class RestaurantMatt extends Restaurant {
 				this.panel.addGui(waiterGui);
 				newWaiter.setRestaurant(this);
 				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
-				Do("Waiter Check 2");
 				return newWaiter;
 			}
 			
@@ -129,7 +125,6 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleMatt) cashier).getGui().setPresent(true);
-				Do("Cashier Check");
 				return cashier;
 			}
 			return null;

@@ -12,13 +12,14 @@ import cs201.structures.transit.BusStop;
 
 public class BusAgent extends VehicleAgent implements Bus
 {
-	List<Passenger> passengers;
+	public List<Passenger> passengers;
 	List<Passenger> justBoarded;
 	List<Passenger> removalList;
 	
 	BusRoute route;
 	
 	Semaphore sem;
+	public boolean testing = false;
 	
 	public BusAgent(BusRoute route,int stopNum)
 	{
@@ -72,7 +73,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	}
 	
 	@Override
-	protected boolean pickAndExecuteAnAction()
+	public boolean pickAndExecuteAnAction()
 	{
 		if(route != null)
 		{
@@ -109,13 +110,16 @@ public class BusAgent extends VehicleAgent implements Bus
 		for(Passenger pass : newPassengers)
 		{
 			pass.msgPleaseBoard(this);
-			try
+			if(!testing )
 			{
-				sem.acquire();
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
+				try
+				{
+					sem.acquire();
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		

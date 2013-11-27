@@ -29,6 +29,7 @@ import cs201.helper.CityTime.WeekDay;
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
+import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
@@ -123,6 +124,7 @@ public class SimCity201 extends JFrame {
 				continue;
 			}
 		}
+		in.close();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -416,6 +418,8 @@ public class SimCity201 extends JFrame {
 	private void normativeMarketRestaurantDelivery()
 	{
 		//One person walks from Market to Restaurant
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
@@ -436,11 +440,37 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
 			
-		m.getDeliveryTruck().msgMakeDeliveryRun(new ArrayList<ItemRequest>(), r, 0);
-		/*PersonAgent p1 = new PersonAgent("Walker",cityPanel);
-		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
+		//m.getDeliveryTruck().msgMakeDeliveryRun(new ArrayList<ItemRequest>(), r, 0);
+		
+		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();*/
+		p1.startThread();
+		
+		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
+		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p1b.setHungerEnabled(false);
+		p1b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1b);
+		p1b.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		((RestaurantCookRoleMatt) r.getCook()).emptySteakInventory();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
