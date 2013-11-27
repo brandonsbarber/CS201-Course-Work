@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -93,13 +94,35 @@ public class SimCity201 extends JFrame {
 		add(BorderLayout.SOUTH, settingsPanel);
 		add(BorderLayout.NORTH, guiPanel);
 		
-		//normativeRestaurant();
-		//normativeRestaurantTwoCustomersTwoWaiters();
-		//normativeBus();
+		Scanner in = new Scanner(System.in);
+
+		boolean running = true;
 		
-		//normativeDriving();
-		normativeMarketRestaurantDelivery();
-		//normativeApartmentComplex();
+		while(running)
+		{
+			System.out.print("Which scenario would you like to run?\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving)\n6) Market Restaurant Delivery (to show truck)\n7) Apartment Complex\nYour choice: ");
+			String choice = in.nextLine();
+			try
+			{
+				int choiceNum = Integer.parseInt(choice);
+				switch(choiceNum)
+				{
+					case 1: normativeRestaurant();running = false; break;
+					case 2: normativeRestaurantTwoCustomersTwoWaiters(); running = false; break;
+					case 3: normativeBus(); running = false; break;
+					case 4: normativeWalking(); running = false; break;
+					case 5: normativeDriving(); running = false; break;
+					case 6: normativeMarketRestaurantDelivery(); running = false; break;
+					case 7: normativeApartmentComplex(); running = false; break;
+					default: System.out.println("Please enter a number from the range.");
+				}
+			}
+			catch(NumberFormatException e)
+			{
+				System.out.println("Please enter a valid number.");
+				continue;
+			}
+		}
 		
 		pack();
 		CityDirectory.getInstance().startTime();

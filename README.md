@@ -77,7 +77,7 @@ SimCity201 Project Repository for Team 21
 ####Things That Don't Work
  + No Trace Panel
  + No File I/O for configuration
- + No dynamic configuration (can't add people/structures during a run of the city)
+ + No GUI for  dynamic configuration (can't add people/structures during a run of the city)
  + No working Bank
  + Most Structures don't have completed config panels
  + Have not tested ApartmentComplex
