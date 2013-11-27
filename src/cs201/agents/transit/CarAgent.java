@@ -11,9 +11,10 @@ import cs201.structures.Structure;
 
 public class CarAgent extends VehicleAgent implements Car
 {
-	Passenger p;
+	public boolean testing = false;
+	public Passenger p;
 	
-	List<PickupRequest> pickups;
+	public List<PickupRequest> pickups;
 	
 	class PickupRequest
 	{
@@ -60,7 +61,7 @@ public class CarAgent extends VehicleAgent implements Car
 	}
 
 	@Override
-	protected boolean pickAndExecuteAnAction()
+	public boolean pickAndExecuteAnAction()
 	{
 		if(p != null)
 		{
@@ -86,17 +87,23 @@ public class CarAgent extends VehicleAgent implements Car
 	private void arrival()
 	{
 		p.msgReachedDestination(currentLocation);
-		System.out.println("We have reached destination.");
-		try
+
+		if(!testing)
 		{
-			sem.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
+			try
+			{
+				sem.acquire();
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		p = null;
-		gui.setPresent(false);
+		if(gui != null)
+		{
+			gui.setPresent(false);
+		}
 	}
 
 	private void goToDestination()
@@ -111,15 +118,18 @@ public class CarAgent extends VehicleAgent implements Car
 		animate();
 		
 		removed.p.msgPleaseBoard(this);
-				
-		try
+		
+		if(!testing)
 		{
-			sem.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			Do("Problem waiting.");
-			e.printStackTrace();
+			try
+			{
+				sem.acquire();
+			}
+			catch (InterruptedException e)
+			{
+				Do("Problem waiting.");
+				e.printStackTrace();
+			}
 		}
 		p = removed.p;
 		

@@ -9,7 +9,9 @@ import cs201.structures.Structure;
 
 public abstract class VehicleAgent extends Agent implements Vehicle
 {
-	Structure destination, currentLocation;
+	public Structure destination;
+
+	public Structure currentLocation;
 	
 	Semaphore animationSemaphore = new Semaphore(0);
 	
@@ -54,6 +56,7 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	{
 		if(gui == null)
 		{
+			currentLocation = destination;
 			return;
 		}
 		gui.setPresent(true);
