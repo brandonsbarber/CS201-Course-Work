@@ -334,7 +334,6 @@ public class PersonAgent extends Agent implements Person {
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
-				//Do("Reusing Role: " + r);
 				r.startInteraction(a.intent);
 				r.setActive(true);
 				haveRole = true;
@@ -345,7 +344,6 @@ public class PersonAgent extends Agent implements Person {
 		if (!haveRole) {
 			roles.add(newRole);
 			newRole.setPerson(this);
-			//Do("Received new Role: " + newRole);
 			newRole.startInteraction(a.intent);
 			newRole.setActive(true);
 		}
@@ -363,7 +361,6 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	private boolean addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
 		if (intent == null || intent == Intention.None || location == null) {
-			//Do("Call to addActionToPlanner had bad or null argument(s).\n\tTried: " + intent);
 			return false;
 		}
 		
@@ -375,7 +372,6 @@ public class PersonAgent extends Agent implements Person {
 		} else {
 			planner.add(0, temp);
 		}
-		//Do("Added action " + temp + " to planner.");
 		return true;
 	}
 	
@@ -401,7 +397,9 @@ public class PersonAgent extends Agent implements Person {
 	@Override
 	public void addIntermediateActions(Role from, LinkedList<Intention> intents, boolean returnToCurrentAction) {		
 		// Deactivate sending Role
-		if(from != null){from.setActive(false);}
+		if (from != null) {
+			from.setActive(false);
+		}
 		int numActivities = intents.size();
 		
 		while (intents.size() > 0) {
@@ -664,6 +662,15 @@ public class PersonAgent extends Agent implements Person {
 	public List<ItemRequest> getInventory() {
 		return inventory;
 	}
+
+	/**
+	 * Gets this PersonAgent's passenger role
+	 * @return PassengerRole
+	 */
+	public PassengerRole getPassengerRole()
+	{
+		return passengerRole;
+	}
 	
 	
 	/**************************************************************************
@@ -769,15 +776,15 @@ public class PersonAgent extends Agent implements Person {
 		}
 	}
 	
+	/**
+	 * Enum representing the state of a PersonAgent
+	 * @author Matthew Pohlmann
+	 *
+	 */
 	private enum PersonState {
 		Sleeping,
 		Awake,
 		AtWork,
 		Relaxing;
-	}
-
-	public PassengerRole getPassengerRole()
-	{
-		return passengerRole;
 	}
 }
