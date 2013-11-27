@@ -9,6 +9,11 @@ import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class CarAgent extends VehicleAgent implements Car
 {
 	public boolean testing = false;
@@ -32,12 +37,21 @@ public class CarAgent extends VehicleAgent implements Car
 	
 	Semaphore sem;
 	
+	/**
+	 * Creates a new car
+	 */
 	public CarAgent()
 	{
 		sem = new Semaphore(0,true);
 		pickups = Collections.synchronizedList(new ArrayList<PickupRequest>());
 	}
 	
+	/**
+	 * Message for calling a car for pickup by a passenger
+	 * @param p the passenger calling for the car
+	 * @param s the location of the passenger
+	 * @param d the desired location for the passenger
+	 */
 	@Override
 	public void msgCallCar(Passenger p, Structure s, Structure d)
 	{
@@ -46,6 +60,10 @@ public class CarAgent extends VehicleAgent implements Car
 		stateChanged();
 	}
 
+	/**
+	 * Message indicating that a passenger has finished boarding
+	 * @param p the passenger in question
+	 */
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
@@ -53,6 +71,10 @@ public class CarAgent extends VehicleAgent implements Car
 		sem.release();
 	}
 
+	/**
+	 * Message to signal that a passenger is leaving the car
+	 * @param p the passenger leaving
+	 */
 	@Override
 	public void msgLeaving(Passenger p)
 	{
@@ -83,7 +105,10 @@ public class CarAgent extends VehicleAgent implements Car
 		}
 		return false;
 	}
-
+	
+	/*
+	 * Processes arrival at destination
+	 */
 	private void arrival()
 	{
 		p.msgReachedDestination(currentLocation);
@@ -105,12 +130,18 @@ public class CarAgent extends VehicleAgent implements Car
 			gui.setPresent(false);
 		}
 	}
-
+	
+	/*
+	 * Goes to destination
+	 */
 	private void goToDestination()
 	{
 		animate();
 	}
 	
+	/*
+	 * Picks up passenger
+	 */
 	private void processPickup(PickupRequest removed)
 	{
 		msgSetDestination(removed.start);
@@ -136,6 +167,10 @@ public class CarAgent extends VehicleAgent implements Car
 		msgSetDestination(removed.destination);
 	}
 
+	/**
+	 * Gets the current passenger of the car
+	 * @return current passenger
+	 */
 	public Passenger getPassenger()
 	{
 		return p;
