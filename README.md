@@ -58,7 +58,7 @@ SimCity201 Project Repository for Team 21
  + **Skyler Lloyd:**
    + Housing
      + Residence Structure (and Gui)
-     + Apartment Complex Structure (and Gui) (Actually just an office for the Landlord Role, but contains a list of Residence that are the "apartments") (Not integrated yet)
+     + Apartment Complex Structure (and Gui) (Actually just an office for the Landlord Role, but contains a list of Residence that are the "apartments")
      + Landlord Role (and Gui)
      + Renter Role (and Gui) (unused?)
      + Residence Role (and Gui)
@@ -80,7 +80,6 @@ SimCity201 Project Repository for Team 21
  + No GUI for  dynamic configuration (can't add people/structures during a run of the city)
  + No working Bank
  + Most Structures don't have completed config panels
- + Have not tested ApartmentComplex
 
 ###Running Some Scenarios (Things That Do Work)
 ####Instructions
