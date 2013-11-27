@@ -143,8 +143,6 @@ public class SimCity201 extends JFrame {
 		}
 		in.close();
 		
-		normativeMarket();
-		
 		pack();
 		CityDirectory.getInstance().startTime();
 	}
