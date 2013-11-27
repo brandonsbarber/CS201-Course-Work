@@ -46,6 +46,9 @@ public class RenterRole extends ResidentRole implements Renter {
 					return false; //temporary
 				}
 			}
+			else {
+				Do("I don't need to pay any rent today.");
+			}
 		}
 		return super.pickAndExecuteAnAction();
 	}

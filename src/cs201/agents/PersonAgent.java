@@ -199,7 +199,6 @@ public class PersonAgent extends Agent implements Person {
 			if (home != null && ((Residence) home).isApartment()) {
 				this.addActionToPlanner(Intention.ResidencePayRent, home, true);
 			}
-			
 			// The Residence Role will determine if there's enough time to eat at a Restaurant, or if eating at home is better
 			this.addActionToPlanner(Intention.ResidenceEat, home, false);
 			return true;

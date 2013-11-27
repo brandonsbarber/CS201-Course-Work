@@ -63,9 +63,9 @@ public class ResidentRole extends Role implements Resident {
 				actionFinished();
 				return true;
 			default: 
-				break;
+				actionFinished(); //nothing to do. Leave.
+				return false;
 		}
-		return false;
 	}
 	
 	//Actions
@@ -75,15 +75,16 @@ public class ResidentRole extends Role implements Resident {
 		goToFridge();//animation go to fridge
 		state = ResidentState.eating;
 		List<String> fridgeContents = residence.getFridgeContents();
+		//Do("My choices from the fridge: "+fridgeContents);
 		//picks food from home's fridge list of Food and eats it. Temporarily random choice
-		int rand = (int)Math.random()*fridgeContents.size();
+		int rand = (int)(Math.random()*fridgeContents.size());
 		String foodToEat = fridgeContents.get(rand);
 		residence.removeFood(foodToEat);
 		
 		
 		eatAtTable();//timer?, gui animation
 		myPerson.setHungerLevel(0); //clear hunger amount
-		Do("Finished pickAndEatFromFridge action. I ate one of my "+foodToEat+"s from the fridge.");
+		Do("Finished pickAndEatFromFridge action. I ate one serving of "+foodToEat+"s from my fridge.");
 		actionFinished();
 	}
 	

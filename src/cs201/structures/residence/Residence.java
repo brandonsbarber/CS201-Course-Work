@@ -51,9 +51,9 @@ public class Residence extends Structure {
 		}
 	}
 	
-	public Residence(int x, int y, int width, int height, int id, StructurePanel p, boolean isApartment) {
+	public Residence(int x, int y, int width, int height, int id, StructurePanel p, boolean isApt) {
 	    super(x, y, width, height, id, p);
-	    
+	    isApartment = isApt;
 	    
 	    if (isApartment) {
 	    	resident = new RenterRole(this);
@@ -129,7 +129,6 @@ public class Residence extends Structure {
 			Food f = it.next();
 			if (f.getType() == t) {
 				f.minusOne();
-				System.out.println("One of food removed");
 				if (f.noneLeft()) {
 					resident.getPerson().getMarketChecklist().add(new ItemRequest(f.getType(), 10));
 					it.remove();

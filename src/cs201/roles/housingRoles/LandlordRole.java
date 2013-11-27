@@ -146,13 +146,13 @@ public class LandlordRole extends Role implements Landlord {
 	//Actions
 	
 	private void RequestRent(myProperty mP) {
-		Do("Requesting rent of "+mP.amtDue+" from "+mP.renter.toString());
+		Do("Sending rent request of "+mP.amtDue+" to "+((RenterRole)mP.renter).getName());
 		mP.state = RentState.dueNotified;
         mP.renter.msgRentDueYouOwe(this, mP.amtDue);
 	}
 
 	private void RequestLateRent(myProperty mP) {
-		Do("Requesting additional late rent penalty of "+latePenalty+" from "+mP.renter.toString());
+		Do("Sending additional late rent penalty request of "+latePenalty+" to "+((RenterRole)mP.renter).getName());
 		mP.state = RentState.lateNotified;
         mP.renter.msgRentLateYouOweAdditional(this, latePenalty);
 	}
@@ -184,7 +184,6 @@ public class LandlordRole extends Role implements Landlord {
 		this.gui.setPresent(true);
 		gui.enter();
 		this.acquireSemaphore();
-		Do("Passed semaphore in role enter()");
 	}
 	
 	// Utilities

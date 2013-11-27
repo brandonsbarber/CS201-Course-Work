@@ -92,7 +92,6 @@ public class LandlordGui implements Gui {
 	}
 	
 	public void enter() {
-		System.out.println("gui.enter() called.");
 		xDestination = 0;
 		yDestination = startY;
 		animating = true;

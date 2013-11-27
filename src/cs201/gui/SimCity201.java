@@ -95,9 +95,9 @@ public class SimCity201 extends JFrame {
 		//normativeRestaurantTwoCustomersTwoWaiters();
 		//normativeBus();
 
-		//normativeApartmentComplex();
+		normativeApartmentComplex();
 
-		normativeDriving();
+		//normativeDriving();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -239,7 +239,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addResidence(res);
 		
 		ResidenceAnimationPanel resPanel2 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
-		Residence res2 = new Residence(15*25, 9*25, 25, 25, Structure.getNextInstance(), resPanel2, true);
+		Residence res2 = new Residence(15*25, 9*25, 25, 25, Structure.getNextInstance(), resPanel2, false);
 		res2.setStructurePanel(resPanel2);
 		buildingPanels.add(resPanel2, ""+res2.getId());
 		cityPanel.addStructure(res2, new Point(17*25, 9*25), new Point(16*25, 9*25));
@@ -255,10 +255,6 @@ public class SimCity201 extends JFrame {
 		
 		ac.addApartment(res);
 		ac.getLandlord().addProperty(res, (Renter)res.getResident(), 30, WeekDay.Tuesday);
-		res.setApartmentComplex(ac);
-		
-		ac.addApartment(res2);
-		ac.getLandlord().addProperty(res2, (Renter)res2.getResident(), 30, WeekDay.Friday);		
 		res.setApartmentComplex(ac);
 		
 		p1.startThread();
