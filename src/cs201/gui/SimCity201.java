@@ -101,7 +101,7 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving)\n6) Market Restaurant Delivery (to show truck)\n7) Apartment Complex\nYour choice: ");
+			System.out.print("Which scenario would you like to run?\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving)\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
 			String choice = in.nextLine();
 			try
 			{
@@ -114,7 +114,8 @@ public class SimCity201 extends JFrame {
 					case 4: normativeWalking(); running = false; break;
 					case 5: normativeDriving(); running = false; break;
 					case 6: normativeMarketRestaurantDelivery(); running = false; break;
-					case 7: normativeApartmentComplex(); running = false; break;
+					case 7: normativeResidence(); running = false; break;
+					case 8: normativeApartmentComplex(); running = false; break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
