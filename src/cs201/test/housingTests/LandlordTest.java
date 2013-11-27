@@ -13,7 +13,7 @@ import cs201.roles.housingRoles.LandlordRole.RentState;
 import cs201.structures.residence.Residence;
 import cs201.test.mock.housing.MockRenter;
 
-public class LandlordRenterInteractionTest extends TestCase {
+public class LandlordTest extends TestCase {
 
 	LandlordRole landlord;
 	MockRenter renter;
