@@ -103,18 +103,9 @@ To compile and run SimCity201 V1:
 ####Scenarios
  1. **Normative Restaurant:** A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens when all of them have arrived at the Restaurant. At 8:30AM a single Customer comes and a normative Restaurant scenario starts where he orders food and leaves when done. The Restaurant closes at 1:15PM (should be right after the Customer leaves), and all the employees go home.
  2. **Normative Restaurant with Two Customers and Two Waiters:** A normal Waiter and rotating stand Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens when the Host, Cashier, Cook, and at least one Waiter have arrived at the Restaurant. At 8:30AM two Customers come and a normative Restaurant scenario starts where they both order food and leave when done. The Restaurant closes at 1:15PM (should be right after the Customers leave), and all the employees go home.
- 3. **Normative Bus:** 
- 4. **Normative Walking:**
- 5. **Normative Driving:**
+ 3. **Normative Bus:** Creates a person, bus stops, and a bus. The bus will go through the stops on its route in sequential order and loops through these stops. When the person reaches the bus stop (determined by proximity to location and destination), the person adds himself to the bus stop's list of waiting customers. This is accessed by the bus when it arrives at the bus stop, and ends up taking the passenger around the circuit. At each bus stop, the person is told that a stop has been reached. When the bus gets to the proper stop, the person gets off and walks the rest of the way. The bus moves from the very beginning. The person moves at 7:00 AM
+ 4. **Normative Walking:** Creates a Person who will walk from the market at 100,100 to the restaurant at 475,225 by way of crosswalks and sidewalks. The route that is taken is defined by arrows shown in Debug mode (viewed by typing zero). When the Person reaches his destination, he goes inside the structure there and performs structure actions. He begins his walk at 7:00 AM.
+ 5. **Normative Driving:** Creates a Person who will drive from the market at 100,100 to the restaurant at 475,225 by way of roads. The person does this by calling a car, who comes to pick up the person. The person gets into the car, which then drives on a path determined by BFS on a movement map (visible in Debug mode), which takes him or her to the parking location of the building. The person then walks to the sidewalk location and is brought inside the building. This starts at 7:00 AM. He currently moves around the block due to the nature of the sidewalks and his movement priorities.
  6. **Normative Market-Restaurant Delivery:** A Restaurant Cook and Cashier go to work at 8:00AM. A Market Manager and Employee also go to work at 8:00AM. The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market employee gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring the food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from the cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with negative money which is okay. Eventually what will happen is the restaurant will have to cover for this by withdrawing from its bank account. If it doesn't have enough, it will take out a loan.
  7. **Normative Residence:** Creates a Residence and a Resident who inhabits that residence. Each morning at 7am, that Resident will eat from his refrigerator to start the day. If he has nothing else to do, he will relax at home until he gets hungry or has something else to do. At 10pm he will go to sleep in his bed.
  8. **Normative Apartment Complex:** Creates a Landlord who lives in a Residence that he owns and a Renter who lives in a Residence that he pays rent on. Every morning at 7am, the Renter will check if he has to pay any rent. The Landlord goes to work at 8am at the ApartmentComplex, where he checks if any of the Renters in his list of properties needs to pay rent. The Renter we've created has to pay his rent on Tuesdays, so the Landlord will notify him of his rent due on Monday. Otherwise, both will act as regular residents in their homes.
-
-
-
-
-
-
-
-
-

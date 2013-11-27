@@ -101,7 +101,7 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid. 1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
+			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid.\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
 			String choice = in.nextLine();
 			try
 			{
