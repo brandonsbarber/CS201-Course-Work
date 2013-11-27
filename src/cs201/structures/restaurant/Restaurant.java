@@ -11,7 +11,7 @@ import cs201.structures.Structure;
  
 /**
  * Base Restaurant class that every team member must extend in their personal Restaurants
- * @author Matt Pohlmann
+ * @author Matthew Pohlmann
  *
  */
 public abstract class Restaurant extends Structure {
