@@ -439,7 +439,12 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeMarketRestaurantDelivery()
 	{
-		//One person walks from Market to Restaurant
+		/*
+		 * Processes an order between a Market and a Restaurant. The restaurant notifies the employees in the market of an order to be made,
+		 * which is then processed by the employees. When the order is done being processed, it is loaded into a truck which drives using
+		 * the BFS movement grid to the restaurant.
+		 * Upon arrival at the restaurant, it offloads its order before returning to its home location at the market.
+		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
