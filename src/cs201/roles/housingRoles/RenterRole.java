@@ -55,8 +55,12 @@ public class RenterRole extends ResidentRole implements Renter {
 
 	//Actions
 	
+	/**
+	 * Sends rent payment message to landlord and subtracts from person's money supply.
+	 * @param l Landlord to pay rent to
+	 * @param amt Amount of rent to pay
+	 */
 	private void PayRent (Landlord l, double amt) {
-		// Any necessary rent pay animation
 		l.msgHereIsRentPayment(this, amt);
 		amtRentOwed -= amt;
 		getPerson().removeMoney(amt);

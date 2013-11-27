@@ -30,8 +30,14 @@ public class ResidentTest extends TestCase {
 		residence.setResident(resident);
 	}
 
+	/**
+	 * This test creates a resident and starts interactions for each of the possible scenarios when entering
+	 * a residence. Since Resident simply sets, checks, and acts based on states, his actions are very simple.
+	 */
 	@Test
 	public void test() {
+		assertTrue("Fridge should have food due to the default additions in the Residence's constructor.",residence.hasFood());
+		
 		assertFalse("Resident scheduler should return false. Nothing to do.", resident.pickAndExecuteAnAction());
 		assertEquals("Resident state should be doingNothing.",resident.getState(), ResidentState.doingNothing);
 		resident.startInteraction(Intention.ResidenceEat);

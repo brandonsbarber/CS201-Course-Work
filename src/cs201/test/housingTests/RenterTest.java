@@ -30,6 +30,10 @@ public class RenterTest extends TestCase {
 		renter.setTest(true);
 	}
 
+	/**
+	 * This test creates a Renter and gives him a MockLandlord who asks him for rent. The Renter should simply pay
+	 * the rent when his scheduler is called next.
+	 */
 	@Test
 	public void test() {
 		assertFalse("Renter schedule should return false. Nothing to do.",renter.pickAndExecuteAnAction());

@@ -22,6 +22,13 @@ public class LandlordRole extends Role implements Landlord {
 	
 	public enum RentState {notDue, dueNotNotified, dueNotified, lateNotNotified, lateNotified, paid};
 	
+	/**
+	 * Class myProperty is what Landlord uses to keep track of his properties so he can know who
+	 * to contact about rent, when to contact them, how much rent to request, and what state their 
+	 * rent payment is at.
+	 * @author Skyler
+	 *
+	 */
 	public class myProperty {
 		Residence residence;
 	    Renter renter;
@@ -69,7 +76,7 @@ public class LandlordRole extends Role implements Landlord {
 		stateChanged();
 	}
 
-	public void msgPropertyNeedsMaintenance(Renter r, Residence res) {
+	public void msgPropertyNeedsMaintenance(Renter r, Residence res) { //currently unused
 		for (myProperty mP : myProperties) {
 			if (mP.residence == res) {
 				mP.needsMaintenance = true;
@@ -163,13 +170,17 @@ public class LandlordRole extends Role implements Landlord {
         mP.performMaintenance();
 	}
 	
-	private void goToDesk() { //animation
+	private void goToDesk() {
 		Do("Walking to my desk.");
 		gui.sitAtDesk();
 		this.acquireSemaphore();
 	}
 	
-	private void exitOffice() { // animation
+	/**
+	 * When exiting the office (leaving work, for the Landlord), Landlord must set the role to inactive, notify
+	 * the PersonAgent that he is going off work, and animate out of the restaurant.
+	 */
+	private void exitOffice() {
 		Do("Exiting my office");
 		isActive = false;
 		myPerson.goOffWork();

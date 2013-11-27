@@ -70,8 +70,10 @@ public class ResidentRole extends Role implements Resident {
 	
 	//Actions
 	
+	/**
+	 * Resident walks to the fridge, picks an item from the fridge's contents, goes to the table, and eats.
+	 */
 	private void pickAndEatFromFridge() {
-		Do("pickAndEatFromFridge called.");
 		goToFridge();//animation go to fridge
 		state = ResidentState.eating;
 		List<String> fridgeContents = residence.getFridgeContents();
@@ -80,15 +82,25 @@ public class ResidentRole extends Role implements Resident {
 		int rand = (int)(Math.random()*fridgeContents.size());
 		String foodToEat = fridgeContents.get(rand);
 		residence.removeFood(foodToEat);
-		gui.setHolding(foodToEat);
+		if(!isTest) {
+			gui.setHolding(foodToEat);
+		}
 		
-		eatAtTable();//timer?, gui animation
-		gui.clearHolding();
+		eatAtTable();//timer, gui animation
+		
+		if(!isTest) {
+			gui.clearHolding();
+		}
+		
 		myPerson.setHungerLevel(0); //clear hunger amount
 		Do("Finished pickAndEatFromFridge action. I ate one serving of "+foodToEat+"s from my fridge.");
 		actionFinished();
 	}
 	
+	/**
+	 * Action to walk to the Resident's bed and go to sleep. Resident sets his role inactive so scheduler calls
+	 * don't happen until he is woken up with a new action from PersonAgent's scheduler
+	 */
 	private void goToSleep() {
 		Do("Going to sleep");
 		goToBed(); //animation go to bed
@@ -124,6 +136,11 @@ public class ResidentRole extends Role implements Resident {
 		
 	}
 	
+	/**
+	 * Action called when another action has finished. Resident's actions are based in the intent when
+	 * entering the residence. When the action described by that intent is finished, the resident will
+	 * simply leave. He can re-enter if he decides to do something else in the residence.
+	 */
 	private void actionFinished() {
 		Do("Action finished. Leaving.");
 		state = ResidentState.doingNothing;
