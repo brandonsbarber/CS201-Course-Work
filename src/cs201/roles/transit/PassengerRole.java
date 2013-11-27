@@ -17,6 +17,11 @@ import cs201.roles.Role;
 import cs201.structures.Structure;
 import cs201.structures.transit.BusStop;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class PassengerRole extends Role implements Passenger
 {
 	public boolean testing = false;
@@ -60,6 +65,10 @@ public class PassengerRole extends Role implements Passenger
 	
 	private int walkDistance;
 	
+	/**
+	 * Creates a Passenger at the given location
+	 * @param curLoc
+	 */
 	public PassengerRole(Structure curLoc)
 	{
 		boardingRequest = new ArrayList<Vehicle>();
@@ -77,27 +86,93 @@ public class PassengerRole extends Role implements Passenger
 		busStops = new ArrayList<BusStop>();
 	}
 	
+	/**
+	 * Sets the bus stops to be referenced by the passenger
+	 * Note: Bus will not be taken unless this is called.
+	 * @param stops the stops to be used to take the bus
+	 */
 	public void setBusStops(List<BusStop> stops)
 	{
 		this.busStops = stops;
 	}
 	
+	/**
+	 * Sets testing mode on PassengerRole
+	 */
 	public void isTesting()
 	{
 		testing = true;
 	}
 	
+	/**
+	 * Sets gui to use
+	 * @param gui the gui to use
+	 */
 	public void setGui(PassengerGui gui)
 	{
 		this.gui = gui;
 	}
 	
+	/**
+	 * Gives a car to the passenger
+	 * Note: Car will not be taken unless this is called
+	 * @param c the car to use
+	 */
 	public void addCar(Car c)
 	{
 		Do("I have a car");
 		this.car = c;
 	}
+
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void msgClosingTime() 
+	{
+		
+	}
+
+	/**
+	 * Signals that the animation is finished performing
+	 */
+	public void msgAnimationFinished()
+	{
+		Do("Animation has finished");
+		animationPause.release();
+	}
+
+	/**
+	 * Sets the current location
+	 * @param s2 current location
+	 */
+	public void setCurrentLocation(Structure s2)
+	{
+		currentLocation = s2;
+		if(gui != null){gui.setLocation((int)currentLocation.x, (int)currentLocation.y);}
+	}
+
+	/**
+	 * Get the current location
+	 */
+	public Structure getCurrentLocation()
+	{
+		return currentLocation;
+	}
+
+	/**
+	 * Sets walking distance for passenger
+	 * @param i walking distance
+	 */
+	public void setWalkingDistance(int i)
+	{
+		walkDistance = i;
+	}
 	
+	/**
+	 * Tells the Passenger to go to this location
+	 * @param s the structure to go to
+	 */
 	@Override
 	public void msgGoTo(Structure s)
 	{
@@ -108,6 +183,10 @@ public class PassengerRole extends Role implements Passenger
 		stateChanged();
 	}
 
+	/**
+	 * Message asking the passenger to board a vehicle
+	 * @param v the vehicle asking to board
+	 */
 	@Override
 	public void msgPleaseBoard(Vehicle v)
 	{
@@ -116,6 +195,10 @@ public class PassengerRole extends Role implements Passenger
 		waitingForVehicle.release();
 	}
 
+	/**
+	 * Message called when arriving at a destination
+	 * @param s the destination arrived at
+	 */
 	@Override
 	public void msgReachedDestination(Structure s)
 	{
@@ -125,6 +208,9 @@ public class PassengerRole extends Role implements Passenger
 		stateChanged();
 	}
 
+	/**
+	 * Does nothing
+	 */
 	@Override
 	public void startInteraction(Intention intent)
 	{
@@ -163,8 +249,9 @@ public class PassengerRole extends Role implements Passenger
 		return false;
 	}
 
-	
-
+	/*
+	 * Figures out how to break down move
+	 */
 	private void populateWaypoints()
 	{
 		if (car != null)
@@ -229,10 +316,12 @@ public class PassengerRole extends Role implements Passenger
 		}
 	}
 
+	/*
+	 * Determines if walking is worth it
+	 */
 	public boolean shouldWalk()
 	{
 		double distance = Math.sqrt(Math.pow(destination.x - currentLocation.x,2) + Math.pow(destination.y - currentLocation.y,2));
-		Do(""+(distance < walkDistance));
 		return distance < walkDistance;
 	}
 	
@@ -247,6 +336,9 @@ public class PassengerRole extends Role implements Passenger
 		}
 	}
 	
+	/*
+	 * Processes a vehicle asking to board
+	 */
 	private void checkBoardingRequest(Vehicle remove)
 	{
 		if(remove instanceof Bus)
@@ -276,6 +368,9 @@ public class PassengerRole extends Role implements Passenger
 		}
 	}
 	
+	/*
+	 * Processes arriving at a location
+	 */
 	private void processArrival()
 	{
 		Do("Processing arrival at "+currentLocation);
@@ -316,6 +411,9 @@ public class PassengerRole extends Role implements Passenger
 		}
 	}
 	
+	/*
+	 * Moves to a location
+	 */
 	private void moveToLocation(Move point)
 	{
 		switch(point.m)
@@ -367,33 +465,5 @@ public class PassengerRole extends Role implements Passenger
 				}
 				break;
 		}
-	}
-
-	@Override
-	public void msgClosingTime() 
-	{
-		
-	}
-
-	public void msgAnimationFinished()
-	{
-		Do("Animation has finished");
-		animationPause.release();
-	}
-
-	public void setCurrentLocation(Structure s2)
-	{
-		currentLocation = s2;
-		gui.setLocation((int)currentLocation.x, (int)currentLocation.y);
-	}
-
-	public Structure getCurrentLocation()
-	{
-		return currentLocation;
-	}
-
-	public void setWalkingDistance(int i)
-	{
-		walkDistance = i;
 	}
 }
