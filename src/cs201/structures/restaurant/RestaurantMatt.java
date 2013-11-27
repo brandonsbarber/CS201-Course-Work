@@ -22,6 +22,11 @@ import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattNormal;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
 
+/**
+ * Matthew Pohlmann's Restaurant Structure for SimCity201
+ * @author Matthew Pohlmann
+ *
+ */
 public class RestaurantMatt extends Restaurant {
 	private final int INITIALWAITERS = 2;
 	private final int MAXWAITERS = 4;
