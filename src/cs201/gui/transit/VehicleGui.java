@@ -64,11 +64,23 @@ public abstract class VehicleGui implements Gui
 
 	private boolean pathfinding;
 	
+	/**
+	 * Creates a vehicle gui
+	 * @param vehicle the vehicle who holds the gui
+	 * @param city the city which contains the gui
+	 */
 	public VehicleGui(VehicleAgent vehicle,CityPanel city)
 	{
 		this(vehicle,city,50,50);
 	}
 	
+	/**
+	 * Creates a vehicle gui
+	 * @param vehicle the vehicle who holds the gui
+	 * @param city the city which contains the gui
+	 * @param x the initial x
+	 * @param y the initial y
+	 */
 	public VehicleGui(VehicleAgent vehicle,CityPanel city, int x, int y)
 	{
 		this.setVehicle(vehicle);
@@ -83,11 +95,19 @@ public abstract class VehicleGui implements Gui
 		moves = new Stack<DrivingDirection>();
 	}
 	
+	/**
+	 * Sets whether the gui is present in the scene and should be rendered
+	 * @param present whether it is present
+	 */
 	public void setPresent(boolean present)
 	{
 		this.present = present;
 	}
 	
+	/**
+	 * Signals the GUI to go to a location
+	 * @param structure the structure to go to
+	 */
 	public void doGoToLocation(Structure structure)
 	{
 		destination = structure;
@@ -99,10 +119,12 @@ public abstract class VehicleGui implements Gui
 		findPath();
 	}
 	
+	/*
+	 * Performs BFS to find best path
+	 */
 	private void findPath()
 	{
 		pathfinding = true;
-		//JOptionPane.showMessageDialog(null,"Finding a path for "+pass.getName());
 		DrivingDirection[][] map = city.getDrivingMap();
 		
 		Queue<MyPoint> location = new LinkedList<MyPoint>();
@@ -119,7 +141,6 @@ public abstract class VehicleGui implements Gui
 		while(!location.isEmpty())
 		{
 			MyPoint p = location.remove();
-			//JOptionPane.showMessageDialog(null,""+p+" "+p.move);
 			if(p.equals(destination))
 			{
 				MyPoint head = p;
@@ -200,6 +221,9 @@ public abstract class VehicleGui implements Gui
 		pathfinding = false;
 	}
 
+	/*
+	 * Helper method for getting junction
+	 */
 	private List<DrivingDirection> getJunctionDirections(DrivingDirection[][] map,int x2, int y2)
 	{
 		List<DrivingDirection> validDirections = new ArrayList<DrivingDirection>();
@@ -228,21 +252,33 @@ public abstract class VehicleGui implements Gui
 		return validDirections;
 	}
 
+	/*
+	 * Helper method with swapping for better readability
+	 */
 	private DrivingDirection getDirection(DrivingDirection[][] map, int x, int y)
 	{
 		return map[y][x];
 	}
 	
+	/*
+	 * Helper method for bounds
+	 */
 	private boolean inBounds(DrivingDirection[][] map, int x2, int y2)
 	{
 		return y2 < map.length && y2 >= 0 && x2 >= 0 && x2 < map[y2].length;
 	}
 
+	/*
+	 * Helper method for validity
+	 */
 	private boolean isValidPoint(DrivingDirection[][] map, MyPoint nextPoint)
 	{
 		return nextPoint.x >= 0 && nextPoint.x < map[0].length && nextPoint.y >= 0 && nextPoint.y < map.length;
 	}
 
+	/*
+	 * Helper method for extending line of point direction
+	 */
 	private MyPoint getPointFromDirection(MyPoint p, DrivingDirection dir)
 	{
 		switch(dir)
@@ -261,6 +297,10 @@ public abstract class VehicleGui implements Gui
 		}
 	}
 	
+	/**
+	 * Draws the GUI in the given graphcis object
+	 * @param g the graphics object in which to draw
+	 */
 	public void draw(Graphics2D g)
 	{
 		drawBody(g);
@@ -269,8 +309,15 @@ public abstract class VehicleGui implements Gui
 		g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
 	}
 	
+	/**
+	 * To be extended in subclass
+	 * @param g graphics object to render in
+	 */
 	public abstract void drawBody(Graphics2D g);
 
+	/**
+	 * Updates the position based on movement data
+	 */
 	@Override
 	public void updatePosition()
 	{
@@ -309,32 +356,59 @@ public abstract class VehicleGui implements Gui
 		}
 	}
 
+	/**
+	 * Gets whether the gui is present and should be rendered
+	 */
 	@Override
 	public boolean isPresent()
 	{
 		return present;
 	}
 
+	/**
+	 * Gets the current x
+	 * @return the current x
+	 */
 	public int getX() {
 		return x;
 	}
 
+	/**
+	 * Sets the x position
+	 * @param x the x position to set
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
+	/**
+	 * Gets the y position
+	 * @return the current y position
+	 */
 	public int getY() {
 		return y;
 	}
 
+	/**
+	 * Sets the y position
+	 * @param y the y position to set
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
 
+	/**
+	 * Gets the vehicle holding the gui
+	 * @return
+	 */
 	public VehicleAgent getVehicle() {
 		return vehicle;
 	}
 
+	/**
+	 * Sets the vehicle holding the gui
+	 * @param vehicle
+	 */
 	public void setVehicle(VehicleAgent vehicle) {
 		this.vehicle = vehicle;
 	}
