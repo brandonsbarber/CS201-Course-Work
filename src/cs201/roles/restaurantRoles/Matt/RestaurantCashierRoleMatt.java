@@ -179,7 +179,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	private void PayMarket(Check c) {
-		Do("Pay Market Here");
 		for (MarketInvoice i : invoices) {
 			if (i.market == c.market && i.order.toLowerCase().equals(c.choice.toLowerCase()) && i.quantity >= c.quantity) {
 				this.restaurant.removeMoney(c.amount);
@@ -192,6 +191,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		}
 		
 		// If no matching invoice
+		Do("No matching invoice found.");
 		checks.remove(c);
 	}
 

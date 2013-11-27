@@ -390,7 +390,12 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeMarketRestaurantDelivery()
 	{
-		//One person walks from Market to Restaurant
+		/* A Restaurant Cook and Cashier go to work at 8:00AM. A Market Manager and Employee also go to work at 8:00AM.
+		 * The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market employee 
+		 * gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring the 
+		 * food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from the 
+		 * cook. It matches, so he gives the cook the delivery and pays the market.
+		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
@@ -412,8 +417,6 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
-			
-		//m.getDeliveryTruck().msgMakeDeliveryRun(new ArrayList<ItemRequest>(), r, 0);
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
