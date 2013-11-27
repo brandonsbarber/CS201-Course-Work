@@ -8,6 +8,12 @@ import java.awt.Graphics2D;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 
+/**
+ * Animation panel for Matthew Pohlmann's Restaurant in SimCity201. Changing the DEFAULTWINDOWX AND
+ * DEFAULTWINDOWY member variables resizes everything inside the restaurant accordingly.
+ * 
+ * @author Matthew Pohlmann
+ */
 public class RestaurantAnimationPanelMatt extends StructurePanel {
 	
 	private static final int DEFAULTWINDOWX = 480;
