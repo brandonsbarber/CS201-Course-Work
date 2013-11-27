@@ -94,7 +94,10 @@ public class SimCity201 extends JFrame {
 		//normativeRestaurant();
 		//normativeRestaurantTwoCustomersTwoWaiters();
 		//normativeBus();
-		normativeApartmentComplex();
+
+		//normativeApartmentComplex();
+
+		normativeDriving();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -303,7 +306,7 @@ public class SimCity201 extends JFrame {
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(18*25,9*25));
 		CityDirectory.getInstance().addRestaurant(r);
 	
 		CarAgent car = new CarAgent();
@@ -312,7 +315,7 @@ public class SimCity201 extends JFrame {
 		cityPanel.addGui(cGui);
 		car.startThread();
 	
-		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
+		PersonAgent p1 = new PersonAgent("Car Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
@@ -355,7 +358,7 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
 
-		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
+		PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		p1.getPassengerRole().setBusStops(stops);
 		CityDirectory.getInstance().addPerson(p1);

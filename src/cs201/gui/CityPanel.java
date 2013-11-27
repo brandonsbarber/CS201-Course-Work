@@ -80,7 +80,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	public enum WalkingDirection
 	{
-		None,North,South,East,West,Turn;
+		None,North,South,East,West,Turn, Invalid;
 		
 		public WalkingDirection turnRight()
 		{
@@ -106,7 +106,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		public boolean isValid()
 		{
-			return ordinal() > 0;
+			return this == North || this == South || this == East || this == West || this == Turn;
 		}
 		
 		public boolean isVertical()

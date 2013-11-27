@@ -60,6 +60,8 @@ public class PassengerGui implements Gui
 	
 	private Stack<WalkingDirection> moves;
 
+	private boolean pathfinding = false;
+
 	public PassengerGui(PassengerRole pass,CityPanel city)
 	{
 		this(pass,city,pass.getCurrentLocation());
@@ -76,6 +78,7 @@ public class PassengerGui implements Gui
 		fired = true;
 		present = false;
 		currentDirection = WalkingDirection.None;
+		moves = new Stack<WalkingDirection>();
 		
 		movementSprites = new ArrayList<BufferedImage>();
 		try
@@ -106,6 +109,7 @@ public class PassengerGui implements Gui
 	
 	public void doGoToLocation(Structure structure)
 	{
+		//JOptionPane.showMessageDialog(null,""+pass.getName()+": Being told to go to "+structure.getEntranceLocation().x/CityPanel.GRID_SIZE+" "+structure.getEntranceLocation().y/CityPanel.GRID_SIZE);
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
@@ -117,16 +121,16 @@ public class PassengerGui implements Gui
 	
 	private void findPath()
 	{
+		pathfinding = true;
+		//JOptionPane.showMessageDialog(null,"Finding a path for "+pass.getName());
 		WalkingDirection[][] map = city.getWalkingMap();
-		
-		moves = new Stack<WalkingDirection>();
 		
 		Queue<MyPoint> location = new LinkedList<MyPoint>();
 		
 		ArrayList<MyPoint> visitedPoints = new ArrayList<MyPoint>();
 		
-		MyPoint startLoc = new MyPoint(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE,null,WalkingDirection.None);
-		MyPoint destination = new MyPoint(destX/CityPanel.GRID_SIZE,destY/CityPanel.GRID_SIZE,null,WalkingDirection.None);
+		MyPoint startLoc = new MyPoint(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE,null,map[y/CityPanel.GRID_SIZE][x/CityPanel.GRID_SIZE]);
+		MyPoint destination = new MyPoint(destX/CityPanel.GRID_SIZE,destY/CityPanel.GRID_SIZE,null,map[y/CityPanel.GRID_SIZE][x/CityPanel.GRID_SIZE]);
 		
 		location.add(startLoc);
 		visitedPoints.add(startLoc);
@@ -135,6 +139,7 @@ public class PassengerGui implements Gui
 		while(!location.isEmpty())
 		{
 			MyPoint p = location.remove();
+			//JOptionPane.showMessageDialog(null,""+p+" "+p.move);
 			if(p.equals(destination))
 			{
 				MyPoint head = p;
@@ -153,17 +158,49 @@ public class PassengerGui implements Gui
 				for(WalkingDirection dir : validDirections)
 				{
 					MyPoint nextPoint = getPointFromDirection(p,dir);
-					if(!visitedPoints.contains(nextPoint))
+					if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
 					{
 						visitedPoints.add(nextPoint);
 						location.add(nextPoint);
 					}
 				}
 			}
+			else if(currentDirection == WalkingDirection.None)
+			{
+				//Find an adjacent sidewalk piece
+				MyPoint point = getPointFromDirection(p,WalkingDirection.South);
+				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
+				{
+					visitedPoints.add(point);
+					location.add(point);
+					continue;
+				}
+				point = getPointFromDirection(p,WalkingDirection.North);
+				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
+				{
+					visitedPoints.add(point);
+					location.add(point);
+					continue;
+				}
+				point = getPointFromDirection(p,WalkingDirection.East);
+				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
+				{
+					visitedPoints.add(point);
+					location.add(point);
+					continue;
+				}
+				point = getPointFromDirection(p,WalkingDirection.West);
+				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
+				{
+					visitedPoints.add(point);
+					location.add(point);
+					continue;
+				}
+			}
 			else
 			{
 				MyPoint nextPoint = getPointFromDirection(p,currentDirection);
-				if(!visitedPoints.contains(nextPoint))
+				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
 				{
 					visitedPoints.add(nextPoint);
 					location.add(nextPoint);
@@ -180,6 +217,12 @@ public class PassengerGui implements Gui
 			//clear first element
 			moves.pop();
 		}
+		pathfinding = false;
+	}
+
+	private boolean isValidPoint(WalkingDirection[][] map, MyPoint nextPoint)
+	{
+		return nextPoint.x >= 0 && nextPoint.x < map[0].length && nextPoint.y >= 0 && nextPoint.y < map.length;
 	}
 
 	private MyPoint getPointFromDirection(MyPoint p, WalkingDirection dir)
@@ -214,12 +257,13 @@ public class PassengerGui implements Gui
 	@Override
 	public void updatePosition()
 	{
-		if(!fired)
+		if(!fired && !pathfinding)
 		{
 			if(x == destX && y == destY)
 			{
 				fired = true;
 				pass.msgAnimationFinished ();
+				currentDirection = WalkingDirection.None;
 				return;
 			}
 			switch(currentDirection)
@@ -248,166 +292,6 @@ public class PassengerGui implements Gui
 		}
 	}
 	
-	private void junction(WalkingDirection[][] map, int x2, int y2)
-	{
-		List<WalkingDirection> validDirections = getJunctionDirections(map,x2,y2);
-		
-		if(validDirections.size() == 1)
-		{
-			currentDirection = validDirections.get(0);
-			return;
-		}
-		
-		else if(validDirections.size() == 3)
-		{
-			if(x != destX)
-			{
-				for(WalkingDirection dir : validDirections)
-				{
-					currentDirection = dir;
-					return;
-				}
-			}
-			else
-			{
-				for(int i = 0; i < validDirections.size(); i++)
-				{
-					WalkingDirection dir = validDirections.get(i);
-					if(dir == WalkingDirection.West || dir == WalkingDirection.East)
-					{
-						validDirections.remove(dir);
-					}
-				}
-			}
-		}
-		if(validDirections.size() == 2)
-		{
-			if(WalkingDirection.opposites(validDirections.get(0),validDirections.get(1)))
-			{
-				if(validDirections.get(0).isHorizontal())
-				{
-					if(x > destX)
-					{
-						currentDirection = WalkingDirection.West;
-						return;
-					}
-					else
-					{
-						currentDirection = WalkingDirection.East;
-						return;
-					}
-				}
-				else
-				{
-					if(y > destY)
-					{
-						currentDirection = WalkingDirection.North;
-						return;
-					}
-					else
-					{
-						currentDirection = WalkingDirection.South;
-						return;
-					}
-				}
-			}
-			else
-			{
-				int dX = destX - x;
-				int dY = destY - y;
-				
-				WalkingDirection towardsX = dX > 0?WalkingDirection.East:WalkingDirection.West;
-				WalkingDirection towardsY = dY > 0?WalkingDirection.South:WalkingDirection.North;
-				
-				if(x == destX)
-				{
-					WalkingDirection dir = WalkingDirection.None;
-					WalkingDirection toRemove = WalkingDirection.None;
-					for(WalkingDirection d : validDirections)
-					{
-						if(!d.isHorizontal() && d == towardsY)
-						{
-							dir = d;
-						}
-						else if(!d.isHorizontal() && d != towardsY)
-						{
-							toRemove = d;
-						}
-					}
-					if(toRemove != WalkingDirection.None)
-					{
-						validDirections.remove(toRemove);
-						dir = validDirections.get(0);
-					}
-					
-					if(dir != WalkingDirection.None)
-					{
-						currentDirection = dir;
-						return;
-					}
-				}
-				else if(y == destY)
-				{
-					WalkingDirection dir = WalkingDirection.None;
-					WalkingDirection toRemove = WalkingDirection.None;
-					for(WalkingDirection d : validDirections)
-					{
-						if(!d.isVertical() && d == towardsX)
-						{
-							dir = d;
-						}
-						else if(!d.isVertical() && d != towardsX)
-						{
-							toRemove = d;
-						}
-					}
-					if(toRemove != WalkingDirection.None)
-					{
-						validDirections.remove(toRemove);
-						dir = validDirections.get(0);
-					}
-					
-					if(dir != WalkingDirection.None)
-					{
-						currentDirection = dir;
-						return;
-					}
-				}
-				else
-				{
-					WalkingDirection dir = WalkingDirection.None;
-					WalkingDirection toRemove = WalkingDirection.None;
-					for(WalkingDirection d : validDirections)
-					{
-						if(d.isVertical()  && d == towardsY)
-						{
-							dir = d;
-						}
-						else if(d.isVertical() && d != towardsY)
-						{
-							toRemove = d;
-						}
-					}
-					if(toRemove != WalkingDirection.None)
-					{
-						validDirections.remove(toRemove);
-						dir = validDirections.get(0);
-					}
-					
-					if(dir != WalkingDirection.None)
-					{
-						currentDirection = dir;
-						return;
-					}
-					else
-					{
-						currentDirection = WalkingDirection.North;
-					}
-				}
-			}
-		}		
-	}
-
 	private List<WalkingDirection> getJunctionDirections(WalkingDirection[][] map,int x2, int y2)
 	{
 		List<WalkingDirection> validDirections = new ArrayList<WalkingDirection>();
