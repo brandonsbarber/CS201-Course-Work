@@ -2,6 +2,8 @@ package cs201.gui.roles.residence;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cs201.gui.Gui;
 import cs201.roles.housingRoles.ResidentRole;
@@ -24,7 +26,11 @@ public class ResidentGui implements Gui {
 	private int xDestination;
 	private int yDestination;
 	
+	private int waitTime=0;
+	
 	boolean animating;
+	
+	Timer timer;
 	
 	
 	public ResidentGui() {
@@ -40,6 +46,7 @@ public class ResidentGui implements Gui {
 		role = newRole;
 		isPresent = false;
 		animating = false;
+		timer = new Timer();
 	}
 	
 	@Override
@@ -60,7 +67,14 @@ public class ResidentGui implements Gui {
 		}
 		
 		if (xPos==xDestination && yPos==yDestination && animating == true) {
-			role.msgAnimationDone();
+			//role.msgAnimationDone();
+			timer.schedule(new TimerTask() {
+				public void run() {	
+					role.msgAnimationDone();
+					waitTime=0;
+				}
+			},
+			waitTime);
 			animating = false;
 		}
 		return;
@@ -82,12 +96,14 @@ public class ResidentGui implements Gui {
 		xDestination = fridgeX;
 		yDestination = fridgeY;
 		animating = true;
+		waitTime = 1000;
 	}
 	
 	public void walkToTable() {
 		xDestination = tableX;
 		yDestination = tableY;
 		animating = true;
+		waitTime = 3000;
 	}
 	
 	public void goToBed() {

@@ -21,9 +21,16 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	
 	private final int entranceY = 250;
 	
-	private final int fridgeWidth = 30;
+	private final int fridgeWidth = 40;
 	private final int fridgeX = 250;
-	private final int fridgeY = 10;
+	private final int fridgeY = 25;
+	
+	private final int fridgeDoorWidth = (fridgeWidth/2)-2;
+	private final int fridgeDoorHeight = 6;
+	private final int fridgeDoor1X = fridgeX+1;
+	private final int fridgeDoorY = fridgeY+fridgeWidth-fridgeDoorHeight;
+	private final int fridgeDoor2X = fridgeDoor1X+fridgeDoorWidth+2;
+	
 
 	private final int tableWidth = 40;
 	private final int tableHeight = 70;
@@ -47,7 +54,12 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		g2.fillRect(0, 0, WINDOWX, WINDOWY); //clear the screen
 		
 		g2.setColor(Color.GRAY);
-		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);// draws refrigerator
+		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);
+		g2.setColor(Color.WHITE);
+		g2.fillRect(fridgeDoor1X, fridgeDoorY, fridgeDoorWidth, fridgeDoorHeight);
+		g2.fillRect(fridgeDoor2X, fridgeDoorY, fridgeDoorWidth, fridgeDoorHeight);
+		
+		// draws refrigerator
 		
 		g2.setColor(Color.GREEN);
 		g2.fillRect(tableX, tableY, tableWidth, tableHeight); // draws dining table
@@ -56,7 +68,7 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		g2.fillRect(bedX, bedY, bedWidth, bedHeight); // draws bed
 		
 		g2.setColor(Color.WHITE);
-		g2.drawString("Fridge", fridgeX, fridgeY+fridgeWidth);
+		g2.drawString("Fridge", fridgeX, fridgeY+13);
 		g2.drawString("Table", tableX, tableY+tableHeight);
 		g2.drawString("Bed", bedX, bedY+bedHeight);
 		
@@ -64,9 +76,9 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	}
 	
 	public void informResident(ResidentGui gui) {
-		gui.setBed(bedX, bedY);
-		gui.setFridge(fridgeX, fridgeY);
-		gui.setTable(tableX, tableY);
+		gui.setBed(bedX, bedY+(bedHeight/2));
+		gui.setFridge(fridgeX, fridgeY+fridgeWidth);
+		gui.setTable(tableX+tableWidth, tableY+(tableHeight/2));
 		gui.setExit(entranceY);
 	}
 
