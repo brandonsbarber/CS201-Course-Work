@@ -13,6 +13,11 @@ import cs201.interfaces.roles.transit.Passenger;
 import cs201.roles.Role;
 import cs201.structures.Structure;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class BusStop extends Structure
 {
 	List<Passenger> waitingPassengers;
@@ -23,6 +28,15 @@ public class BusStop extends Structure
 	
 	Semaphore passengerAccess;
 	
+	/**
+	 * Creates a bus stop
+	 * @param x the x of the bus stop
+	 * @param y the y of the bus stop
+	 * @param width the width of the bus stop
+	 * @param height the height of the bus stop
+	 * @param id the id of the bus stop
+	 * @param p the panel representing the bus stop
+	 */
 	public BusStop(int x, int y, int width, int height, int id, StructurePanel p)
 	{
 		super(x, y, width, height, id, p);
@@ -31,10 +45,12 @@ public class BusStop extends Structure
 		passengerAccess = new Semaphore(1,true);
 	}
 
+	/**
+	 * Returns null
+	 */
 	@Override
 	public Role getRole(Intention role)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -48,6 +64,11 @@ public class BusStop extends Structure
 		return getPassengerList(null);
 	}
 	
+	/**
+	 * Gets the passengers at the bus stop
+	 * @param bus the bus who is asking
+	 * @return the list of passengers
+	 */
 	public List<Passenger> getPassengerList(Bus bus)
 	{
 		try
@@ -56,7 +77,6 @@ public class BusStop extends Structure
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -66,11 +86,20 @@ public class BusStop extends Structure
 		return waitingPassengers;
 	}
 	
+	/**
+	 * Schedules a passenger to add
+	 * @param p the passenger to add
+	 */
 	public void addPassenger(Passenger p)
 	{
 		addRequests.add(p);
 	}
 	
+	/**
+	 * Removes passengers from a bus
+	 * @param bus the bus calling
+	 * @param passengers the passengers being removed
+	 */
 	public void removePassengers(Bus bus, List<Passenger> passengers)
 	{
 		waitingPassengers.removeAll(passengers);
@@ -79,9 +108,11 @@ public class BusStop extends Structure
 		passengerAccess.release();
 	}
 
+	/**
+	 * Does nothing
+	 */
 	@Override
 	public void updateTime(CityTime time) {
-		// TODO Auto-generated method stub
 		
 	}
 }
