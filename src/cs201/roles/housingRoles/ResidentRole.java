@@ -80,9 +80,10 @@ public class ResidentRole extends Role implements Resident {
 		int rand = (int)(Math.random()*fridgeContents.size());
 		String foodToEat = fridgeContents.get(rand);
 		residence.removeFood(foodToEat);
-		
+		gui.setHolding(foodToEat);
 		
 		eatAtTable();//timer?, gui animation
+		gui.clearHolding();
 		myPerson.setHungerLevel(0); //clear hunger amount
 		Do("Finished pickAndEatFromFridge action. I ate one serving of "+foodToEat+"s from my fridge.");
 		actionFinished();

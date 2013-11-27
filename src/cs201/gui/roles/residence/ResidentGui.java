@@ -27,6 +27,7 @@ public class ResidentGui implements Gui {
 	private int yDestination;
 	
 	private int waitTime=0;
+	private String holding="";
 	
 	boolean animating;
 	
@@ -87,6 +88,7 @@ public class ResidentGui implements Gui {
 		
 		g.setColor(Color.WHITE);
 		g.drawString("Resident", xPos, yPos);
+		g.drawString(holding, xPos-16, (yPos+HEIGHT/2)+4);
 		// TODO Auto-generated method stub
 
 	}
@@ -154,5 +156,14 @@ public class ResidentGui implements Gui {
 	public void setExit(int y) {
 		exitY = y;
 	}
+	
+	public void setHolding(String item) {
+		holding=item.substring(0,3);
+	}
+	
+	public void clearHolding() {
+		holding="";
+	}
+	
 
 }
