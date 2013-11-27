@@ -57,7 +57,13 @@ public class ResidentGui implements Gui {
 			xPos++;
 		}
 		else if (xPos>xDestination) {
-			xPos--;
+			if(xPos==0 && yPos>exitY || xPos==0 && yPos<exitY) {
+				//don't go left if on left edge but not in exit.
+			}
+			else {
+				xPos--;
+			}
+			
 		}
 		
 		if (yPos<yDestination) {

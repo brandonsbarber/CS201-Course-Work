@@ -146,13 +146,13 @@ public class LandlordRole extends Role implements Landlord {
 	//Actions
 	
 	private void RequestRent(myProperty mP) {
-		Do("Sending rent request of "+mP.amtDue+" to "+((RenterRole)mP.renter).getName());
+		Do("Sending rent request of "+mP.amtDue+" to "+mP.renter.toString());
 		mP.state = RentState.dueNotified;
         mP.renter.msgRentDueYouOwe(this, mP.amtDue);
 	}
 
 	private void RequestLateRent(myProperty mP) {
-		Do("Sending additional late rent penalty request of "+latePenalty+" to "+((RenterRole)mP.renter).getName());
+		Do("Sending additional late rent penalty request of "+latePenalty+" to "+mP.renter.toString());
 		mP.state = RentState.lateNotified;
         mP.renter.msgRentLateYouOweAdditional(this, latePenalty);
 	}
@@ -198,7 +198,7 @@ public class LandlordRole extends Role implements Landlord {
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
 		if (intent == Intention.ResidenceLandLord) {
-			//stub
+			//stub this is the only intention that is relevant for apartmentComplex
 			//stateChanged();
 		}
 		else {

@@ -53,7 +53,7 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 		g2.fillRect(chairX, chairY, chairWidth, chairHeight);
 		
 		g2.setColor(Color.WHITE);
-		g2.drawString("Desk", deskX, deskY+deskHeight);
+		g2.drawString("Desk", deskX, deskY+13);
 		
 	    super.paintComponent(g);
 
