@@ -126,8 +126,8 @@ public class PassengerRole extends Role implements Passenger
 	}
 
 	@Override
-	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
+	public void startInteraction(Intention intent)
+	{
 		
 	}
 
@@ -370,8 +370,8 @@ public class PassengerRole extends Role implements Passenger
 	}
 
 	@Override
-	public void msgClosingTime() {
-		// TODO Auto-generated method stub
+	public void msgClosingTime() 
+	{
 		
 	}
 
