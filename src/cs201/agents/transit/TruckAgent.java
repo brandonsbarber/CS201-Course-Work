@@ -21,7 +21,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 {
 	Structure homeStructure;
 	
-	List<Delivery> deliveries;
+	public List<Delivery> deliveries;
 	
 	class Delivery 
 	{
@@ -50,8 +50,11 @@ public class TruckAgent extends VehicleAgent implements Truck
 		homeStructure = home;
 		msgSetLocation(homeStructure);
 		deliveries = new ArrayList<Delivery>();
-		gui = new TruckGui(this,CityPanel.INSTANCE,(int)homeStructure.getParkingLocation().x,(int)homeStructure.getParkingLocation().y);
-		CityPanel.INSTANCE.addGui(gui);
+		if(CityPanel.INSTANCE != null)
+		{
+			gui = new TruckGui(this,CityPanel.INSTANCE,(int)homeStructure.getParkingLocation().x,(int)homeStructure.getParkingLocation().y);
+			CityPanel.INSTANCE.addGui(gui);
+		}
 	}
 	
 	/**
@@ -78,7 +81,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 	}
 	
 	@Override
-	protected boolean pickAndExecuteAnAction()
+	public boolean pickAndExecuteAnAction()
 	{
 		if(deliveries.isEmpty() && currentLocation != homeStructure)
 		{
@@ -115,7 +118,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 	{
 		msgSetDestination (homeStructure);
 		animate();
-		gui.setPresent(false);
+		if(gui != null)
+		{
+			gui.setPresent(false);
+		}
 	}
 
 	/*
@@ -123,7 +129,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 	 */
 	private void makeDeliveryRun(Delivery d)
 	{
-		gui.setPresent(true);
+		if(gui != null)
+		{
+			gui.setPresent(true);
+		}
 		msgSetDestination (homeStructure);
 		animate();
 		
