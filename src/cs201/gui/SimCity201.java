@@ -92,8 +92,9 @@ public class SimCity201 extends JFrame {
 		add(BorderLayout.NORTH, guiPanel);
 		
 		//normativeRestaurant();
-		normativeRestaurantTwoCustomersTwoWaiters();
+		//normativeRestaurantTwoCustomersTwoWaiters();
 		//normativeBus();
+		normativeApartmentComplex();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -222,7 +223,7 @@ public class SimCity201 extends JFrame {
 		ApartmentComplexAnimationPanel acap = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
 		ApartmentComplex ac = new ApartmentComplex(14*25, 9*25, 25, 25, Structure.getNextInstance(), acap);
 		ac.setStructurePanel(acap);
-		ac.setClosingTime(new CityTime(14, 0));
+		ac.setClosingTime(new CityTime(12, 0));
 		buildingPanels.add(acap,""+ac.getId());
 		cityPanel.addStructure(ac, new Point(14*25,7*25), new Point(14*25, 8*25));
 		CityDirectory.getInstance().addApartment(ac);

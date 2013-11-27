@@ -72,7 +72,9 @@ public class ApartmentComplex extends Structure {
 	@Override
 	public void updateTime(CityTime time) {
 		// TODO Auto-generated method stub
-		
+		if (time.equalsIgnoreDay(this.closingTime)) {
+			landlord.msgClosingTime();
+		}
 	}
 
 }
