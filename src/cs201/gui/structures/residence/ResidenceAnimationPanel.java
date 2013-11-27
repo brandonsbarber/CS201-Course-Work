@@ -76,7 +76,7 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	}
 	
 	public void informResident(ResidentGui gui) {
-		gui.setBed(bedX, bedY+(bedHeight/2));
+		gui.setBed(bedX+2, bedY+2);
 		gui.setFridge(fridgeX, fridgeY+fridgeWidth);
 		gui.setTable(tableX+tableWidth, tableY+(tableHeight/2));
 		gui.setExit(entranceY);
