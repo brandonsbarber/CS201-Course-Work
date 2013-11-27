@@ -29,6 +29,8 @@ import cs201.helper.CityTime;
 import cs201.helper.CityTime.WeekDay;
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.roles.housing.Renter;
+import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
@@ -101,7 +103,16 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid.\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
+			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid.\n" +
+					"1) Normative Restaurant\n" +
+					"2) Normative Restaurant: Two Customers, Two Waiters\n" +
+					"3) Normative Bus\n" +
+					"4) Normative Walking\n" +
+					"5) Normative Driving\n" +
+					"6) Market Restaurant Delivery (to show truck)\n" +
+					"7) Normative Market\n"+
+					"8) Normative Residence Test\n" +
+					"9) Normative Apartment Complex\nYour choice: ");
 			String choice = in.nextLine();
 			try
 			{
@@ -114,9 +125,10 @@ public class SimCity201 extends JFrame {
 					case 4: normativeWalking(); running = false; break;
 					case 5: normativeDriving(); running = false; break;
 					case 6: normativeMarketRestaurantDelivery(); running = false; break;
-					case 7: normativeResidence(); running = false; break;
-					case 8: normativeApartmentComplex(); running = false; break;
-					case 0: cityPanel.SHOW_DEBUG = ! cityPanel.SHOW_DEBUG; System.out.println("Toggled debug");break;
+					case 7: normativeMarket(); running = false; break;
+					case 8: normativeResidence(); running = false; break;
+					case 9: normativeApartmentComplex(); running = false; break;
+					case 0: CityPanel.SHOW_DEBUG = ! CityPanel.SHOW_DEBUG; System.out.println("Toggled debug");break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
@@ -127,6 +139,8 @@ public class SimCity201 extends JFrame {
 			}
 		}
 		in.close();
+		
+		normativeMarket();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -502,6 +516,59 @@ public class SimCity201 extends JFrame {
 		p3.startThread();
 		
 		((RestaurantCookRoleMatt) r.getCook()).emptySteakInventory();
+	}
+	
+	private void normativeMarket()
+	{
+		/*
+		 * A Market Manager, Market Employee, and Market Customer all go to a market at 8 AM when it opens.
+		 * The market has a forced inventory of 10 Pizzas, 5 Burgers, and 15 Fritos, and the Customer orders two Burgers and a Pizza.
+		 * The Market Manager conveys these orders to the Employee, who goes and pulls them off the shelf. The Employee then brings them to the front,
+		 * where they are given through the Manager to the Customer. The Customer pays and leaves, and the Employee returns to the back of the Market.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		mcp.setStructure(m);
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		
+		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+			
+		PersonAgent p = new PersonAgent("Market Employee",cityPanel);
+		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p.setHungerEnabled(false);
+		p.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p);
+		p.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Customer",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerGoods, m, null);
+		p3.setHungerEnabled(false);
+		p3.getMarketChecklist().add(new ItemRequest("Burgers",2));
+		p3.getMarketChecklist().add(new ItemRequest("Pizza",1));
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
