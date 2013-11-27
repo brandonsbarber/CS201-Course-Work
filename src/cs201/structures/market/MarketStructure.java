@@ -54,8 +54,8 @@ public class MarketStructure extends Structure {
 		panel.addGui(employeeGui);
 		
 		// Initialize delivery truck
-		this.deliveryTruck = new TruckAgent(this);
-		deliveryTruck.startThread();
+		//this.deliveryTruck = new TruckAgent(this);
+		//deliveryTruck.startThread();
 		
 		// Add some initial inventory
 		addInventory("Steak", 1000, 10.99f);
@@ -160,6 +160,11 @@ public class MarketStructure extends Structure {
 	 */
 	public TruckAgent getDeliveryTruck() {
 		return deliveryTruck;
+	}
+	
+	public void addTruck(TruckAgent truck)
+	{
+		deliveryTruck = truck;
 	}
 	
 	/**

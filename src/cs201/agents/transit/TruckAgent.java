@@ -41,9 +41,8 @@ public class TruckAgent extends VehicleAgent implements Truck
 		homeStructure = home;
 		msgSetLocation(homeStructure);
 		deliveries = new ArrayList<Delivery>();
-		gui = new TruckGui(this,CityPanel.INSTANCE,(int)homeStructure.x,(int)homeStructure.y);
+		gui = new TruckGui(this,CityPanel.INSTANCE,(int)homeStructure.getParkingLocation().x,(int)homeStructure.getParkingLocation().y);
 		CityPanel.INSTANCE.addGui(gui);
-		
 	}
 	
 	public void setGui(VehicleGui gui)
@@ -65,7 +64,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		if(deliveries.isEmpty() && currentLocation != homeStructure)
 		{
 			returnHome();
-			return true;
+			return false;
 		}
 		else
 		{
@@ -73,6 +72,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 			{
 				if(deliveries.get(i).s == DeliveryState.Done)
 				{
+					Do("removing");
 					deliveries.remove(i);
 					return true;
 				}
@@ -91,7 +91,6 @@ public class TruckAgent extends VehicleAgent implements Truck
 
 	private void returnHome()
 	{
-		Do("Returning home.");
 		msgSetDestination (homeStructure);
 		animate();
 		gui.setPresent(false);
@@ -108,13 +107,13 @@ public class TruckAgent extends VehicleAgent implements Truck
 		
 		animate();
 		
-		Do("Arrived at destination, messaging with items.");
 		
 		for(ItemRequest item : d.inventory)
 		{
 			((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
 		}
 		
+		msgSetLocation(d.destination);
 		d.s = DeliveryState.Done;
 
 	}
