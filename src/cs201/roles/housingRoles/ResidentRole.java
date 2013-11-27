@@ -3,22 +3,27 @@ package cs201.roles.housingRoles;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.Gui;
 import cs201.gui.roles.residence.ResidentGui;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
 import cs201.structures.residence.Residence;
 
 public class ResidentRole extends Role implements Resident {
-	enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp};
+	public enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent, relaxing};
 	ResidentState state;
 	private Residence residence;
 	ResidentGui gui;
-	private boolean asleep;
+	boolean isTest = false;
 	
 	public ResidentRole() {
 		state = ResidentState.doingNothing;
-		asleep = false;
 		//residence = (Residence) myPerson.getHome();  //would be helpful to connect residence to person's home
+	}
+	
+	public ResidentRole(Residence res) {
+		residence = res;
+		state = ResidentState.doingNothing;
 	}
 	
 	//Messages
@@ -31,6 +36,10 @@ public class ResidentRole extends Role implements Resident {
 	public void msgDoneEating() { //from animation
 		state = ResidentState.doingNothing;
 		stateChanged();
+	}
+	
+	public void msgAnimationDone() {
+		myPerson.animationRelease();
 	}
 	
 	//Scheduler
@@ -49,30 +58,51 @@ public class ResidentRole extends Role implements Resident {
 					//getPerson().goToMarket();
 					Do("I need to get food from the market. I need to implement some way to do that.");
 					return false;
-				}	
+				}
+			case relaxing:
+				actionFinished();
+				return true;
 			default: 
-				break;
+				actionFinished(); //nothing to do. Leave.
+				return false;
 		}
-		return false;
 	}
 	
 	//Actions
 	
+	/**
+	 * Resident walks to the fridge, picks an item from the fridge's contents, goes to the table, and eats.
+	 */
 	private void pickAndEatFromFridge() {
-		Do("pickAndEatFromFridge called.");
 		goToFridge();//animation go to fridge
 		state = ResidentState.eating;
 		List<String> fridgeContents = residence.getFridgeContents();
+		//Do("My choices from the fridge: "+fridgeContents);
 		//picks food from home's fridge list of Food and eats it. Temporarily random choice
-		int rand = (int)Math.random()*fridgeContents.size();
-		residence.removeFood(fridgeContents.get(rand));
+		int rand = (int)(Math.random()*fridgeContents.size());
+		String foodToEat = fridgeContents.get(rand);
+		residence.removeFood(foodToEat);
+		if(!isTest) {
+			gui.setHolding(foodToEat);
+		}
 		
-		//timer, gui animation
+		eatAtTable();//timer, gui animation
+		
+		if(!isTest) {
+			gui.clearHolding();
+		}
+		
 		myPerson.setHungerLevel(0); //clear hunger amount
-		Do("finished pickAndEatFromFridge action");
+		Do("Finished pickAndEatFromFridge action. I ate one serving of "+foodToEat+"s from my fridge.");
+		actionFinished();
 	}
 	
+	/**
+	 * Action to walk to the Resident's bed and go to sleep. Resident sets his role inactive so scheduler calls
+	 * don't happen until he is woken up with a new action from PersonAgent's scheduler
+	 */
 	private void goToSleep() {
+		Do("Going to sleep");
 		goToBed(); //animation go to bed
 		state = ResidentState.sleeping;
 		isActive = false;
@@ -81,23 +111,70 @@ public class ResidentRole extends Role implements Resident {
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		if (intent == Intention.ResidenceEat) {
-			this.msgStartEating();
+		switch (intent) {
+			case ResidenceEat:
+				this.msgStartEating();
+				break;
+			case ResidenceSleep:
+				state = ResidentState.readyToSleep;
+				stateChanged();
+				break;
+			case ResidenceRelax:
+				state = ResidentState.relaxing;
+				stateChanged();
+				break;
+			default:
+				break;
 		}
-		if (intent == Intention.ResidenceSleep) {
-			state = ResidentState.readyToSleep;
-			stateChanged();
-			//action to prepare scheduler for sleep action
+		
+		Do("Entering residence");
+		if(!isTest) {
+			this.gui.setPresent(true);
+			gui.enter();
+			this.acquireSemaphore();
 		}
+		
+	}
+	
+	/**
+	 * Action called when another action has finished. Resident's actions are based in the intent when
+	 * entering the residence. When the action described by that intent is finished, the resident will
+	 * simply leave. He can re-enter if he decides to do something else in the residence.
+	 */
+	private void actionFinished() {
+		Do("Action finished. Leaving.");
+		state = ResidentState.doingNothing;
+		isActive = false;
+		if(!isTest) {
+			gui.exit(); //animation to leave residence
+			this.acquireSemaphore();
+			gui.setPresent(false); //gui inactive
+		}
+		
 	}
 	
 	private void goToFridge() { //animation
-		gui.walkToFridge();
+		Do("Going to the fridge.");
+		if(!isTest) {
+			gui.walkToFridge();
+			this.acquireSemaphore();
+		}
+	}
+	
+	private void eatAtTable() {
+		Do("Going to the table to eat.");
+		if(!isTest) {
+			gui.walkToTable();
+			this.acquireSemaphore();
+		}
 	}
 	
 	private void goToBed() {
-		gui.goToBed();
+		if(!isTest) {
+			gui.goToBed();
+			this.acquireSemaphore();
+		}
+		
 	}
 
 	@Override
@@ -110,5 +187,21 @@ public class ResidentRole extends Role implements Resident {
 	
 	public void setResidence(Residence newResidence) {
 		residence = newResidence;
+	}
+	
+	public void setGui(ResidentGui newGui) {
+		gui = newGui;
+	}
+	
+	public Gui getGui() {
+		return gui;
+	}
+	
+	public ResidentState getState() {
+		return state;
+	}
+	
+	public void setTest(boolean bool) {
+		isTest = bool;
 	}
 }

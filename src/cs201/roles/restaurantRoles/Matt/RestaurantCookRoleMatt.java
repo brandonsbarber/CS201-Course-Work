@@ -2,7 +2,11 @@ package cs201.roles.restaurantRoles.Matt;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.Timer;
 
@@ -13,6 +17,7 @@ import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.helper.Matt.RestaurantRotatingStand.RotatingStandOrder;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.structures.market.MarketStructure;
 
@@ -25,8 +30,8 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private Map<String, Food> foods;
 	private enum OrderState { pending, cooking, done, pickup };
 	private final int FOODTHRESHOLD = 2;
-	private final int MAXSTOCK = 5;
-	private final int INITIALSTOCK = 3;
+	private final int MAXSTOCK = 25;
+	private final int INITIALSTOCK = 20;
 	private boolean closingTime = false;
 	private final int STANDCHECKTIMER = 3000; // 3 seconds
 	private Timer standTimer = new Timer(STANDCHECKTIMER, this);
@@ -130,12 +135,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 
 	// Actions -------------------------------------------------------------
 	private void LeaveRestaurant() {
-		// TODO
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.gui.setPresent(false);
 	}
 	
 	private void CookOrder(Order o) {
@@ -167,7 +172,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 				DoOrderFood(f, m);
 				MarketStructure market = CityDirectory.getInstance().getRandomMarket();
 				((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgOrderInvoiceFromCook(market, f.type, f.amountOrdered);
-				//market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
+				market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
 				f.orderPending = true;
 				break;
 			}
@@ -177,25 +182,26 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
+		Do("Leaving work.");
 	}
 	
 	private void DoCookOrder(Order o) {
-		System.out.println("Cook " + this.toString() + " cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
+		Do("Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime + " for Table " + o.tableNum);
 		gui.addCookingItem(o.choice);
 	}
 	
 	private void DoOutOfFood(Food f) {
-		System.out.println("Cook " + this.toString() + " out of " + f.type + "!");
+		Do("Out of " + f.type + "!");
 	}
 	
 	private void DoInformWaiter(Order o) {
-		System.out.println("Cook " + this.toString() + " telling waiter " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
+		Do("Telling " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
 		gui.removeCookingItem(o.choice);
 		gui.addPlatingItem(o.choice);
 	}
 	
 	private void DoOrderFood(Food f, MarketStructure m) {
-		System.out.println("Cook " + this.toString() + " ordering " + f.type + " from " + m + ".");
+		Do("Ordering " + f.type + " from " + m + ".");
 	}
 	
 	public void emptyInventory() {
@@ -279,6 +285,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
 		closingTime = false;
+		this.gui.setPresent(true);
 	}
 
 	@Override

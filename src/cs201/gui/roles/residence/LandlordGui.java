@@ -10,14 +10,21 @@ public class LandlordGui implements Gui {
 
 	private LandlordRole role = null;
 	private boolean isPresent;
+	private boolean animating;
 	
 	private final int WIDTH = 20, HEIGHT = 20;
-	private final int startX = 100, startY = 100;
+	private final int startX = 0, startY = 250;
 	
 	private int xPos;
 	private int yPos;
 	private int xDestination;
 	private int yDestination;
+	private int exitX = -20;
+	private int exitY = 250;
+	
+	private int chairX;
+	private int chairY;
+	
 	
 	public LandlordGui() {
 		this(null);
@@ -28,8 +35,10 @@ public class LandlordGui implements Gui {
 		yPos = startY;
 		xDestination = xPos;
 		yDestination = yPos;
+		
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
+		animating = false;
 	}
 
 	@Override
@@ -49,8 +58,9 @@ public class LandlordGui implements Gui {
 			yPos--;
 		}
 		
-		if (xPos==xDestination && yPos==yDestination) {
-			
+		if (xPos==xDestination && yPos==yDestination && animating==true) {
+			role.msgAnimationDone();
+			animating = false;
 		}
 		return;
 	}
@@ -62,23 +72,44 @@ public class LandlordGui implements Gui {
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("Landlord", WIDTH, HEIGHT);
+		g.drawString("Landlord", xPos, yPos);
 	}
 
 	// Animation Actions
 	
-	public void walkToDesk() {
+	public void sitAtDesk() {
 		// set destination equal to office locations
+		xDestination = chairX;
+		yDestination = chairY;
+		animating = true;
 	}
 	
 	public void leaveOffice() {
 		// set destination to door to exit
+		xDestination = exitX;
+		yDestination = exitY;
+		animating = true;
+	}
+	
+	public void enter() {
+		xDestination = 0;
+		yDestination = startY;
+		animating = true;
 	}
 	
 	@Override
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
 		return isPresent;
+	}
+	
+	public void setPresent(boolean bool) {
+		isPresent = bool;
+	}
+	
+	public void setChair(int x, int y) {
+		chairX = x;
+		chairY = y;
 	}
 
 }

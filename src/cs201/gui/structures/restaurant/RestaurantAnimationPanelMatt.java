@@ -4,25 +4,25 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.Timer;
-
-import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 
+/**
+ * Animation panel for Matthew Pohlmann's Restaurant in SimCity201. Changing the DEFAULTWINDOWX AND
+ * DEFAULTWINDOWY member variables resizes everything inside the restaurant accordingly.
+ * 
+ * @author Matthew Pohlmann
+ */
 public class RestaurantAnimationPanelMatt extends StructurePanel {
-
-    public static final int WINDOWX = 600;
-    public static final int WINDOWY = 700;
+	
+	private static final int DEFAULTWINDOWX = 480;
+	private static final int DEFAULTWINDOWY = 480;
+    public static int WINDOWX = DEFAULTWINDOWX;
+    public static int WINDOWY = DEFAULTWINDOWY;
     
     // TABLES
-    private final int TABLESIZE = (int)(WINDOWY * .1f);
+    private final int TABLESIZE = (WINDOWX < WINDOWY) ? (int)(WINDOWX * .1f) : (int)(WINDOWY * .1f);
     private final Color TABLECOLOR = Color.ORANGE;
     public static final int TABLEX_1 = (int)(WINDOWX * 3 / 10);
     public static final int TABLEY_1 = (int)(WINDOWY * 3 / 10);
@@ -62,6 +62,18 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     public RestaurantAnimationPanelMatt(int i, SimCity201 sc) {
     	super(i, sc);
     	
+    	setSize(WINDOWX, WINDOWY);
+		setMinimumSize(new Dimension(WINDOWX, WINDOWY));
+		setMaximumSize(new Dimension(WINDOWX, WINDOWY));
+		setPreferredSize(new Dimension(WINDOWX, WINDOWY));
+        setVisible(true);
+    }
+    
+    public RestaurantAnimationPanelMatt(int i, SimCity201 sc, int x, int y) {
+    	super(i, sc);
+    	
+    	WINDOWX = x;
+    	WINDOWY = y;
     	setSize(WINDOWX, WINDOWY);
 		setMinimumSize(new Dimension(WINDOWX, WINDOWY));
 		setMaximumSize(new Dimension(WINDOWX, WINDOWY));

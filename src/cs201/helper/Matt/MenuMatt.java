@@ -1,6 +1,10 @@
 package cs201.helper.Matt;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * The Restaurant's Menu

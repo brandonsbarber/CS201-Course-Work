@@ -1,8 +1,8 @@
 package cs201.roles.transit;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
@@ -17,6 +17,11 @@ import cs201.roles.Role;
 import cs201.structures.Structure;
 import cs201.structures.transit.BusStop;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class PassengerRole extends Role implements Passenger
 {
 	public boolean testing = false;
@@ -31,6 +36,8 @@ public class PassengerRole extends Role implements Passenger
 	private Car car;
 	
 	public Queue<Move> waypoints;
+	
+	private List<BusStop> busStops;
 	
 	class Move
 	{
@@ -54,6 +61,14 @@ public class PassengerRole extends Role implements Passenger
 	
 	PassengerGui gui;
 	
+	public static final int START_WALK_DISTANCE = 200;
+	
+	private int walkDistance;
+	
+	/**
+	 * Creates a Passenger at the given location
+	 * @param curLoc
+	 */
 	public PassengerRole(Structure curLoc)
 	{
 		boardingRequest = new ArrayList<Vehicle>();
@@ -65,59 +80,148 @@ public class PassengerRole extends Role implements Passenger
 		this.currentLocation = curLoc;
 		
 		waitingForVehicle = new Semaphore(0);
+		
+		walkDistance = START_WALK_DISTANCE;
+		
+		busStops = new ArrayList<BusStop>();
 	}
 	
+	/**
+	 * Sets the bus stops to be referenced by the passenger
+	 * Note: Bus will not be taken unless this is called.
+	 * @param stops the stops to be used to take the bus
+	 */
+	public void setBusStops(List<BusStop> stops)
+	{
+		this.busStops = stops;
+	}
+	
+	/**
+	 * Sets testing mode on PassengerRole
+	 */
+	public void isTesting()
+	{
+		testing = true;
+	}
+	
+	/**
+	 * Sets gui to use
+	 * @param gui the gui to use
+	 */
 	public void setGui(PassengerGui gui)
 	{
 		this.gui = gui;
-		gui.setPresent(true);
 	}
 	
+	/**
+	 * Gives a car to the passenger
+	 * Note: Car will not be taken unless this is called
+	 * @param c the car to use
+	 */
 	public void addCar(Car c)
 	{
+		Do("I have a car");
 		this.car = c;
 	}
+
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void msgClosingTime() 
+	{
+		
+	}
+
+	/**
+	 * Signals that the animation is finished performing
+	 */
+	public void msgAnimationFinished()
+	{
+		Do("Animation has finished");
+		animationPause.release();
+	}
+
+	/**
+	 * Sets the current location
+	 * @param s2 current location
+	 */
+	public void setCurrentLocation(Structure s2)
+	{
+		currentLocation = s2;
+		if(gui != null){gui.setLocation((int)currentLocation.x, (int)currentLocation.y);}
+	}
+
+	/**
+	 * Get the current location
+	 */
+	public Structure getCurrentLocation()
+	{
+		return currentLocation;
+	}
+
+	/**
+	 * Sets walking distance for passenger
+	 * @param i walking distance
+	 */
+	public void setWalkingDistance(int i)
+	{
+		walkDistance = i;
+	}
 	
+	/**
+	 * Tells the Passenger to go to this location
+	 * @param s the structure to go to
+	 */
 	@Override
 	public void msgGoTo(Structure s)
 	{
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		Do("Clearing waypoints?");
+		Do("Received message to go to: "+s);
 		stateChanged();
 	}
 
+	/**
+	 * Message asking the passenger to board a vehicle
+	 * @param v the vehicle asking to board
+	 */
 	@Override
 	public void msgPleaseBoard(Vehicle v)
 	{
 		boardingRequest.add(v);
+		Do("Received message to board: "+v);
 		waitingForVehicle.release();
 	}
 
+	/**
+	 * Message called when arriving at a destination
+	 * @param s the destination arrived at
+	 */
 	@Override
 	public void msgReachedDestination(Structure s)
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
-		Do("Arrived at "+s);
+		Do("Received message arrived at destination: "+s);
 		stateChanged();
 	}
 
+	/**
+	 * Does nothing
+	 */
 	@Override
-	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
+	public void startInteraction(Intention intent)
+	{
 		
 	}
 
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		Do("Running scheduler");
-		Do(""+waypoints.size());
-		if(currentLocation == destination && state == PassengerState.None)
+		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
-			Do("ENDING?");
 			finishMoving();
 			return false;
 		}
@@ -142,44 +246,101 @@ public class PassengerRole extends Role implements Passenger
 			moveToLocation(waypoints.peek());
 			return true;
 		}
-		Do("Reached end");
 		return false;
 	}
 
-	
-
+	/*
+	 * Figures out how to break down move
+	 */
 	private void populateWaypoints()
 	{
 		if (car != null)
 		{
+			Do("Populating waypoints for car");
 			waypoints.add (new Move(destination, MoveType.Car));
+			waypoints.add (new Move(destination,MoveType.Walk));
 			return;
 		}
 		
+		
 		List<BusStop> stops = new ArrayList<BusStop>();
-		//Find nearest two bus stops
-		if(stops.size() == 2)
+		
+		//find closest to current location
+		BusStop closest = null;
+		double minDistance = Double.MAX_VALUE;
+		
+		for(BusStop stop : busStops)
 		{
+			double stopDistance = Math.sqrt(Math.pow(stop.x - currentLocation.x,2) + Math.pow(stop.y - currentLocation.y,2));
+			if(stopDistance < minDistance)
+			{
+				closest = stop;
+				minDistance = stopDistance;
+			}
+		}
+		if(closest != null)
+		{
+			stops.add(closest);
+		}
+		
+		//find closest to destination
+		closest = null;
+		minDistance = Double.MAX_VALUE;
+		
+		for(BusStop stop : busStops)
+		{
+			double stopDistance = Math.sqrt(Math.pow(destination.x - stop.x,2) + Math.pow(destination.y - stop.y,2));
+			if(stopDistance < minDistance)
+			{
+				closest = stop;
+				minDistance = stopDistance;
+			}
+		}
+		if(closest != null && !stops.contains(closest))
+		{
+			stops.add(closest);
+		}
+		
+		if(!shouldWalk() && stops.size() == 2)
+		{
+			Do("Populating waypoints for bus");
 			waypoints.add(new Move(stops.get(0),MoveType.Walk));
 			waypoints.add(new Move(stops.get(1),MoveType.Bus));
+			waypoints.add(new Move(stops.get(1),MoveType.Walk));
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 		else
 		{
-			Do("Adding to waypoints");
+			Do("Populating waypoints for walking");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
 
+	/*
+	 * Determines if walking is worth it
+	 */
+	public boolean shouldWalk()
+	{
+		double distance = Math.sqrt(Math.pow(destination.x - currentLocation.x,2) + Math.pow(destination.y - currentLocation.y,2));
+		return distance < walkDistance;
+	}
+	
 	private void finishMoving()
 	{
 		//message person done moving
 		setActive(false);
+		gui.setPresent(false);
+		if(myPerson != null)
+		{
+			myPerson.doneMoving(currentLocation);
+		}
 	}
 	
+	/*
+	 * Processes a vehicle asking to board
+	 */
 	private void checkBoardingRequest(Vehicle remove)
 	{
-		Do("Checking boarding request");
 		if(remove instanceof Bus)
 		{
 			Bus bus = (Bus)remove;
@@ -190,6 +351,7 @@ public class PassengerRole extends Role implements Passenger
 				state = PassengerState.InTransit;
 				boardingRequest.clear();
 				gui.setPresent(false);
+				currentVehicle = bus;
 			}
 		}
 		else if(remove instanceof Car)
@@ -206,14 +368,14 @@ public class PassengerRole extends Role implements Passenger
 		}
 	}
 	
+	/*
+	 * Processes arriving at a location
+	 */
 	private void processArrival()
 	{
-		Do("PROCESSING ARRIVAL Reaching?!");
-		Do(""+waypoints);
-		Do(""+waypoints.size());
+		Do("Processing arrival at "+currentLocation);
 		if(currentLocation == waypoints.peek().s)
 		{
-			Do("Hello? Removing");
 			Structure s = waypoints.remove().s;
 			if(currentVehicle != null)
 			{
@@ -226,34 +388,51 @@ public class PassengerRole extends Role implements Passenger
 					((Bus)currentVehicle).msgLeaving(this);
 				}
 				currentVehicle = null;
+				if(currentLocation.getParkingLocation() != null)
+				{
+					gui.setLocation(currentLocation.getParkingLocation().x, currentLocation.getParkingLocation().y);
+				}
+				else
+				{
+					gui.setLocation((int)currentLocation.x, (int)currentLocation.y);
+				}
+			}
+			else
+			{
+				gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
 			}
 			gui.setPresent(true);
-			gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
 			state = PassengerState.None;
 		}
 		else if (currentVehicle instanceof Bus)
 		{
 			((Bus)currentVehicle).msgStaying(this);
+			state = PassengerState.InTransit;
 		}
 	}
 	
+	/*
+	 * Moves to a location
+	 */
 	private void moveToLocation(Move point)
 	{
 		switch(point.m)
 		{
 			case Walk :
-				gui.doGoToLocation(point.s);
-				try
+				if(!testing)
 				{
-					animationPause.acquire();
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
+					gui.doGoToLocation(point.s);
+					try
+					{
+						animationPause.acquire();
+					}
+					catch (InterruptedException e1)
+					{
+						e1.printStackTrace();
+					}
 				}
 				currentLocation = point.s;
 				state = PassengerState.Arrived;
-				Do("Waypoints after animation: "+waypoints.size());
 				break;
 			case Car :
 				car.msgCallCar(this, currentLocation, destination);
@@ -263,7 +442,6 @@ public class PassengerRole extends Role implements Passenger
 					try
 					{
 						waitingForVehicle.acquire();
-						Do("Released");
 					}
 					catch(InterruptedException e)
 					{
@@ -274,19 +452,18 @@ public class PassengerRole extends Role implements Passenger
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);
+				if(!testing)
+				{
+					try
+					{
+						waitingForVehicle.acquire();
+					}
+					catch(InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
 				break;
 		}
-		Do("Waypoints at end of call: "+waypoints.size());
-	}
-
-	@Override
-	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void msgAnimationFinished()
-	{
-		animationPause.release();
 	}
 }

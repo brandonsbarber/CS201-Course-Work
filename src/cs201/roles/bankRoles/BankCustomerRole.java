@@ -10,30 +10,62 @@ public class BankCustomerRole extends Role implements BankCustomer {
     // Member Variables
     //================================================================================
 	
-	BankTellerRole myTeller;
+	String name = "";
+	
+	//BankCustomerGui gui = new BankCustomerGui; // TODO: Implement Customer Gui and instantiate
+	
 	int accountNumber;
-	double accountBalance;
-	Intention intent;
-	CustomerState state = CustomerState.EnteringBank;
+	double transactionAmount;
+	//double accountBalance;
+	
+	BankTellerRole myTeller;
+	CustomerAction intent;
+	CustomerState state;
 	
 	public enum CustomerState {
 	    EnteringBank,
 	    Waiting,
 	    WalkingToTeller,
 	    TalkingToTeller,
-	    OpeningAccount,
-	    WithdrawingMoney,
-	    DepositingMoney,
-	    TakingOutLoan,
 	    LeavingBank
 	};
 	
-	public enum Intention {
+	public enum CustomerAction {
 	    OpenAccount,
 	    WithdrawMoney,
 	    DepositMoney,
 	    TakeOutLoan
 	};
+	
+//	public class DirectDeposit {
+//		Restaurant restaurant;
+//		int businessActNumber;
+//		List<Payment> deposits = new ArrayList<Payment>();
+//		
+//		private class Payment {
+//			PersonAgent employee;
+//			double paymentAmount;
+//			
+//			public Payment(PersonAgent employee, double paymentAmt) {
+//				this.employee = employee;
+//				this.paymentAmount = paymentAmt;
+//			}
+//		}
+//		
+//		public DirectDeposit(Restaurant r, )
+//	}
+	
+	//================================================================================
+    // Constructors
+    //================================================================================
+	
+	public BankCustomerRole(String name, CustomerAction action, double transAmt) {
+		this.name = name;
+		this.state = CustomerState.EnteringBank;
+		this.intent = action;
+		this.accountNumber = myPerson.getBankAccountNumber();
+		this.transactionAmount = transAmt;
+	}
 	
 	//================================================================================
     // Scheduler
@@ -46,18 +78,20 @@ public class BankCustomerRole extends Role implements BankCustomer {
 		if (state == CustomerState.WalkingToTeller) {
 			goToTeller();
 		}
-		if (state == CustomerState.TalkingToTeller && 
-		   (/*myPerson.getAccountNumber() == null ||*/ intent == Intention.OpenAccount)) {
+		if (state == CustomerState.TalkingToTeller && intent == CustomerAction.OpenAccount) {
 			openBankAccount();
 		}
-		if (state == CustomerState.TalkingToTeller && intent == Intention.WithdrawMoney) {
+		if (state == CustomerState.TalkingToTeller && intent == CustomerAction.WithdrawMoney) {
 			withdrawMoney();
 		}
-		if (state == CustomerState.TalkingToTeller && intent == Intention.DepositMoney) {
+		if (state == CustomerState.TalkingToTeller && intent == CustomerAction.DepositMoney) {
 			depositMoney();
 		}
-		if (state == CustomerState.TalkingToTeller && intent == Intention.TakeOutLoan) {
+		if (state == CustomerState.TalkingToTeller && intent == CustomerAction.TakeOutLoan) {
 			takeOutLoan();
+		}
+		if (state == CustomerState.LeavingBank) {
+			leaveBank();
 		}
         return false;
 	}
@@ -68,68 +102,86 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	
 	public void msgSeeTeller(BankTellerRole teller) {
 	    state = CustomerState.WalkingToTeller;
-	    //destination = teller.getLocation();
+	    //destination = teller.getLocation(); // TODO: Gui code that assigns destination and begins animation
+	    stateChanged();
 	}
 	
 	public void msgAccountIsOpened(int actNum) {
-	    //myPerson.setBankAccount(actNum);
-	}
-	
-	public void msgMoneyIsDeposited(int newBalance) {
-	    accountBalance = newBalance;
-	}
-	
-	public void msgMoneyIsWithdrawn(int newBalance) {
-	    accountBalance = newBalance;
-	}
-	
-	public void msgLoanIsGranted(int loanAmount) {
-	    //myPerson.setMoney(myPerson.getMoney() + loanAmount);
-	}
-	
-	public void msgLeaveBank() {
+	    myPerson.setBankAccountNumber(actNum);
 	    state = CustomerState.LeavingBank;
+	    stateChanged();
 	}
+	
+	public void msgMoneyIsDeposited() {
+	    //accountBalance = newBalance; // TODO: Decide whether or not the customer needs to store his bank balance
+		state = CustomerState.LeavingBank;
+	    stateChanged();
+	}
+	
+	public void msgMoneyIsWithdrawn(/*int newBalance*/) {
+	    //accountBalance = newBalance; // TODO: Decide whether or not the customer needs to store his bank balance
+		state = CustomerState.LeavingBank;
+	    stateChanged();
+	}
+	
+	/*public void msgOverdrawnAccount(double actBalance) {
+		// TODO: (v2/non-norm) Figure out how we're handling overdrawn accounts
+	}*/
+	
+	public void msgLoanGranted() {
+		//accountBalance = newBalance; // TODO: Decide whether or not the customer needs to store his bank balance
+		state = CustomerState.LeavingBank;
+		stateChanged();
+	}
+
+	public void msgLoanDenied() {
+		state = CustomerState.LeavingBank;
+		stateChanged();
+	}
+	
+	public void msgClosingTime() {
+		state = CustomerState.LeavingBank;
+		stateChanged();
+	}
+	
 	
 	//================================================================================
     // Actions
     //================================================================================
 
+	public void startInteraction(cs201.agents.PersonAgent.Intention intent) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	private void addToWaitingList() {
 	    Bank.getGuard().msgHereToSeeTeller(this);
 	    state = CustomerState.Waiting;
 	}
 	
 	private void goToTeller() {
-	    //DoGoToTeller(xDest, yDest);
+	    //DoGoToTeller(xDest, yDest); // TODO: Gui code for going to specified teller booth (given by guard)
 	    state = CustomerState.TalkingToTeller;
 	}
 	
 	private void openBankAccount() {
-	    //myTeller.msgOpenAccount(this, startingBalance);
+	    myTeller.msgOpenAccount(this, transactionAmount);
 	}
 	
 	private void withdrawMoney() {
-	    //myTeller.msgWithdrawMoney(accountNumber, amtNeeded);
+	    myTeller.msgWithdrawMoney(this, accountNumber, transactionAmount);
 	}
 	
 	private void depositMoney() {
-	    //myTeller.msgDepositMoney(accountNumber, amtToDeposit);
+	    myTeller.msgDepositMoney(this, accountNumber, transactionAmount);
 	}
 	
 	private void takeOutLoan() {
-	    //myTeller.msgRequestMoney(accountNumber, amtRequested);
+	    myTeller.msgRequestMoney(this, accountNumber, transactionAmount);
+	}
+	
+	private void leaveBank() {
+		//gui.DoLeaveBank(); // TODO: Add gui method
 	}
 
-	@Override
-	public void startInteraction(cs201.agents.PersonAgent.Intention intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
-	}
 }

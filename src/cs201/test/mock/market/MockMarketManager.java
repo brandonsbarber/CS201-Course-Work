@@ -7,7 +7,7 @@ import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
-import cs201.structures.Structure;
+import cs201.structures.restaurant.Restaurant;
 import cs201.test.mock.LoggedEvent;
 import cs201.test.mock.Mock;
 
@@ -22,8 +22,8 @@ public class MockMarketManager extends Mock implements MarketManager {
 		
 	}
 
-	public void msgHereIsMyOrderForDelivery(Structure structure,
-			List<ItemRequest> items) {
+	public void msgHereIsMyOrderForDelivery(Restaurant restaurant,
+			ItemRequest item) {
 		
 	}
 

@@ -7,38 +7,119 @@ import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.structures.Structure;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public abstract class VehicleAgent extends Agent implements Vehicle
 {
-	Structure destination, currentLocation;
+	public Structure destination;
+
+	public Structure currentLocation;
 	
 	Semaphore animationSemaphore = new Semaphore(0);
 	
-	VehicleGui gui;
+	VehicleGui gui = null;
 	
+	private static int INSTANCES = 0;
+	private int instance;
+	
+	/**
+	 * Creates a new Vehicle (used for instance counting)
+	 */
+	public VehicleAgent()
+	{
+		instance = ++INSTANCES;
+	}
+	
+	/**
+	 * Sets the GUI of the vehicle
+	 * @param gui the gui of the vehicle
+	 */
 	public void setGui(VehicleGui gui)
 	{
 		this.gui = gui;
 	}
 	
+	/**
+	 * Message received from GUI indicating that animation is finished
+	 */
 	public void msgAnimationDestinationReached()
 	{
+		Do("Done animating");
 		animationSemaphore.release();
-		System.out.println("Animation Reached");
 	}
 	
+	/**
+	 * Sets the destination of the vehicle
+	 * @param destination where to go
+	 */
 	public void msgSetDestination (Structure destination)
 	{
 		this.destination = destination;
 		stateChanged();
 	}
 	
+	/**
+	 * Sets the current location of the vehicle
+	 * @param s the current location
+	 */
 	public void msgSetLocation(Structure s)
 	{
 		currentLocation = s;
 	}
 	
+	/**
+	 * Checks whether the destination has been reached
+	 */
 	public boolean destinationReached()
 	{
 		return destination == currentLocation;
+	}
+	
+	/**
+	 * Handles animation calls concisely
+	 */
+	protected void animate()
+	{
+		if(gui == null)
+		{
+			currentLocation = destination;
+			return;
+		}
+		gui.setPresent(true);
+		gui.doGoToLocation(destination);
+		try
+		{
+			Do("Animating to "+destination +" from "+currentLocation);
+			animationSemaphore.acquire();
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		currentLocation = destination;
+	}
+	
+	protected void Do(String msg) {
+		StringBuffer output = new StringBuffer();
+		output.append("[");
+		output.append(this.getClass().getSimpleName());
+		output.append("] ");
+		output.append(this.instance);
+		output.append(": ");
+		output.append(msg);
+		
+		System.out.println(output.toString());
+	}
+
+	/**
+	 * Gets the instance count of the vehicle
+	 * @return instance count of the vehicle
+	 */
+	public int getInstance()
+	{
+		return instance;
 	}
 }

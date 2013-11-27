@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Matt.HostGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
@@ -27,6 +29,8 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	
+	private HostGuiMatt gui;
+	
 	private List<MyWaiter> waiters = Collections.synchronizedList(new ArrayList<MyWaiter>());
 	private enum WaiterState { working, askingForBreak, onBreak };
 	private int activeWaiters = 0;
@@ -42,12 +46,14 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		tables = Collections.synchronizedList(new ArrayList<TableMatt>(NTABLES));
 		numCustomers = 0;
 		timeToClose = false;
+		gui = null;
 		
 		int width = (int)Math.round(Math.sqrt(NTABLES));
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < width; j++) {
 				TableMatt tempTable = new TableMatt(i*width + j + 1);
-				tempTable.setPos(150 + i*150, 150+j*150);
+				tempTable.setPos((int)(RestaurantAnimationPanelMatt.WINDOWX * .3f) + i*(int)(RestaurantAnimationPanelMatt.WINDOWX * .3f),
+						(int)(RestaurantAnimationPanelMatt.WINDOWY * .3f) + j*(int)(RestaurantAnimationPanelMatt.WINDOWY * .3f));
 				tables.add(tempTable);
 			}
 		}
@@ -85,30 +91,26 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	}
 	
 	@Override
-	public void msgIWantToEat(CustomerMatt c) {
-		if (timeToClose) {
-			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter because the restaurant is closed.");
-			return;
-		}
-		
+	public synchronized void msgIWantToEat(CustomerMatt c) {		
 		if (!bannedCustomers.contains(c)) {
 			Integer ID = AssignCustomerID();
-			int x = 40 + (ID % 2) * 25;
-			int y = 40 + (ID / 2) * 25;
+			int x = (int)(RestaurantAnimationPanelMatt.WINDOWX * .08f) + (ID % 2) * (int)(RestaurantAnimationPanelMatt.WINDOWX * .05f);
+			int y = (int)(RestaurantAnimationPanelMatt.WINDOWY * .08f) + (ID / 2) * (int)(RestaurantAnimationPanelMatt.WINDOWY * .05f);
 			c.getGui().SetWaitingArea(x, y);
 			c.getGui().Animate();
 			waitingCustomers.add(c);
 			numCustomers++;
 		} else {
-			System.out.println("Host " + this.getName() + " says that Customer" + c.toString() + " cannot enter the restaurant because he was banned");
+			Do(c.toString() + " cannot enter the restaurant because he was banned");
+			return;
 		}
 		stateChanged();
 	}
 	
 	@Override
-	public void msgWaitTimeTooLong(CustomerMatt c) {
-		int index = waitingCustomers.indexOf(c);
-		waitingCustomerIDs.remove(index);
+	public synchronized void msgWaitTimeTooLong(CustomerMatt c) {
+		waitingCustomerIDs.remove(waitingCustomers.indexOf(c));
+		
 		waitingCustomers.remove(c);
 		numCustomers--;
 		stateChanged();
@@ -181,7 +183,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	public boolean pickAndExecuteAnAction() {
-		if (this.restaurant.getOpen() && timeToClose && numCustomers == 0) {
+		if (timeToClose && numCustomers == 0) {
 			CloseRestaurant();
 			return true;
 		}
@@ -195,25 +197,27 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			}
 		}
 		
-		synchronized(tables) {
-			for (TableMatt table : tables) {
-				if (!table.isOccupied()) {
-					if (!waitingCustomers.isEmpty()) {
-						if (waiters.size() == 0) return false;
-						int leastCustomers = Integer.MAX_VALUE;
-						MyWaiter tempWaiter = null;
-						
-						synchronized(waiters) {
-							for (MyWaiter w : waiters) {
-								if (w.state != WaiterState.onBreak && w.numberOfCustomers < leastCustomers) {
-									leastCustomers = w.numberOfCustomers;
-									tempWaiter = w;
+		if (this.restaurant.getOpen()) {
+			synchronized(tables) {
+				for (TableMatt table : tables) {
+					if (!table.isOccupied()) {
+						if (!waitingCustomers.isEmpty()) {
+							if (waiters.size() == 0) return false;
+							int leastCustomers = Integer.MAX_VALUE;
+							MyWaiter tempWaiter = null;
+							
+							synchronized(waiters) {
+								for (MyWaiter w : waiters) {
+									if (w.state != WaiterState.onBreak && w.numberOfCustomers < leastCustomers) {
+										leastCustomers = w.numberOfCustomers;
+										tempWaiter = w;
+									}
 								}
 							}
+							
+							CallWaiter(tempWaiter, table);
+							return true;
 						}
-						
-						CallWaiter(tempWaiter, table);
-						return true;
 					}
 				}
 			}
@@ -232,9 +236,10 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
-		this.myPerson = null;
 		this.waiters.clear();
 		DoCloseRestaurant();
+		this.myPerson = null;
+		this.gui.setPresent(false);
 	}
 	
 	private void CallWaiter(MyWaiter m, TableMatt t) {
@@ -258,18 +263,18 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	// Utilities -------------------------------------------------------------
 	private void DoCloseRestaurant() {
-		System.out.println(this.toString() + " is closing down the Restaurant.");
+		Do("Closing down the restaurant.");
 	}
 	
 	private void DoCallWaiter(WaiterMatt w, TableMatt t) {
-		System.out.println(this.toString() + " telling waiter " + w.toString() + " to seat a customer.");
+		Do("Telling " + w.toString() + " to seat a customer.");
 	}
 	
 	private void DoPutWaiterOnBreak(MyWaiter m, boolean breakAllowed) {
 		if (breakAllowed) {
-			System.out.println("Waiter " + m.waiter.toString() + " is allowed to go on break.");
+			Do(m.waiter.toString() + " is allowed to go on break.");
 		} else {
-			System.out.println("Waiter " + m.waiter.toString() + " is not allowed to go on break.");
+			Do(m.waiter.toString() + " is not allowed to go on break.");
 		}
 	}
 	
@@ -304,17 +309,16 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		stateChanged();
 	}
 	
-	public void removeWaiter(WaiterMatt waiter) {
-		synchronized(waiters) {
-			for (MyWaiter m : waiters) {
-				if (m.waiter == waiter) {
-					waiters.remove(m);
-					activeWaiters--;
-					stateChanged();
-					break;
-				}
-			}
+	public int getNumActiveWaiters() {
+		return waiters.size();
+	}
+	
+	public List<RestaurantWaiterRoleMatt> getActiveWaiters() {
+		List<RestaurantWaiterRoleMatt> active = new ArrayList<RestaurantWaiterRoleMatt>();
+		for (MyWaiter m : waiters) {
+			active.add((RestaurantWaiterRoleMatt) m.waiter);
 		}
+		return active;
 	}
 	
 	private class MyWaiter {
@@ -328,10 +332,19 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			this.numberOfCustomers = 0;
 		}
 	}
+	
+	public void setGui(HostGuiMatt g) {
+		gui = g;
+	}
+
+	public HostGuiMatt getGui() {
+		return gui;
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO maybe animate into restaurant?
+		this.gui.setPresent(true);
 		timeToClose = false;
 	}
 

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
 
@@ -13,9 +14,9 @@ public class CustomerGuiMatt implements Gui {
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 	
-	private final int CUSTOMERSIZE = 20;
-	private final int RESTAURANTENTRANCE = -40;
-	private final int RESTAURANTEXIT = -40;
+	private final int CUSTOMERSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
+	private final int RESTAURANTENTRANCE = -(int)(RestaurantAnimationPanelMatt.WINDOWX * .08f);
+	private final int RESTAURANTEXIT = -(int)(RestaurantAnimationPanelMatt.WINDOWX * .08f);
 	private final int DEFAULTWAITINGAREA = 0;
 	
 	private int waitingAreaX = DEFAULTWAITINGAREA;
@@ -73,9 +74,7 @@ public class CustomerGuiMatt implements Gui {
 		g.fillRect(xPos, yPos, CUSTOMERSIZE, CUSTOMERSIZE);
 		
 		g.setColor(Color.black);
-		if (eating.length() > 0) {
-			g.drawString(eating, xPos, yPos);
-		}
+		g.drawString("Customer " + (eating != "" ? "(" + eating + ")" : ""), xPos, yPos);
 	}
 
 	public boolean isPresent() {
@@ -84,7 +83,7 @@ public class CustomerGuiMatt implements Gui {
 	
 	public void resetHungry() {
 		isHungry = false;
-		panel.setPersonEnabled(agent);
+		//panel.setPersonEnabled(agent);
 		state = guiState.none;
 	}
 	

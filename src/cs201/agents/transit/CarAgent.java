@@ -9,11 +9,17 @@ import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class CarAgent extends VehicleAgent implements Car
 {
-	Passenger p;
+	public boolean testing = false;
+	public Passenger p;
 	
-	List<PickupRequest> pickups;
+	public List<PickupRequest> pickups;
 	
 	class PickupRequest
 	{
@@ -31,34 +37,53 @@ public class CarAgent extends VehicleAgent implements Car
 	
 	Semaphore sem;
 	
+	/**
+	 * Creates a new car
+	 */
 	public CarAgent()
 	{
 		sem = new Semaphore(0,true);
 		pickups = Collections.synchronizedList(new ArrayList<PickupRequest>());
 	}
 	
+	/**
+	 * Message for calling a car for pickup by a passenger
+	 * @param p the passenger calling for the car
+	 * @param s the location of the passenger
+	 * @param d the desired location for the passenger
+	 */
 	@Override
 	public void msgCallCar(Passenger p, Structure s, Structure d)
 	{
+		Do("Called by "+p+" to pickup at "+s+" and go to "+d);
 		pickups.add(new PickupRequest(p,s,d));
 		stateChanged();
 	}
 
+	/**
+	 * Message indicating that a passenger has finished boarding
+	 * @param p the passenger in question
+	 */
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
+		Do("Passenger "+p+" is done boarding");
 		sem.release();
 	}
 
+	/**
+	 * Message to signal that a passenger is leaving the car
+	 * @param p the passenger leaving
+	 */
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		Do("Leaving from "+p);
+		Do("Passenger "+p+" has left");
 		sem.release();
 	}
 
 	@Override
-	protected boolean pickAndExecuteAnAction()
+	public boolean pickAndExecuteAnAction()
 	{
 		if(p != null)
 		{
@@ -80,71 +105,74 @@ public class CarAgent extends VehicleAgent implements Car
 		}
 		return false;
 	}
-
+	
+	/*
+	 * Processes arrival at destination
+	 */
 	private void arrival()
 	{
 		p.msgReachedDestination(currentLocation);
-		System.out.println("We have reached destination.");
-		try
+
+		if(!testing)
 		{
-			Do("Blocking");
-			sem.acquire();
-			Do("Done blocking");
-		}
-		catch (InterruptedException e)
-		{
-			Do("Problem waiting.");
-			e.printStackTrace();
+			try
+			{
+				sem.acquire();
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		p = null;
-		gui.setPresent(false);
-	}
-
-	private void goToDestination()
-	{
-		gui.doGoToLocation(destination);
-		try
+		if(gui != null)
 		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
+			gui.setPresent(false);
 		}
 	}
 	
+	/*
+	 * Goes to destination
+	 */
+	private void goToDestination()
+	{
+		animate();
+	}
+	
+	/*
+	 * Picks up passenger
+	 */
 	private void processPickup(PickupRequest removed)
 	{
 		msgSetDestination(removed.start);
-		
-		System.out.println("Setting destination. "+removed.start+" and "+removed.destination);
-		
-		gui.doGoToLocation(destination);
-		try
-		{
-			animationSemaphore.acquire();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+				
+		animate();
 		
 		removed.p.msgPleaseBoard(this);
 		
-		System.out.println("Blocking");
-		
-		try
+		if(!testing)
 		{
-			sem.acquire();
-			System.out.println("Done blocking");
-		}
-		catch (InterruptedException e)
-		{
-			Do("Problem waiting.");
-			e.printStackTrace();
+			try
+			{
+				sem.acquire();
+			}
+			catch (InterruptedException e)
+			{
+				Do("Problem waiting.");
+				e.printStackTrace();
+			}
 		}
 		p = removed.p;
 		
 		msgSetDestination(removed.destination);
+	}
+
+	/**
+	 * Gets the current passenger of the car
+	 * @return current passenger
+	 */
+	public Passenger getPassenger()
+	{
+		return p;
 	}
 }

@@ -4,7 +4,7 @@ import cs201.agents.PersonAgent;
 
 /**
  * Base class for all Roles in SimCity201
- * @author Matt Pohlmann
+ * @author Matthew Pohlmann
  *
  */
 public abstract class Role {
@@ -73,7 +73,6 @@ public abstract class Role {
 		return (myPerson != null) ? myPerson.getName() : "NULL";
 	}
 	
-	
 	/**
 	 * A String representation of this Role (i.e. BankTellerRole Jim)
 	 * @return A String representation of this Role
@@ -104,19 +103,21 @@ public abstract class Role {
 	}
 	
 	/**
-	 * General-purpose function for printing to the terminal. Format: "RestaurantCustomerRole Matt: Ordered steak"
+	 * General-purpose function for printing to the terminal. Format: "[RestaurantCustomerRole] Matt: Ordered steak"
 	 * @param msg The message that should be printed (i.e. Ordered Steak)
 	 */
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
 		output.append("[");
 		output.append(this.getClass().getSimpleName());
-		output.append("] ");
-		output.append(this.myPerson.getName());
+		output.append("]");
+		if (this.myPerson != null) {
+			output.append(" ");
+			output.append(this.myPerson.getName());
+		}
 		output.append(": ");
 		output.append(msg);
 		
 		System.out.println(output.toString());
 	}
-	
 }

@@ -5,28 +5,37 @@ import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.residence.LandlordGui;
+import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.helper.CityTime;
-import cs201.interfaces.roles.housing.Landlord;
 import cs201.roles.Role;
+import cs201.roles.housingRoles.LandlordRole;
 import cs201.structures.Structure;
 
 public class ApartmentComplex extends Structure {
 
-	Landlord landlord;
+	LandlordRole landlord;
 	List<Residence> apartments;
 	
 	public ApartmentComplex (int x, int y, int width, int height, int id, StructurePanel p) {
 	    super(x, y, width, height, id, p);
-	    landlord = null;
+	    
+	    landlord = new LandlordRole();
+	    apartments = null;
+	    
+	    LandlordGui lGui = new LandlordGui(landlord);
+	    landlord.setGui(lGui);
+	    panel.addGui(lGui);
+	    ((ApartmentComplexAnimationPanel)panel).informLandlord(lGui);
 	}
 	
 	// Methods
 	
-	public void setLandlord(Landlord l) {
+	public void setLandlord(LandlordRole l) {
 	    landlord = l;
 	}
 	
-	public Landlord getLandlord() {
+	public LandlordRole getLandlord() {
 	    return landlord;
 	}
 	
@@ -43,12 +52,19 @@ public class ApartmentComplex extends Structure {
 	    }
 	    return vacantApartments;
 	}
+	
+	public void addApartment(Residence r) {
+		if(apartments==null) {
+			apartments = new ArrayList<Residence>();
+		}
+		apartments.add(r);
+	}
 
 	@Override
 	public Role getRole(Intention role) {
 		// TODO Auto-generated method stub
 		if (role==Intention.ResidenceLandLord) {
-			return (Role)landlord;
+			return landlord;
 		}
 		return null;
 	}
@@ -56,7 +72,9 @@ public class ApartmentComplex extends Structure {
 	@Override
 	public void updateTime(CityTime time) {
 		// TODO Auto-generated method stub
-		
+		if (time.equalsIgnoreDay(this.closingTime)) {
+			landlord.msgClosingTime();
+		}
 	}
 
 }

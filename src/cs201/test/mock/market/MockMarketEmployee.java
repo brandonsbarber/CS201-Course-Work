@@ -27,4 +27,14 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 		manager.msgHereAreItems(this, items, id);
 	}
 
+	/**
+	 * Always returns false, since a MockMarketEmployee will never have a backing PersonAgent
+	 */
+	public boolean hasAPerson() {
+		return false;
+	}
+
+	public void msgClosingTime() {
+		
+	}
 }

@@ -1,29 +1,12 @@
 package cs201.test.marketTests;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import javax.swing.JFrame;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import cs201.gui.roles.market.MarketEmployeeGui;
-import cs201.gui.roles.market.MarketManagerGui;
-import cs201.gui.structures.market.MarketAnimationPanel;
-import cs201.interfaces.roles.market.MarketConsumer;
-import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.roles.marketRoles.MarketConsumerRole;
-import cs201.roles.marketRoles.MarketEmployeeRole;
-import cs201.roles.marketRoles.MarketManagerRole;
-import cs201.test.mock.market.MockMarketConsumer;
 import cs201.test.mock.market.MockMarketEmployee;
 import cs201.test.mock.market.MockMarketManager;
 

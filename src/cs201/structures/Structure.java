@@ -10,7 +10,7 @@ import cs201.roles.Role;
 
 /**
  * Base class for all Structures in SimCity201. They are actually Rectangles that can be clicked on in the GUI
- * @author Matt Pohlmann
+ * @author Matthew Pohlmann
  *
  */
 public abstract class Structure extends Rectangle2D.Double {
@@ -22,10 +22,12 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected Point parkingLocation;
 	protected CityTime closingTime;
 	
+	private static int INSTANCES = 0;
+	
 	public Structure(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height);
 		
-		this.id = id;
+		this.id = ++INSTANCES;
 		this.panel = p;
 		this.guiLocation = null;
 		this.entranceLocation = null;
@@ -40,6 +42,14 @@ public abstract class Structure extends Rectangle2D.Double {
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * Used to get a unique ID for a Structure
+	 * @return int representing the number of Structures in SimCity
+	 */
+	public static int getNextInstance() {
+		return INSTANCES + 1;
 	}
 	
 	/**
@@ -148,5 +158,15 @@ public abstract class Structure extends Rectangle2D.Double {
 		output.append(this.id);
 		
 		return output.toString();
+	}
+
+	public void setParkingLocation(Point point)
+	{
+		parkingLocation = point;
+	}
+	
+	public void setEntranceLocation(Point point)
+	{
+		entranceLocation = point;
 	}
 }

@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.agents.transit.TruckAgent;
 import cs201.gui.roles.market.MarketManagerGui;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 import cs201.structures.Structure;
+import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
 
 /**
@@ -28,10 +30,12 @@ public class MarketManagerRole extends Role implements MarketManager {
 	String name = "";
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
 	public List<MyEmployee> employees = new ArrayList<MyEmployee>();
-	Map<MarketConsumer, ConsumerRecord> consumerBalance = new HashMap<MarketConsumer, ConsumerRecord>();
-	Map<Structure, StructureRecord> structureBalance = new HashMap<Structure, StructureRecord>();
+	public Map<MarketConsumer, ConsumerRecord> consumerBalance = new HashMap<MarketConsumer, ConsumerRecord>();
+	public Map<Structure, StructureRecord> structureBalance = new HashMap<Structure, StructureRecord>();
 	Map<String, InventoryEntry> inventory = new HashMap<String, InventoryEntry>();
 	MarketManagerGui gui;
+	MarketStructure structure;
+	boolean timeToLeave = false;
 	
 	public static class ItemRequest {
 		public String item;
@@ -59,16 +63,26 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * Holds the balance for a single MarketConsumer
 	 */
 	public class ConsumerRecord {
-		MarketConsumer consumer;
-		float balance;
+		public MarketConsumer consumer;
+		public float balance;
+		
+		public ConsumerRecord(MarketConsumer c, float b) {
+			consumer = c;
+			balance = b;
+		}
 	}
 	
 	/**
 	 * Holds the balance for a single Structure
 	 */
 	public class StructureRecord {
-		Structure structure;
-		float balance;
+		public Structure structure;
+		public float balance;
+		
+		public StructureRecord(Structure s, float b) {
+			structure = s;
+			balance = b;
+		}
 	}
 	
 	enum OrderState {PENDING, PROCESSING, READY, SENT};
@@ -76,8 +90,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	int nextOrderID = 0;
 	private class Order {
 		List<ItemRequest> items;
-		MarketConsumer consumer = null;		// For INPERSON orders
-		Structure structure = null;			// For DELIVERY orders
+		MarketConsumer consumer = null;					// For INPERSON orders
+		Restaurant structure = null;			// For DELIVERY orders
 		OrderState state;
 		OrderType type;
 		float totalPrice;
@@ -97,9 +111,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 		/**
 		 * Constructs an Order object for DELIVERY orders
 		 */
-		public Order(Structure struct, List<ItemRequest> i, OrderState s, int oID) {
+		public Order(Restaurant rest, List<ItemRequest> i, OrderState s, int oID) {
 			items = i;
-			structure = struct;
+			structure = rest;
 			state = s;
 			type = OrderType.DELIVERY;
 			id = oID;
@@ -111,7 +125,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		public void calculatePrice() {
 			float total = 0.0f;
 			for (ItemRequest item : items) {
-				InventoryEntry entry = inventory.get(item.item);
+				InventoryEntry entry = inventory.get(item.item.toLowerCase());
 				if (entry != null) {
 					total += item.amount * entry.price;
 				}
@@ -137,11 +151,12 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public MarketManagerRole() {
-		this("");
+		this("", null);
 	}
 	
-	public MarketManagerRole(String n) {
+	public MarketManagerRole(String n, MarketStructure s) {
 		name = n;
+		structure = s;
 	}
 	
 	/*
@@ -149,8 +164,37 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
-		// Process the next available order
+		// If its time to leave, leave
+		if (timeToLeave) {
+			boolean inPersonOrder = false;
+			for (Order order : orders) {
+				if (order.type == OrderType.INPERSON && order.state != OrderState.SENT) {
+					inPersonOrder = true;
+					break;
+				}
+			}
+			if (!inPersonOrder) {
+				leaveMarket();
+				return true;
+			}
+		}
+		
+		// Dispatch a ready order
 		Order order = null;
+		synchronized (orders) {
+			for (Order o : orders) {
+				if (o.state == OrderState.READY) {
+					order = o;
+				}
+			}
+		}
+		if (order != null) { // if we found an order that is READY
+			dispatchOrder(order);
+			return true;
+		}
+		
+		// Process the next available order
+		order = null;
 		synchronized (orders) {
 			for (Order o : orders) {
 				if (o.state == OrderState.PENDING) {
@@ -167,20 +211,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 		if (employee != null && order != null) {	// if we found an order and an available employee,
 			// process the order
 			processOrder(order, employee);
-			return true;
-		}
-		
-		// Dispatch a ready order
-		order = null;
-		synchronized (orders) {
-			for (Order o : orders) {
-				if (o.state == OrderState.READY) {
-					order = o;
-				}
-			}
-		}
-		if (order != null) { // if we found an order that is READY
-			dispatchOrder(order);
 			return true;
 		}
 		
@@ -203,22 +233,45 @@ public class MarketManagerRole extends Role implements MarketManager {
 
 		stateChanged();
 	}
-	
+		
 	/**
 	 * Sent by a restaurant's cook to order food.
 	 * @param structure The requesting Restaurant's structure
-	 * @param items A list of items
+	 * @param item An ItemRequest
 	 */
-	public void msgHereIsMyOrderForDelivery(Structure structure, List<ItemRequest> items) {
+	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, ItemRequest item) {
+		List<ItemRequest> items = new ArrayList<ItemRequest>();
+		items.add(item);
+		
 		// Add the new order to the list of orders
 		synchronized(orders) {
-			orders.add(new Order(structure, items, OrderState.PENDING, nextOrderID));
+			orders.add(new Order(restaurant, items, OrderState.PENDING, nextOrderID));
 			nextOrderID++;
 		}
 		
 		stateChanged();
 	}
 	
+	/**
+	 * Sent by a structure to pay a bill.
+	 * @param structure The structure in debt.
+	 * @param amount The amount to put towards the outstanding balance.
+	 */
+	public void msgHereIsMyPayment(Structure structure, float amount) {
+		// Pay the structure's balance
+		StructureRecord record = structureBalance.get(structure);
+		if (record != null) {
+			record.balance -= amount;
+		}
+		
+		stateChanged();
+	}
+	
+	/**
+	 * Sent by a MarketConsumer to pay a bill.
+	 * @param consumer The MarketConsumer in debt.
+	 * @param amount The amount to put towards the outstanding balance.
+	 */
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount) {
 		// Pay the consumer's balance
 		ConsumerRecord record = consumerBalance.get(consumer);
@@ -230,6 +283,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {		
+		
 		// Find the consumer's order in our list
 		Order theOrder = null;
 		synchronized (orders) {
@@ -261,13 +315,14 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		// animate inside market
+		this.gui.setPresent(true);
+		timeToLeave = false;
 	}
 
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
+		timeToLeave = true;
+		stateChanged();
 	}
 	
 	/*
@@ -291,8 +346,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 		o.state = OrderState.PROCESSING;
 		
 		// Send the employee a message to retrieve the items
-		e.employee.msgRetrieveItems(this, itemList, o.id);
 		e.state = EmployeeState.BUSY;
+		e.employee.msgRetrieveItems(this, itemList, o.id);
 		
 	}
 	
@@ -301,6 +356,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param o
 	 */
 	private void dispatchOrder(Order o) {
+		
+		// Calculate the price of the order first
+		o.calculatePrice();
+		
 		// Dispatch the order based on its type
 		if (o.type == OrderType.INPERSON) {
 			
@@ -310,29 +369,58 @@ public class MarketManagerRole extends Role implements MarketManager {
 		} else if (o.type == OrderType.DELIVERY) {
 			
 			// The consumer wants the items delivered to him
-			// TODO
+			if (structure != null) {
+				TruckAgent deliveryTruck = structure.getDeliveryTruck();
+				deliveryTruck.msgMakeDeliveryRun(o.items, o.structure,o.totalPrice);
+			}
 			
 		}
 		
 		// The order has now been sent
-		o.state = OrderState.SENT;
-		
-		// Calculate the price of the order
-		o.calculatePrice();
+		o.state = OrderState.SENT;		
 		
 		// The purchaser needs to pay for the order
 		if (o.type == OrderType.INPERSON) {
+						
+			// Charge the order to the consumer's balance
+			ConsumerRecord record = consumerBalance.get(o.consumer);
+			if (record != null) {
+				consumerBalance.get(o.consumer).balance += o.totalPrice;
+			} else {
+				consumerBalance.put(o.consumer, new ConsumerRecord(o.consumer, o.totalPrice));
+			}
 			
 			o.consumer.msgHereIsYourTotal(this, o.totalPrice);
-			consumerBalance.get(o.consumer).balance += o.totalPrice;
 			
 		} else if (o.type == OrderType.DELIVERY) {
-			
-			// TODO
-			// structure.getCashier().msgHereIsTotal
-			structureBalance.get(o.structure).balance += o.totalPrice;
+
+			// The delivery truck will bill the market when it delivers
+						
+			// Charge the order to the structure's balance
+			StructureRecord record = structureBalance.get(o.structure);
+			if (record != null) {
+				structureBalance.get(o.structure).balance += o.totalPrice;
+			} else {
+				structureBalance.put(o.structure, new StructureRecord(o.structure, o.totalPrice));
+			}
 			
 		}
+	}
+	
+	private void leaveMarket() {
+
+		// Message all the employees and let them know its time to go home
+		for (MyEmployee employee : employees) {
+			employee.employee.msgClosingTime();
+		}
+		
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+//		gui.doLeave()
+		gui.setPresent(false);
+		
 	}
 
 	/*
@@ -393,5 +481,15 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 		return employeeList;
 	}
-
+	
+	/**
+	 * Gets an unfulfilled MarketEmployeeRole from this manager's list of employees.
+	 * An unfulfilled role is one without a PersonAgent.
+	 * @return A MarketEmployeeRole if there is a job available, null if not
+	 */
+	public MarketEmployeeRole getUnfulfilledEmployeeRole() {
+		// TODO
+		return null;
+	}
+	
 }

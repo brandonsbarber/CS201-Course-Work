@@ -3,7 +3,6 @@ package cs201.roles.marketRoles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
@@ -21,6 +20,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 */
 	String name = "";
 	List<RetrievalRequest> requests = Collections.synchronizedList(new ArrayList<RetrievalRequest>());
+	MarketEmployeeGui gui;
+	Semaphore animation = new Semaphore(0, true);
+	boolean timeToGoHome = false;
 	
 	enum RequestState {PENDING, PROCESSED};
 	private class RetrievalRequest {
@@ -31,15 +33,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		
 		public RetrievalRequest(MarketManager m, List<ItemRequest> i, int id, RequestState s) {
 			items = i;
-			id = id;
+			this.id = id;
 			state = s;
 			manager = m;
 		}
 	}
-	
-	MarketEmployeeGui gui;
-	Semaphore animation = new Semaphore(0, true);
-	
 	
 	/*
 	 * ********** CONSTRUCTORS **********
@@ -58,6 +56,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
+		// Time to go home
+		if (timeToGoHome) {
+			leaveMarket();
+			return true;
+		}
+		
 		// If there's a PENDING retrieval request, process it
 		RetrievalRequest pendingRequest = null;
 		pendingRequest = findNextPendingRetrievalRequest();
@@ -67,8 +71,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		}
 		
 		// If there's nothing else to do, go home
-		if (gui != null)
+		if (gui != null) {
 			gui.doGoHome();
+			pauseForAnimation();
+		}
 		
 		return false;
 	}
@@ -78,7 +84,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {		
+	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {	
 		// Add the new retrieval request to the list of requests
 		requests.add(new RetrievalRequest(manager, items, id, RequestState.PENDING));
 		
@@ -86,16 +92,36 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
+		
+		timeToGoHome = true;
+		
+		stateChanged();
 	}
 	
+	/**
+	 * The person has entered the building.
+	 */
 	public void startInteraction(Intention intent) {
-		
+		// Set their gui to present
+		gui.setPresent(true);
+		timeToGoHome = false;
 	}
 	
 	/*
 	 * ********** ACTIONS **********
 	 */
+	
+	private void leaveMarket() {
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		if (gui != null) {
+			gui.doLeaveMarket();
+			pauseForAnimation();
+			gui.setPresent(false);
+		}
+	}
 	
 	private void processRequest(RetrievalRequest request) {
 		// For each item in the request, go "retrieve" it, through animation
@@ -165,6 +191,13 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	
 	public void setGui(MarketEmployeeGui g) {
 		gui = g;
+	}
+	
+	/**
+	 * Returns true if this role has a backing PersonAgent, false if it's currently set to null.
+	 */
+	public boolean hasAPerson() {
+		return this.getPerson() != null;	
 	}
 
 }

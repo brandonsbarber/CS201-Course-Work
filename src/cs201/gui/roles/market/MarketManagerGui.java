@@ -25,7 +25,7 @@ public class MarketManagerGui implements Gui {
 		role = c;
 		xPos = MANAGER_X;
 		yPos = MANAGER_Y;
-		isPresent = true;
+		isPresent = false;
 	}
 
 	public void updatePosition() {	
@@ -54,5 +54,9 @@ public class MarketManagerGui implements Gui {
 	
 	public int Y() {
 		return yPos;
+	}
+	
+	public void setRole(MarketManagerRole r) {
+		role = r;
 	}
 }

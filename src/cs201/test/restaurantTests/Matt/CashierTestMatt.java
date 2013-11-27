@@ -1,9 +1,11 @@
 package cs201.test.restaurantTests.Matt;
 
-import cs201.test.mock.Matt.*;
-import cs201.roles.restaurantRoles.Matt.*;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.CheckState;
 import junit.framework.TestCase;
+import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
+import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.CheckState;
+import cs201.test.mock.Matt.MockCustomerMatt;
+import cs201.test.mock.Matt.MockHostMatt;
+import cs201.test.mock.Matt.MockWaiterMatt;
 
 /**
  * 

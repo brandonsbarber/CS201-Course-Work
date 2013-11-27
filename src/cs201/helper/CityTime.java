@@ -2,8 +2,7 @@ package cs201.helper;
 
 /**
  * General-purpose class for determining the time in SimCity201
- * @author Matt Pohlmann
- *
+ * @author Matthew Pohlmann
  */
 public class CityTime {
 	public WeekDay day;
@@ -11,8 +10,7 @@ public class CityTime {
 	public int minute;
 	
 	/**
-	 * Creates a CityTime with the value 7:00AM Monday
-	 * 
+	 * Creates a CityTime with the value 6:00AM Monday
 	 */
 	public CityTime() {
 		this.day = WeekDay.Monday;
@@ -143,8 +141,7 @@ public class CityTime {
 	
 	/**
 	 * Enum for describing the days of the week
-	 * @author Matt Pohlmann
-	 *
+	 * @author Matthew Pohlmann
 	 */
 	public enum WeekDay {
 		Sunday,

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
@@ -12,11 +13,14 @@ public class WaiterGuiMatt implements Gui {
 
     private RestaurantWaiterRoleMatt role = null;
     
-    private final int WAITERSIZE = 20;
-	private final int CUSTOMERTABLEOFFSET = 20;
-	private final int COOKLOCATIONX = 225, COOKLOCATIONY = 500;
-	private final int INITIAL_IDLEX = 240, INITIAL_IDLEY = 0;
-	private final int BREAKX = 245, BREAKY = 0;
+    private final int WAITERSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
+	private final int CUSTOMERTABLEOFFSET = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
+	private final int COOKLOCATIONX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .45f);
+	private final int COOKLOCATIONY = (int)(RestaurantAnimationPanelMatt.WINDOWY * 1.0f);
+	private final int INITIAL_IDLEX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .48f);
+	private final int INITIAL_IDLEY = 0;
+	private final int BREAKX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .49f);
+	private final int BREAKY = 0;
 
 	private int homeX = INITIAL_IDLEX, homeY = INITIAL_IDLEY;
     private int xPos = INITIAL_IDLEX, yPos = INITIAL_IDLEY;//default waiter position
@@ -33,7 +37,7 @@ public class WaiterGuiMatt implements Gui {
     public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantConfigPanelMatt r) {
         this.role = role;
         this.panel = r;
-        this.isPresent = true;
+        this.isPresent = false;
     }
 
     public void updatePosition() {
@@ -64,9 +68,7 @@ public class WaiterGuiMatt implements Gui {
         g.fillRect(xPos, yPos, WAITERSIZE, WAITERSIZE);
         
         g.setColor(Color.black);
-		if (message.length() > 0) {
-			g.drawString(message, xPos, yPos);
-		}
+        g.drawString("Waiter " + (message != "" ? "(" + message + ")" : ""), xPos, yPos);
     }
     
     public void setMessage(String what) {

@@ -2,6 +2,8 @@ package cs201.gui.roles.residence;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cs201.gui.Gui;
 import cs201.roles.housingRoles.ResidentRole;
@@ -12,12 +14,24 @@ public class ResidentGui implements Gui {
 	private boolean isPresent;
 	
 	private final int WIDTH = 20, HEIGHT = 20;
-	private final int startX = 100, startY = 100;
+	private final int startX = 0, startY = 250;
+	
+	private int fridgeX = 0, fridgeY = 0;
+	private int exitX = -20, exitY = 0;
+	private int bedX = 0, bedY = 0;
+	private int tableX = 0, tableY = 0;
 	
 	private int xPos;
 	private int yPos;
 	private int xDestination;
 	private int yDestination;
+	
+	private int waitTime=0;
+	private String holding="";
+	
+	boolean animating;
+	
+	Timer timer;
 	
 	
 	public ResidentGui() {
@@ -29,8 +43,11 @@ public class ResidentGui implements Gui {
 		yPos = startY;
 		xDestination = xPos;
 		yDestination = yPos;
+		
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
+		animating = false;
+		timer = new Timer();
 	}
 	
 	@Override
@@ -40,7 +57,13 @@ public class ResidentGui implements Gui {
 			xPos++;
 		}
 		else if (xPos>xDestination) {
-			xPos--;
+			if(xPos==0 && yPos>exitY || xPos==0 && yPos<exitY) {
+				//don't go left if on left edge but not in exit.
+			}
+			else {
+				xPos--;
+			}
+			
 		}
 		
 		if (yPos<yDestination) {
@@ -50,8 +73,16 @@ public class ResidentGui implements Gui {
 			yPos--;
 		}
 		
-		if (xPos==xDestination && yPos==yDestination) {
-			
+		if (xPos==xDestination && yPos==yDestination && animating == true) {
+			//role.msgAnimationDone();
+			timer.schedule(new TimerTask() {
+				public void run() {	
+					role.msgAnimationDone();
+					waitTime=0;
+				}
+			},
+			waitTime);
+			animating = false;
 		}
 		return;
 	}
@@ -62,18 +93,45 @@ public class ResidentGui implements Gui {
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
 		
 		g.setColor(Color.WHITE);
-		g.drawString("Resident", WIDTH, HEIGHT);
+		g.drawString("Resident", xPos, yPos);
+		g.drawString(holding, xPos-16, (yPos+HEIGHT/2)+4);
 		// TODO Auto-generated method stub
 
 	}
 	
 	public void walkToFridge() {
 		//set destination to fridge from residence layout
+		xDestination = fridgeX;
+		yDestination = fridgeY;
+		animating = true;
+		waitTime = 1000;
+	}
+	
+	public void walkToTable() {
+		xDestination = tableX;
+		yDestination = tableY;
+		animating = true;
+		waitTime = 3000;
 	}
 	
 	public void goToBed() {
 		//animation to walk to the bed
+		xDestination = bedX;
+		yDestination = bedY;
+		animating = true;
 		//animation to get in bed
+	}
+	
+	public void exit() {
+		xDestination = exitX;
+		yDestination = exitY;
+		animating = true;
+	}
+	
+	public void enter() {
+		xDestination = startX;
+		yDestination = startY;
+		animating = true;
 	}
 
 	@Override
@@ -81,5 +139,37 @@ public class ResidentGui implements Gui {
 		// TODO Auto-generated method stub
 		return isPresent;
 	}
+	
+	public void setPresent(boolean bool) {
+		isPresent = bool;
+	}
+	
+	public void setBed(int x, int y) {
+		bedX = x;
+		bedY = y;
+	}
+	
+	public void setFridge(int x, int y) {
+		fridgeX = x;
+		fridgeY = y;
+	}
+	
+	public void setTable(int x, int y) {
+		tableX = x;
+		tableY = y;
+	}
+	
+	public void setExit(int y) {
+		exitY = y;
+	}
+	
+	public void setHolding(String item) {
+		holding=item.substring(0,3);
+	}
+	
+	public void clearHolding() {
+		holding="";
+	}
+	
 
 }

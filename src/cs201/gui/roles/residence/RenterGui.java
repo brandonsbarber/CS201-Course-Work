@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
-import cs201.roles.housingRoles.LandlordRole;
 import cs201.roles.housingRoles.RenterRole;
 
 public class RenterGui implements Gui {
@@ -30,7 +29,7 @@ public class RenterGui implements Gui {
 		xDestination = xPos;
 		yDestination = yPos;
 		role = newRole;
-		isPresent = true;
+		isPresent = false;
 	}
 
 	@Override
@@ -69,8 +68,13 @@ public class RenterGui implements Gui {
 
 	@Override
 	public boolean isPresent() {
-		// TODO Auto-generated method stub
 		return isPresent;
+	}
+
+	@Override
+	public void setPresent(boolean present) {
+		isPresent = present;
+		
 	}
 
 }

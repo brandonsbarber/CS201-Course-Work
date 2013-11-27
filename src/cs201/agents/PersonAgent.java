@@ -6,13 +6,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import cs201.agents.transit.CarAgent;
+import cs201.gui.CityPanel;
+import cs201.gui.transit.PassengerGui;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
 import cs201.interfaces.agents.Person;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
 
 /**
  * The PersonAgent that represents all people in SimCity201
@@ -41,6 +46,7 @@ public class PersonAgent extends Agent implements Person {
 	 *                                 Data                                   *
 	 **************************************************************************/
 	private volatile String name;
+	private CityPanel panel;
 	private volatile PersonState state;
 	private volatile Semaphore animation;
 	private volatile List<Role> roles;
@@ -52,6 +58,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile CityTime sleepTime;
 	private volatile double moneyOnHand;
 	private volatile int hungerLevel;
+	private volatile boolean hungerEnabled;
 	private volatile Vehicle vehicle;
 	private volatile Structure home;
 	private volatile Structure workplace;
@@ -59,19 +66,27 @@ public class PersonAgent extends Agent implements Person {
 	private volatile CityTime workTime;
 	private volatile Structure currentLocation;
 	private volatile int bankAccountNumber;
+	private volatile List<ItemRequest> marketChecklist;
+	private volatile List<ItemRequest> inventory;
 	
 	
 	/**************************************************************************
 	 *                           Constructors/Setup                           *
 	 **************************************************************************/
-	public PersonAgent(String name) {
+	public PersonAgent(String name, CityPanel p) {
 		super();
 		
 		this.name = name;
+		this.panel = p;
 		this.state = PersonState.Sleeping;
 		this.animation = new Semaphore(0);
 		this.roles = Collections.synchronizedList(new ArrayList<Role>());
 		this.passengerRole = new PassengerRole(null);
+		if (p != null) {
+			PassengerGui pGui = new PassengerGui(passengerRole, panel,0,0);
+			this.passengerRole.setGui(pGui);
+			this.panel.addGui(pGui);
+		}
 		this.passengerRole.setPerson(this);
 		this.planner = Collections.synchronizedList(new LinkedList<Action>());
 		this.currentAction = null;
@@ -79,6 +94,7 @@ public class PersonAgent extends Agent implements Person {
 		this.wakeupTime = new CityTime(INITIALWAKEUPHOUR, INITIALWAKEUPMINUTE);
 		this.sleepTime = new CityTime(INITIALSLEEPHOUR, INITIALSLEEPMINUTE);
 		this.moneyOnHand = INITIALMONEY;
+		this.hungerEnabled = true;
 		this.hungerLevel = HUNGRY;
 		this.vehicle = null;
 		this.home = null;
@@ -87,10 +103,8 @@ public class PersonAgent extends Agent implements Person {
 		this.workTime = new CityTime(INITIALWORKHOUR, INITIALWORKMINUTE);
 		this.currentLocation = null;
 		this.bankAccountNumber = -1;
-	}
-	
-	public PersonAgent() {
-		Do("WARNING: A PersonAgent should never be created with the default constructor. Use PersonAgent(String) instead.");
+		marketChecklist = new LinkedList<ItemRequest>();
+		inventory = new LinkedList<ItemRequest>();
 	}
 	
 	@Override
@@ -104,9 +118,15 @@ public class PersonAgent extends Agent implements Person {
 		this.job = job;
 		this.currentLocation = location;
 		this.vehicle = vehicle;
+		if (vehicle != null) {
+			passengerRole.addCar((CarAgent) vehicle);
+		}
 		
 		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
 			this.state = PersonState.Awake;
+		}
+		if (CityTime.timeDifference(curTime,  sleepTime) > 0) {
+			this.state = PersonState.Sleeping;
 		}
 	}
 	
@@ -117,7 +137,9 @@ public class PersonAgent extends Agent implements Person {
 	@Override
 	public void msgUpdateTime(CityTime newTime) {
 		int minutesPassed = CityTime.timeDifference(newTime, this.time);
-		hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
+		if (hungerEnabled) {
+			hungerLevel += (state == PersonState.Sleeping) ? HUNGERPERMINUTE / 2 * minutesPassed : HUNGERPERMINUTE * minutesPassed;
+		}
 		
 		time.day = newTime.day;
 		time.hour = newTime.hour;
@@ -140,15 +162,13 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you have active roles, those have next highest priority (because you're currently
 		// doing something)
-		boolean performedAction = false;
-		synchronized(roles) {
-			for (Role r : roles) {
-				if (r.getActive()) {
-					performedAction = r.pickAndExecuteAnAction() || performedAction;
+		if (state != PersonState.Relaxing) {
+			synchronized(roles) {
+				for (Role r : roles) {
+					if (r.getActive()) {
+						return r.pickAndExecuteAnAction();
+					}
 				}
-			}
-			if (performedAction) {
-				return true;
 			}
 		}
 		
@@ -174,22 +194,26 @@ public class PersonAgent extends Agent implements Person {
 		// If it's time to wake up in the morning
 		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
 			this.state = PersonState.Awake;
-			boolean starving = hungerLevel >= STARVING;
 			
+			// If you need to pay rent
+			if (home != null && ((Residence) home).isApartment()) {
+				this.addActionToPlanner(Intention.ResidencePayRent, home, true);
+			}
 			// The Residence Role will determine if there's enough time to eat at a Restaurant, or if eating at home is better
-			this.addActionToPlanner(Intention.ResidenceEat, home, starving);
+			this.addActionToPlanner(Intention.ResidenceEat, home, false);
 			return true;
 		}
 		
 		// If it's time to go to work
-		if (state == PersonState.Awake && time.equalsIgnoreDay(this.workTime)) {
-			//this.state = PersonState.AtWork;
-			//this.addActionToPlanner(job, workplace, true);
-			return true;
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
+			if (this.addActionToPlanner(job, workplace, true)) {
+				this.state = PersonState.AtWork;
+				return true;
+			}
 		}
 		
 		// If it's time to go to sleep
-		if (state == PersonState.Awake && time.equalsIgnoreDay(this.sleepTime)) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, sleepTime) >= 0) {
 			this.planner.clear();
 			this.state = PersonState.Sleeping;
 			this.addActionToPlanner(Intention.ResidenceSleep, home, false);
@@ -197,7 +221,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you need to get money from the bank
-		if (state == PersonState.Awake && moneyOnHand <= MONEYTHRESHOLD) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && moneyOnHand <= MONEYTHRESHOLD) {
 			boolean performAction = true;
 			for (Action a : planner) {
 				if (a.intent == Intention.BankWithdrawMoneyCustomer) {
@@ -205,8 +229,9 @@ public class PersonAgent extends Agent implements Person {
 					break;
 				}
 			}
-			if (performAction) {
+			if (performAction && CityDirectory.getInstance().getBanks().size() > 0) {
 				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
+				this.state = PersonState.Awake;
 				return true;
 			}
 		}
@@ -220,7 +245,7 @@ public class PersonAgent extends Agent implements Person {
 					break;
 				}
 			}
-			if (performAction) {
+			if (performAction && CityDirectory.getInstance().getRestaurants().size() > 0) {
 				boolean starving = hungerLevel >= STARVING;
 				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), starving);
 				return true;
@@ -228,7 +253,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you're hungry and at home
-		if (state == PersonState.Awake && currentLocation == home && hungerLevel >= HUNGRY) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && currentLocation == home && hungerLevel >= HUNGRY) {
 			boolean performAction = true;
 			for (Action a : planner) {
 				if (a.intent == Intention.ResidenceEat) {
@@ -238,16 +263,37 @@ public class PersonAgent extends Agent implements Person {
 			}
 			if (performAction) {
 				boolean starving = hungerLevel >= STARVING;
-				this.addActionToPlanner(Intention.ResidenceEat, home, starving);
+				if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
+					this.state = PersonState.Awake;
+					return true;
+				}
+			}
+		}
+		
+		// If you you need to buy something at the market
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
+			boolean performAction = true;
+			for (Action a : planner) {
+				if (a.intent == Intention.MarketConsumerGoods) {
+					performAction = false;
+					break;
+				}
+			}
+			if (performAction && CityDirectory.getInstance().getMarkets().size() > 0) {
+				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomMarket(), false);
+				this.state = PersonState.Awake;
 				return true;
 			}
 		}
 		
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
-			this.addActionToPlanner(Intention.ResidenceRelax, home, false);
-			return true;
+			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {
+				state = PersonState.Relaxing;
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	
@@ -259,13 +305,14 @@ public class PersonAgent extends Agent implements Person {
 	 * Uses a PassengerRole to go to a location in SimCity201 if the PersonAgent is not already there
 	 * @param a The associated Action denoting where to go and what to do when getting there
 	 */
-	private void goToLocation(Action a) {
+	public void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
+			Do("Going to " + a.location);
+			passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);
-			Do("Going to " + a.location);
 		}
 	}
 	
@@ -283,21 +330,23 @@ public class PersonAgent extends Agent implements Person {
 			return;
 		}
 		
+		boolean haveRole = false;
 		for (Role r : roles) {
 			if (r.getClass().isInstance(newRole)) {
 				r.setPerson(this);
-				Do("Reusing Role: " + r);
 				r.startInteraction(a.intent);
 				r.setActive(true);
-				return;
+				haveRole = true;
+				break;
 			}
 		}
 		
-		roles.add(newRole);
-		newRole.setPerson(this);
-		Do("Received new Role: " + newRole);
-		newRole.startInteraction(a.intent);
-		newRole.setActive(true);
+		if (!haveRole) {
+			roles.add(newRole);
+			newRole.setPerson(this);
+			newRole.startInteraction(a.intent);
+			newRole.setActive(true);
+		}
 		
 		currentAction = a;
 		planner.remove(a);
@@ -308,11 +357,11 @@ public class PersonAgent extends Agent implements Person {
 	 * @param intent What the PersonAgent will do
 	 * @param location Where the PersonAgent should go
 	 * @param highPriority Whether this is high enough priority to be put at the front of the planner
+	 * @return True if Action added successfully, false if unable to add to planner
 	 */
-	private void addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
-		if (intent == null || location == null) {
-			Do("Call to addActionToPlanner had null argument(s).");
-			return;
+	private boolean addActionToPlanner(Intention intent, Structure location, boolean highPriority) {
+		if (intent == null || intent == Intention.None || location == null) {
+			return false;
 		}
 		
 		Action temp = new Action();
@@ -323,7 +372,7 @@ public class PersonAgent extends Agent implements Person {
 		} else {
 			planner.add(0, temp);
 		}
-		Do("Added action " + temp + " to planner.");
+		return true;
 	}
 	
 	
@@ -348,7 +397,9 @@ public class PersonAgent extends Agent implements Person {
 	@Override
 	public void addIntermediateActions(Role from, LinkedList<Intention> intents, boolean returnToCurrentAction) {		
 		// Deactivate sending Role
-		from.setActive(false);
+		if (from != null) {
+			from.setActive(false);
+		}
 		int numActivities = intents.size();
 		
 		while (intents.size() > 0) {
@@ -436,6 +487,14 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public int getHungerLevel() {
 		return this.hungerLevel;
+	}
+	
+	/**
+	 * Sets whether this person should get hungry over time
+	 * @param hungerEnable boolean
+	 */
+	public void setHungerEnabled(boolean hungerEnable) {
+		hungerEnabled = hungerEnable;
 	}
 	
 	/**
@@ -588,6 +647,31 @@ public class PersonAgent extends Agent implements Person {
 		this.job = job;
 	}
 	
+	/**
+	 * Returns what this PersonAgent needs to buy at the Market
+	 * @return List<ItemRequest>
+	 */
+	public List<ItemRequest> getMarketChecklist() {
+		return marketChecklist;
+	}
+	
+	/**
+	 * Returns what items this PersonAgent has on him right now
+	 * @return List<ItemRequest>
+	 */
+	public List<ItemRequest> getInventory() {
+		return inventory;
+	}
+
+	/**
+	 * Gets this PersonAgent's passenger role
+	 * @return PassengerRole
+	 */
+	public PassengerRole getPassengerRole()
+	{
+		return passengerRole;
+	}
+	
 	
 	/**************************************************************************
 	 *                                Utility                                 *
@@ -652,6 +736,7 @@ public class PersonAgent extends Agent implements Person {
 		ResidenceEat,
 		ResidenceRelax,
 		ResidenceLandLord,
+		ResidencePayRent,
 		BankTeller,
 		BankGuard,
 		BankWithdrawMoneyCustomer,
@@ -689,15 +774,17 @@ public class PersonAgent extends Agent implements Person {
 		public String toString() {
 			return intent + " at " + location;
 		}
-		
-		public boolean equals(Action other) {
-			return location == other.location && intent == other.intent;
-		}
 	}
 	
+	/**
+	 * Enum representing the state of a PersonAgent
+	 * @author Matthew Pohlmann
+	 *
+	 */
 	private enum PersonState {
 		Sleeping,
 		Awake,
-		AtWork;
+		AtWork,
+		Relaxing;
 	}
 }

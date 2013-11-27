@@ -8,7 +8,7 @@ public class PassengerTestAgent extends PersonAgent
 	
 	public PassengerTestAgent(PassengerRole role)
 	{
-		super("Blah");
+		super("Blah", null);
 		this.role = role;
 		role.setPerson(this);
 	}

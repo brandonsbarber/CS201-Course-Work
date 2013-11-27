@@ -4,6 +4,10 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.roles.Role;
 import cs201.structures.restaurant.Restaurant;
 
+/**
+ * Base class for all RestaurantWaiters in SimCity201.
+ * @author Matthew Pohlmann
+ */
 public abstract class RestaurantWaiterRole extends Role {
 	protected Restaurant restaurant;
 	
@@ -11,8 +15,6 @@ public abstract class RestaurantWaiterRole extends Role {
 		super();
 		
 		this.restaurant = null;
-		
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

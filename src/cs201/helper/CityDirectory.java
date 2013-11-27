@@ -3,7 +3,6 @@ package cs201.helper;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -11,9 +10,9 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
-import cs201.agents.PersonAgent.Intention;
 import cs201.structures.bank.Bank;
 import cs201.structures.market.MarketStructure;
+import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.Restaurant;
 
@@ -24,7 +23,10 @@ import cs201.structures.restaurant.Restaurant;
  * 
  * Note:: This class CANNOT be instantiated, only accessed.
  * 
- * @author Matt Pohlmann
+ * This class keeps track of every Structure and PersonAgent in SimCity201. Additionally, it handles updating the time for all of
+ * these objects as well.
+ * 
+ * @author Matthew Pohlmann
  *
  */
 public class CityDirectory implements ActionListener {
@@ -45,12 +47,17 @@ public class CityDirectory implements ActionListener {
 	private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	private List<MarketStructure> markets = Collections.synchronizedList(new ArrayList<MarketStructure>());
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
+	private List<ApartmentComplex> apartments = Collections.synchronizedList(new ArrayList<ApartmentComplex>());
 	
 	// SimCity201 Time Stuff
 	public void startTime() {
 		cityTimer.setRepeats(true);
 		cityTimer.start();
 		System.out.println("[SimCity201] Time: " + time);
+	}
+	
+	public void setStartTime(CityTime newTime) {
+		time = newTime;
 	}
 	
 	public void setTimerOut(int newTimerOut) {
@@ -94,6 +101,12 @@ public class CityDirectory implements ActionListener {
 		
 		synchronized(residences) {
 			for (Residence r : residences) {
+				r.updateTime(time);
+			}
+		}
+		
+		synchronized(apartments) {
+			for (ApartmentComplex r : apartments) {
 				r.updateTime(time);
 			}
 		}
@@ -205,4 +218,23 @@ public class CityDirectory implements ActionListener {
 		
 		return null;
 	}	
+	
+	// Apartment Stuff
+	public void addApartment(ApartmentComplex newApartment) {
+		apartments.add(newApartment);
+	}
+	
+	public List<ApartmentComplex> getApartments() {
+		return apartments;
+	}
+	
+	public ApartmentComplex getApartmentWithID(int id) {
+		for (ApartmentComplex r : apartments) {
+			if (r.getId() == id) {
+				return r;
+			}
+		}
+		
+		return null;
+	}
 }

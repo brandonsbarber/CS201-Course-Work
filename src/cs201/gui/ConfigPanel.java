@@ -1,19 +1,32 @@
 package cs201.gui;
 
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class ConfigPanel extends JPanel
 {
-	private JTabbedPane tabs;
+	public static int INSTANCES = 1;
 	
+	private int instance;
+	
+	/**
+	 * Keeps track of instance counting
+	 */
 	public ConfigPanel()
 	{
-		tabs = new JTabbedPane();
+		instance = INSTANCES++;
 	}
 	
-	public void addPanel (String tabTitle)
+	/**
+	 * Returns a String of the Config Panel
+	 * @param string of the Config Panel
+	 */
+	public String toString()
 	{
-		tabs.add(tabTitle, new JPanel());
+		return "ConfigPanel "+instance;
 	}
 }

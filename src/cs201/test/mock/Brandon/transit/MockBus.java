@@ -1,5 +1,8 @@
 package cs201.test.mock.Brandon.transit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.roles.transit.Passenger;
@@ -10,11 +13,13 @@ import cs201.test.mock.Mock;
 public class MockBus extends Mock implements Bus
 {
 	BusRoute route;
+	public List<Passenger> passengers;
 	
 	public MockBus(String name,BusRoute route)
 	{
 		super(name);
 		this.route = route;
+		passengers = new ArrayList<Passenger>();
 	}
 
 	@Override
@@ -32,13 +37,14 @@ public class MockBus extends Mock implements Bus
 	@Override
 	public boolean destinationReached()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void msgLeaving(Passenger p)
 	{
+		passengers.remove(p);
+		System.out.println("removing passenger");
 		log.add(new LoggedEvent("Passenger "+p+" is leaving."));
 	}
 
@@ -51,6 +57,7 @@ public class MockBus extends Mock implements Bus
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
+		passengers.add(p);
 		log.add(new LoggedEvent("Passenger "+p+" is done boarding."));
 	}
 

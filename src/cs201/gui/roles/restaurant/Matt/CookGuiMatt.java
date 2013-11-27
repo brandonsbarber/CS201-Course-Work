@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.gui.Gui;
-import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 
 public class CookGuiMatt implements Gui {
@@ -18,15 +18,17 @@ public class CookGuiMatt implements Gui {
 	private List<String> cooking;
 	private List<String> plating;
 	
-	// from 500x500
-	private final int cookingAreaX = 342;
-	private final int cookingAreaY = 425;
-	private final int platingAreaX = 100;
-	private final int platingAreaY = 425;
+	private final int COOKSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
+	private final int COOKX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .47f);
+	private final int COOKY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .95f);
+	private final int cookingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .684f);
+	private final int cookingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
+	private final int platingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .2f);
+	private final int platingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
 
 	public CookGuiMatt(RestaurantCookRoleMatt c) {
 		role = c;
-		isPresent = true;
+		isPresent = false;
 		cooking = Collections.synchronizedList(new ArrayList<String>());
 		plating = Collections.synchronizedList(new ArrayList<String>());
 	}
@@ -37,6 +39,8 @@ public class CookGuiMatt implements Gui {
 
 	public void draw(Graphics2D g) {
 		g.setColor(Color.BLACK);
+		
+		g.drawString("Cook", COOKX, COOKY);
 		
 		int x = cookingAreaX;
 		int y = cookingAreaY;
@@ -55,6 +59,9 @@ public class CookGuiMatt implements Gui {
 				y += 13;
 			}
 		}
+		
+		g.setColor(Color.WHITE);
+		g.fillRect(COOKX, COOKY, COOKSIZE, COOKSIZE);
 	}
 	
 	public void addCookingItem(String food) {

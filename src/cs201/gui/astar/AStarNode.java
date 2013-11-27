@@ -1,5 +1,6 @@
 package cs201.gui.astar;
-import  java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AStarNode implements Node
 {

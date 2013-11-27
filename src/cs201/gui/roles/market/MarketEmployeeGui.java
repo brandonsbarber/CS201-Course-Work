@@ -38,9 +38,7 @@ public class MarketEmployeeGui implements Gui {
 	Position ultimateDestination = null;
 	Position nextPosition = null;
 	Position homePosition = null;
-	
-	private enum IsleMovementState {MOVE_OUT_OF_ISLE, MOVE_TO_ISLE, MOVE_TO_SHELF};
-	
+		
 	private boolean animating = false;
 	
 	MarketAnimationPanel animPanel;
@@ -61,7 +59,7 @@ public class MarketEmployeeGui implements Gui {
 		homePosition = new Position(startX, startY);
 		xPos = homePosition.getXInPixels();
 		yPos = homePosition.getYInPixels();
-		isPresent = true;
+		isPresent = false;
 		animPanel = a;
 		
 		// Create a new A* Traversal object and connect to our animation panel's grid
@@ -192,6 +190,7 @@ public class MarketEmployeeGui implements Gui {
 			if (guiMoveFromCurrentPositionTo(new Position(x, 14)))
 				return;
 		}
+		//guiMoveFromCurrentPositionTo(new Position(10, 14));
 		// There isn't a spot, so just release the semaphore
 		if (role != null)
 			role.animationFinished();
@@ -199,6 +198,13 @@ public class MarketEmployeeGui implements Gui {
 	
 	public void doGoHome() {
 		guiMoveFromCurrentPositionTo(homePosition);
+	}
+	
+	public void doLeaveMarket() {
+		animating = true;
+		guiMoveFromCurrentPositionTo(new Position(1, 1));
+		ultimateDestination = new Position(-1, -1);
+		positionQueue.add(ultimateDestination);
 	}
 	
 	private int isleNumber(int x) {
