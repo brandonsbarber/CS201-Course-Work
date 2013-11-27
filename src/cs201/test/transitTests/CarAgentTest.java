@@ -6,6 +6,11 @@ import cs201.structures.Structure;
 import cs201.structures.transit.BusStop;
 import cs201.test.mock.Brandon.transit.MockPassenger;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class CarAgentTest extends TestCase
 {
 	CarAgent car;
@@ -14,6 +19,9 @@ public class CarAgentTest extends TestCase
 	
 	Structure s1,s2;
 	
+	/**
+	 * Sets up testing
+	 */
 	public void setUp() throws Exception
 	{
 		car = new CarAgent();
@@ -26,6 +34,9 @@ public class CarAgentTest extends TestCase
 		s2 = new BusStop(20, 20, 0, 0, 1, null);
 	}
 	
+	/**
+	 * Tests one passenger trying to get in a car
+	 */
 	public void testOnePassengerOneCar()
 	{
 		assertEquals("Passenger should have no logs",0,pass.log.size());
@@ -56,6 +67,9 @@ public class CarAgentTest extends TestCase
 		assertFalse("Scheduler should return false",car.pickAndExecuteAnAction());
 	}
 	
+	/**
+	 * Tests two passengers asking for the car, one after another
+	 */
 	public void testTwoPassengerOneCarSequential()
 	{
 		assertEquals("Passenger should have no logs",0,pass.log.size());
@@ -112,6 +126,9 @@ public class CarAgentTest extends TestCase
 		assertFalse("Scheduler should return false",car.pickAndExecuteAnAction());
 	}
 	
+	/**
+	 * Tests two passengers asking for the same car at the same time
+	 */
 	public void testTwoPassengerOneCarSimultaneous()
 	{
 		assertEquals("Passenger should have no logs",0,pass.log.size());
