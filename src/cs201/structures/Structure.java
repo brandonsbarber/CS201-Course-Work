@@ -10,7 +10,7 @@ import cs201.roles.Role;
 
 /**
  * Base class for all Structures in SimCity201. They are actually Rectangles that can be clicked on in the GUI
- * @author Matt Pohlmann
+ * @author Matthew Pohlmann
  *
  */
 public abstract class Structure extends Rectangle2D.Double {
@@ -44,8 +44,11 @@ public abstract class Structure extends Rectangle2D.Double {
 		return id;
 	}
 	
-	public static int getNextInstance()
-	{
+	/**
+	 * Used to get a unique ID for a Structure
+	 * @return int representing the number of Structures in SimCity
+	 */
+	public static int getNextInstance() {
 		return INSTANCES + 1;
 	}
 	
