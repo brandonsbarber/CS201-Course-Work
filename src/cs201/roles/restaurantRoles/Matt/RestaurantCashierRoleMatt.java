@@ -100,6 +100,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	
 	@Override
 	public void msgOrderInvoiceFromCook(MarketStructure market, String order, double quantity) {
+		Do("Received invoice for a market order from " + market + " for " + quantity + " " + order + "s.");
 		MarketInvoice temp = new MarketInvoice(market, order, quantity);
 		invoices.add(temp);
 		stateChanged();
@@ -178,8 +179,9 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	private void PayMarket(Check c) {
+		Do("Pay Market Here");
 		for (MarketInvoice i : invoices) {
-			if (i.market == c.market && i.order.toLowerCase() == c.choice.toLowerCase() && i.quantity >= c.quantity) {
+			if (i.market == c.market && i.order.toLowerCase().equals(c.choice.toLowerCase()) && i.quantity >= c.quantity) {
 				this.restaurant.removeMoney(c.amount);
 				DoPayMarket(c);
 				((RestaurantCookRoleMatt) this.restaurant.getCook()).msgFulfillSupplyOrder(c.choice, c.quantity, c.market);
