@@ -92,8 +92,9 @@ public class SimCity201 extends JFrame {
 		add(BorderLayout.NORTH, guiPanel);
 		
 		//normativeRestaurant();
-		normativeRestaurantTwoCustomersTwoWaiters();
-		normativeBus();
+		//normativeRestaurantTwoCustomersTwoWaiters();
+		//normativeBus();
+		normativeDriving();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -302,7 +303,7 @@ public class SimCity201 extends JFrame {
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(18*25,9*25));
 		CityDirectory.getInstance().addRestaurant(r);
 	
 		CarAgent car = new CarAgent();
