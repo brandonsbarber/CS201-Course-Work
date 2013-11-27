@@ -21,6 +21,11 @@ import cs201.gui.Gui;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class PassengerGui implements Gui
 {
 	class MyPoint extends Point

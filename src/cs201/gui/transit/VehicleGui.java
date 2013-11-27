@@ -20,6 +20,11 @@ import cs201.gui.CityPanel.WalkingDirection;
 import cs201.gui.Gui;
 import cs201.structures.Structure;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public abstract class VehicleGui implements Gui
 {
 	class MyPoint extends Point

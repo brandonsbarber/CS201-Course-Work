@@ -13,10 +13,22 @@ import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.CityPanel.DrivingDirection;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class BusGui extends VehicleGui
 {
 	private ArrayList<BufferedImage> movementSprites;
 
+	/**
+	 * Bus GUI for showing a bus
+	 * @param vehicle the vehicle who holds the bus gui
+	 * @param city the city panel in which this is drawn
+	 * @param x the starting x position of the gui
+	 * @param y the starting y position of the gui
+	 */
 	public BusGui(VehicleAgent vehicle,CityPanel city, int x, int y)
 	{
 		super(vehicle,city,x,y);
@@ -37,6 +49,10 @@ public class BusGui extends VehicleGui
 		}
 	}
 
+	/**
+	 * Draws the bus in relation to orientation
+	 * @param g the graphics object on which to draw
+	 */
 	@Override
 	public void drawBody(Graphics2D g)
 	{
