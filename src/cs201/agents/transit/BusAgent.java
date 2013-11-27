@@ -19,6 +19,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	BusRoute route;
 	
 	Semaphore sem;
+	public boolean testing = false;
 	
 	public BusAgent(BusRoute route,int stopNum)
 	{
@@ -109,13 +110,16 @@ public class BusAgent extends VehicleAgent implements Bus
 		for(Passenger pass : newPassengers)
 		{
 			pass.msgPleaseBoard(this);
-			try
+			if(!testing )
 			{
-				sem.acquire();
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
+				try
+				{
+					sem.acquire();
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		

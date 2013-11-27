@@ -35,12 +35,13 @@ public class BusAgentTest extends TestCase
 		route = new BusRoute(stops);
 		
 		bus = new BusAgent(route, 0);
+		bus.testing = true;
 	}
 	
 	/**
 	 * Note: It moves and picks location on the same scheduler run
 	 */
-	public void testNormalBusMovement()
+	public void testEmptyNormalBusMovement()
 	{
 		assertEquals("Initial location should be s1",s1,bus.currentLocation);
 		assertEquals("Destination should not be set.",null,bus.destination);
@@ -103,5 +104,10 @@ public class BusAgentTest extends TestCase
 		assertEquals("Bus should have no passengers.",0,bus.passengers.size());
 		
 		
+	}
+
+	public void testOnePassengerOneStop()
+	{
+		MockPassenger p = new MockPassenger("Passenger 1");
 	}
 }
