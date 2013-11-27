@@ -9,6 +9,11 @@ import cs201.structures.transit.BusStop;
 import cs201.test.mock.Brandon.transit.MockPassenger;
 import junit.framework.TestCase;
 
+/**
+ * 
+ * @author Brandon
+ *
+ */
 public class BusAgentTest extends TestCase
 {
 	BusAgent bus;
@@ -19,6 +24,9 @@ public class BusAgentTest extends TestCase
 	ArrayList<BusStop> stops;
 	BusRoute route;
 	
+	/**
+	 * Sets up the test
+	 */
 	public void setUp()
 	{
 		s1 = new BusStop(0, 0, 0, 0, 0, null);
@@ -40,6 +48,7 @@ public class BusAgentTest extends TestCase
 	
 	/**
 	 * Note: It moves and picks location on the same scheduler run
+	 * Runs without passengers
 	 */
 	public void testEmptyNormalBusMovement()
 	{
@@ -72,6 +81,9 @@ public class BusAgentTest extends TestCase
 		assertEquals("Bus should have no passengers.",0,bus.passengers.size());
 	}
 	
+	/**
+	 * Runs with only one stop
+	 */
 	public void testOneStop()
 	{
 		ArrayList<BusStop> myStops = new ArrayList<BusStop>();
@@ -105,7 +117,10 @@ public class BusAgentTest extends TestCase
 		
 		
 	}
-
+	
+	/**
+	 * Doesn't pick up passenger because of semaphore skipping
+	 */
 	public void testOnePassengerOneStop()
 	{
 		MockPassenger p = new MockPassenger("Passenger 1");
