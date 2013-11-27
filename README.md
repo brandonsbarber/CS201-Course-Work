@@ -3,7 +3,7 @@ team21 README
 
 SimCity201 Project Repository for Team 21
 
-##V1 Submission
+##V.1.0 Submission
 ###Work Load
  + **Matthew Pohlmann:**
    + PersonAgent
@@ -72,7 +72,7 @@ SimCity201 Project Repository for Team 21
      + Bank Guard Role (and Gui)
      + Bank Teller Role (and Gui)
      + Bank Config Panel (Doesn't exist)
-     + Unit Testing of Above Code
+     + Unit Testing of Above Code (Broken and removed)
 
 ###Things That Don't Work
  + No Trace Panel
