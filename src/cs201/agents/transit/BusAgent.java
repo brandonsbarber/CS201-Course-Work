@@ -12,7 +12,7 @@ import cs201.structures.transit.BusStop;
 
 public class BusAgent extends VehicleAgent implements Bus
 {
-	List<Passenger> passengers;
+	public List<Passenger> passengers;
 	List<Passenger> justBoarded;
 	List<Passenger> removalList;
 	
@@ -72,7 +72,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	}
 	
 	@Override
-	protected boolean pickAndExecuteAnAction()
+	public boolean pickAndExecuteAnAction()
 	{
 		if(route != null)
 		{
