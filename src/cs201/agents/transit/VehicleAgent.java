@@ -30,6 +30,7 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	
 	public void msgAnimationDestinationReached()
 	{
+		Do("Done animating");
 		animationSemaphore.release();
 	}
 	
@@ -55,15 +56,18 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		{
 			return;
 		}
+		gui.setPresent(true);
 		gui.doGoToLocation(destination);
 		try
 		{
+			Do("Animating to "+destination +" from "+currentLocation);
 			animationSemaphore.acquire();
 		}
 		catch(InterruptedException e)
 		{
 			e.printStackTrace();
 		}
+		currentLocation = destination;
 	}
 	
 	protected void Do(String msg) {

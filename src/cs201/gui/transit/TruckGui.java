@@ -1,5 +1,6 @@
 package cs201.gui.transit;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -38,9 +39,10 @@ public class TruckGui extends VehicleGui {
 	@Override
 	public void drawBody(Graphics2D g)
 	{
-		g.drawImage(movementSprites.get(currentDirection.ordinal()), getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE, null);
 		//g.setColor(Color.YELLOW);
 		//g.fillRect(getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
+		g.drawImage(movementSprites.get(currentDirection.ordinal()), getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE, null);
+		
 	}
 
 }
