@@ -28,7 +28,6 @@ import cs201.helper.CityTime;
 import cs201.helper.CityTime.WeekDay;
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.roles.housing.Renter;
-import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
@@ -439,11 +438,13 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeMarketRestaurantDelivery()
 	{
-		/*
-		 * Processes an order between a Market and a Restaurant. The restaurant notifies the employees in the market of an order to be made,
-		 * which is then processed by the employees. When the order is done being processed, it is loaded into a truck which drives using
-		 * the BFS movement grid to the restaurant.
-		 * Upon arrival at the restaurant, it offloads its order before returning to its home location at the market.
+		/* A Restaurant Cook and Cashier go to work at 8:00AM. A Market Manager and Employee also go to work at 8:00AM.
+		 * The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market employee 
+		 * gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring the 
+		 * food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from the 
+		 * cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with negative
+		 * money which is okay. Eventually what will happen is the restaurant will have to cover for this by withdrawing
+		 * from its bank account. If it doesn't have enough, it will take out a loan.
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
@@ -466,8 +467,6 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
-			
-		//m.getDeliveryTruck().msgMakeDeliveryRun(new ArrayList<ItemRequest>(), r, 0);
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
