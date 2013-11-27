@@ -101,7 +101,7 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving)\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
+			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid. 1) Normative Restaurant\n2) Normative Restaurant: Two Customers, Two Waiters\n3) Normative Bus\n4) Normative Walking\n5) Normative Driving\n6) Market Restaurant Delivery (to show truck)\n7) Residence Test\n8) Apartment Complex\nYour choice: ");
 			String choice = in.nextLine();
 			try
 			{
@@ -116,6 +116,7 @@ public class SimCity201 extends JFrame {
 					case 6: normativeMarketRestaurantDelivery(); running = false; break;
 					case 7: normativeResidence(); running = false; break;
 					case 8: normativeApartmentComplex(); running = false; break;
+					case 0: cityPanel.SHOW_DEBUG = ! cityPanel.SHOW_DEBUG; System.out.println("Toggled debug");break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
@@ -318,7 +319,12 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeWalking()
 	{
-		//One person walks from Market to Restaurant
+		/*
+		 * Creates a Person who will walk from the market at 100,100 to the restaurant at 475,225 by way of crosswalks and sidewalks.
+		 * The route that is taken is defined by arrows shown in Debug mode (viewed by typing zero). When the Person reaches his destination, he
+		 * goes inside the structure there and performs structure actions.
+		 * He begins his walk at 7:00 AM.
+		 */
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
@@ -343,7 +349,14 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeDriving()
 	{
-		//One person drives from Market to Restaurant
+		/*
+		 * Creates a Person who will drive from the market at 100,100 to the restaurant at 475,225 by way of roads.
+		 * The person does this by calling a car, who comes to pick up the person. The person gets into the car, which then drives
+		 * on a path determined by BFS on a movement map (visible in Debug mode), which takes him or her to the parking location
+		 * of the building. The person then walks to the sidewalk location and is brought inside the building.
+		 * This starts at 7:00 AM.
+		 * He currently moves around the block due to the nature of the sidewalks and his movement priorities.
+		 */
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
@@ -374,6 +387,14 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeBus()
 	{
+		/*
+		 * Creates a person, bus stops, and a bus. The bus will go through the stops on its route in sequential order and loops through these stops.
+		 * When the person reaches the bus stop (determined by proximity to location and destination), the person adds himself to the bus stop's list of waiting customers.
+		 * This is accessed by the bus when it arrives at the bus stop, and ends up taking the passenger around the circuit.
+		 * At each bus stop, the person is told that a stop has been reached. When the bus gets to the proper stop, the person gets off and walks the rest of the way.
+		 * The bus moves from the very beginning.
+		 * The person moves at 7:00 AM
+		 */
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
 		stops.add(new BusStop(22*25,13*25,25,25,1, null));
 		stops.add(new BusStop(12*25,13*25,25,25,2, null));

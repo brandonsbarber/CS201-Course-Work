@@ -144,7 +144,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 
-	private static final boolean SHOW_DEBUG = false;
+	public static boolean SHOW_DEBUG = false;
 	
 	
 	public CityPanel()
