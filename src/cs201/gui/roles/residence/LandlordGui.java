@@ -13,7 +13,7 @@ public class LandlordGui implements Gui {
 	private boolean animating;
 	
 	private final int WIDTH = 20, HEIGHT = 20;
-	private final int startX = -20, startY = 250;
+	private final int startX = 0, startY = 250;
 	
 	private int xPos;
 	private int yPos;
@@ -92,6 +92,7 @@ public class LandlordGui implements Gui {
 	}
 	
 	public void enter() {
+		System.out.println("gui.enter() called.");
 		xDestination = 0;
 		yDestination = startY;
 		animating = true;

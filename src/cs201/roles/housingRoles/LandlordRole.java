@@ -140,7 +140,6 @@ public class LandlordRole extends Role implements Landlord {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -181,7 +180,7 @@ public class LandlordRole extends Role implements Landlord {
 	
 	private void enter() {
 		Do("Entering my Apartment Complex Office");
-		//isActive = true;
+		isActive = true;
 		this.gui.setPresent(true);
 		gui.enter();
 		this.acquireSemaphore();
@@ -201,10 +200,14 @@ public class LandlordRole extends Role implements Landlord {
 		// TODO Auto-generated method stub
 		if (intent == Intention.ResidenceLandLord) {
 			//stub
-			enter();
-			goToDesk();
+			//stateChanged();
+		}
+		else {
+			return; //if not a residence landlord, dont start doing anything
 		}
 		
+		enter();
+		goToDesk();
 	}
 
 	

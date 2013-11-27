@@ -56,12 +56,6 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-	
 	public void informLandlord(LandlordGui lGui) {
 		lGui.setChair(chairX, chairY);
 	}
