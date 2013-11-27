@@ -4,7 +4,7 @@ import cs201.agents.PersonAgent;
 
 /**
  * Base class for all Roles in SimCity201
- * @author Matt Pohlmann
+ * @author Matthew Pohlmann
  *
  */
 public abstract class Role {
@@ -103,7 +103,7 @@ public abstract class Role {
 	}
 	
 	/**
-	 * General-purpose function for printing to the terminal. Format: "RestaurantCustomerRole Matt: Ordered steak"
+	 * General-purpose function for printing to the terminal. Format: "[RestaurantCustomerRole] Matt: Ordered steak"
 	 * @param msg The message that should be printed (i.e. Ordered Steak)
 	 */
 	protected void Do(String msg) {
@@ -120,5 +120,4 @@ public abstract class Role {
 		
 		System.out.println(output.toString());
 	}
-	
 }
