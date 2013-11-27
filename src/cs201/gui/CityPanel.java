@@ -23,6 +23,10 @@ import cs201.structures.Structure;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
+	
+	public DrivingDirection[][] drivingMap;
+	public WalkingDirection[][] walkingMap;
+	
 	public static final int GRID_SIZE = 25;
 
 	public static CityPanel INSTANCE = null;
@@ -146,7 +150,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 
 	public static boolean SHOW_DEBUG = false;
 	
-	
+	/**
+	 * Creates a city panel and makes it the sole instance in the program.
+	 * Sets up initial data too
+	 */
 	public CityPanel()
 	{
 		Timer timer = new Timer(1000/240,this);
@@ -166,11 +173,18 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		timer.start();
 	}
 	
+	/**
+	 * Adds a gui for rendering
+	 * @param gui the gui to add
+	 */
 	public void addGui(Gui gui)
 	{
 		guis.add(gui);
 	}
 	
+	/**
+	 * Makes driving and walking maps from map data
+	 */
 	private void populateDrivingMap()
 	{
 		drivingMap = new DrivingDirection[cityGrid.length][cityGrid[0].length];
@@ -234,6 +248,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 	}
 
+	/**
+	 * Paints the Panel with the city, elements, and grid is debug is turned on
+	 */
 	public void paintComponent(Graphics g)
 	{	
 		Graphics2D g2 = (Graphics2D) g;
@@ -356,8 +373,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
-		
-		
 		if(SHOW_DEBUG)
 		{
 			g2.setColor(Color.BLACK);
@@ -423,6 +438,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
 	}
 	
+	/**
+	 * Adds a structure and attempts to place parking and entrances around it
+	 * @param s the structure to add
+	 */
 	public void addStructure(Structure s) {
 		//testing hacks
 		buildings.add(s);
@@ -489,19 +508,31 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 	}
 	
+	/**
+	 * Adds a structure with entrance and parking at given points
+	 * @param s the structure to add
+	 * @param parking where structure's parking is
+	 * @param entrance where structure's entrance is
+	 */
 	public void addStructure(Structure s, Point parking,Point entrance)
 	{
 		buildings.add(s);
 		s.setParkingLocation(parking);
-		s.setEntranceLocation(entrance);
-		
-		
+		s.setEntranceLocation(entrance);	
 	}
 	
+	/**
+	 * Gets all of the structures contained in this CityPanel
+	 * @return the structures contained within
+	 */
 	public List<Structure> getStructures() {
 		return buildings;
 	}
 	
+	/**
+	 * Processes mouse click
+	 * @param arg0 the mouse click to process
+	 */
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		for (int i = 0; i < buildings.size(); i++) {
@@ -511,49 +542,68 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 	}
-
+	
+	/**
+	 * Does nothing
+	 * @param arg0
+	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Does nothing
+	 * @param arg0
+	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Does nothing
+	 * @param arg0
+	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Does nothing
+	 * @param arg0
+	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 	
-	public DrivingDirection[][] drivingMap;
-	public WalkingDirection[][] walkingMap;
-	
+	/**
+	 * Gets the map of driving permissions
+	 * @return 2D array representing driving permissions of the city with direction
+	 */
 	public DrivingDirection[][] getDrivingMap()
 	{
 		return drivingMap;
 	}
 	
+	/**
+	 * Gets the map of walking permissions
+	 * @return 2D array representing walking permissions of the city with direction
+	 */
 	public WalkingDirection[][] getWalkingMap()
 	{
 		return walkingMap;
 	}
 	
+	/**
+	 * Repaints the panel based on timer
+	 * @param e the event trigger
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		repaint();
-		
 	}
 	
 }

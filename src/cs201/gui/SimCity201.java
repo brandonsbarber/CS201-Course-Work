@@ -49,6 +49,9 @@ public class SimCity201 extends JFrame {
 	
 	SettingsPanel settingsPanel;
 	
+	/**
+	 * Creates the entire city panel, then prompts for a scenario to execute
+	 */
 	public SimCity201() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
