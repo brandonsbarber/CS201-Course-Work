@@ -214,7 +214,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	private void DoPayMarket(Check c) {
-		Do("Paying bill to " + c.market.toString() + String.format(" for $%.2f.\n\t%s now has $%.2f.\n", c.amount, this.restaurant.toString(), this.restaurant.getCurrentRestaurantMoney()));
+		Do("Paying bill to " + c.market.toString() + String.format(" for $%.2f.\n\t%s now has $%.2f.", c.amount, this.restaurant.toString(), this.restaurant.getCurrentRestaurantMoney()));
 	}
 	
 	public class Check { // TEMPORARILY PUBLIC FOR TESTING

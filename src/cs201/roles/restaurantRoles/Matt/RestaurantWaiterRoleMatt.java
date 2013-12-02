@@ -275,7 +275,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	private void SeatCustomer(MyCustomer m) {
 		DoGoToCustomerWaiting(m);
 		m.customer.msgFollowMeToTable(this, new MenuMatt());
-		((RestaurantHostRoleMatt) restaurant.getHost()).msgCustomerRetrievedFromWaitingArea();
+		((RestaurantHostRoleMatt) restaurant.getHost()).msgCustomerRetrievedFromWaitingArea(m.customer);
 		DoSeatCustomer(m);
 		m.state = CustomerState.none;
 	}

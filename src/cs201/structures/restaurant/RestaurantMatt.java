@@ -1,6 +1,7 @@
 package cs201.structures.restaurant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
@@ -62,7 +63,7 @@ public class RestaurantMatt extends Restaurant {
 		this.panel.addGui(cashierGui);
 		cashier.setRestaurant(this);
 		
-		this.waiters = new ArrayList<RestaurantWaiterRole>();
+		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 		for (int i = 0; i < INITIALWAITERS; i++) {
 			RestaurantWaiterRoleMatt newWaiter;
 			if (i % 2 == 0) {
@@ -97,32 +98,34 @@ public class RestaurantMatt extends Restaurant {
 			return null;
 		}
 		case RestaurantWaiter: {
-			for (RestaurantWaiterRole r : waiters) {
-				if (r.getPerson() == null) {
-					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
+			synchronized(waiters) {
+				for (RestaurantWaiterRole r : waiters) {
+					if (r.getPerson() == null) {
+						((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
+						UpdateWaiterHomePositions();
+						((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
+						return r;
+					}
+				}
+				
+				if (waiters.size() < MAXWAITERS) {
+					RestaurantWaiterRole newWaiter;
+					if (waiters.size() % 2 == 0) {
+						newWaiter = new RestaurantWaiterRoleMattNormal();
+					} else {
+						newWaiter = new RestaurantWaiterRoleMattStand();
+					}
+					WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
+					((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
+					waiters.add(newWaiter);
+					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
 					UpdateWaiterHomePositions();
-					((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
-					return r;
+					((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
+					this.panel.addGui(waiterGui);
+					newWaiter.setRestaurant(this);
+					((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
+					return newWaiter;
 				}
-			}
-			
-			if (waiters.size() < MAXWAITERS) {
-				RestaurantWaiterRole newWaiter;
-				if (waiters.size() % 2 == 0) {
-					newWaiter = new RestaurantWaiterRoleMattNormal();
-				} else {
-					newWaiter = new RestaurantWaiterRoleMattStand();
-				}
-				WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
-				((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
-				waiters.add(newWaiter);
-				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
-				UpdateWaiterHomePositions();
-				((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
-				this.panel.addGui(waiterGui);
-				newWaiter.setRestaurant(this);
-				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
-				return newWaiter;
 			}
 			
 			return null;

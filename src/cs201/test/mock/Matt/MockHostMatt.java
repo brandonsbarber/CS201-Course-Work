@@ -54,7 +54,7 @@ public class MockHostMatt extends Mock implements HostMatt {
 	}
 
 	@Override
-	public void msgCustomerRetrievedFromWaitingArea() {
+	public void msgCustomerRetrievedFromWaitingArea(CustomerMatt c) {
 		// TODO Auto-generated method stub
 		
 	}
