@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import cs201.agents.transit.TruckAgent;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
-import cs201.structures.market.MarketStructure;
 import cs201.structures.transit.BusStop;
 import junit.framework.TestCase;
 
