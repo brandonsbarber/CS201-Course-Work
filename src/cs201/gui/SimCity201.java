@@ -22,6 +22,7 @@ import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.gui.transit.BusGui;
 import cs201.gui.transit.CarGui;
 import cs201.helper.CityDirectory;
@@ -411,12 +412,31 @@ public class SimCity201 extends JFrame {
 		 * The person moves at 7:00 AM
 		 */
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
-		stops.add(new BusStop(22*25,13*25,25,25,1, null));
-		stops.add(new BusStop(12*25,13*25,25,25,2, null));
-		stops.add(new BusStop(2*25,13*25,25,25,3, null));
-		stops.add(new BusStop(22*25,1*25,25,25,4, null));
-		stops.add(new BusStop(12*25,1*25,25,25,5, null));
-		stops.add(new BusStop(2*25,1*25,25,25,6, null));
+
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(22*25,13*25,25,25,1, panel));
+		
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,13*25,25,25,2, panel2));
+		
+		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(2*25,13*25,25,25,3, panel3));
+		
+		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(22*25,1*25,25,25,4, panel4));
+		
+		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,1*25,25,25,5, panel5));
+		
+		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(2*25,1*25,25,25,6, panel6));
+		
+		buildingPanels.add(panel,""+stops.get(0).getId());
+		buildingPanels.add(panel2,""+stops.get(1).getId());
+		buildingPanels.add(panel3,""+stops.get(2).getId());
+		buildingPanels.add(panel4,""+stops.get(3).getId());
+		buildingPanels.add(panel5,""+stops.get(4).getId());
+		buildingPanels.add(panel6,""+stops.get(5).getId());
 		
 		for(BusStop stop : stops)
 		{
