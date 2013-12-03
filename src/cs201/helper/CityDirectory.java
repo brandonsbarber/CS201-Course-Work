@@ -10,7 +10,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
-import cs201.structures.bank.Bank;
+import cs201.structures.bank.BankStructure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
@@ -44,7 +44,7 @@ public class CityDirectory implements ActionListener {
 	private CityTime time = new CityTime();
 	private List<PersonAgent> people = Collections.synchronizedList(new ArrayList<PersonAgent>());
 	private List<Restaurant> restaurants = Collections.synchronizedList(new ArrayList<Restaurant>());
-	private List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
+	private List<BankStructure> banks = Collections.synchronizedList(new ArrayList<BankStructure>());
 	private List<MarketStructure> markets = Collections.synchronizedList(new ArrayList<MarketStructure>());
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
 	private List<ApartmentComplex> apartments = Collections.synchronizedList(new ArrayList<ApartmentComplex>());
@@ -88,7 +88,7 @@ public class CityDirectory implements ActionListener {
 		}
 		
 		synchronized(banks) {
-			for (Bank b : banks) {
+			for (BankStructure b : banks) {
 				b.updateTime(time);
 			}
 		}
@@ -149,17 +149,17 @@ public class CityDirectory implements ActionListener {
 	}
 	
 	// Bank Stuff
-	public void addBank(Bank newBank) {
+	public void addBank(BankStructure newBank) {
 		banks.add(newBank);
 	}
 	
-	public List<Bank> getBanks() {
+	public List<BankStructure> getBanks() {
 		return banks;
 	}
 	
-	public Bank getBankWithID(int id) {
+	public BankStructure getBankWithID(int id) {
 		synchronized(banks) {
-			for (Bank r : banks) {
+			for (BankStructure r : banks) {
 				if (r.getId() == id) {
 					return r;
 				}
@@ -169,7 +169,7 @@ public class CityDirectory implements ActionListener {
 		return null;
 	}
 	
-	public Bank getRandomBank() {
+	public BankStructure getRandomBank() {
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(banks.size());
 		return banks.get(num);

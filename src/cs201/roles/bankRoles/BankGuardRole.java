@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.bank.BankGuardGui;
 import cs201.interfaces.roles.bank.BankGuard;
 import cs201.roles.Role;
 
@@ -17,6 +18,8 @@ public class BankGuardRole extends Role implements BankGuard {
 	
 	Queue<BankCustomerRole> waitingCustomers;
 	ArrayList<BankTellerRole> bankTellers = new ArrayList<BankTellerRole>();
+	
+	BankGuardGui gui;
 	
 	//================================================================================
     // Constructor
