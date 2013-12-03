@@ -2,7 +2,6 @@ package cs201.roles.bankRoles;
 
 import cs201.interfaces.roles.bank.BankCustomer;
 import cs201.roles.Role;
-import cs201.structures.bank.Bank;
 
 public class BankCustomerRole extends Role implements BankCustomer {
 	
@@ -155,7 +154,7 @@ public class BankCustomerRole extends Role implements BankCustomer {
 	}
 	
 	private void addToWaitingList() {
-	    Bank.getGuard().msgHereToSeeTeller(this);
+	    //Bank.getGuard().msgHereToSeeTeller(this);
 	    state = CustomerState.Waiting;
 	}
 	

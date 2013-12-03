@@ -6,8 +6,6 @@ import java.util.Queue;
 import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.bank.BankGuard;
 import cs201.roles.Role;
-import cs201.structures.bank.Bank;
-
 
 public class BankGuardRole extends Role implements BankGuard {
 	
@@ -24,7 +22,7 @@ public class BankGuardRole extends Role implements BankGuard {
     // Constructor
     //================================================================================
 	
-	BankGuardRole(String name) {
+	public BankGuardRole(String name) {
 		this.name = name;
 	}
 	
@@ -36,9 +34,9 @@ public class BankGuardRole extends Role implements BankGuard {
 		for(BankTellerRole teller : bankTellers) {
 			escortToTeller(waitingCustomers.element(), teller);
 		}
-		if (!Bank.getOpen()) { // May not need this rule if we just allow customers to finish up
+		/*if (!Bank.getOpen()) { // May not need this rule if we just allow customers to finish up
 			escortCustomersOut();
-		}
+		}*/
         return false;
 	}
 	
