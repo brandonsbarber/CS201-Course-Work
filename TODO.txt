@@ -1,6 +1,7 @@
 TODO:
 
 Configuration Panels for all buildings
+Speed up/slow down CityTime and animation timers
 Shifts
 Hiring/Firing People
 Restaurant Integration
