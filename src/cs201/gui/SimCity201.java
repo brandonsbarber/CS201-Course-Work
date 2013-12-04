@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -58,8 +59,13 @@ public class SimCity201 extends JFrame {
 		setVisible(true);
 		setSize(SIZEX, SIZEY);
 		
+		JPanel mainPanel = new JPanel();
+		
 		JPanel guiPanel = new JPanel();
 		
+		BaseSettingsPanel bottomSettingsPanel = new BaseSettingsPanel();
+		
+		mainPanel.setLayout(new BorderLayout());
 		setLayout(new BorderLayout());
 		
 		guiPanel.setLayout(new BorderLayout());
@@ -98,8 +104,11 @@ public class SimCity201 extends JFrame {
 		settingsPanel.setMaximumSize(new Dimension(SIZEX, SIZEY * 2/5));
 		settingsPanel.setPreferredSize(new Dimension(SIZEX, SIZEY * 2/5));
 		
-		add(BorderLayout.SOUTH, settingsPanel);
-		add(BorderLayout.NORTH, guiPanel);
+		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
+		mainPanel.add(BorderLayout.NORTH, guiPanel);
+		
+		add(bottomSettingsPanel,BorderLayout.SOUTH);
+		add(mainPanel);
 		
 		Scanner in = new Scanner(System.in);
 
