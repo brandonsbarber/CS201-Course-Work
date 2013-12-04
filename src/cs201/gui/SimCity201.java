@@ -116,7 +116,7 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid.\n" +
+			System.out.print("Which scenario would you like to run?\n" +
 					"1) Normative Restaurant\n" +
 					"2) Normative Restaurant: Two Customers, Two Waiters\n" +
 					"3) Normative Bus\n" +
@@ -141,7 +141,6 @@ public class SimCity201 extends JFrame {
 					case 7: normativeMarket(); running = false; break;
 					case 8: normativeResidence(); running = false; break;
 					case 9: normativeApartmentComplex(); running = false; break;
-					case 0: CityPanel.SHOW_DEBUG = ! CityPanel.SHOW_DEBUG; System.out.println("Toggled debug");break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}

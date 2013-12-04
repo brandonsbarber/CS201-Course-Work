@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import cs201.helper.Constants;
+
 public class BaseSettingsPanel extends JPanel implements ActionListener
 {
 	private JButton traceButton;
@@ -19,10 +21,13 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 	{
 		setLayout(new FlowLayout());
 		traceButton = new JButton("Show Trace Panel");
+		traceButton.addActionListener(this);
 		add(traceButton);
 		
 		debugMode = new JCheckBox("Debug Mode:");
+		debugMode.setSelected(Constants.DEBUG_MODE);
 		debugMode.setHorizontalTextPosition(SwingConstants.LEFT);
+		debugMode.addActionListener(this);
 		add(debugMode);
 		
 	}
@@ -30,6 +35,9 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		
+		if(e.getSource() == debugMode)
+		{
+			Constants.DEBUG_MODE = debugMode.isSelected();
+		}
 	}
 }

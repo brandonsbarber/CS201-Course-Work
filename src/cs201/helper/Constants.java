@@ -31,7 +31,7 @@ package cs201.helper;
 /**
  * Constants of general use
  */
-public interface Constants {
+public class Constants {
     /**
      * The number of milliseconds in a second
      */
@@ -62,5 +62,7 @@ public interface Constants {
      * The default encoding used when none is detected
      */
     public static String DEFAULT_ENCODING = "ISO-8859-1";
+    
+    public static boolean DEBUG_MODE = false;
 
 }
