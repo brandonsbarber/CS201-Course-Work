@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import cs201.helper.CityDirectory;
+import cs201.helper.Constants;
 import cs201.structures.Structure;
 
 public class CityPanel extends JPanel implements MouseListener, ActionListener
@@ -148,8 +149,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
 	};
 
-	public static boolean SHOW_DEBUG = false;
-	
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
 	 * Sets up initial data too
@@ -301,7 +300,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					}
 				}
 				
-				if(SHOW_DEBUG)
+				if(Constants.DEBUG_MODE)
 				{
 					if(drivingMap[y][x].isValid())
 					{
@@ -373,7 +372,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
-		if(SHOW_DEBUG)
+		if(Constants.DEBUG_MODE)
 		{
 			g2.setColor(Color.BLACK);
 			
@@ -404,7 +403,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			g2.setColor(Color.WHITE);
 			g2.drawString(""+s.getId(),(int)s.x,(int)(s.y + s.height));
 			
-			if(SHOW_DEBUG)
+			if(Constants.DEBUG_MODE)
 			{
 				g2.setColor(Color.BLUE);
 				g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));

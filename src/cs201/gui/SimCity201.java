@@ -5,10 +5,13 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -22,6 +25,7 @@ import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.gui.transit.BusGui;
 import cs201.gui.transit.CarGui;
 import cs201.helper.CityDirectory;
@@ -53,12 +57,27 @@ public class SimCity201 extends JFrame {
 	 * Creates the entire city panel, then prompts for a scenario to execute
 	 */
 	public SimCity201() {
+		try
+		{
+			ArtManager.load();
+		}
+		catch(IOException e)
+		{
+			JOptionPane.showMessageDialog(null,"There was a problem loading your images.");
+			System.exit(0);
+		}
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(SIZEX, SIZEY);
 		
+		JPanel mainPanel = new JPanel();
+		
 		JPanel guiPanel = new JPanel();
 		
+		BaseSettingsPanel bottomSettingsPanel = new BaseSettingsPanel();
+		
+		mainPanel.setLayout(new BorderLayout());
 		setLayout(new BorderLayout());
 		
 		guiPanel.setLayout(new BorderLayout());
@@ -97,8 +116,11 @@ public class SimCity201 extends JFrame {
 		settingsPanel.setMaximumSize(new Dimension(SIZEX, SIZEY * 2/5));
 		settingsPanel.setPreferredSize(new Dimension(SIZEX, SIZEY * 2/5));
 		
-		add(BorderLayout.SOUTH, settingsPanel);
-		add(BorderLayout.NORTH, guiPanel);
+		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
+		mainPanel.add(BorderLayout.NORTH, guiPanel);
+		
+		add(bottomSettingsPanel,BorderLayout.SOUTH);
+		add(mainPanel);
 		
 		Scanner in = new Scanner(System.in);
 
@@ -106,7 +128,7 @@ public class SimCity201 extends JFrame {
 		
 		while(running)
 		{
-			System.out.print("Which scenario would you like to run?\n0) Toggles debug mode for visual aid.\n" +
+			System.out.print("Which scenario would you like to run?\n" +
 					"1) Normative Restaurant\n" +
 					"2) Normative Restaurant: Two Customers, Two Waiters\n" +
 					"3) Normative Bus\n" +
@@ -131,7 +153,6 @@ public class SimCity201 extends JFrame {
 					case 7: normativeMarket(); running = false; break;
 					case 8: normativeResidence(); running = false; break;
 					case 9: normativeApartmentComplex(); running = false; break;
-					case 0: CityPanel.SHOW_DEBUG = ! CityPanel.SHOW_DEBUG; System.out.println("Toggled debug");break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
@@ -411,12 +432,31 @@ public class SimCity201 extends JFrame {
 		 * The person moves at 7:00 AM
 		 */
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
-		stops.add(new BusStop(22*25,13*25,25,25,1, null));
-		stops.add(new BusStop(12*25,13*25,25,25,2, null));
-		stops.add(new BusStop(2*25,13*25,25,25,3, null));
-		stops.add(new BusStop(22*25,1*25,25,25,4, null));
-		stops.add(new BusStop(12*25,1*25,25,25,5, null));
-		stops.add(new BusStop(2*25,1*25,25,25,6, null));
+
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(22*25,13*25,25,25,1, panel));
+		
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,13*25,25,25,2, panel2));
+		
+		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(2*25,13*25,25,25,3, panel3));
+		
+		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(22*25,1*25,25,25,4, panel4));
+		
+		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,1*25,25,25,5, panel5));
+		
+		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(2*25,1*25,25,25,6, panel6));
+		
+		buildingPanels.add(panel,""+stops.get(0).getId());
+		buildingPanels.add(panel2,""+stops.get(1).getId());
+		buildingPanels.add(panel3,""+stops.get(2).getId());
+		buildingPanels.add(panel4,""+stops.get(3).getId());
+		buildingPanels.add(panel5,""+stops.get(4).getId());
+		buildingPanels.add(panel6,""+stops.get(5).getId());
 		
 		for(BusStop stop : stops)
 		{

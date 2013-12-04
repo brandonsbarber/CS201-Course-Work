@@ -7,7 +7,9 @@ public class BankAnimationPanel extends StructurePanel {
 
 	public BankAnimationPanel(int i, SimCity201 sc) {
 		super(i, sc);
-		// TODO Auto-generated constructor stub
+		
+		
+		
 	}
 	
 }
