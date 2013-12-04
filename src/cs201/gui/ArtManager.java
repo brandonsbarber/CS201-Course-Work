@@ -17,8 +17,21 @@ public class ArtManager
 	{
 		atlas = Collections.synchronizedMap(new HashMap<String,BufferedImage>());
 		
-		//Base Person Sprites
+		//Brandon's Sprites
 		atlas.put("Person_Up", ImageIO.read(new File("data/TransitSprites/Walk_North.png")));
+		
+		//Ben's Sprites
+		
+		
+		//Matt's Sprites
+		
+		
+		//James's Sprites
+		
+		
+		//Skyler's Sprites
+		
+		
 	}
 	
 	public static BufferedImage getImage(String key)
