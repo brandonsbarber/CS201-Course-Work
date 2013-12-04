@@ -222,13 +222,8 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you need to get money from the bank
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && moneyOnHand <= MONEYTHRESHOLD) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.BankWithdrawMoneyCustomer) {
-					performAction = false;
-					break;
-				}
-			}
+			boolean performAction = checkForExistingAction(Intention.BankWithdrawMoneyCustomer);
+			
 			if (performAction && CityDirectory.getInstance().getBanks().size() > 0) {
 				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
 				this.state = PersonState.Awake;
@@ -238,13 +233,8 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you're hungry, but not at home
 		if (state == PersonState.Awake && currentLocation != home && hungerLevel >= HUNGRY) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.RestaurantCustomer) {
-					performAction = false;
-					break;
-				}
-			}
+			boolean performAction = checkForExistingAction(Intention.RestaurantCustomer);
+			
 			if (performAction && CityDirectory.getInstance().getRestaurants().size() > 0) {
 				boolean starving = hungerLevel >= STARVING;
 				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), starving);
@@ -252,15 +242,10 @@ public class PersonAgent extends Agent implements Person {
 			}
 		}
 		
-		// If you're hungry and at home
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && currentLocation == home && hungerLevel >= HUNGRY) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.ResidenceEat) {
-					performAction = false;
-					break;
-				}
-			}
+		// If you're hungry and at home (or there are no restaurants)
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && (currentLocation == home || CityDirectory.getInstance().getRestaurants().size() == 0) && hungerLevel >= HUNGRY) {
+			boolean performAction = checkForExistingAction(Intention.ResidenceEat);
+			
 			if (performAction) {
 				boolean starving = hungerLevel >= STARVING;
 				if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
@@ -272,13 +257,8 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you you need to buy something at the market
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.MarketConsumerGoods) {
-					performAction = false;
-					break;
-				}
-			}
+			boolean performAction = checkForExistingAction(Intention.MarketConsumerGoods);
+			
 			if (performAction && CityDirectory.getInstance().getMarkets().size() > 0) {
 				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomMarket(), false);
 				this.state = PersonState.Awake;
@@ -292,6 +272,13 @@ public class PersonAgent extends Agent implements Person {
 				state = PersonState.Relaxing;
 				return true;
 			}
+		}
+		
+		// If you don't even have a home to return to
+		if (state == PersonState.Awake) {
+			//passengerRole.active = true;
+			//passengerRole.roamCity();
+			return true;
 		}
 		
 		return false;
@@ -676,6 +663,22 @@ public class PersonAgent extends Agent implements Person {
 	/**************************************************************************
 	 *                                Utility                                 *
 	 **************************************************************************/
+	/**
+	 * Checks if an Action with a given intent already exists in the planner
+	 * @param intent Intention
+	 * @return boolean
+	 */
+	private boolean checkForExistingAction(Intention intent) {
+		synchronized(planner) {
+			for (Action a : planner) {
+				if (a.intent == intent) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Gets the name of this PersonAgent
 	 * @return This PersonAgent's name

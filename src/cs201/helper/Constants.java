@@ -63,6 +63,19 @@ public class Constants {
      */
     public static String DEFAULT_ENCODING = "ISO-8859-1";
     
+    /**
+     * Whether or not SimCity201 is in debug mode
+     */
     public static boolean DEBUG_MODE = false;
+    
+    /**
+     * Scalar describing how fast time passes in SimCity201
+     */
+    public static float TIME_WARP = 1.0f;
+    
+    /**
+     * Time (in milliseconds) between animation timer timeouts
+     */
+    public static int ANIMATION_SPEED = 10;
 
 }
