@@ -556,7 +556,6 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
 		
-		//this throws null pointer b/c there's no person on the cook
 		((RestaurantCookRoleMatt) r.getCook()).emptySteakInventory();
 	}
 	
