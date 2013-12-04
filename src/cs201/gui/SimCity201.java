@@ -5,11 +5,13 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -55,6 +57,16 @@ public class SimCity201 extends JFrame {
 	 * Creates the entire city panel, then prompts for a scenario to execute
 	 */
 	public SimCity201() {
+		try
+		{
+			ArtManager.load();
+		}
+		catch(IOException e)
+		{
+			JOptionPane.showMessageDialog(null,"There was a problem loading your images.");
+			System.exit(0);
+		}
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(SIZEX, SIZEY);
