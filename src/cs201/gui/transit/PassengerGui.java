@@ -15,6 +15,7 @@ import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.gui.CityPanel.WalkingDirection;
 import cs201.gui.Gui;
@@ -45,8 +46,6 @@ public class PassengerGui implements Gui
 			return p.x == x && p.y == y;
 		}
 	}
-	
-	public static ArrayList<BufferedImage> movementSprites;
 	
 	private PassengerRole pass;
 	
@@ -96,22 +95,6 @@ public class PassengerGui implements Gui
 		present = false;
 		currentDirection = WalkingDirection.None;
 		moves = new Stack<WalkingDirection>();
-		
-		movementSprites = new ArrayList<BufferedImage>();
-		try
-		{
-			movementSprites.add(null);
-			movementSprites.add(WalkingDirection.North.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_North.png")));
-			movementSprites.add(WalkingDirection.South.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_South.png")));
-			movementSprites.add(WalkingDirection.East.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_East.png")));
-			movementSprites.add(WalkingDirection.West.ordinal(),ImageIO.read(new File("data/TransitSprites/Walk_West.png")));
-		}
-		catch(Exception e)
-		{
-			System.out.println("ERROR");
-			e.printStackTrace();
-		}
-		
 	}
 	
 	/**
@@ -288,7 +271,29 @@ public class PassengerGui implements Gui
 	public void draw(Graphics2D g)
 	{
 		g.setColor(Color.RED);
-			g.drawImage (movementSprites.get(currentDirection.ordinal()),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
+		String moveDir = "Person_";
+		switch(currentDirection)
+		{
+		case East:moveDir+="Right";
+			break;
+		case Invalid:moveDir+="Down";
+			break;
+		case None:moveDir+="Down";
+			break;
+		case North:moveDir+="Up";
+			break;
+		case South:moveDir+="Down";
+			break;
+		case Turn:moveDir+="Down";
+			break;
+		case West:moveDir+="Left";
+			break;
+		default:moveDir+="Down";
+			break;
+		
+		}
+		
+		g.drawImage (ArtManager.getImage(moveDir),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
 		g.setColor(Color.BLACK);
 		g.drawString(""+destination, x,y);
 		g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);

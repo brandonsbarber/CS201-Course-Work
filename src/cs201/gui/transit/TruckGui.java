@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import cs201.agents.transit.VehicleAgent;
+import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.gui.CityPanel.DrivingDirection;
 
@@ -19,8 +20,6 @@ import cs201.gui.CityPanel.DrivingDirection;
  */
 public class TruckGui extends VehicleGui {
 
-	private ArrayList<BufferedImage> movementSprites;
-	
 	/**
 	 * Bus GUI for showing a truck
 	 * @param vehicle the vehicle who holds the truck gui
@@ -31,21 +30,6 @@ public class TruckGui extends VehicleGui {
 	public TruckGui(VehicleAgent vehicle, CityPanel city, int x, int y)
 	{
 		super(vehicle, city, x, y);
-		
-		movementSprites = new ArrayList<BufferedImage>();
-		try
-		{
-			movementSprites.add(null);
-			movementSprites.add(DrivingDirection.North.ordinal(),ImageIO.read(new File("data/TransitSprites/Truck.png")));
-			movementSprites.add(DrivingDirection.South.ordinal(),ImageIO.read(new File("data/TransitSprites/Truck.png")));
-			movementSprites.add(DrivingDirection.East.ordinal(),ImageIO.read(new File("data/TransitSprites/Truck.png")));
-			movementSprites.add(DrivingDirection.West.ordinal(),ImageIO.read(new File("data/TransitSprites/Truck.png")));
-		}
-		catch(Exception e)
-		{
-			System.out.println("ERROR");
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -55,9 +39,21 @@ public class TruckGui extends VehicleGui {
 	@Override
 	public void drawBody(Graphics2D g)
 	{
-		//g.setColor(Color.YELLOW);
-		//g.fillRect(getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
-		g.drawImage(movementSprites.get(currentDirection.ordinal()), getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE, null);
+		String imgName = "Truck_";
+		switch(currentDirection)
+		{
+		case East:imgName+="Right";
+			break;
+		case North:imgName+="Up";
+			break;
+		case South:imgName+="Down";
+			break;
+		case West:imgName+="Left";
+			break;
+		default:imgName+="Down";
+			break;
+		}
+		g.drawImage(ArtManager.getImage(imgName), getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE, null);
 		
 	}
 
