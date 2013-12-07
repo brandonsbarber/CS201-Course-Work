@@ -150,7 +150,6 @@ public class PassengerGui implements Gui
 	public void doRoam()
 	{
 		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
-		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+pass.getName(),"I AM GOING TO Point "+p);
 		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
 	}
 	
@@ -167,7 +166,7 @@ public class PassengerGui implements Gui
 		}
 		catch(IllegalArgumentException e)
 		{
-			AlertLog.getInstance().logMessage(AlertTag.GENERAL_CITY, pass.getName(), ""+e.getMessage());
+			AlertLog.getInstance().logError(AlertTag.TRANSIT, pass.getName(), ""+e.getMessage());
 		}
 		pathfinding = false;
 	}
