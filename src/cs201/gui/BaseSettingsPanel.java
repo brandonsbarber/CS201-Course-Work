@@ -16,8 +16,10 @@ import cs201.trace.TraceFrame;
 public class BaseSettingsPanel extends JPanel implements ActionListener
 {	
 	private JButton traceButton;
+	private JButton scenarioButton;
 	private JCheckBox debugMode;
 	private TraceFrame traceFrame;
+	private ScenarioPanel scenarioPanel;
 	
 	public BaseSettingsPanel()
 	{
@@ -29,12 +31,20 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 		traceButton.addActionListener(this);
 		add(traceButton);
 		
+		scenarioButton = new JButton("Show Scenario Panel");
+		scenarioButton.addActionListener(this);
+		add(scenarioButton);
+		
 		debugMode = new JCheckBox("Debug Mode:");
 		debugMode.setSelected(Constants.DEBUG_MODE);
 		debugMode.setHorizontalTextPosition(SwingConstants.LEFT);
 		debugMode.addActionListener(this);
 		add(debugMode);
 		
+	}
+	
+	public void setScenarioPanel(ScenarioPanel panel) {
+		scenarioPanel = panel;
 	}
 
 	@Override
@@ -46,6 +56,11 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 		}
 		if (e.getSource() == traceButton) {
 			traceFrame.setVisible(!traceFrame.isVisible());
+		}
+		if (e.getSource() == scenarioButton) {
+			if (scenarioPanel != null) {
+				scenarioPanel.setVisible(true);
+			}
 		}
 	}
 }

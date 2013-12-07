@@ -55,6 +55,7 @@ public class SimCity201 extends JFrame {
 	JPanel buildingPanels;
 	CardLayout cardLayout;
 	PersonConfigPanel personPanel;
+	ScenarioPanel scenarioPanel;
 	
 	SettingsPanel settingsPanel;
 	
@@ -153,7 +154,8 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Restaurant Shift Change");
 		scenarioList.add("50 People");
 		
-		ScenarioPanel scenarioPanel = new ScenarioPanel(scenarioList);
+		scenarioPanel = new ScenarioPanel(scenarioList);
+		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
 		scenarioPanel.showModalScenarioSelection();
 
 		switch(scenarioPanel.getChosenScenario())
