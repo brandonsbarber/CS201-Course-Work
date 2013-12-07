@@ -13,6 +13,8 @@ import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Host Agent
@@ -86,7 +88,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 			synchronized(waitingCustomers) {
 				MyCustomer cust = new MyCustomer(c);
 				int ID = AssignCustomerID(cust);
-				Do("ID received for " + c + ": " + ID);
+				AlertLog.getInstance().logDebug(AlertTag.RESTAURANT, getName(), "ID received for " + c + ": " + ID);
 				int x = (int)(RestaurantAnimationPanelMatt.WINDOWX * .08f) + (ID % 2) * (int)(RestaurantAnimationPanelMatt.WINDOWX * .05f);
 				int y = (int)(RestaurantAnimationPanelMatt.WINDOWY * .08f) + (ID / 2) * (int)(RestaurantAnimationPanelMatt.WINDOWY * .05f);
 				c.getGui().SetWaitingArea(x, y);
@@ -96,7 +98,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 				numCustomers++;
 			}
 		} else {
-			Do(c.toString() + " cannot enter the restaurant because he was banned");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), c.toString() + " cannot enter the restaurant because he was banned");
 			return;
 		}
 		stateChanged();
@@ -275,18 +277,18 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	// Utilities -------------------------------------------------------------
 	private void DoCloseRestaurant() {
-		Do("Closing down the restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Closing down the restaurant.");
 	}
 	
 	private void DoCallWaiter(WaiterMatt w, TableMatt t, CustomerMatt c) {
-		Do("Telling " + w.toString() + " to seat " + c + " at Table " + t.tableNum() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Telling " + w.toString() + " to seat " + c + " at Table " + t.tableNum() + ".");
 	}
 	
 	private void DoPutWaiterOnBreak(MyWaiter m, boolean breakAllowed) {
 		if (breakAllowed) {
-			Do(m.waiter.toString() + " is allowed to go on break.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), m.waiter.toString() + " is allowed to go on break.");
 		} else {
-			Do(m.waiter.toString() + " is not allowed to go on break.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), m.waiter.toString() + " is not allowed to go on break.");
 		}
 	}
 	
@@ -319,10 +321,10 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	 * @param waiter The new Waiter
 	 */
 	public void addWaiter(WaiterMatt waiter) {
-		Do("Adding waiter.");
+		AlertLog.getInstance().logDebug(AlertTag.RESTAURANT, getName(), "Adding waiter.");
 		waiters.add(new MyWaiter(waiter));
 		activeWaiters++;
-		Do("Total waiters: " + activeWaiters);
+		AlertLog.getInstance().logDebug(AlertTag.RESTAURANT, getName(), "Total waiters: " + activeWaiters);
 		stateChanged();
 	}
 	

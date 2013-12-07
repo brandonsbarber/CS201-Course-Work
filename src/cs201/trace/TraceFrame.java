@@ -100,7 +100,7 @@ public class TraceFrame extends JFrame {
 		});
 		
 		debugButton = new JToggleButton("DEBUG");
-		debugButton.setSelected(true);
+		debugButton.setSelected(false);
 		buttonPanel.add(debugButton);
 		debugButton.addActionListener(new ActionListener() {
 			@Override
@@ -119,6 +119,7 @@ public class TraceFrame extends JFrame {
 		tracePanel.setMaximumSize(new Dimension(TRACEX * 2 / 3, TRACEY));
 		tracePanel.setMinimumSize(new Dimension(TRACEX * 2 / 3, TRACEY));
 		tracePanel.showAlertsForAllLevels();
+		tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
 		tracePanel.showAlertsForAllTags();
 		this.add(BorderLayout.EAST, tracePanel);
 		
