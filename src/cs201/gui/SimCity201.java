@@ -142,7 +142,8 @@ public class SimCity201 extends JFrame {
 					"9) Normative Apartment Complex\n"+
 					"10) Ben's Normative Restaurant\n" +
 					"11) Ben's Normative Restaurant: Two Customers, Two Waiters\n" +
-					"12) Market Consumer Purchase Car\nYour choice:");
+					"12) Market Consumer Purchase Car\n" +
+					"13) Ben's Normative Restaurant Delivery\nYour choice:");
 			String choice = in.nextLine();
 			try
 			{
@@ -161,6 +162,7 @@ public class SimCity201 extends JFrame {
 					case 10: normativeRestaurantBen(); running = false; break;
 					case 11: normativeRestaurantBenTwoOfEach(); running = false; break;
 					case 12: marketConsumerCar(); running = false; break;
+					case 13: normativeMarketRestaurantBenDelivery(); running = false; break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
