@@ -198,6 +198,8 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		createPerson("Cashier", r, r, Intention.RestaurantWaiter, r, null);
 		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
 		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
+		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
+		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
 	}
 
 	private void normativeRestaurant() {

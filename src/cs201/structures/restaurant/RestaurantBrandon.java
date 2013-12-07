@@ -7,8 +7,13 @@ import java.util.HashMap;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
+import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
 import cs201.helper.CityTime;
+import cs201.helper.Brandon.FoodBrandon;
+import cs201.helper.Brandon.MenuBrandon;
+import cs201.interfaces.roles.restaurant.Brandon.CashierBrandon;
+import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
@@ -24,10 +29,34 @@ public class RestaurantBrandon extends Restaurant {
 
 	private static final int MAXWAITERS = 4;
 
-	public RestaurantBrandon(int x, int y, int width, int height, int id,
-			StructurePanel p) {
+	public RestaurantBrandon(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
 
+		/*--------------------------------
+		 * 
+		 * -------------------------------
+		 */
+		prices = new HashMap<String,java.lang.Double>();
+    	prices.put("Steak",15.99);
+    	prices.put("Chicken",10.99);
+    	prices.put("Salad",5.99);
+    	prices.put("Pizza",8.99);
+		
+    	savedPrices = (HashMap<String,java.lang.Double>)prices.clone();
+    	
+		cookingTimes = new HashMap<String,FoodBrandon>();
+		cookingTimes.put("Steak",new FoodBrandon ("Steak",1,2,2,1000,prices.get("Steak")));
+		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",1,2,2,1000,prices.get("Chicken")));
+		cookingTimes.put("Salad",new FoodBrandon ("Salad",1,2,2,1000,prices.get("Salad")));
+		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",1,2,3,1000,prices.get("Pizza")));
+		
+		MenuBrandon menu = new MenuBrandon(prices);
+		
+		/*--------------------------------
+		 * 
+		 * -------------------------------
+		 */
+		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleBrandon("Host",4);
 		//HostGuiBrandon hostGui = new HostGuiBrandon((RestaurantHostRoleBrandon) host);
@@ -36,7 +65,7 @@ public class RestaurantBrandon extends Restaurant {
 		//this.panel.addGui(hostGui);
 		host.setRestaurant(this);
 			
-		this.cook = new RestaurantCookRoleBrandon(null, null, null);
+		this.cook = new RestaurantCookRoleBrandon(cookingTimes, prices, savedPrices);
 		//CookGuiMatt cookGui = new CookGuiMatt((RestaurantCookRoleMatt) cook);
 		//cookGui.setPresent(false);
 		//((RestaurantCookRoleBrandon) cook).setGui(cookGui);
@@ -44,16 +73,25 @@ public class RestaurantBrandon extends Restaurant {
 		//this.panel.addGui(cookGui);
 		cook.setRestaurant(this);
 			
-		this.cashier = new RestaurantCashierRoleBrandon(null, 0);
+		this.cashier = new RestaurantCashierRoleBrandon(cookingTimes, 0);
 		//CashierGuiMatt cashierGui = new CashierGuiMatt((RestaurantCashierRoleMatt) cashier);
 		//cashierGui.setPresent(false);
 		//((RestaurantCashierRoleBrandon) cashier).setGui(cashierGui);
 		//((RestaurantCashierRoleBrandon) cashier).setHost((RestaurantHostRoleMatt) host);
 		//this.panel.addGui(cashierGui);
 		cashier.setRestaurant(this);
-				
+		
+		kitchen = new KitchenGuiBrandon(4);
+		
+		this.panel.addGui(kitchen);
+		
 		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 	}
+	
+	KitchenGuiBrandon kitchen;
+	HashMap<String,FoodBrandon> cookingTimes;
+	HashMap<String,java.lang.Double> prices;
+	HashMap<String,java.lang.Double> savedPrices;
 
 	@Override
 	public void closingTime() {
@@ -89,7 +127,7 @@ public class RestaurantBrandon extends Restaurant {
 				}
 				
 				if (waiters.size() < MAXWAITERS) {
-					RestaurantWaiterRole newWaiter = new RestaurantWaiterRoleBrandon((HostBrandon)host,new HashMap<String,java.lang.Double>(),"");
+					RestaurantWaiterRoleBrandon newWaiter = new RestaurantWaiterRoleBrandon((HostBrandon)host,prices,"");
 					System.out.println("ADDING A WAITER");
 					/*if (waiters.size() % 2 == 0) {
 						newWaiter = new RestaurantWaiterRoleMattNormal();
@@ -100,6 +138,7 @@ public class RestaurantBrandon extends Restaurant {
 					((RestaurantWaiterRoleBrandon) newWaiter).setGui(waiterGui);
 					waiters.add(newWaiter);
 					waiterGui.setPresent(true);
+					waiterGui.setKitchen(kitchen);
 					waiterGui.setTables(((RestaurantAnimationPanelBrandon)panel).getTables());
 					((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) newWaiter);
 					//UpdateWaiterHomePositions();
@@ -107,6 +146,8 @@ public class RestaurantBrandon extends Restaurant {
 					this.panel.addGui(waiterGui);
 					System.out.println(this.panel);
 					newWaiter.setRestaurant(this);
+					newWaiter.setChef((CookBrandon)cook);
+					newWaiter.setCashier((CashierBrandon)cashier);
 					((RestaurantWaiterRoleBrandon) newWaiter).getGui().setPresent(true);
 					return newWaiter;
 				}

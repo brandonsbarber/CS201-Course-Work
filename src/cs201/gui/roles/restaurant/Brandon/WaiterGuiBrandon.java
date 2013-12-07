@@ -10,7 +10,7 @@ import cs201.roles.restaurantRoles.Brandon.RestaurantWaiterRoleBrandon;
 
 public class WaiterGuiBrandon implements Gui
 {
-	//private KitchenGui kitchen;
+	private KitchenGuiBrandon kitchen;
 	
     private RestaurantWaiterRoleBrandon agent = null;
 
@@ -47,10 +47,10 @@ public class WaiterGuiBrandon implements Gui
         this.gui = gui;
     }
     
-    /*public void setKitchen(KitchenGui k)
+    public void setKitchen(KitchenGuiBrandon k)
     {
     	this.kitchen = k;
-    }*/
+    }
     
     public void setTables(HashMap<Integer,Dimension> newTables)
     {
@@ -114,8 +114,9 @@ public class WaiterGuiBrandon implements Gui
     
     public void doGoToKitchen(int tableOrderNum)
     {
-    	/*xDestination = KitchenGui.COUNTER_X + KitchenGui.COUNTER_WIDTH;
-    	yDestination = KitchenGui.COUNTER_Y+(int)(kitchen.getTableDimension()*tableOrderNum)-WAITER_DIMEN_Y;*/
+    	xDestination = KitchenGuiBrandon.COUNTER_X + KitchenGuiBrandon.COUNTER_WIDTH;
+    	yDestination = KitchenGuiBrandon.COUNTER_Y+(int)(kitchen.getTableDimension()*tableOrderNum)-WAITER_DIMEN_Y;
+    	System.out.println("GOING TO KITCHEN");
     	eventFired = false;
     }
     

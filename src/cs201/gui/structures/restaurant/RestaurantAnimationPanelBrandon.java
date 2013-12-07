@@ -107,31 +107,8 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
         	kitchen.draw(g2);
         }*/
         
-        /*for(Gui gui : guis) {
-        	if (gui.isPresent()) {
-        		gui.updatePosition();
-        	}
-        }
-        
-        for(Gui gui : guis) {
-        	
-            if (gui.isPresent()) {
-            	
-                gui.draw(g2);
-            }
-        }*/
-        
         super.paintComponent(g2);
     }
-
-    /*public void addGui(CustomerGuiBrandon gui) {
-        guis.add(gui);
-    }
-
-    public void addGui(WaiterGuiBrandon gui) {
-        guis.add(gui);
-        System.out.println("ADDING A WAITER GUI");
-    }*/
     
     /*public void addGui(KitchenGui gui)
     {
@@ -147,14 +124,4 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
     {
     	return tables;
     }
-
-	public void pauseAnim()
-	{
-		paused = true;
-	}
-
-	public void resumeAnim()
-	{
-		paused = false;
-	}
 }
