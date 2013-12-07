@@ -392,13 +392,13 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	public void msgDeliveryFailed(/* discuss what parameters we need */) {
 		// Somehow we need to find the order... talk with Brendan
-		Order o = null; // for now assume o points to the order
+		//Order o = null; // for now assume o points to the order
 		
 		/* The delivery truck wasn't able to deliver the goods, probably because the restaurant was closed. Mark the
 		 * order as FAILED so we can try again when the restaurant is open.
 		 */
-		o.state = OrderState.FAILED;
-		
+		//o.state = OrderState.FAILED;
+		System.out.println("FAILED");
 		stateChanged();
 	}
 	

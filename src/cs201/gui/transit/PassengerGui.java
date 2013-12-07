@@ -19,9 +19,12 @@ import javax.swing.JOptionPane;
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.helper.transit.MovementDirection;
+import cs201.helper.transit.Pathfinder;
 import cs201.gui.Gui;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -134,109 +137,39 @@ public class PassengerGui implements Gui
 		findPath();
 	}
 	
+	public void doGoToLocation(int x, int y)
+	{
+		destX = x;
+		destY = y;
+		fired = false;
+		present = true;
+		
+		findPath();
+	}
+	
+	public void doRoam()
+	{
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+pass.getName(),"I AM GOING TO Point "+p);
+		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
+	}
+	
 	/*
 	 * Performs BFS to find best path
 	 */
 	private void findPath()
 	{
+		System.out.println("FINDING PATH");
 		pathfinding = true;
-		MovementDirection[][] map = city.getWalkingMap();
-		
-		Queue<MyPoint> location = new LinkedList<MyPoint>();
-		
-		ArrayList<MyPoint> visitedPoints = new ArrayList<MyPoint>();
-		
-		MyPoint startLoc = new MyPoint(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE,null,map[y/CityPanel.GRID_SIZE][x/CityPanel.GRID_SIZE]);
-		MyPoint destination = new MyPoint(destX/CityPanel.GRID_SIZE,destY/CityPanel.GRID_SIZE,null,map[y/CityPanel.GRID_SIZE][x/CityPanel.GRID_SIZE]);
-		
-		location.add(startLoc);
-		visitedPoints.add(startLoc);
-		
-		//run a BFS
-		while(!location.isEmpty())
+		try
 		{
-			MyPoint p = location.remove();
-			
-			if(p.equals(destination))
-			{
-				MyPoint head = p;
-				while(head != null)
-				{
-					moves.add(head.move);
-					head = head.prev;
-				}
-				break;
-			}
-			
-			//sidewalk direction (turn, h, or v)
-			MovementDirection currentDirection = map[p.y][p.x];
-			
-			if(p.move == MovementDirection.Horizontal || p.move == MovementDirection.Vertical || p.move == MovementDirection.None || currentDirection == MovementDirection.Turn || (p.move.isHorizontal() && currentDirection.isVertical())|| (p.move.isVertical() && currentDirection.isHorizontal()))
-			{
-				//Treat initial state like a junction
-				List<MovementDirection> validDirections = getJunctionDirections(map,p.x,p.y);
-				
-				for(MovementDirection dir : validDirections)
-				{
-					MyPoint nextPoint = getPointFromDirection(p,dir);
-					if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
-					{
-						visitedPoints.add(nextPoint);
-						location.add(nextPoint);
-					}
-				}
-			}
-			else
-			{
-				MyPoint nextPoint = getPointFromDirection(p,p.move);
-								
-				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
-				{
-					visitedPoints.add(nextPoint);
-					location.add(nextPoint);
-				}
-			}
+			moves = Pathfinder.calcTwoWayMove(city.getWalkingMap(), x, y, destX, destY);
 		}
-		
-		if(moves.isEmpty())
+		catch(IllegalArgumentException e)
 		{
-			JOptionPane.showMessageDialog(null,""+pass.getName()+": I cannot find a path.");
-		}
-		else
-		{
-			//clear first element
-			moves.pop();
+			AlertLog.getInstance().logMessage(AlertTag.GENERAL_CITY, pass.getName(), ""+e.getMessage());
 		}
 		pathfinding = false;
-	}
-
-	/*
-	 * Helper method for validity
-	 */
-	private boolean isValidPoint(MovementDirection[][] map, MyPoint nextPoint)
-	{
-		return nextPoint.x >= 0 && nextPoint.x < map[0].length && nextPoint.y >= 0 && nextPoint.y < map.length;
-	}
-
-	/*
-	 * Helper method for extending line of point direction
-	 */
-	private MyPoint getPointFromDirection(MyPoint p, MovementDirection dir)
-	{
-		switch(dir)
-		{
-		case Right:
-			return new MyPoint(p.x+1,p.y,p,dir);
-		case Up:
-			return new MyPoint(p.x,p.y-1,p,dir);
-		case Down:
-			return new MyPoint(p.x,p.y+1,p,dir);
-		case Left:
-			return new MyPoint(p.x-1,p.y,p,dir);
-		default:
-			return new MyPoint(p.x,p.y-1,p,MovementDirection.Up);
-		
-		}
 	}
 
 	/**
@@ -314,54 +247,6 @@ public class PassengerGui implements Gui
 		}
 	}
 	
-	/*
-	 * Helper method for getting junction
-	 */
-	private List<MovementDirection> getJunctionDirections(MovementDirection[][] map,int x2, int y2)
-	{
-		List<MovementDirection> validDirections = new ArrayList<MovementDirection>();
-		
-		int leftX = x2-1;
-		int rightX = x2+1;
-		int upY = y2 - 1;
-		int downY = y2 + 1;
-		
-		if(inBounds(map,leftX,y2) && getDirection(map,leftX, y2) != MovementDirection.None)
-		{
-			validDirections.add(MovementDirection.Left);
-		}
-		if(inBounds(map,rightX,y2) && getDirection(map,rightX, y2) != MovementDirection.None)
-		{
-			validDirections.add(MovementDirection.Right);
-		}
-		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) != MovementDirection.None)
-		{
-			validDirections.add(MovementDirection.Up);
-		}
-		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) != MovementDirection.None)
-		{
-			validDirections.add(MovementDirection.Down);
-		}
-		return validDirections;
-	}
-
-	/*
-	 * Helper method with swapping for better readability
-	 */
-	private MovementDirection getDirection(MovementDirection[][] map, int x, int y)
-	{
-		System.out.println("GIVING "+map[y][x]+" "+x+" "+y);
-		return map[y][x];
-	}
-	
-	/*
-	 * Helper method for bounds
-	 */
-	private boolean inBounds(MovementDirection[][] map, int x2, int y2)
-	{
-		return y2 < map.length && y2 >= 0 && x2 >= 0 && x2 < map[y2].length;
-	}
-
 	/**
 	 * Gets whether the gui is present and should be rendered
 	 */

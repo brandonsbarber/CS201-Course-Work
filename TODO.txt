@@ -11,10 +11,10 @@ TODO:
 [ ] Prettier animations
 [ ] Art Manager (add all art assets here)
 [ ] Non-norms
-    [ ] Truck failed delivery / market failed delivery status
+    [-] Truck failed delivery / market failed delivery status
     [ ] Collisions
     [ ] Out of food at home
-[ ] Person walks aimlessly around city
+[-] Person walks aimlessly around city
 [ ] Better scenario manager
 [ ] Configuration File I/O
 

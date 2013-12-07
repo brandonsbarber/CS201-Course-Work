@@ -9,6 +9,8 @@ import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.transit.BusStop;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -17,9 +19,25 @@ import cs201.structures.transit.BusStop;
  */
 public class BusAgent extends VehicleAgent implements Bus
 {
-	public List<Passenger> passengers;
-	List<Passenger> justBoarded;
-	List<Passenger> removalList;
+	class MyPassenger
+	{
+		Passenger p;
+		PassengerState s;
+		
+		public MyPassenger(Passenger p)
+		{
+			this.p = p;
+			this.s = PassengerState.None;
+		}
+	}
+	
+	enum PassengerState{None, Sitting, Leaving, InformedArrived};
+	
+	public List<MyPassenger> passengers;
+
+	private List<Passenger> queriedList;
+	
+	List<Passenger> justAdded;
 	
 	BusRoute route;
 	
@@ -33,9 +51,11 @@ public class BusAgent extends VehicleAgent implements Bus
 	 */
 	public BusAgent(BusRoute route,int stopNum)
 	{
-		passengers = Collections.synchronizedList(new ArrayList<Passenger>());
-		justBoarded = new ArrayList<Passenger>();
-		removalList = new ArrayList<Passenger>();
+		passengers = Collections.synchronizedList(new ArrayList<MyPassenger>());
+		
+		queriedList = Collections.synchronizedList(new ArrayList<Passenger>());
+		justAdded = Collections.synchronizedList(new ArrayList<Passenger>());
+		
 		this.route = route;
 		sem = new Semaphore(0);
 		
@@ -65,8 +85,14 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		removalList.add(p);
-		sem.release();
+		for(MyPassenger pass : passengers)
+		{
+			if(pass.p == p)
+			{
+				pass.s = PassengerState.Leaving;
+			}
+		}
+		stateChanged();
 	}
 
 	/**
@@ -76,7 +102,14 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgStaying(Passenger p)
 	{
-		sem.release();
+		for(MyPassenger pass : passengers)
+		{
+			if(pass.p == p)
+			{
+				pass.s = PassengerState.Sitting;
+			}
+		}
+		stateChanged();
 	}
 
 	/**
@@ -86,10 +119,11 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
-		Do("Passenger "+p+" has boarded");
-		passengers.add(p);
-		justBoarded.add(p);
-		sem.release();
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Passenger "+p+" has boarded");
+		queriedList.remove(p);
+		justAdded.add(p);
+		passengers.add(new MyPassenger(p));
+		stateChanged();
 	}
 
 	/**
@@ -99,18 +133,42 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgNotBoarding(Passenger p)
 	{
-		sem.release();
+		queriedList.remove(p);
+		stateChanged();
 	}
 	
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		if(route != null)
+		if(route == null)
 		{
-			goToNextStop();
-			return true;
+			return false;
 		}
-		return false;
+		
+		for(int i = 0; i < passengers.size(); i++)
+		{
+			if(passengers.get(i).s == PassengerState.Leaving)
+			{
+				passengers.remove(i);
+				return true;
+			}
+		}
+		for(MyPassenger pass : passengers)
+		{
+			if(pass.s == PassengerState.InformedArrived)
+			{
+				return false;
+			}
+		}
+		if(!queriedList.isEmpty())
+		{
+			return false;
+		}
+		
+		goToNextStop();
+		
+		//always continues route
+		return true;
 	}
 
 	/*
@@ -118,46 +176,27 @@ public class BusAgent extends VehicleAgent implements Bus
 	 */
 	private void goToNextStop()
 	{
+		BusStop current = (BusStop)currentLocation;
+		current.removePassengers(this, justAdded);
+		
 		BusStop s = route.getNextStop();
 		msgSetDestination(s);
 		
 		animate();
 		
-		for(Passenger pass : passengers)
+		for(MyPassenger pass : passengers)
 		{
-			pass.msgReachedDestination(s);
-			try
-			{
-				sem.acquire();
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+			pass.s = PassengerState.InformedArrived;
+			pass.p.msgReachedDestination(s);
 		}
-		passengers.removeAll(removalList);
-		removalList.clear();
 		
 		List<Passenger> newPassengers = s.getPassengerList(this);
 		
 		for(Passenger pass : newPassengers)
 		{
+			queriedList.add(pass);
 			pass.msgPleaseBoard(this);
-			if(!testing )
-			{
-				try
-				{
-					sem.acquire();
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
 		}
-		
-		s.removePassengers(this,justBoarded);
-		justBoarded.clear();
 	}
 
 	/**
