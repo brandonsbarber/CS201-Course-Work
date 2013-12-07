@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JOptionPane;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.transit.PassengerGui;
 import cs201.helper.transit.BusRoute;
@@ -160,6 +162,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void setCurrentLocation(Structure s2)
 	{
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,""+getName(),"Current location set to  "+s2);
 		currentLocation = s2;
 		if(gui != null){gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);}
 	}
@@ -191,7 +194,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		AlertLog.getInstance().logMessage(AlertTag.GENERAL_CITY,""+getName(),"Received message to go to: "+s);
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,""+getName(),"Received message to go to: "+s);
 		stateChanged();
 	}
 
@@ -239,6 +242,7 @@ public class PassengerRole extends Role implements Passenger
 		}
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
+			JOptionPane.showMessageDialog(null,"HELLO");
 			finishMoving();
 			return false;
 		}
@@ -286,6 +290,7 @@ public class PassengerRole extends Role implements Passenger
 		{
 			e1.printStackTrace();
 		}
+		gui.setPresent(false);
 		setActive(false);
 	}
 
@@ -368,12 +373,14 @@ public class PassengerRole extends Role implements Passenger
 	private void finishMoving()
 	{
 		//message person done moving
-		setActive(false);
 		gui.setPresent(false);
+		setActive(false);
 		if(myPerson != null)
 		{
 			myPerson.doneMoving(currentLocation);
+			System.out.println("TELLING DONE MOVING");
 		}
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,""+getName(),"Done moving");
 	}
 	
 	/*
