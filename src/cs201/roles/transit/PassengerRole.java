@@ -152,7 +152,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void msgAnimationFinished()
 	{
-		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Animation has finished");
+		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,getName(),"Animation has finished");
 		animationPause.release();
 	}
 
