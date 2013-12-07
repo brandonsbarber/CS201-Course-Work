@@ -10,9 +10,6 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
-import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
-import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
-import cs201.gui.roles.restaurant.Matt.HostGuiMatt;
 import cs201.helper.CityTime;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
 import cs201.roles.Role;
@@ -24,6 +21,8 @@ import cs201.roles.restaurantRoles.Brandon.*;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
+
+import cs201.gui.structures.restaurant.*;
 
 public class RestaurantBrandon extends Restaurant {
 
@@ -105,6 +104,7 @@ public class RestaurantBrandon extends Restaurant {
 					((RestaurantWaiterRoleBrandon) newWaiter).setGui(waiterGui);
 					waiters.add(newWaiter);
 					waiterGui.setPresent(true);
+					waiterGui.setTables(((RestaurantAnimationPanelBrandon)panel).getTables());
 					((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) newWaiter);
 					//UpdateWaiterHomePositions();
 					//((RestaurantWaiterRoleBrandon) newWaiter).setRotatingStand(stand);
