@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
  * @author Brandon
  *
  */
+@SuppressWarnings("serial")
 public class SettingsPanel extends JPanel implements ActionListener
 {
 	private JComboBox<String> categories;

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,6 +44,7 @@ import cs201.structures.restaurant.RestaurantBen;
 import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 
+@SuppressWarnings("serial")
 public class SimCity201 extends JFrame {
 	private final int SIZEX = 1200;
 	private final int SIZEY	= 800;

@@ -20,6 +20,8 @@ import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.structures.market.MarketStructure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Cook Agent
@@ -138,8 +140,8 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
-		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.myPerson = null;
 		this.gui.setPresent(false);
 	}
 	
@@ -182,26 +184,26 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
-		Do("Leaving work.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Leaving work.");
 	}
 	
 	private void DoCookOrder(Order o) {
-		Do("Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime + " for Table " + o.tableNum);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
 		gui.addCookingItem(o.choice);
 	}
 	
 	private void DoOutOfFood(Food f) {
-		Do("Out of " + f.type + "!");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Out of " + f.type + "!");
 	}
 	
 	private void DoInformWaiter(Order o) {
-		Do("Telling " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Telling " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
 		gui.removeCookingItem(o.choice);
 		gui.addPlatingItem(o.choice);
 	}
 	
 	private void DoOrderFood(Food f, MarketStructure m) {
-		Do("Ordering " + f.type + " from " + m + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Ordering " + f.type + " from " + m + ".");
 	}
 	
 	public void emptyInventory() {
@@ -269,7 +271,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		 * @return String representing this order
 		 */
 		public String toString() {
-			return (choice + " for table " + tableNum);
+			return (choice + " for Table " + tableNum);
 		}
 	}
 	

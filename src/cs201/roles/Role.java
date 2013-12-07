@@ -103,9 +103,12 @@ public abstract class Role {
 	}
 	
 	/**
+	 * This function is now deprecated after the addition of the Trace Panel. Please use that instead.
+	 * 
 	 * General-purpose function for printing to the terminal. Format: "[RestaurantCustomerRole] Matt: Ordered steak"
 	 * @param msg The message that should be printed (i.e. Ordered Steak)
 	 */
+	@Deprecated
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
 		output.append("[");

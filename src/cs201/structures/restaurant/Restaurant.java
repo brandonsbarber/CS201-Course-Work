@@ -14,6 +14,7 @@ import cs201.structures.Structure;
  * @author Matthew Pohlmann
  *
  */
+@SuppressWarnings("serial")
 public abstract class Restaurant extends Structure {
 	private final double INITIALMONEY = 100;
 	

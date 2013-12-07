@@ -22,12 +22,15 @@ import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattNormal;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Matthew Pohlmann's Restaurant Structure for SimCity201
  * @author Matthew Pohlmann
  *
  */
+@SuppressWarnings("serial")
 public class RestaurantMatt extends Restaurant {
 	private final int INITIALWAITERS = 2;
 	private final int MAXWAITERS = 4;
@@ -148,7 +151,7 @@ public class RestaurantMatt extends Restaurant {
 			return newCustomer;
 		}
 		default: {
-			Do("Wrong Intention provided in getRole(Intention)");
+			AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Wrong Intention provided in getRole(Intention)");
 			return null;
 		}
 		}
@@ -158,7 +161,7 @@ public class RestaurantMatt extends Restaurant {
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
 			for (RestaurantWaiterRole w : waiters) {
 				if (w.getPerson() != null) {
-					Do("Open for business!");
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
 					this.isOpen = true;
 					return;
 				}
@@ -190,7 +193,7 @@ public class RestaurantMatt extends Restaurant {
 		}
 		
 		if (time.equalsIgnoreDay(this.closingTime)) {
-			Do("It's closing time!");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
