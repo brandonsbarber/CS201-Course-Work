@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
@@ -131,6 +132,15 @@ public class SimCity201 extends JFrame {
 		Scanner in = new Scanner(System.in);
 
 		boolean running = true;
+		
+		List<String> scenarioList = new ArrayList<String>();
+		scenarioList.add("Normative Restaurant");
+		scenarioList.add("Normative Restaurant: Two Customers, Two Waiters");
+		scenarioList.add("Normative Bus");
+		scenarioList.add("Normative Walking");
+		
+		ScenarioFrame scenarioPanel = new ScenarioFrame(scenarioList);
+		scenarioPanel.setVisible(true);
 
 		while(running)
 		{
