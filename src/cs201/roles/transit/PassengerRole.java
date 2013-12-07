@@ -1,5 +1,6 @@
 package cs201.roles.transit;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,8 @@ import cs201.interfaces.roles.transit.Passenger;
 import cs201.roles.Role;
 import cs201.structures.Structure;
 import cs201.structures.transit.BusStop;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -43,17 +46,19 @@ public class PassengerRole extends Role implements Passenger
 	{
 		Structure s;
 		MoveType m;
+		Point p;
 		
 		public Move(Structure struct, MoveType move)
 		{
 			s = struct;
 			m = move;
+			p = s.getEntranceLocation();
 		}
 	};
 	
 	enum MoveType {Walk,Bus,Car};
 	
-	public enum PassengerState {None,Waiting,Boarding,InTransit,Arrived};
+	public enum PassengerState {None,Waiting,Boarding,InTransit,Arrived,Roaming};
 	public PassengerState state;
 	
 	Semaphore waitingForVehicle;
@@ -132,6 +137,13 @@ public class PassengerRole extends Role implements Passenger
 	{
 		
 	}
+	
+	public void msgStartRoaming()
+	{
+		setCurrentLocation(currentLocation);
+		state = PassengerState.Roaming;
+		stateChanged();
+	}
 
 	/**
 	 * Signals that the animation is finished performing
@@ -149,7 +161,7 @@ public class PassengerRole extends Role implements Passenger
 	public void setCurrentLocation(Structure s2)
 	{
 		currentLocation = s2;
-		if(gui != null){gui.setLocation((int)currentLocation.x, (int)currentLocation.y);}
+		if(gui != null){gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);}
 	}
 
 	/**
@@ -179,7 +191,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		Do("Received message to go to: "+s);
+		AlertLog.getInstance().logMessage(AlertTag.GENERAL_CITY,""+getName(),"Received message to go to: "+s);
 		stateChanged();
 	}
 
@@ -220,6 +232,11 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(state == PassengerState.Roaming)
+		{
+			roam();
+			return false;
+		}
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
 			finishMoving();
@@ -247,6 +264,30 @@ public class PassengerRole extends Role implements Passenger
 			return true;
 		}
 		return false;
+	}
+
+	private void roam()
+	{
+		System.out.println("ROAMING");
+		gui.doRoam();
+		try
+		{
+			animationPause.acquire();
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
+		gui.doGoToLocation(currentLocation);
+		try
+		{
+			animationPause.acquire();
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
+		setActive(false);
 	}
 
 	/*

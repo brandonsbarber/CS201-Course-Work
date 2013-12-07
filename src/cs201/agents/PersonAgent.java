@@ -119,6 +119,7 @@ public class PersonAgent extends Agent implements Person {
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
+		passengerRole.setCurrentLocation(this.currentLocation);
 		this.vehicle = vehicle;
 		if (vehicle != null) {
 			passengerRole.addCar((CarAgent) vehicle);
@@ -278,8 +279,8 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you don't even have a home to return to
 		if (state == PersonState.Awake) {
-			//passengerRole.active = true;
-			//passengerRole.roamCity();
+			passengerRole.setActive(true);
+			passengerRole.msgStartRoaming();
 			return true;
 		}
 		

@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
+import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.helper.CityTime;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.roles.transit.Passenger;
@@ -43,6 +44,7 @@ public class BusStop extends Structure
 		waitingPassengers = Collections.synchronizedList(new ArrayList<Passenger>());
 		addRequests = new ArrayList<Passenger>();
 		passengerAccess = new Semaphore(1,true);
+		((BusStopAnimationPanel)p).setStop(this);
 	}
 
 	/**
