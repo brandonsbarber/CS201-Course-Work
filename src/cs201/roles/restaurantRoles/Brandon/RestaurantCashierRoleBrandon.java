@@ -74,11 +74,11 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	public RestaurantCashierRoleBrandon(Map<String,FoodBrandon> foodPrices, double startBudget)
 	{
 		prices = new HashMap<String,FoodBrandon>();
-		for(String s : foodPrices.keySet())
+		/*for(String s : foodPrices.keySet())
 		{
 			//Preserve pointer so there is universal modification
 			prices.put(s,foodPrices.get(s));
-		}
+		}*/
 		bills = new ArrayList<Bill>();
 		penaltyList = new HashMap<CustomerBrandon,Double>();
 		

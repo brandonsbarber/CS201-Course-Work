@@ -67,6 +67,7 @@ public class CustomerGuiBrandon implements Gui{
 	}
 
 	public void draw(Graphics2D g) {
+		System.out.println("HELLO?");
 		g.setColor(Color.GREEN);
 		g.fillRect(xPos, yPos, CUSTOMER_SIZE_X, CUSTOMER_SIZE_Y);
 		

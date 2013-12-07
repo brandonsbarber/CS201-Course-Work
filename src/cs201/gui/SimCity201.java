@@ -26,6 +26,7 @@ import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelBrandon;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.gui.transit.BusGui;
@@ -43,6 +44,7 @@ import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.RestaurantBen;
+import cs201.structures.restaurant.RestaurantBrandon;
 import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 
@@ -182,7 +184,19 @@ public class SimCity201 extends JFrame {
 	}
 	
 	private void brandonRestaurant() {
+CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		createPerson("Cashier", r, r, Intention.RestaurantWaiter, r, null);
+		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
 	}
 
 	private void normativeRestaurant() {

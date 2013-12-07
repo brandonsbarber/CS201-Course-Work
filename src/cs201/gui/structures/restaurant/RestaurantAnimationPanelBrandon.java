@@ -3,6 +3,8 @@ package cs201.gui.structures.restaurant;
 import javax.swing.*;
 
 import cs201.gui.Gui;
+import cs201.gui.SimCity201;
+import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
 
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-public class RestaurantAnimationPanelBrandon extends JPanel implements ActionListener {
+public class RestaurantAnimationPanelBrandon extends StructurePanel implements ActionListener {
 
     public static final int TABLE_DIMEN_Y = 50;
     public static final int TABLE_DIMEN_X = 50;
@@ -43,20 +45,21 @@ public class RestaurantAnimationPanelBrandon extends JPanel implements ActionLis
 	public static final int BREAK_X = 200;
 	public static final int BREAK_Y = 400;
 	
-    private Image bufferImage;
+	public static final int WINDOWX = 500;
+	public static final int WINDOWY = 500;
+	
     private Dimension bufferSize;
     
     //private KitchenGui kitchen;
     
     private HashMap<Integer,Dimension> tables = new HashMap<Integer,Dimension>();
 
-    private List<Gui> guis = new ArrayList<Gui>();
-
     private boolean paused = false;
     
-    public RestaurantAnimationPanelBrandon(int width, int height)
+    public RestaurantAnimationPanelBrandon(int instance, SimCity201 city)
     {
-    	bufferSize = new Dimension(width,height);
+    	super(instance,city);
+    	bufferSize = new Dimension(WINDOWX,WINDOWY);
     	tables.put(1,new Dimension(200,200));
     	tables.put(2,new Dimension(100,200));
     	tables.put(3,new Dimension(100,100));
@@ -64,10 +67,6 @@ public class RestaurantAnimationPanelBrandon extends JPanel implements ActionLis
     	Timer timer = new Timer(REFRESH_RATE, this );
     	timer.start();
     }
-
-	public void actionPerformed(ActionEvent e) {
-		repaint();
-	}
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
@@ -108,29 +107,31 @@ public class RestaurantAnimationPanelBrandon extends JPanel implements ActionLis
         	kitchen.draw(g2);
         }*/
         
-        if(!paused)
-        {
-        	for(Gui gui : guis) {
-        		if (gui.isPresent()) {
-        			gui.updatePosition();
-        		}
+        /*for(Gui gui : guis) {
+        	if (gui.isPresent()) {
+        		gui.updatePosition();
         	}
         }
-
+        
         for(Gui gui : guis) {
+        	
             if (gui.isPresent()) {
+            	
                 gui.draw(g2);
             }
-        }
+        }*/
+        
+        super.paintComponent(g2);
     }
 
-    public void addGui(CustomerGuiBrandon gui) {
+    /*public void addGui(CustomerGuiBrandon gui) {
         guis.add(gui);
     }
 
     public void addGui(WaiterGuiBrandon gui) {
         guis.add(gui);
-    }
+        System.out.println("ADDING A WAITER GUI");
+    }*/
     
     /*public void addGui(KitchenGui gui)
     {

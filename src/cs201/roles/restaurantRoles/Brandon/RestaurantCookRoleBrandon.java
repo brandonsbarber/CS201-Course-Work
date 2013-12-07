@@ -105,11 +105,11 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	public RestaurantCookRoleBrandon(Map<String,FoodBrandon> cookingTimes, HashMap<String, Double> prices, HashMap<String, Double> savedPrices)
 	{
 		cookTime = Collections.synchronizedMap(new HashMap<String,FoodBrandon>());
-		for(String s : cookingTimes.keySet())
+		/*for(String s : cookingTimes.keySet())
 		{
 			//Preserve pointer so there is universal modification
 			cookTime.put(s,cookingTimes.get(s));
-		}
+		}*/
 		orders = Collections.synchronizedList(new ArrayList<Order>());
 		timer = new Timer();
 		markets = Collections.synchronizedList(new ArrayList<MyMarket>());

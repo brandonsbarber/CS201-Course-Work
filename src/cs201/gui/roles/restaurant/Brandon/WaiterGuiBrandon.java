@@ -58,6 +58,7 @@ public class WaiterGuiBrandon implements Gui
     }
 
     public void updatePosition() {
+    	//System.out.println("Updating Position");
         if (xPos < xDestination)
             xPos++;
         else if (xPos > xDestination)
@@ -76,6 +77,7 @@ public class WaiterGuiBrandon implements Gui
     }
 
     public void draw(Graphics2D g) {
+    	//System.out.println("DRAWING WAITER");
         g.setColor(Color.MAGENTA);
         g.fillRect(xPos, yPos, WAITER_DIMEN_X, WAITER_DIMEN_Y);
         
