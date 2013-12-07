@@ -78,4 +78,9 @@ public class Constants {
      */
     public static int ANIMATION_SPEED = 10;
 
+    /**
+     * Default path from which to load the map of the city
+     */
+    public static final String MAP_PATH = "data/Map.txt";
+    
 }

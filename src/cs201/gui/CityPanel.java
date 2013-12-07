@@ -20,6 +20,7 @@ import javax.swing.Timer;
 
 import cs201.helper.CityDirectory;
 import cs201.helper.Constants;
+import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
 import cs201.structures.Structure;
 
@@ -63,6 +64,15 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	public CityPanel()
 	{
 		Timer timer = new Timer(1000/240,this);
+		
+		try
+		{
+			MapParser.parseMap();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		buildings = Collections.synchronizedList(new ArrayList<Structure>());
 		guis = Collections.synchronizedList(new ArrayList<Gui>());
