@@ -144,7 +144,8 @@ public class SimCity201 extends JFrame {
 					"10) Ben's Normative Restaurant\n" +
 					"11) Ben's Normative Restaurant: Two Customers, Two Waiters\n" +
 					"12) Market Consumer Purchase Car\n" +
-					"13) Ben's Normative Restaurant Delivery\nYour choice:");
+					"13) Ben's Normative Restaurant Delivery\n" + 
+					"14) Restaurant Shift Change\nYour choice:");
 			String choice = in.nextLine();
 			try
 			{

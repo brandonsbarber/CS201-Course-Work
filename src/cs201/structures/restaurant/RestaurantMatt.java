@@ -198,7 +198,14 @@ public class RestaurantMatt extends Restaurant {
 			checkIfRestaurantShouldOpen();
 		}
 		
-		// TODO shifts
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+		}
 		
 		if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
