@@ -188,7 +188,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	}
 	
 	private void DoCookOrder(Order o) {
-		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime + " for Table " + o.tableNum);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
 		gui.addCookingItem(o.choice);
 	}
 	
@@ -271,7 +271,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		 * @return String representing this order
 		 */
 		public String toString() {
-			return (choice + " for table " + tableNum);
+			return (choice + " for Table " + tableNum);
 		}
 	}
 	
