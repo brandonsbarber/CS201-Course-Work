@@ -2,7 +2,10 @@ package cs201.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,17 +22,19 @@ import javax.swing.JToggleButton;
 
 
 /**
- * The frame shown to select between scenarios to run.
+ * The frame shown to switch between different SimCity201 scenarios.
+ * Also functions as a modal dialog to select which scenario to start with.
  * @author Ben Doherty
  *
  */
-public class ScenarioFrame extends JFrame {
+public class ScenarioPanel extends JDialog implements ActionListener {	
 
 	/* *********
 	 * CONSTANTS
 	 * *********
 	 */
 	
+	private static final int BORDER_THICKNESS = 20;
 	private static final int FRAME_HEIGHT 	= 500;
 	private static final int FRAME_WIDTH 	= 500;
 	
@@ -38,6 +44,13 @@ public class ScenarioFrame extends JFrame {
 	 */
 	JPanel panel = new JPanel();
 	ButtonGroup buttonGroup = new ButtonGroup();
+	
+	/* *********
+	 * VARIABLES
+	 * *********
+	 */
+	private int chosenScenario = 0;
+	boolean modalSelectionMode = false;
 	
 	/*
 	 * Managing the scenarios
@@ -57,14 +70,14 @@ public class ScenarioFrame extends JFrame {
 	/**
 	 * Creates a blank ScenarioFrame with no scenarios.
 	 */
-	public ScenarioFrame() {
+	public ScenarioPanel() {
 		this(new ArrayList<String>());
 	}
 	
 	/**
 	 * Creates a ScenarioFrame with the given scenarios.
 	 */
-	public ScenarioFrame(List<String> initialScenarios) {
+	public ScenarioPanel(List<String> initialScenarios) {
 		// Set the initial scenarios
 		scenarios = initialScenarios;
 		
@@ -74,11 +87,24 @@ public class ScenarioFrame extends JFrame {
 		setMaximumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		this.getContentPane().add(panel);
-		panel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+		panel.setBorder(BorderFactory.createEmptyBorder(BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		setUpComponents();
-		
+	}
+	
+	/**
+	 * Shows the Frame modally for the user to choose a scenario.
+	 * Access the chosen scenario number via getChoosenScenario()
+	 */
+	public void showModalScenarioSelection() {
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		modalSelectionMode = true;
+		this.setVisible(true);
+	}
+	
+	public int getChosenScenario() {
+		return chosenScenario;
 	}
 	
 	private void setUpComponents() {
@@ -98,8 +124,12 @@ public class ScenarioFrame extends JFrame {
 		// Go through each scenario and add a button for it
 		int num = 1;
 		for (String scenario : scenarios) {
+			// Create the button
 			JToggleButton newButton = new JToggleButton(num + ") " + scenario);
 			newButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+			newButton.addActionListener(this);
+			
+			// Add it to our list and our panel
 			scenarioButtons.add(newButton);
 			panel.add(newButton);
 			buttonGroup.add(newButton);
@@ -114,5 +144,23 @@ public class ScenarioFrame extends JFrame {
 		for (JToggleButton thisButton : scenarioButtons) {
 			panel.remove(thisButton);
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (modalSelectionMode) {
+			chosenScenario = getButtonIndex((JToggleButton)e.getSource()) + 1;
+			modalSelectionMode = false;
+			this.setVisible(false);
+		}
+	}
+	
+	private int getButtonIndex(JToggleButton button) {
+		for (int i = 0; i < scenarioButtons.size(); i++) {
+			if (scenarioButtons.get(i) == button) {
+				return i;
+			}
+		}
+		return 0;
 	}
 }

@@ -138,59 +138,39 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Normative Restaurant: Two Customers, Two Waiters");
 		scenarioList.add("Normative Bus");
 		scenarioList.add("Normative Walking");
+		scenarioList.add("Normative Driving");
+		scenarioList.add("Market Restaurant Delivery (to show truck)");
+		scenarioList.add("Normative Market");
+		scenarioList.add("Normative Residence Test");
+		scenarioList.add("Normative Apartment Complex");
+		scenarioList.add("Ben's Normative Restaurant");
+		scenarioList.add("Ben's Normative Restaurant: Two Customers, Two Waiters");
+		scenarioList.add("Market Consumer Purchase Car");
+		scenarioList.add("Ben's Normative Restaurant Delivery");
+		scenarioList.add("Restaurant Shift Change");
+		scenarioList.add("50 People");
 		
-		ScenarioFrame scenarioPanel = new ScenarioFrame(scenarioList);
-		scenarioPanel.setVisible(true);
+		ScenarioPanel scenarioPanel = new ScenarioPanel(scenarioList);
+		scenarioPanel.showModalScenarioSelection();
 
-		while(running)
+		switch(scenarioPanel.getChosenScenario())
 		{
-			System.out.print("Which scenario would you like to run?\n" +
-					"1) Normative Restaurant\n" +
-					"2) Normative Restaurant: Two Customers, Two Waiters\n" +
-					"3) Normative Bus\n" +
-					"4) Normative Walking\n" +
-					"5) Normative Driving\n" +
-					"6) Market Restaurant Delivery (to show truck)\n" +
-					"7) Normative Market\n"+
-					"8) Normative Residence Test\n" +
-					"9) Normative Apartment Complex\n"+
-					"10) Ben's Normative Restaurant\n" +
-					"11) Ben's Normative Restaurant: Two Customers, Two Waiters\n" +
-					"12) Market Consumer Purchase Car\n" +
-					"13) Ben's Normative Restaurant Delivery\n" + 
-					"14) Restaurant Shift Change\n" + 
-					"15) 50 People\nYour choice:");
-			String choice = in.nextLine();
-			try
-			{
-				int choiceNum = Integer.parseInt(choice);
-				switch(choiceNum)
-				{
-					case 1: normativeRestaurant();running = false; break;
-					case 2: normativeRestaurantTwoCustomersTwoWaiters(); running = false; break;
-					case 3: normativeBus(); running = false; break;
-					case 4: normativeWalking(); running = false; break;
-					case 5: normativeDriving(); running = false; break;
-					case 6: normativeMarketRestaurantDelivery(); running = false; break;
-					case 7: normativeMarket(); running = false; break;
-					case 8: normativeResidence(); running = false; break;
-					case 9: normativeApartmentComplex(); running = false; break;
-					case 10: normativeRestaurantBen(); running = false; break;
-					case 11: normativeRestaurantBenTwoOfEach(); running = false; break;
-					case 12: marketConsumerCar(); running = false; break;
-					case 13: normativeMarketRestaurantBenDelivery(); running = false; break;
-					case 14: restaurantShiftChange(); running = false; break;
-					case 15: fiftyPeople(); running = false; break;
-					default: System.out.println("Please enter a number from the range.");
-				}
-			}
-			catch(NumberFormatException e)
-			{
-				System.out.println("Please enter a valid number.");
-				continue;
-			}
+			case 1: normativeRestaurant(); break;
+			case 2: normativeRestaurantTwoCustomersTwoWaiters(); break;
+			case 3: normativeBus(); break;
+			case 4: normativeWalking(); break;
+			case 5: normativeDriving(); break;
+			case 6: normativeMarketRestaurantDelivery(); break;
+			case 7: normativeMarket(); break;
+			case 8: normativeResidence(); break;
+			case 9: normativeApartmentComplex(); break;
+			case 10: normativeRestaurantBen(); break;
+			case 11: normativeRestaurantBenTwoOfEach(); break;
+			case 12: marketConsumerCar(); break;
+			case 13: normativeMarketRestaurantBenDelivery(); break;
+			case 14: restaurantShiftChange(); break;
+			case 15: fiftyPeople(); break;
 		}
-		in.close();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
