@@ -113,7 +113,7 @@ public abstract class VehicleGui implements Gui
 	}
 	
 	/**
-	 * Draws the GUI in the given graphcis object
+	 * Draws the GUI in the given graphics object
 	 * @param g the graphics object in which to draw
 	 */
 	public void draw(Graphics2D g)
