@@ -44,6 +44,7 @@ public class CarAgent extends VehicleAgent implements Car
 	{
 		sem = new Semaphore(0,true);
 		pickups = Collections.synchronizedList(new ArrayList<PickupRequest>());
+		print("I am at location: "+currentLocation);
 	}
 	
 	/**
@@ -144,6 +145,11 @@ public class CarAgent extends VehicleAgent implements Car
 	 */
 	private void processPickup(PickupRequest removed)
 	{
+		if(currentLocation == null)
+		{
+			msgSetLocation(removed.start);
+		}
+		
 		msgSetDestination(removed.start);
 				
 		animate();
