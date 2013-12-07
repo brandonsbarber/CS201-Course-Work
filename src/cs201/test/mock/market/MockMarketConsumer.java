@@ -34,6 +34,13 @@ public class MockMarketConsumer extends Mock implements MarketConsumer {
 		System.out.println(msg);
 		log.add(new LoggedEvent(msg));
 	}
+	
+	public void msgHereIsYourCar() {
+		// Log the message
+		String msg = "MarketConsumer: " + this.name + ": Received msgHereIsYourCar";
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
+	}
 
 	public void startInteraction(Intention intent) {
 

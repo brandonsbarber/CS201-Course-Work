@@ -9,7 +9,12 @@ public interface MarketConsumer {
 	
 	public void msgHereIsYourTotal(MarketManager manager, float amount);
 	
+	/*
+	 * This messages give the consumer whatever he ordered from the market,
+	 * be it some items, or a car.
+	 */
 	public void msgHereAreYourItems(List<ItemRequest> items);
+	public void msgHereIsYourCar();
 	
 	public void startInteraction(Intention intent);
 	

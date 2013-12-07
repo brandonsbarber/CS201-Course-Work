@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cs201.roles.marketRoles.MarketManagerRole;
@@ -50,6 +51,7 @@ public class MarketManagerTest {
 		
 		// Create a restaurant to place an order (in certain tests)
 		restaurant = new MockRestaurant(0, 0, 0, 0, 0, null);
+		restaurant.setOpen(true);
 	}
 
 	/**
@@ -164,6 +166,36 @@ public class MarketManagerTest {
 		StructureRecord record = manager.structureBalance.get(restaurant);
 		assertTrue("The MarketManager should have updated the balance for the restaurant account.", record.balance == 100.0f);
 	}
+	
+	/**
+	 * A test to see if the MarketManager can handle a restaurant order if the restaurant is closed when the market manager goes to
+	 * dispatch the truck.
+	 */
+	@Test
+	public void structureTestRestaurantClosed() {
+		// Give the market a starting amount of steak for inventory
+		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("waffles", 100, 4.0f));
+				
+		// Create our order by creating an item request
+		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("waffles", 10);
+		
+		// Give the market manager our order
+		manager.msgHereIsMyOrderForDelivery(restaurant, item1);
+		
+		// Check to see if our new order is in the MarketManager's list of orders
+		assertEquals("The MarketManager should have added the order to his list of orders.", manager.orders.size(), 1);
+		
+		// Call the MarketManager's scheduler once to dispatch an employee
+		assertTrue("The MarketManager's scheduler should have processed the first order and returned true.", manager.pickAndExecuteAnAction());
+		
+		// Ensure that the MarketManager sent a retrieval message to the MarketEmployee
+		assertTrue("The MarketEmployee's log should have a msgRetrieveItems.", employee.log.getFirstEventWhichContainsString("Received msgRetrieveItems") != null);
+		
+		// Call the MarketManager's scheduler once to dispatch a delivery truck
+		assertTrue("The MarketManager's scheduler should have dispatched a delivery truck and returned true.", manager.pickAndExecuteAnAction());
+		
+		
+	}
 
 	/**
 	 * A more complicated test. Checks to see if the MarketManager can process two different, interleaved orders
@@ -226,5 +258,34 @@ public class MarketManagerTest {
 		assertTrue("The MarketConsumer should get a hereAreYourItems message.", consumer.log.getFirstEventWhichContainsString("Received msgHereAreYourItems with 10 pizza") != null);
 		assertTrue("The MarketConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 50.00") != null);
 
+	}
+	
+	/**
+	 * Checks to see if a MarketManager can handle an order for a car.
+	 */
+	@Test
+	public void carTest() {
+		// Give the market manage our order
+		manager.msgIWouldLikeACar(consumer);
+		
+		// Check to see if our new order is in the MarketManager's list of orders
+		assertEquals("The MarketManager should have added the CarOrder to his list of carOrders.", manager.carOrders.size(), 1);
+		
+		// Call the MarketManager's scheduler once to dispatch an employee
+		assertTrue("The MarketManager's scheduler should have processed the CarOrder and returned true.", manager.pickAndExecuteAnAction());
+		
+		// Ensure that the MarketManager sent a retrieval message to the MarketEmployee
+		assertTrue("The MarketEmployee's log should have a msgRetrieveCar", employee.log.getFirstEventWhichContainsString("Received msgRetrieveCar") != null);
+		
+		// Call the MarketManager's scheduler once to give the car to the MarketConsumer
+		assertTrue("The MarketManager's scheduler should have given the car to the consumer and returned true.", manager.pickAndExecuteAnAction());
+		
+		// Ensure that the MarketConsumer got 2 messages: msgHereIsYourCar and msgHereIsYourTotal
+		assertTrue("The MarketConsumer should get a msgHereIsYourCar", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourCar") != null);
+		assertTrue("The MarketConsumer should get a msgHereIsYourTotal", consumer.log.getFirstEventWhichContainsString("Received msgHereIsYourTotal with 1000.00") != null);
+			
+		// Ensure that the MarketManager updated the balance for the consumer's account (should be 0.0, since the MockMarketConsumer just automatically pays the bill)
+		ConsumerRecord record = manager.consumerBalance.get(consumer);
+		assertTrue("The MarketConsumer should have updated the balance for the consumer account.", record.balance == 0.0f);
 	}
 }

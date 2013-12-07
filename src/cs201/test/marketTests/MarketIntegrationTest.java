@@ -87,6 +87,7 @@ public class MarketIntegrationTest {
 		animationPanel.addGui(consumerGui);
 		consumer.setGui(consumerGui);
 		consumerGui.setRole(consumer);
+		consumerGui.setAnimationPanel(animationPanel);
 }
 
 	@Test

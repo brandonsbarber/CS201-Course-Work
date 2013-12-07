@@ -8,6 +8,7 @@ import java.util.concurrent.Semaphore;
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.market.MarketConsumerGui;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
@@ -100,6 +101,13 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		stateChanged();
 	}
 	
+	public void msgHereIsYourCar() {
+		// We now have a car!
+		// TODO Ask Brandon how to do this...
+		
+		stateChanged();
+	}
+	
 	public void startInteraction(Intention intent) {
 		
 		leaveMarket = false;
@@ -112,7 +120,19 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		}
 		
 		if (this.structure.isOpen()) {
-			structure.getManager().msgHereIsMyOrder(this,  myPerson.getMarketChecklist());
+			
+			if (intent == Intention.MarketConsumerGoods) {
+				
+				// The consumer would like to buy some goods
+				structure.getManager().msgHereIsMyOrder(this,  myPerson.getMarketChecklist());
+				
+			} else if (intent == Intention.MarketConsumerCar) {
+				
+				// The consumer would like to buy a car
+				structure.getManager().msgIWouldLikeACar(this);
+			}
+			
+			
 		} else {
 			leaveMarket = true;
 		}
@@ -120,7 +140,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
+		// Nothing to do here
 	}
 	
 	/*

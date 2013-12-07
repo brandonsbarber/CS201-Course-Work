@@ -3,10 +3,14 @@ package cs201.gui.structures.market;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.market.MarketConsumerGui;
 
 public class MarketAnimationPanel extends StructurePanel {
 
@@ -38,6 +42,41 @@ public class MarketAnimationPanel extends StructurePanel {
     
     public Semaphore[][] getAStarGrid() {
     	return grid;
+    }
+    
+    /* **************
+     * CUSTOMER QUEUE
+     * **************
+     */
+    private int queue = 0;
+    List<MarketConsumerGui> waitQueue = Collections.synchronizedList( new ArrayList<MarketConsumerGui>() );
+    public int whatNumberAmI(MarketConsumerGui gui) {
+    	synchronized (waitQueue) {
+    		// Go through the queue and see if there are any free spots (null spots)
+    		int num = 0;
+    		for (MarketConsumerGui thisGui : waitQueue) {
+    			if (thisGui == null) {
+    				thisGui = gui;
+    				return num; 
+    			}
+    			num++;
+    		}
+    		
+    		// If there aren't any, add a spot at the end
+    		waitQueue.add(gui);
+    		return num;
+    	}
+    }
+    
+    public void leaving(MarketConsumerGui gui) {
+    	synchronized(waitQueue) {
+    		// Go through and make his spot available
+    		for (MarketConsumerGui thisGui : waitQueue) {
+    			if (thisGui == gui) {
+    				thisGui = null;
+    			}
+    		}
+    	}
     }
   	
     /*

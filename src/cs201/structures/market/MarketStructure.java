@@ -1,5 +1,7 @@
 package cs201.structures.market;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
@@ -18,8 +20,11 @@ import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.structures.Structure;
 
 public class MarketStructure extends Structure {
+	private final int INITIALEMPLOYEES 	= 1;
+	private final int MAXEMPLOYEES 	   	= 3;
+	
 	MarketManagerRole manager = null;
-	MarketEmployeeRole employee = null;
+	List<MarketEmployeeRole> employees = Collections.synchronizedList(new ArrayList<MarketEmployeeRole>());
 	TruckAgent deliveryTruck = null;
 	StructurePanel panel = null;
 	boolean isOpen = false;
@@ -42,20 +47,10 @@ public class MarketStructure extends Structure {
 		managerGui.setRole(newManager);
 		panel.addGui(managerGui);
 		
-		// Create an initial employee
-		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
-		hireEmployee(newEmployee);
-		employee = newEmployee;
-		
-		// Create an employee gui
-		MarketAnimationPanel panel = (MarketAnimationPanel)p;
-		MarketEmployeeGui employeeGui = new MarketEmployeeGui(newEmployee, panel, 1, 3);
-		employee.setGui(employeeGui);
-		panel.addGui(employeeGui);
-		
-		// Initialize delivery truck
-		//this.deliveryTruck = new TruckAgent(this);
-		//deliveryTruck.startThread();
+		// Create an initial employees
+		for (int i = 0; i < INITIALEMPLOYEES; i++) {
+			createNewEmployeeRole();
+		}
 		
 		// Add some initial inventory
 		addInventory("Steak", 1000, 10.99f);
@@ -66,26 +61,20 @@ public class MarketStructure extends Structure {
 		addInventory("Salad", 1000, 3.99f);
 		
 	}
+	
+	private MarketEmployeeRole createNewEmployeeRole() {
+		// Set up the new employee
+		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui(newEmployee, (MarketAnimationPanel) panel, 2 + (employees.size() * 2), 2);
+		newEmployee.setGui(employeeGui);
+		panel.addGui(employeeGui);
 
-	
-	/**
-	 * Hires a new MarketEmployee at this market. Automatically adds the new employee to the MarketManager's list.
-	 * @param newEmployee The new MarketEmployee to be added.
-	 */
-	public void hireEmployee(MarketEmployee newEmployee) {
-		if (manager != null)
-			manager.addEmployee(newEmployee);
+		// Add him to our list
+		employees.add(newEmployee);
+		
+		return newEmployee;
 	}
-	
-	/**
-	 * Fires a MarketEmployee at this market.
-	 * @param employee The MarketEmployee to be fired.
-	 */
-	public void fireEmployee(MarketEmployee employee) {
-		if (manager != null)
-			manager.removeEmployee(employee);
-			
-	}
+
 	
 	/**
 	 * @return A list of MarketEmployees currently employed at this market.
@@ -106,7 +95,38 @@ public class MarketStructure extends Structure {
 			return manager;
 			
 		case MarketEmployee:
-			return employee;
+			// Let's see if there's an available employee role already created
+			synchronized(employees) {
+				for (MarketEmployeeRole r : employees) {
+					// If the role is available
+					if (r.getPerson() == null) { 
+						// Tell the manager about the new employee
+						manager.addEmployee(r);
+						
+						// Make the employee present
+						r.getGui().setPresent(true);
+						
+						return r;
+					}
+				}
+			}
+			
+			// If there isn't, we'll create a new one
+			if (employees.size() < MAXEMPLOYEES) {
+				
+				MarketEmployeeRole newEmployee = createNewEmployeeRole();
+				
+				// Tell the manager about the new employee
+				manager.addEmployee(newEmployee);
+				
+				// Make the employee present
+				newEmployee.getGui().setPresent(true);
+				
+				return newEmployee;
+			}
+			
+			// Otherwise, sorry! This Market is fresh out of roles (no pun intended)
+			return null;
 			
 		case MarketConsumerGoods:
 		case MarketConsumerCar:			
@@ -118,10 +138,21 @@ public class MarketStructure extends Structure {
 	}
 	
 	private void checkIfOpen() {
-		if (manager.getPerson() != null && employee.getPerson() != null) {
+		if (manager.getPerson() != null && atLeastOneEmployeeWorking()) {
 			isOpen = true;
 			Do("Open for business.");
 		}
+	}
+	
+	private boolean atLeastOneEmployeeWorking() {
+		synchronized(employees) {
+			for (MarketEmployeeRole r : employees) {
+				if (r.getPerson() != null) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -134,6 +165,7 @@ public class MarketStructure extends Structure {
 		MarketConsumerGui newGui = new MarketConsumerGui();
 		newConsumer.setGui(newGui);
 		newGui.setRole(newConsumer);
+		newGui.setAnimationPanel((MarketAnimationPanel)panel);
 		panel.addGui(newGui);
 		newConsumer.setStructure(this);
 		

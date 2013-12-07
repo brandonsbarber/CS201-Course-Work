@@ -41,6 +41,12 @@ public class MarketEmployeeGui implements Gui {
 		
 	private boolean animating = false;
 	
+	private boolean hasCar = false;
+	private boolean movingCarIn = false;
+	private boolean movingCarOut = false;
+	private int carX = 0;
+	private int carY = 0;
+	
 	MarketAnimationPanel animPanel;
 	
     /*
@@ -57,8 +63,8 @@ public class MarketEmployeeGui implements Gui {
 	public MarketEmployeeGui(MarketEmployeeRole c, MarketAnimationPanel a, int startX, int startY) {
 		role = c;
 		homePosition = new Position(startX, startY);
-		xPos = homePosition.getXInPixels();
-		yPos = homePosition.getYInPixels();
+		xPos = -40;
+		yPos = -40;
 		isPresent = false;
 		animPanel = a;
 		
@@ -67,7 +73,8 @@ public class MarketEmployeeGui implements Gui {
 		aStar = new AStarTraversal(grid);
 		
 		// Set the start position
-		currentPosition = new Position(startX, startY);
+//		currentPosition = new Position(startX, startY);
+		currentPosition = new Position(1, 1);
 		//currentPosition.moveInto(grid);
 	}
 	
@@ -99,7 +106,20 @@ public class MarketEmployeeGui implements Gui {
 
 	public void updatePosition() {
 		
-		if (animating && xPos == ultimateDestination.getXInPixels() && yPos == ultimateDestination.getYInPixels()) {
+		if (movingCarIn) {
+			carX = xPos + 50;
+			carY = yPos;
+		}
+		
+		if (movingCarOut) {
+			carX++;
+			if (carX > 500) {
+				movingCarOut = false;
+				hasCar = false;
+			}
+		}
+		
+		if (animating && ultimateDestination != null && xPos == ultimateDestination.getXInPixels() && yPos == ultimateDestination.getYInPixels()) {
 			if (role != null) {
 				role.animationFinished();
 			}
@@ -158,11 +178,19 @@ public class MarketEmployeeGui implements Gui {
 	}
 
 	public void draw(Graphics2D g) {
+		// Draw the employee icon
 		g.setColor(Color.orange);
 		g.fillRect(xPos, yPos, EMPLOYEE_SIZE, EMPLOYEE_SIZE);
 		
+		// Draw the employee text
 		g.setColor(Color.black);
 		g.drawString("Market Employee", xPos, yPos - 3);
+		
+		// Draw the car, if the employee is currently bringing one out
+		if (hasCar) {
+			g.setColor(Color.red);
+			g.fillRect(carX, carY, 150, 35);
+		}
 	}
 
 	public boolean isPresent() {
@@ -185,6 +213,26 @@ public class MarketEmployeeGui implements Gui {
 		guiMoveFromCurrentPositionTo(new Position(4 + 3 * isleNumber, 5 + itemNumber));
 	}
 	
+	public void doWalkToCarLot() {
+		guiMoveFromCurrentPositionTo(new Position(20, 13));
+	}
+	
+	public void setHasCar(boolean car) {
+		hasCar = car;
+	}
+	
+	public void setMovingCarIn(boolean moving) {
+		movingCarIn = moving;
+	}
+	
+	public void setMovingCarOut(boolean moving) {
+		movingCarOut = moving;
+	}
+	
+	public void doBringCarOut() {
+		guiMoveFromCurrentPositionTo(new Position(11, 13));
+	}
+	
 	public void doGoToManager() {
 		for (int x = 10; x > 0; x--) {
 			if (guiMoveFromCurrentPositionTo(new Position(x, 14)))
@@ -194,6 +242,10 @@ public class MarketEmployeeGui implements Gui {
 		// There isn't a spot, so just release the semaphore
 		if (role != null)
 			role.animationFinished();
+	}
+	
+	public void doEnterMarket() {
+		doGoHome();
 	}
 	
 	public void doGoHome() {

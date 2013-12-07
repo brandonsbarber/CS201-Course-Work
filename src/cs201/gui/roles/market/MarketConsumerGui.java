@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
+import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.roles.marketRoles.MarketConsumerRole;
 
 public class MarketConsumerGui implements Gui {
 
 	private MarketConsumerRole role = null;
 	private boolean isPresent = false;
+	private MarketAnimationPanel animPanel = null;
 	
 	public static final int CONSUMER_SIZE = 20;
 	public static final int START_X = 250;
@@ -28,6 +30,8 @@ public class MarketConsumerGui implements Gui {
 		role = c;
 		xPos = START_X;
 		yPos = START_Y;
+		xDestination = START_X;
+		yDestination = START_Y;
 		isPresent = false;
 	}
 
@@ -76,12 +80,21 @@ public class MarketConsumerGui implements Gui {
 	}
 	
 	public void doWalkToManager() {
-		xDestination = 300;
+		int x;
+		if (animPanel != null) {
+			x = 240 + (CONSUMER_SIZE + 5) * animPanel.whatNumberAmI(this);
+		}
+		else {
+			x = 240;
+		}
+		
+		xDestination = x;
 		yDestination = 400;
 		animating = true;
 	}
 	
 	public void doLeaveMarket() {
+		animPanel.leaving(this);
 		xDestination = 300;
 		yDestination = 540;
 		animating = true;
@@ -89,5 +102,9 @@ public class MarketConsumerGui implements Gui {
 	
 	public void setRole(MarketConsumerRole r) {
 		role = r;
+	}
+	
+	public void setAnimationPanel(MarketAnimationPanel p) {
+		animPanel = p;
 	}
 }

@@ -14,7 +14,13 @@ public interface MarketManager {
 	
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount);
 	
+	
+	/*
+	 * Messages sent from the employee to the manager after he retrieves items or a car
+	 */
+	
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id);
+	public void msgHereIsCar(MarketEmployee employee, int id);
 	
 	public void startInteraction(Intention intent);
 	

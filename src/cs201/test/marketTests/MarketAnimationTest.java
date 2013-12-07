@@ -3,10 +3,12 @@ package cs201.test.marketTests;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cs201.gui.roles.market.MarketConsumerGui;
@@ -17,20 +19,12 @@ import cs201.gui.structures.market.MarketAnimationPanel;
 public class MarketAnimationTest {
 	JFrame mainFrame;
 	MarketAnimationPanel animationPanel;
+	MarketManagerGui managerGui;
+	MarketEmployeeGui employeeGui, employeeGui2, employeeGui3;
+	MarketConsumerGui consumerGui;
 
 	@Before
 	public void setUp() throws Exception {
-
-	}
-	
-	/**
-	 * A test to see if our MarketAnimationPanel works with a MarketManagerGui, MarketEmployeeGui, and a MarketConsumerGui.
-	 * This tests always "passes" in terms of JUnit, but the point is to watch the animation to make sure everything looks correct.
-	 * @throws InterruptedException
-	 * @throws IOException
-	 */
-	@Test
-	public void test() throws InterruptedException, IOException {
 		// Create a new JFrame
 		mainFrame = new JFrame();
 		mainFrame.setLayout(new BorderLayout());
@@ -44,42 +38,85 @@ public class MarketAnimationTest {
 		mainFrame.add(animationPanel);
 		
 		// Create a new MarketManager gui and add him to our animation panel
-		MarketManagerGui managerGui = new MarketManagerGui();
+		managerGui = new MarketManagerGui();
 		animationPanel.addGui(managerGui);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui = new MarketEmployeeGui(animationPanel, 1, 1);
+		employeeGui = new MarketEmployeeGui(animationPanel, 2, 2);
 		animationPanel.addGui(employeeGui);
 		employeeGui.setPresent(true);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui2 = new MarketEmployeeGui(animationPanel, 1, 2);
+		employeeGui2 = new MarketEmployeeGui(animationPanel, 4, 2);
 		animationPanel.addGui(employeeGui2);
 		employeeGui2.setPresent(true);
 		
 		// Create a new MarketEmployee gui and add him to our animation panel
-		MarketEmployeeGui employeeGui3 = new MarketEmployeeGui(animationPanel, 1, 3);
+		employeeGui3 = new MarketEmployeeGui(animationPanel, 6, 2);
 		animationPanel.addGui(employeeGui3);
 		employeeGui3.setPresent(true);
 		
 		// Create a new MarketConsumer gui and add him to our animation panel
-		MarketConsumerGui consumer = new MarketConsumerGui();
-		animationPanel.addGui(consumer);
-		consumer.setPresent(true);
+		consumerGui = new MarketConsumerGui();
+		animationPanel.addGui(consumerGui);
+		consumerGui.setAnimationPanel(animationPanel);
+		consumerGui.setPresent(true);
+	}
+	
+	/**
+	 * A test to see if our MarketAnimationPanel works with a MarketManagerGui, MarketEmployeeGui, and a MarketConsumerGui.
+	 * This tests always "passes" in terms of JUnit, but the point is to watch the animation to make sure everything looks correct.
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
+	@Test
+	@Ignore
+	public void shelfTest() throws InterruptedException, IOException {
+		enterEmployees(3);
 		
 		// Just make the employees walk to random shelves
-		consumer.doWalkToManager();
-		/*
 		Random generator = new Random();
-		while(true) {
+		for(int i = 0; i < 3; i++) {
 			employeeGui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
 			employeeGui2.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
 			employeeGui3.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
 			Thread.sleep(6000);
-		}*/
-		employeeGui.doLeaveMarket();
-		Thread.sleep(6000);
-
+		}
+		
+		exitEmployees(3);
+	}
+	
+	@Test
+	public void carTest() throws InterruptedException {
+		enterEmployees(1);
+		
+		// Make the employee get a car
+		employeeGui.doWalkToCarLot();
+		Thread.sleep(10000);
+		employeeGui.setHasCar(true);
+		employeeGui.setMovingCarIn(true);
+		employeeGui.doBringCarOut();
+		Thread.sleep(10000);
+		employeeGui.setMovingCarIn(false);
+		employeeGui.setMovingCarOut(true);
+		
+		exitEmployees(1);
+	}
+	
+	private void enterEmployees(int howMany) throws InterruptedException {
+		// Make the employees enter the market
+		if (howMany >= 1) employeeGui.doEnterMarket();
+		if (howMany >= 2) employeeGui2.doEnterMarket();
+		if (howMany >= 3) employeeGui3.doEnterMarket();
+		Thread.sleep(5000);
+	}
+	
+	private void exitEmployees(int howMany) throws InterruptedException {
+		// Make the employees leave the market
+		if (howMany >= 1) employeeGui.doLeaveMarket();
+		if (howMany >= 2) employeeGui2.doLeaveMarket();
+		if (howMany >= 3) employeeGui3.doLeaveMarket();
+		Thread.sleep(7000);
 	}
 
 }

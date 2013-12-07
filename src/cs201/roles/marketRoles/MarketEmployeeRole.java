@@ -25,17 +25,33 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	boolean timeToGoHome = false;
 	
 	enum RequestState {PENDING, PROCESSED};
+	enum RequestType  {ITEMS, CAR};
 	private class RetrievalRequest {
-		List<ItemRequest> items;
-		int id;
-		RequestState state;
-		MarketManager manager;
+		List<ItemRequest>	items = null;
+		int 				id = -1;
+		RequestState 		state = RequestState.PENDING;
+		MarketManager 		manager = null;
+		RequestType 		type = RequestType.ITEMS;
 		
+		/**
+		 * Constructs a RetrievalRequest for items (as opposed to a car, see below)
+		 */
 		public RetrievalRequest(MarketManager m, List<ItemRequest> i, int id, RequestState s) {
 			items = i;
 			this.id = id;
 			state = s;
 			manager = m;
+			type = RequestType.ITEMS;
+		}
+		
+		/**
+		 * Constructs a RetrievalRequest for a car
+		 */
+		public RetrievalRequest(MarketManager m, int id, RequestState s) {
+			manager = m;
+			this.id = id;
+			type = RequestType.CAR;
+			state = s;
 		}
 	}
 	
@@ -90,6 +106,14 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		
 		stateChanged();
 	}
+	
+	public void msgRetrieveCar(MarketManager manager, int id) {
+		// Add the new retrieval request to the list of requests
+		// Because we don't specify any items, the RetrievalRequest constructor makes it a CAR request
+		requests.add(new RetrievalRequest(manager, id, RequestState.PENDING));
+		
+		stateChanged();
+	}
 
 	public void msgClosingTime() {
 		
@@ -124,22 +148,42 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 	
 	private void processRequest(RetrievalRequest request) {
-		// For each item in the request, go "retrieve" it, through animation
-		for (ItemRequest item : request.items) {
-			doGetItem(item);
+		if (request.type == RequestType.ITEMS) {
+		
+			// For each item in the request, go "retrieve" it, through animation
+			for (ItemRequest item : request.items) {
+				doGetItem(item);
+			}
+			
+			// Walk to the manager
+			if (gui != null) {
+				gui.doGoToManager();
+				pauseForAnimation();
+			}
+			
+			// Give the items to the manager
+			request.manager.msgHereAreItems(this, request.items, request.id);
+			
+			// The request has now been processed
+			request.state = RequestState.PROCESSED;
+			
+		} else if (request.type == RequestType.CAR) {
+			
+			// Go "retrieve" a car, through animation
+			doGetCar();
+			
+			// Walk to the manager
+			if (gui != null) {
+				gui.doGoToManager();
+				pauseForAnimation();
+			}
+			
+			// Let the manager know we got the car
+			request.manager.msgHereIsCar(this, request.id);
+			
+			// The request has now been processed
+			request.state = RequestState.PROCESSED;
 		}
-		
-		// Walk to the manager
-		if (gui != null) {
-			gui.doGoToManager();
-			pauseForAnimation();
-		}
-		
-		// Give the items to the manager
-		request.manager.msgHereAreItems(this, request.items, request.id);
-		
-		// The request has now been processed
-		request.state = RequestState.PROCESSED;
 	}
 	
 	/*
@@ -156,6 +200,17 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			gui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
 			pauseForAnimation();
 		}
+	}
+	
+	private void doGetCar() {
+		gui.doWalkToCarLot();
+		pauseForAnimation();
+		gui.setHasCar(true);
+		gui.setMovingCarIn(true);
+		gui.doBringCarOut();
+		pauseForAnimation();
+		gui.setMovingCarIn(false);
+		gui.setMovingCarOut(true);
 	}
 	
 	public void animationFinished() {
@@ -191,6 +246,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	
 	public void setGui(MarketEmployeeGui g) {
 		gui = g;
+	}
+	
+	public MarketEmployeeGui getGui() {
+		return gui;
 	}
 	
 	/**
