@@ -662,6 +662,14 @@ public class PersonAgent extends Agent implements Person {
 		return passengerRole;
 	}
 	
+	/**
+	 * Gets this PersonAgent's state
+	 * @return PersonState
+	 */
+	public PersonState getState() {
+		return this.state;
+	}
+	
 	
 	/**************************************************************************
 	 *                                Utility                                 *
@@ -775,7 +783,7 @@ public class PersonAgent extends Agent implements Person {
 	 * @author Matt Pohlmann
 	 *
 	 */
-	private class Action {
+	public class Action {
 		Structure location;
 		Intention intent;
 		boolean active;
@@ -796,7 +804,7 @@ public class PersonAgent extends Agent implements Person {
 	 * @author Matthew Pohlmann
 	 *
 	 */
-	private enum PersonState {
+	public enum PersonState {
 		Sleeping,
 		Awake,
 		AtWork,

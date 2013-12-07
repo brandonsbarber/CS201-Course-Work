@@ -94,5 +94,4 @@ public class PersonConfigPanel extends ConfigPanel {
 			personList.ensureIndexIsVisible(index);
 		}
 	}
-
 }
