@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
 
 public class CustomerGuiMatt implements Gui {
@@ -74,7 +75,11 @@ public class CustomerGuiMatt implements Gui {
 		g.fillRect(xPos, yPos, CUSTOMERSIZE, CUSTOMERSIZE);
 		
 		g.setColor(Color.black);
-		g.drawString("Customer " + (eating != "" ? "(" + eating + ")" : ""), xPos, yPos);
+		if (Constants.DEBUG_MODE) {
+			g.drawString("Customer " + (eating != "" ? "(" + eating + ")" : ""), xPos, yPos);
+		} else {
+			g.drawString(eating, xPos, yPos);
+		}
 	}
 
 	public boolean isPresent() {

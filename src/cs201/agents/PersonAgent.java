@@ -224,8 +224,8 @@ public class PersonAgent extends Agent implements Person {
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && moneyOnHand <= MONEYTHRESHOLD) {
 			boolean performAction = checkForExistingAction(Intention.BankWithdrawMoneyCustomer);
 			
-			if (performAction && CityDirectory.getInstance().getBanks().size() > 0) {
-				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
+			if (performAction && CityDirectory.getInstance().getOpenBanks().size() > 0) {
+				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomOpenBank(), false);
 				this.state = PersonState.Awake;
 				return true;
 			}
@@ -235,15 +235,15 @@ public class PersonAgent extends Agent implements Person {
 		if (state == PersonState.Awake && currentLocation != home && hungerLevel >= HUNGRY) {
 			boolean performAction = checkForExistingAction(Intention.RestaurantCustomer);
 			
-			if (performAction && CityDirectory.getInstance().getRestaurants().size() > 0) {
+			if (performAction && CityDirectory.getInstance().getOpenRestaurants().size() > 0) {
 				boolean starving = hungerLevel >= STARVING;
-				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), starving);
+				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomOpenRestaurant(), starving);
 				return true;
 			}
 		}
 		
-		// If you're hungry and at home (or there are no restaurants)
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && (currentLocation == home || CityDirectory.getInstance().getRestaurants().size() == 0) && hungerLevel >= HUNGRY) {
+		// If you're hungry and at home (or there are no open restaurants)
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && (currentLocation == home || CityDirectory.getInstance().getOpenRestaurants().size() == 0) && hungerLevel >= HUNGRY) {
 			boolean performAction = checkForExistingAction(Intention.ResidenceEat);
 			
 			if (performAction) {
@@ -259,8 +259,8 @@ public class PersonAgent extends Agent implements Person {
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
 			boolean performAction = checkForExistingAction(Intention.MarketConsumerGoods);
 			
-			if (performAction && CityDirectory.getInstance().getMarkets().size() > 0) {
-				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomMarket(), false);
+			if (performAction && CityDirectory.getInstance().getOpenMarkets().size() > 0) {
+				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomOpenMarket(), false);
 				this.state = PersonState.Awake;
 				return true;
 			}

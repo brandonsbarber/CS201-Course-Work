@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -130,6 +131,17 @@ public class CityDirectory implements ActionListener {
 		return restaurants;
 	}
 	
+	public List<Restaurant> getOpenRestaurants() {
+		List<Restaurant> openRestaurants = new LinkedList<Restaurant>();
+		for (Restaurant m : restaurants) {
+			if (m.getOpen()) {
+				openRestaurants.add(m);
+			}
+		}
+		
+		return openRestaurants;
+	}
+	
 	public Restaurant getRestaurantWithID(int id) {
 		synchronized(restaurants) {
 			for (Restaurant r : restaurants) {
@@ -148,6 +160,13 @@ public class CityDirectory implements ActionListener {
 		return restaurants.get(num);
 	}
 	
+	public Restaurant getRandomOpenRestaurant() {
+		Random randGenerator = new Random();
+		List<Restaurant> openRestaurants = getOpenRestaurants();
+		int num = randGenerator.nextInt(openRestaurants.size());
+		return openRestaurants.get(num);
+	}
+	
 	// Bank Stuff
 	public void addBank(BankStructure newBank) {
 		banks.add(newBank);
@@ -155,6 +174,17 @@ public class CityDirectory implements ActionListener {
 	
 	public List<BankStructure> getBanks() {
 		return banks;
+	}
+	
+	public List<BankStructure> getOpenBanks() {
+		List<BankStructure> openBanks = new LinkedList<BankStructure>();
+		for (BankStructure b : banks) {
+			if (b.getOpen()) {
+				openBanks.add(b);
+			}
+		}
+		
+		return openBanks;
 	}
 	
 	public BankStructure getBankWithID(int id) {
@@ -175,6 +205,13 @@ public class CityDirectory implements ActionListener {
 		return banks.get(num);
 	}
 	
+	public BankStructure getRandomOpenBank() {
+		Random randGenerator = new Random();
+		List<BankStructure> openBanks = getOpenBanks();
+		int num = randGenerator.nextInt(openBanks.size());
+		return openBanks.get(num);
+	}
+	
 	// Market Stuff
 	public void addMarket(MarketStructure newMarket) {
 		markets.add(newMarket);
@@ -182,6 +219,17 @@ public class CityDirectory implements ActionListener {
 	
 	public List<MarketStructure> getMarkets() {
 		return markets;
+	}
+	
+	public List<MarketStructure> getOpenMarkets() {
+		List<MarketStructure> openMarkets = new LinkedList<MarketStructure>();
+		for (MarketStructure m : markets) {
+			if (m.getOpen()) {
+				openMarkets.add(m);
+			}
+		}
+		
+		return openMarkets;
 	}
 	
 	public MarketStructure getMarketWithID(int id) {
@@ -198,6 +246,13 @@ public class CityDirectory implements ActionListener {
 		Random randGenerator = new Random();
 		int num = randGenerator.nextInt(markets.size());
 		return markets.get(num);
+	}
+	
+	public MarketStructure getRandomOpenMarket() {
+		Random randGenerator = new Random();
+		List<MarketStructure> openMarkets = getOpenMarkets();
+		int num = randGenerator.nextInt(openMarkets.size());
+		return openMarkets.get(num);
 	}
 	
 	// Residence Stuff
@@ -226,6 +281,17 @@ public class CityDirectory implements ActionListener {
 	
 	public List<ApartmentComplex> getApartments() {
 		return apartments;
+	}
+	
+	public List<ApartmentComplex> getOpenApartmentComplexes() {
+		List<ApartmentComplex> openApartments = new LinkedList<ApartmentComplex>();
+		for (ApartmentComplex m : apartments) {
+			if (m.getOpen()) {
+				openApartments.add(m);
+			}
+		}
+		
+		return openApartments;
 	}
 	
 	public ApartmentComplex getApartmentWithID(int id) {

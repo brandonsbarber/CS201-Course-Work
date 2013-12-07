@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 
 public class HostGuiMatt implements Gui {
@@ -29,7 +30,9 @@ public class HostGuiMatt implements Gui {
 		g.setColor(Color.BLACK);
 		g.fillRect(HOSTX, HOSTY, HOSTSIZE, HOSTSIZE);
 		
-		g.drawString("Host", HOSTX, HOSTY);
+		if (Constants.DEBUG_MODE) {
+			g.drawString("Host", HOSTX, HOSTY);
+		}
 	}
 
 	@Override

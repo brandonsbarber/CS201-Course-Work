@@ -8,6 +8,7 @@ import java.util.List;
 
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 
 public class CookGuiMatt implements Gui {
@@ -40,7 +41,9 @@ public class CookGuiMatt implements Gui {
 	public void draw(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		
-		g.drawString("Cook", COOKX, COOKY);
+		if (Constants.DEBUG_MODE) {
+			g.drawString("Cook", COOKX, COOKY);
+		}
 		
 		int x = cookingAreaX;
 		int y = cookingAreaY;

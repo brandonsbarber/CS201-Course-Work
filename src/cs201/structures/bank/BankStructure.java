@@ -22,7 +22,6 @@ public class BankStructure extends Structure {
 	List<BankTellerRole> bankTellers;
 	static BankGuardRole bankGuard;
 	
-	static boolean isOpen;
 	double bankBalance;
 	
 	public enum AccountType { BUSINESS, PERSONAL }
@@ -161,20 +160,6 @@ public class BankStructure extends Structure {
 	
 	public void updateTime(CityTime time) {
 		// TODO Auto-generated method stub
-	}
-	
-	/**
-	 * @return  whether or not the bank is open
-	 */
-	public static boolean getOpen() {
-	    return isOpen;
-	}
-	
-	/**
-	 * @param open  boolean value that sets whether or not the bank is open
-	 */
-	public void setOpen(boolean open) {
-	    isOpen = open;
 	}
 	
 }
