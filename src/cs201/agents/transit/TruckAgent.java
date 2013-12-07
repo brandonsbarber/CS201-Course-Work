@@ -11,6 +11,8 @@ import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -75,7 +77,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 	@Override
 	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
 	{
-		Do("Told to make delivery run to: "+destination+" with "+inventory+" and price of $"+price);
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Told to make delivery run to: "+destination+" with "+inventory+" and price of $"+price);
 		deliveries.add(new Delivery(inventory,destination,price));
 		stateChanged();
 	}
@@ -92,7 +94,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		{
 			for(Delivery d : deliveries)
 			{
-				if(d.s == DeliveryState.NotDone)
+				if(d.s == DeliveryState.Failed)
 				{
 					processFailed(d);
 					return true;
@@ -102,7 +104,6 @@ public class TruckAgent extends VehicleAgent implements Truck
 			{
 				if(deliveries.get(i).s == DeliveryState.Done)
 				{
-					Do("removing");
 					deliveries.remove(i);
 					return true;
 				}

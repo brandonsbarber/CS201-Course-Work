@@ -125,7 +125,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void addCar(Car c)
 	{
-		Do("I have a car");
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"I have a car");
 		this.car = c;
 	}
 
@@ -150,7 +150,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void msgAnimationFinished()
 	{
-		Do("Animation has finished");
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Animation has finished");
 		animationPause.release();
 	}
 
@@ -203,7 +203,7 @@ public class PassengerRole extends Role implements Passenger
 	public void msgPleaseBoard(Vehicle v)
 	{
 		boardingRequest.add(v);
-		Do("Received message to board: "+v);
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Received message to board: "+v);
 		waitingForVehicle.release();
 	}
 
@@ -216,7 +216,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		currentLocation = s;
 		state = PassengerState.Arrived;
-		Do("Received message arrived at destination: "+s);
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Received message arrived at destination: "+s);
 		stateChanged();
 	}
 
@@ -251,7 +251,6 @@ public class PassengerRole extends Role implements Passenger
 		{
 			checkBoardingRequest(boardingRequest.remove(0));
 			return true;
-			
 		}
 		if(state == PassengerState.Arrived)
 		{
@@ -297,7 +296,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		if (car != null)
 		{
-			Do("Populating waypoints for car");
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Populating waypoints for car");
 			waypoints.add (new Move(destination, MoveType.Car));
 			waypoints.add (new Move(destination,MoveType.Walk));
 			return;
@@ -344,7 +343,7 @@ public class PassengerRole extends Role implements Passenger
 		
 		if(!shouldWalk() && stops.size() == 2)
 		{
-			Do("Populating waypoints for bus");
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Populating waypoints for bus");
 			waypoints.add(new Move(stops.get(0),MoveType.Walk));
 			waypoints.add(new Move(stops.get(1),MoveType.Bus));
 			waypoints.add(new Move(stops.get(1),MoveType.Walk));
@@ -352,7 +351,7 @@ public class PassengerRole extends Role implements Passenger
 		}
 		else
 		{
-			Do("Populating waypoints for walking");
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Populating waypoints for walking");
 			waypoints.add(new Move(destination,MoveType.Walk));
 		}
 	}
@@ -414,10 +413,11 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	private void processArrival()
 	{
-		Do("Processing arrival at "+currentLocation);
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"Processing arrival at "+currentLocation);
 		if(currentLocation == waypoints.peek().s)
 		{
-			Structure s = waypoints.remove().s;
+			waypoints.remove();	//this is why I shouldn't listen to Eclipse!
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,getName(),"At proper location.");
 			if(currentVehicle != null)
 			{
 				if(currentVehicle instanceof Car)

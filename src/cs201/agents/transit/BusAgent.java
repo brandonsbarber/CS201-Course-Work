@@ -1,6 +1,5 @@
 package cs201.agents.transit;
 
-import java.awt.geom.Rectangle2D.Double;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +9,8 @@ import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.transit.BusStop;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -118,7 +119,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
-		Do("Passenger "+p+" has boarded");
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Passenger "+p+" has boarded");
 		queriedList.remove(p);
 		justAdded.add(p);
 		passengers.add(new MyPassenger(p));

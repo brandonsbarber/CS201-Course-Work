@@ -8,6 +8,8 @@ import java.util.concurrent.Semaphore;
 import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -56,7 +58,7 @@ public class CarAgent extends VehicleAgent implements Car
 	@Override
 	public void msgCallCar(Passenger p, Structure s, Structure d)
 	{
-		Do("Called by "+p+" to pickup at "+s+" and go to "+d);
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Called by "+p+" to pickup at "+s+" and go to "+d);
 		pickups.add(new PickupRequest(p,s,d));
 		stateChanged();
 	}
@@ -68,7 +70,7 @@ public class CarAgent extends VehicleAgent implements Car
 	@Override
 	public void msgDoneBoarding(Passenger p)
 	{
-		Do("Passenger "+p+" is done boarding");
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Passenger "+p+" is done boarding");
 		sem.release();
 	}
 
@@ -79,7 +81,7 @@ public class CarAgent extends VehicleAgent implements Car
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		Do("Passenger "+p+" has left");
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Passenger "+p+" has left");
 		sem.release();
 	}
 

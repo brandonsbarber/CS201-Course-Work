@@ -34,6 +34,7 @@ public class TraceFrame extends JFrame {
 	private JToggleButton residenceButton;
 	private JToggleButton apartmentButton;
 	private JToggleButton generalButton;
+	private JToggleButton transitButton;
 	
 	public TraceFrame() {
 		this.setTitle("Trace Panel");
@@ -240,6 +241,20 @@ public class TraceFrame extends JFrame {
 					tracePanel.showAlertsWithTag(AlertTag.GENERAL_CITY);
 				} else {
 					tracePanel.hideAlertsWithTag(AlertTag.GENERAL_CITY);
+				}
+			}
+		});
+		
+		transitButton = new JToggleButton("Transit");
+		transitButton.setSelected(true);
+		rightButtonPanel.add(transitButton);
+		transitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (transitButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.TRANSIT);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.TRANSIT);
 				}
 			}
 		});

@@ -6,6 +6,8 @@ import cs201.agents.Agent;
 import cs201.gui.transit.VehicleGui;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -47,7 +49,7 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	 */
 	public void msgAnimationDestinationReached()
 	{
-		Do("Done animating");
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Done animating");
 		animationSemaphore.release();
 	}
 	
@@ -92,7 +94,7 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		gui.doGoToLocation(destination);
 		try
 		{
-			Do("Animating to "+destination +" from "+currentLocation);
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Animating to "+destination +" from "+currentLocation);
 			animationSemaphore.acquire();
 		}
 		catch(InterruptedException e)
@@ -102,18 +104,6 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		currentLocation = destination;
 	}
 	
-	protected void Do(String msg) {
-		StringBuffer output = new StringBuffer();
-		output.append("[");
-		output.append(this.getClass().getSimpleName());
-		output.append("] ");
-		output.append(this.instance);
-		output.append(": ");
-		output.append(msg);
-		
-		System.out.println(output.toString());
-	}
-
 	/**
 	 * Gets the instance count of the vehicle
 	 * @return instance count of the vehicle

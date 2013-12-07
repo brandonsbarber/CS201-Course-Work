@@ -44,7 +44,10 @@ public class BusStop extends Structure
 		waitingPassengers = Collections.synchronizedList(new ArrayList<Passenger>());
 		addRequests = new ArrayList<Passenger>();
 		passengerAccess = new Semaphore(1,true);
-		((BusStopAnimationPanel)p).setStop(this);
+		if(p != null)
+		{
+			((BusStopAnimationPanel)p).setStop(this);
+		}
 	}
 
 	/**
