@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 
 
@@ -44,6 +45,7 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 	 */
 	JPanel panel = new JPanel();
 	ButtonGroup buttonGroup = new ButtonGroup();
+	JScrollPane scrollPane = new JScrollPane(panel);
 	
 	/* *********
 	 * VARIABLES
@@ -86,7 +88,7 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 		setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setMaximumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-		this.getContentPane().add(panel);
+		this.getContentPane().add(scrollPane);
 		panel.setBorder(BorderFactory.createEmptyBorder(BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		

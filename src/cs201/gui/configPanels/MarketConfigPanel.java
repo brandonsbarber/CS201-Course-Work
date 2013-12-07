@@ -1,4 +1,4 @@
-package cs201.gui.structures.market;
+package cs201.gui.configPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
