@@ -155,6 +155,7 @@ public class PassengerGui implements Gui
 		while(!location.isEmpty())
 		{
 			MyPoint p = location.remove();
+			System.out.println ("EVALUATING "+p);
 			if(p.equals(destination))
 			{
 				MyPoint head = p;
@@ -170,6 +171,7 @@ public class PassengerGui implements Gui
 			if(currentDirection == MovementDirection.Turn)
 			{
 				List<MovementDirection> validDirections = getJunctionDirections(map,p.x,p.y);
+				System.out.println(validDirections);
 				for(MovementDirection dir : validDirections)
 				{
 					MyPoint nextPoint = getPointFromDirection(p,dir);
@@ -214,7 +216,8 @@ public class PassengerGui implements Gui
 			}
 			else
 			{
-				MyPoint nextPoint = getPointFromDirection(p,currentDirection);
+				MyPoint nextPoint = getPointFromDirection(p,p.move);
+				
 				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
 				{
 					visitedPoints.add(nextPoint);
@@ -295,7 +298,6 @@ public class PassengerGui implements Gui
 		g.setColor(Color.BLACK);
 		g.drawString(""+destination, x,y);
 		g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
-		//g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
 	}
 
 	/**
@@ -352,19 +354,19 @@ public class PassengerGui implements Gui
 		int upY = y2 - 1;
 		int downY = y2 + 1;
 		
-		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == MovementDirection.Left)
+		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == MovementDirection.Horizontal)
 		{
 			validDirections.add(MovementDirection.Left);
 		}
-		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == MovementDirection.Right)
+		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == MovementDirection.Horizontal)
 		{
 			validDirections.add(MovementDirection.Right);
 		}
-		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == MovementDirection.Up)
+		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == MovementDirection.Vertical)
 		{
 			validDirections.add(MovementDirection.Up);
 		}
-		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Down)
+		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Vertical)
 		{
 			validDirections.add(MovementDirection.Down);
 		}

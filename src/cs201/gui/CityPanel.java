@@ -176,7 +176,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				
 				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 				
-				
 				if(cityGrid[y][x].length() == 2 && (cityGrid[y][x].charAt(1) == 'H' || cityGrid[y][x].charAt(1) == 'V'))
 				{
 					g2.setColor(Color.GRAY.brighter());
