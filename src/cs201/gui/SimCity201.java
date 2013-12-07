@@ -72,6 +72,7 @@ public class SimCity201 extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(SIZEX, SIZEY);
+		setTitle("SimCity201 - Team 21");
 		
 		JPanel mainPanel = new JPanel();
 		
@@ -106,8 +107,8 @@ public class SimCity201 extends JFrame {
 		cityScrollPane.setMaximumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		cityScrollPane.setPreferredSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		
-		cityScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		cityScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		cityScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		guiPanel.add(BorderLayout.WEST, cityScrollPane);
 		guiPanel.add(BorderLayout.EAST, buildingPanels);

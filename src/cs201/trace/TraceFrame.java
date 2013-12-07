@@ -75,6 +75,7 @@ public class TraceFrame extends JFrame {
 		
 		messagesButton = new JToggleButton("MESSAGES");
 		messagesButton.setSelected(true);
+		//messagesButton.setsi
 		leftButtonPanel.add(messagesButton);
 		messagesButton.addActionListener(new ActionListener() {
 			@Override
