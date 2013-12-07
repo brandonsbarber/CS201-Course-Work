@@ -106,16 +106,32 @@ public class WaiterGuiBen implements Gui {
     public void DoEnterRestaurant() {
     	xPos = -40;
     	yPos = -40;
-    	DoWalkHome();
+    	DoWalkToHome();
     }
-
-    public void DoWalkHome() {
+    
+    /**
+     * Forces the GUI to go to his home position. Should be followed by an pauseForAnimation()
+     * in the agent (or role) code, as this will also release the semaphore when he's finished.
+     */
+    public void DoWalkToHome() {
     	homeX = 5;
 		homeY = 5 + (agent.getWaiterNumber() * 25);
     	
         xDestination = homeX;
         yDestination = homeY;
         hasDestination = true;
+    }
+    
+    /**
+     * The GUI will move to his home position if he is bored, but this method WILL NOT release
+     * the semaphore when he gets there. Don't follow this method with pauseForAnimation()
+     */
+    public void DoWalkToHomeIfBored() {
+    	homeX = 5;
+    	homeY = 5 + (agent.getWaiterNumber() * 25);
+    	
+    	xDestination = homeX;
+    	yDestination = homeY;
     }
     
     public void DoWalkToPlatingArea() {

@@ -55,7 +55,6 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	private Boolean onBreak = false;
 	private boolean closingTime = false;
 	private Boolean talkingToCustomer = false;
-	private Boolean walkingHome = false;
 	
 	/*
 	 * Connections to other instances 
@@ -116,12 +115,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		stateChanged();
 	}
 	
-	public void msgReadyToOrder(CustomerBen cust) {
-		// We'll allow this message to interrupt our animation routine, if we're going home, that is
-		if (walkingHome) {
-			animating.release();
-		}
-		
+	public void msgReadyToOrder(CustomerBen cust) {		
 		// Find the customer in our list
 		MyCustomer readyCustomer = null;
 		synchronized(customers) {
@@ -141,6 +135,14 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	public void msgOrderReady(String choice, int table) {
 		Do("Got the message that the order is ready.");
 		
+		System.out.println("**********************************************");
+		System.out.println("Does this role have a Person pointer? " + this.getPerson());
+		System.out.println("Is this role active? " + this.isActive);
+		System.out.println("Is this restaurant open? " + this.restaurant.getOpen());
+		System.out.println("**********************************************");
+		
+		foodShouldBeReady = true;
+		
 		// Find the customer in our list
 		MyCustomer theCustomer = null;
 		synchronized(customers) {
@@ -154,6 +156,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		// Mark his food as ready
 		theCustomer.state = CustomerState.orderReady;
 		foodShouldBeReady = true;
+		
+		System.out.println("About to call stateChanged()...");
 		stateChanged();
 	}
 	
@@ -204,11 +208,6 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	// Sent by the cook to let the waiter know he's out of food
 	public void msgOutOf(String choice, int table) {
 		Do(cook.getName() + " just told me that he's out of " + choice);
-		
-		// We'll allow this message to interrupt our animation routine, if we're going home, that is
-		if (walkingHome) {
-			animating.release();
-		}
 		
 		// Find the customer who ordered it
 		MyCustomer customer = null;
@@ -289,8 +288,10 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	
-	public boolean pickAndExecuteAnAction() {		
-		//if (foodShouldBeReady) Do("About to run scheduler...");
+	public boolean pickAndExecuteAnAction() {
+		System.out.println("Waiter scheduler about to be run...");
+		if (foodShouldBeReady) System.out.println("About to run scheduler...");
+		
 		// Leave the restaurant when its time to close
 		if (closingTime) {
 			leaveRestaurant();
@@ -557,28 +558,13 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	
 	// Call this method if the waiter is returning home out of boredom (nothing else to do)
 	private void DoReturnHome() {
-		waiterGui.DoWalkHome();
-		walkingHome = true;
-		
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		walkingHome = false;
+		waiterGui.DoWalkToHomeIfBored();
 	}
 	
 	// Call this method if the waiter needs to return home to pick someone up
 	private void DoGoHome() {
-		waiterGui.DoWalkHome();
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		waiterGui.DoWalkToHome();
+		pauseForAnimation();
 	}
 	
 	private void DoLeaveRestaurant() {

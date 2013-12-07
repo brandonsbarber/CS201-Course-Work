@@ -144,7 +144,7 @@ public class SimCity201 extends JFrame {
 					"11) Ben's Normative Restaurant: Two Customers, Two Waiters\n" +
 					"12) Market Consumer Purchase Car\n" +
 					"13) Ben's Normative Restaurant Delivery\nYour choice:");
-			String choice = in.nextLine();
+			String choice = "10"; //in.nextLine();
 			try
 			{
 				int choiceNum = Integer.parseInt(choice);
