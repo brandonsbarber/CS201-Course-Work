@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -38,24 +39,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	List<Gui> guis;
 	
-	private String[][] cityGrid = 
-	{
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
-			{"G","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","G"},
-			{"G","7","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","5","G"},
-			{"G","ST","38","ST","8","8","ST","38","ST","8","8","ST","18","ST","8","8","ST","38","ST","8","8","ST","18","ST","G"},
-			{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},
-			{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},
-			{"G","ST","36","ST","6","6","ST","36","ST","6","6","ST","16","ST","6","6","ST","36","6","6","6","ST","16","ST","G"},
-			{"G","7","T","27","2","2","25","T","27","2","2","25","T","27","2","2","25","T","27","2","2","25","T","5","G"},
-			{"G","ST","18","ST","8","8","ST","18","ST","8","8","ST","38","ST","8","8","ST","18","ST","8","8","ST","38","ST","G"},
-			{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},
-			{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},
-			{"G","ST","16","ST","6","6","ST","16","ST","6","6","ST","36","ST","6","6","ST","16","ST","6","6","ST","36","ST","G"},
-			{"G","7","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","5","G"},
-			{"G","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","G"},
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
-	};
+	private String[][] cityGrid;
 
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
@@ -67,7 +51,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		try
 		{
-			MapParser.parseMap();
+			cityGrid = MapParser.parseMap();
 		}
 		catch(Exception e)
 		{
@@ -124,40 +108,38 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 						case 4:dir = MovementDirection.Left;break;
 						default:dir = MovementDirection.None;break;
 					}
+					
 					if(cityGrid[y][x].length() == 2)
 					{
-						if(Character.isDigit(cityGrid[y][x].charAt(1)))
+						char second = cityGrid[y][x].charAt(1);
+						switch(second)
 						{
-							val = Integer.parseInt(cityGrid[y][x].substring(1));
+							case 'H': wDir = MovementDirection.Horizontal;break;
+							case 'V': wDir = MovementDirection.Vertical;break;
+							default : wDir = MovementDirection.None;break;
 						}
-					}
-					switch(val)
-					{
-					case 5:wDir = MovementDirection.Up;break;
-					case 6:wDir = MovementDirection.Right;break;
-					case 7:wDir = MovementDirection.Down;break;
-					case 8:wDir = MovementDirection.Left;break;
-					default:wDir = MovementDirection.None;break;
 					}
 				}
 				else
 				{
+					if(cityGrid[y][x].equals("H"))
+					{
+						wDir = MovementDirection.Horizontal;
+					}
+					if(cityGrid[y][x].equals("V"))
+					{
+						wDir = MovementDirection.Vertical;
+					}
 					if(cityGrid[y][x].equals("T"))
 					{
 						dir = MovementDirection.Turn;
-						wDir = MovementDirection.None;
 					}
-					else if(cityGrid[y][x].equals("ST"))
+					if(cityGrid[y][x].equals("ST"))
 					{
-						dir = MovementDirection.None;
 						wDir = MovementDirection.Turn;
 					}
-					else
-					{
-						dir = MovementDirection.None;
-						wDir = MovementDirection.None;
-					}
 				}
+				
 				drivingMap[y][x] = dir;
 				walkingMap[y][x] = wDir;
 			}
@@ -172,7 +154,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		Graphics2D g2 = (Graphics2D) g;
 		Dimension bounds = getPreferredSize();
 		
-		g2.setColor(Color.LIGHT_GRAY.brighter().brighter());
+		g2.setColor(getBackground());
 		g2.fillRect(0,0,(int)bounds.getWidth(),(int)bounds.getHeight());
 		
 		for(int y = 0; y < cityGrid.length; y++)
@@ -183,13 +165,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				{
 					g2.setColor(Color.GREEN);
 				}
-				else if(cityGrid[y][x].equals("R"))
+				else if(cityGrid[y][x].equals("ST") || cityGrid[y][x].equals("V") ||  cityGrid[y][x].equals("H"))
 				{
-					g2.setColor(Color.GRAY.darker());
-				}
-				else if(cityGrid[y][x].equals("ST") || Character.isDigit(cityGrid[y][x].charAt(0)) && Integer.parseInt(cityGrid[y][x].substring(0,1)) > 4)
-				{
-					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
+					g2.setColor(Color.GRAY.brighter().brighter());
 				}
 				else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
 				{
@@ -198,7 +176,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				
 				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 				
-				if(cityGrid[y][x].length() == 2 && Character.isDigit(cityGrid[y][x].charAt(1)))
+				
+				if(cityGrid[y][x].length() == 2 && (cityGrid[y][x].charAt(1) == 'H' || cityGrid[y][x].charAt(1) == 'V'))
 				{
 					g2.setColor(Color.GRAY.brighter());
 					for(int i = 0; i < 5 ; i++)
@@ -219,6 +198,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				
 				if(Constants.DEBUG_MODE)
 				{
+					g2.setColor(Color.BLACK);
+					g2.drawString(cityGrid[y][x], x*GRID_SIZE, y*GRID_SIZE+GRID_SIZE);
+					
 					if(drivingMap[y][x].isValid())
 					{
 						if(drivingMap[y][x] == MovementDirection.Up)
