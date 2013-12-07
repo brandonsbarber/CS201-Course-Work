@@ -3,6 +3,7 @@ package cs201.interfaces.roles.market;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 
 public interface MarketConsumer {
@@ -14,7 +15,7 @@ public interface MarketConsumer {
 	 * be it some items, or a car.
 	 */
 	public void msgHereAreYourItems(List<ItemRequest> items);
-	public void msgHereIsYourCar();
+	public void msgHereIsYourCar(Vehicle car);
 	
 	public void startInteraction(Intention intent);
 	
