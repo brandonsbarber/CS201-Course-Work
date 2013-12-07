@@ -14,6 +14,8 @@ import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.HostMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantCustomerRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant customer agent.
@@ -78,7 +80,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	// Messages -------------------------------------------------------------
 	@Override
 	public void msgIsHungry() {
-		Do("I'm hungry.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "I'm hungry.");
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
@@ -86,7 +88,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	@Override
 	public void msgAboutToBeSeated() {
 		state = AgentState.AboutToBeSeated;
-		Do("About to be seated.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "About to be seated.");
 		stateChanged();
 	}
 
@@ -220,7 +222,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 
 	private void ChooseFood() {
 		if (attemptedOrders >= 2) {
-			Do("Tried to order twice and didn't receive anything, so I'm leaving the restaurant.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Tried to order twice and didn't receive anything, so I'm leaving the restaurant.");
 			LeaveRestaurant();
 			return;
 		}
@@ -266,7 +268,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 
 	// Utilities -------------------------------------------------------------
 	private void DoGoToRestaurant() {
-		Do("Going to restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Going to restaurant.");
 		customerGui.DoGoToRestaurant();
 		try {
 			atTargetPosition.acquire();
@@ -298,7 +300,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoWaitTimeTooLong() {
-		Do("Wait time too long. I'm leaving the restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Wait time too long. I'm leaving the restaurant.");
 		
 		customerGui.DoExitRestaurant();
 		try {
@@ -307,11 +309,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 			e.printStackTrace();
 		}
 		
-		Do("Has left the restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Has left the restaurant.");
 	}
 	
 	private void DoSitDown() {
-		Do("Sitting down.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Sitting down.");
 		customerGui.Animate();
 		try {
 			atTargetPosition.acquire();
@@ -321,7 +323,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoChooseFood() {
-		Do("Choosing food.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Choosing food.");
 		customerGui.setMessage("");
 	}
 	
@@ -344,7 +346,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 						choice = null;
 					} while (menu.size() > 0);
 					if (choice == null) {
-						Do("Can't afford anything! I'm is leaving the restaurant.");
+						AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Can't afford anything! I'm is leaving the restaurant.");
 						event = AgentEvent.cannotAffordAnything;
 						stateChanged();
 						return;
@@ -360,16 +362,16 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoHailWaiter() {
-		Do("Hailing his waiter, " + waiter.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Hailing his waiter, " + waiter.toString() + ".");
 	}
 	
 	private void DoOrderFood() {
-		Do("Ordering.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Ordering.");
 		customerGui.setMessage(choice + "?");
 	}
 	
 	private void DoEatFood() {
-		Do("Eating.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Eating.");
 		customerGui.setMessage(choice);
 	}
 	
@@ -388,11 +390,11 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoAskForCheck() {
-		Do("Asking " + waiter.toString() + " for the bill.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Asking " + waiter.toString() + " for the bill.");
 	}
 	
 	private void DoPayCheck() {
-		Do("Going to " + cashier.toString() + " to pay bill.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Going to " + cashier.toString() + " to pay bill.");
 		customerGui.DoGoToCashier();
 		try {
 			atTargetPosition.acquire();
@@ -402,14 +404,14 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void DoLeaveRestaurant() {
-		Do("Leaving the restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Leaving the restaurant.");
 		customerGui.DoExitRestaurant();
 		try {
 			atTargetPosition.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Do("Has left the restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Has left the restaurant.");
 	}
 	
 	private void DeactivateRole() {
