@@ -166,7 +166,7 @@ public class CarAgent extends VehicleAgent implements Car
 			}
 			catch (InterruptedException e)
 			{
-				Do("Problem waiting.");
+				AlertLog.getInstance().logError(AlertTag.TRANSIT,"Car: "+getInstance(),"Problem waiting.");
 				e.printStackTrace();
 			}
 		}
