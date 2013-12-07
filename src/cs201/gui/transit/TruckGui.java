@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 import cs201.agents.transit.VehicleAgent;
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
-import cs201.gui.CityPanel.DrivingDirection;
 
 /**
  * 
@@ -42,13 +41,13 @@ public class TruckGui extends VehicleGui {
 		String imgName = "Truck_";
 		switch(currentDirection)
 		{
-		case East:imgName+="Right";
+		case Right:imgName+="Right";
 			break;
-		case North:imgName+="Up";
+		case Up:imgName+="Up";
 			break;
-		case South:imgName+="Down";
+		case Down:imgName+="Down";
 			break;
-		case West:imgName+="Left";
+		case Left:imgName+="Left";
 			break;
 		default:imgName+="Down";
 			break;
