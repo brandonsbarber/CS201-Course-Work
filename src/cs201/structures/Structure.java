@@ -22,6 +22,9 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected Point deliveryLocation;
 	protected Point parkingLocation;
 	protected CityTime closingTime;
+	protected CityTime morningShiftStart;
+	protected CityTime morningShiftEnd;
+	protected CityTime afternoonShiftStart;
 	protected boolean isOpen;
 	
 	private static int INSTANCES = 0;
@@ -37,6 +40,9 @@ public abstract class Structure extends Rectangle2D.Double {
 		this.parkingLocation = null;
 		this.closingTime = null;
 		this.isOpen = false;
+		this.morningShiftStart = null;
+		this.morningShiftEnd = null;
+		this.afternoonShiftStart = null;
 	}
 	
 	/**
@@ -191,4 +197,47 @@ public abstract class Structure extends Rectangle2D.Double {
 	{
 		entranceLocation = point;
 	}
+
+	/**
+	 * @return the morningShiftStart
+	 */
+	public CityTime getMorningShiftStart() {
+		return morningShiftStart;
+	}
+
+	/**
+	 * @param morningShiftStart the morningShiftStart to set
+	 */
+	public void setMorningShiftStart(CityTime morningShiftStart) {
+		this.morningShiftStart = morningShiftStart;
+	}
+
+	/**
+	 * @return the afternoonShiftStart
+	 */
+	public CityTime getAfternoonShiftStart() {
+		return afternoonShiftStart;
+	}
+
+	/**
+	 * @param afternoonShiftStart the afternoonShiftStart to set
+	 */
+	public void setAfternoonShiftStart(CityTime afternoonShiftStart) {
+		this.afternoonShiftStart = afternoonShiftStart;
+	}
+
+	/**
+	 * @return the morningShiftEnd
+	 */
+	public CityTime getMorningShiftEnd() {
+		return morningShiftEnd;
+	}
+
+	/**
+	 * @param morningShiftEnd the morningShiftEnd to set
+	 */
+	public void setMorningShiftEnd(CityTime morningShiftEnd) {
+		this.morningShiftEnd = morningShiftEnd;
+	}
+	
 }
