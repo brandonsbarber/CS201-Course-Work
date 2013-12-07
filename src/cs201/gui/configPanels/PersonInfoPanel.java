@@ -38,7 +38,7 @@ public class PersonInfoPanel extends JPanel {
 		JPanel leftPanel = new JPanel();
 		add(leftPanel);
 		GridBagLayout gbl_leftPanel = new GridBagLayout();
-		gbl_leftPanel.columnWeights = new double[]{0.0, 6.0, 3.0};
+		gbl_leftPanel.columnWeights = new double[]{0.0, 7.0, 4.0};
 		gbl_leftPanel.columnWidths = new int[]{0, 0, 0};
 		leftPanel.setLayout(gbl_leftPanel);
 		
@@ -246,11 +246,11 @@ public class PersonInfoPanel extends JPanel {
 		this.nameTextField.setText(p.getName());
 		this.moneyTextField.setText(String.format("$%.2f", p.getMoney()));
 		this.hungerTextField.setText(p.getHungerLevel() + "");
-		this.locationTextField.setText(p.getCurrentLocation() == null ? "NULL" : p.getCurrentLocation().toString());
+		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentLocation().toString());
 		this.stateTextField.setText(p.getState().toString());
 		this.wakeupTextField.setText(p.getWakeupTime().toString());
 		this.sleepTextField.setText(p.getSleepTime().toString());
-		this.actionTextField.setText(p.getCurrentAction() == null ? "NULL" : p.getCurrentAction().toString());
+		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
 	}
 
 }

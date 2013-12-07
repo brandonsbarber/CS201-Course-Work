@@ -279,6 +279,7 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you don't even have a home to return to
 		if (state == PersonState.Awake) {
+			this.currentAction = null;
 			passengerRole.setActive(true);
 			passengerRole.msgStartRoaming();
 			return true;
