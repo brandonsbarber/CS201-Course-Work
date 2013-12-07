@@ -1,5 +1,6 @@
 package cs201.roles.transit;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,11 +46,13 @@ public class PassengerRole extends Role implements Passenger
 	{
 		Structure s;
 		MoveType m;
+		Point p;
 		
 		public Move(Structure struct, MoveType move)
 		{
 			s = struct;
 			m = move;
+			p = s.getEntranceLocation();
 		}
 	};
 	
@@ -158,7 +161,7 @@ public class PassengerRole extends Role implements Passenger
 	public void setCurrentLocation(Structure s2)
 	{
 		currentLocation = s2;
-		if(gui != null){gui.setLocation((int)currentLocation.x, (int)currentLocation.y);}
+		if(gui != null){gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);}
 	}
 
 	/**
@@ -232,7 +235,7 @@ public class PassengerRole extends Role implements Passenger
 		if(state == PassengerState.Roaming)
 		{
 			roam();
-			return true;
+			return false;
 		}
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
@@ -275,6 +278,16 @@ public class PassengerRole extends Role implements Passenger
 		{
 			e1.printStackTrace();
 		}
+		gui.doGoToLocation(currentLocation);
+		try
+		{
+			animationPause.acquire();
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
+		setActive(false);
 	}
 
 	/*
