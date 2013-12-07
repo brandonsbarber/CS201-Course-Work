@@ -148,7 +148,8 @@ public class SimCity201 extends JFrame {
 					"11) Ben's Normative Restaurant: Two Customers, Two Waiters\n" +
 					"12) Market Consumer Purchase Car\n" +
 					"13) Ben's Normative Restaurant Delivery\n" + 
-					"14) Restaurant Shift Change\nYour choice:");
+					"14) Restaurant Shift Change\n" + 
+					"15) 50 People\nYour choice:");
 			String choice = in.nextLine();
 			try
 			{
@@ -169,6 +170,7 @@ public class SimCity201 extends JFrame {
 					case 12: marketConsumerCar(); running = false; break;
 					case 13: normativeMarketRestaurantBenDelivery(); running = false; break;
 					case 14: restaurantShiftChange(); running = false; break;
+					case 15: fiftyPeople(); running = false; break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
@@ -974,6 +976,29 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(pp4);
 		pp4.startThread();
 		
+	}
+	
+	private void fiftyPeople() {
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		for (int i = 0; i < 50; i++) {
+			createPerson(i + "", r, null, null, null, null);
+		}
+	}
+	
+	public PersonAgent createPerson(String name, Structure location, Structure home, Intention job, Structure workplace, CarAgent car) {
+		PersonAgent p = new PersonAgent(name, cityPanel);
+		
+		p.setupPerson(CityDirectory.getInstance().getTime(), home, workplace, job, location, car);
+		CityDirectory.getInstance().addPerson(p);
+		p.startThread();
+		return p;
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
