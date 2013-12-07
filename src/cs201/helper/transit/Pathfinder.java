@@ -131,7 +131,74 @@ public class Pathfinder
 	
 	public static Stack<MovementDirection> calcTwoWayMove (MovementDirection[][] map,int x, int y, int destX, int destY)
 	{
-		return  null;
+		Stack<MovementDirection> moves = new Stack<MovementDirection>();
+		
+		Queue<MyPoint> location = new LinkedList<MyPoint>();
+		
+		ArrayList<MyPoint> visitedPoints = new ArrayList<MyPoint>();
+		
+		MyPoint startLoc = new MyPoint(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE,null,map[y/CityPanel.GRID_SIZE][x/CityPanel.GRID_SIZE]);
+		MyPoint destination = new MyPoint(destX/CityPanel.GRID_SIZE,destY/CityPanel.GRID_SIZE,null,map[y/CityPanel.GRID_SIZE][x/CityPanel.GRID_SIZE]);
+		
+		location.add(startLoc);
+		visitedPoints.add(startLoc);
+		
+		//run a BFS
+		while(!location.isEmpty())
+		{
+			MyPoint p = location.remove();
+			
+			if(p.equals(destination))
+			{
+				MyPoint head = p;
+				while(head != null)
+				{
+					moves.add(head.move);
+					head = head.prev;
+				}
+				break;
+			}
+			
+			//sidewalk direction (turn, h, or v)
+			MovementDirection currentDirection = map[p.y][p.x];
+			
+			if(p.move == MovementDirection.Horizontal || p.move == MovementDirection.Vertical || p.move == MovementDirection.None || currentDirection == MovementDirection.Turn || (p.move.isHorizontal() && currentDirection.isVertical())|| (p.move.isVertical() && currentDirection.isHorizontal()))
+			{
+				//Treat initial state like a junction
+				List<MovementDirection> validDirections = getJunctionDirectionsOneWay(map,p.x,p.y);
+				
+				for(MovementDirection dir : validDirections)
+				{
+					MyPoint nextPoint = getPointFromDirection(p,dir);
+					if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
+					{
+						visitedPoints.add(nextPoint);
+						location.add(nextPoint);
+					}
+				}
+			}
+			else
+			{
+				MyPoint nextPoint = getPointFromDirection(p,p.move);
+								
+				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
+				{
+					visitedPoints.add(nextPoint);
+					location.add(nextPoint);
+				}
+			}
+		}
+		
+		if(moves.isEmpty())
+		{
+			throw new IllegalArgumentException("I cannot find a path.");
+		}
+		else
+		{
+			//clear first element
+			moves.pop();
+		}
+		return moves;
 	}
 	
 	/*
@@ -159,6 +226,37 @@ public class Pathfinder
 			validDirections.add(MovementDirection.Up);
 		}
 		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Down)
+		{
+			validDirections.add(MovementDirection.Down);
+		}
+		return validDirections;
+	}
+	
+	/*
+	 * Helper method for getting junction
+	 */
+	private static List<MovementDirection> getJunctionDirectionsOneWay(MovementDirection[][] map,int x2, int y2)
+	{
+		List<MovementDirection> validDirections = new ArrayList<MovementDirection>();
+		
+		int leftX = x2-1;
+		int rightX = x2+1;
+		int upY = y2 - 1;
+		int downY = y2 + 1;
+		
+		if(inBounds(map,leftX,y2) && getDirection(map,leftX, y2) != MovementDirection.None)
+		{
+			validDirections.add(MovementDirection.Left);
+		}
+		if(inBounds(map,rightX,y2) && getDirection(map,rightX, y2) != MovementDirection.None)
+		{
+			validDirections.add(MovementDirection.Right);
+		}
+		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) != MovementDirection.None)
+		{
+			validDirections.add(MovementDirection.Up);
+		}
+		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) != MovementDirection.None)
 		{
 			validDirections.add(MovementDirection.Down);
 		}
