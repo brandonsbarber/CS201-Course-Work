@@ -13,11 +13,8 @@ import javax.swing.JOptionPane;
 
 import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
-import cs201.gui.CityPanel.DrivingDirection;
-import cs201.gui.CityPanel.DrivingDirection;
-import cs201.gui.CityPanel.DrivingDirection;
-import cs201.gui.CityPanel.WalkingDirection;
 import cs201.gui.Gui;
+import cs201.helper.transit.MovementDirection;
 import cs201.structures.Structure;
 
 /**
@@ -30,9 +27,9 @@ public abstract class VehicleGui implements Gui
 	class MyPoint extends Point
 	{
 		MyPoint prev;
-		DrivingDirection move;
+		MovementDirection move;
 		
-		public MyPoint(int i, int j, MyPoint previous,DrivingDirection moveDir)
+		public MyPoint(int i, int j, MyPoint previous,MovementDirection moveDir)
 		{
 			super(i,j);
 			prev = previous;
@@ -58,9 +55,9 @@ public abstract class VehicleGui implements Gui
 	
 	private CityPanel city;
 
-	protected DrivingDirection currentDirection;
+	protected MovementDirection currentDirection;
 
-	private Stack<DrivingDirection> moves;
+	private Stack<MovementDirection> moves;
 
 	private boolean pathfinding;
 	
@@ -91,8 +88,8 @@ public abstract class VehicleGui implements Gui
 		destY = y;
 		fired = true;
 		present = false;
-		currentDirection = DrivingDirection.None;
-		moves = new Stack<DrivingDirection>();
+		currentDirection = MovementDirection.None;
+		moves = new Stack<MovementDirection>();
 	}
 	
 	/**
@@ -127,7 +124,7 @@ public abstract class VehicleGui implements Gui
 	private void findPath()
 	{
 		pathfinding = true;
-		DrivingDirection[][] map = city.getDrivingMap();
+		MovementDirection[][] map = city.getDrivingMap();
 		
 		Queue<MyPoint> location = new LinkedList<MyPoint>();
 		
@@ -153,12 +150,12 @@ public abstract class VehicleGui implements Gui
 				}
 				break;
 			}
-			DrivingDirection currentDirection = map[p.y][p.x];
+			MovementDirection currentDirection = map[p.y][p.x];
 			
-			if(currentDirection == DrivingDirection.Turn)
+			if(currentDirection == MovementDirection.Turn)
 			{
-				List<DrivingDirection> validDirections = getJunctionDirections(map,p.x,p.y);
-				for(DrivingDirection dir : validDirections)
+				List<MovementDirection> validDirections = getJunctionDirections(map,p.x,p.y);
+				for(MovementDirection dir : validDirections)
 				{
 					MyPoint nextPoint = getPointFromDirection(p,dir);
 					if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
@@ -168,31 +165,31 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 			}
-			else if(currentDirection == DrivingDirection.None)
+			else if(currentDirection == MovementDirection.None)
 			{
 				//Find an adjacent sidewalk piece
-				MyPoint point = getPointFromDirection(p,DrivingDirection.South);
+				MyPoint point = getPointFromDirection(p,MovementDirection.Down);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
 					visitedPoints.add(point);
 					location.add(point);
 					continue;
 				}
-				point = getPointFromDirection(p,DrivingDirection.North);
+				point = getPointFromDirection(p,MovementDirection.Up);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
 					visitedPoints.add(point);
 					location.add(point);
 					continue;
 				}
-				point = getPointFromDirection(p,DrivingDirection.East);
+				point = getPointFromDirection(p,MovementDirection.Right);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
 					visitedPoints.add(point);
 					location.add(point);
 					continue;
 				}
-				point = getPointFromDirection(p,DrivingDirection.West);
+				point = getPointFromDirection(p,MovementDirection.Left);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
 					visitedPoints.add(point);
@@ -226,30 +223,30 @@ public abstract class VehicleGui implements Gui
 	/*
 	 * Helper method for getting junction
 	 */
-	private List<DrivingDirection> getJunctionDirections(DrivingDirection[][] map,int x2, int y2)
+	private List<MovementDirection> getJunctionDirections(MovementDirection[][] map,int x2, int y2)
 	{
-		List<DrivingDirection> validDirections = new ArrayList<DrivingDirection>();
+		List<MovementDirection> validDirections = new ArrayList<MovementDirection>();
 		
 		int leftX = x2-1;
 		int rightX = x2+1;
 		int upY = y2 - 1;
 		int downY = y2 + 1;
 		
-		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == DrivingDirection.West)
+		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == MovementDirection.Left)
 		{
-			validDirections.add(DrivingDirection.West);
+			validDirections.add(MovementDirection.Left);
 		}
-		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == DrivingDirection.East)
+		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == MovementDirection.Right)
 		{
-			validDirections.add(DrivingDirection.East);
+			validDirections.add(MovementDirection.Right);
 		}
-		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == DrivingDirection.North)
+		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == MovementDirection.Up)
 		{
-			validDirections.add(DrivingDirection.North);
+			validDirections.add(MovementDirection.Up);
 		}
-		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == DrivingDirection.South)
+		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Down)
 		{
-			validDirections.add(DrivingDirection.South);
+			validDirections.add(MovementDirection.Down);
 		}
 		return validDirections;
 	}
@@ -257,7 +254,7 @@ public abstract class VehicleGui implements Gui
 	/*
 	 * Helper method with swapping for better readability
 	 */
-	private DrivingDirection getDirection(DrivingDirection[][] map, int x, int y)
+	private MovementDirection getDirection(MovementDirection[][] map, int x, int y)
 	{
 		return map[y][x];
 	}
@@ -265,7 +262,7 @@ public abstract class VehicleGui implements Gui
 	/*
 	 * Helper method for bounds
 	 */
-	private boolean inBounds(DrivingDirection[][] map, int x2, int y2)
+	private boolean inBounds(MovementDirection[][] map, int x2, int y2)
 	{
 		return y2 < map.length && y2 >= 0 && x2 >= 0 && x2 < map[y2].length;
 	}
@@ -273,7 +270,7 @@ public abstract class VehicleGui implements Gui
 	/*
 	 * Helper method for validity
 	 */
-	private boolean isValidPoint(DrivingDirection[][] map, MyPoint nextPoint)
+	private boolean isValidPoint(MovementDirection[][] map, MyPoint nextPoint)
 	{
 		return nextPoint.x >= 0 && nextPoint.x < map[0].length && nextPoint.y >= 0 && nextPoint.y < map.length;
 	}
@@ -281,20 +278,20 @@ public abstract class VehicleGui implements Gui
 	/*
 	 * Helper method for extending line of point direction
 	 */
-	private MyPoint getPointFromDirection(MyPoint p, DrivingDirection dir)
+	private MyPoint getPointFromDirection(MyPoint p, MovementDirection dir)
 	{
 		switch(dir)
 		{
-		case East:
+		case Right:
 			return new MyPoint(p.x+1,p.y,p,dir);
-		case North:
+		case Up:
 			return new MyPoint(p.x,p.y-1,p,dir);
-		case South:
+		case Down:
 			return new MyPoint(p.x,p.y+1,p,dir);
-		case West:
+		case Left:
 			return new MyPoint(p.x-1,p.y,p,dir);
 		default:
-			return new MyPoint(p.x,p.y-1,p,DrivingDirection.North);
+			return new MyPoint(p.x,p.y-1,p,MovementDirection.Up);
 		
 		}
 	}
@@ -329,21 +326,21 @@ public abstract class VehicleGui implements Gui
 			{
 				fired = true;
 				vehicle.msgAnimationDestinationReached();
-				currentDirection = DrivingDirection.None;
+				currentDirection = MovementDirection.None;
 				return;
 			}
 			switch(currentDirection)
 			{
-				case East:
+				case Right:
 					x++;
 					break;
-				case North:
+				case Up:
 					y--;
 					break;
-				case South:
+				case Down:
 					y++;
 					break;
-				case West:
+				case Left:
 					x--;
 					break;
 				default:

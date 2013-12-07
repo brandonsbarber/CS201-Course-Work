@@ -371,6 +371,8 @@ public class SimCity201 extends JFrame {
 		 * goes inside the structure there and performs structure actions.
 		 * He begins his walk at 7:00 AM.
 		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
@@ -386,6 +388,24 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		
+		/*MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(24*25,13*25,25,25,Structure.getNextInstance(),mG);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m,new Point(2*25,1*25), new Point(2*25,1*25));
+		CityDirectory.getInstance().addMarket(m);
+		
+		int x = 14;int y = 6;
+		
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		RestaurantMatt r = new RestaurantMatt(x*25,y*25,25,25,Structure.getNextInstance(),g);
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 0));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r,new Point(x*25,y*25), new Point(x*25,y*25));
+		CityDirectory.getInstance().addRestaurant(r);*/
 		
 		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
@@ -403,6 +423,8 @@ public class SimCity201 extends JFrame {
 		 * This starts at 7:00 AM.
 		 * He currently moves around the block due to the nature of the sidewalks and his movement priorities.
 		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
@@ -441,6 +463,8 @@ public class SimCity201 extends JFrame {
 		 * The bus moves from the very beginning.
 		 * The person moves at 7:00 AM
 		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
 
 		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
