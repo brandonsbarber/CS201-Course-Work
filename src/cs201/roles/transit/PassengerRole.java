@@ -16,6 +16,8 @@ import cs201.interfaces.roles.transit.Passenger;
 import cs201.roles.Role;
 import cs201.structures.Structure;
 import cs201.structures.transit.BusStop;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -135,7 +137,6 @@ public class PassengerRole extends Role implements Passenger
 	
 	public void msgStartRoaming()
 	{
-		
 		setCurrentLocation(currentLocation);
 		state = PassengerState.Roaming;
 		stateChanged();
@@ -187,7 +188,7 @@ public class PassengerRole extends Role implements Passenger
 		destination = s;
 		state = PassengerState.None;
 		waypoints.clear();
-		Do("Received message to go to: "+s);
+		AlertLog.getInstance().logMessage(AlertTag.GENERAL_CITY,""+getName(),"Received message to go to: "+s);
 		stateChanged();
 	}
 

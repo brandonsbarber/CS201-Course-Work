@@ -1,5 +1,6 @@
 package cs201.agents.transit;
 
+import java.awt.geom.Rectangle2D.Double;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,11 +30,13 @@ public class BusAgent extends VehicleAgent implements Bus
 		}
 	}
 	
-	enum PassengerState{None};
+	enum PassengerState{None, Sitting, Leaving, InformedArrived};
 	
 	public List<MyPassenger> passengers;
-	List<MyPassenger> justBoarded;
-	List<MyPassenger> removalList;
+
+	private List<Passenger> queriedList;
+	
+	List<Passenger> justAdded;
 	
 	BusRoute route;
 	
@@ -48,8 +51,10 @@ public class BusAgent extends VehicleAgent implements Bus
 	public BusAgent(BusRoute route,int stopNum)
 	{
 		passengers = Collections.synchronizedList(new ArrayList<MyPassenger>());
-		justBoarded = new ArrayList<MyPassenger>();
-		removalList = new ArrayList<MyPassenger>();
+		
+		queriedList = Collections.synchronizedList(new ArrayList<Passenger>());
+		justAdded = Collections.synchronizedList(new ArrayList<Passenger>());
+		
 		this.route = route;
 		sem = new Semaphore(0);
 		
@@ -79,8 +84,14 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		removalList.add(new MyPassenger(p));
-		sem.release();
+		for(MyPassenger pass : passengers)
+		{
+			if(pass.p == p)
+			{
+				pass.s = PassengerState.Leaving;
+			}
+		}
+		stateChanged();
 	}
 
 	/**
@@ -90,7 +101,14 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgStaying(Passenger p)
 	{
-		sem.release();
+		for(MyPassenger pass : passengers)
+		{
+			if(pass.p == p)
+			{
+				pass.s = PassengerState.Sitting;
+			}
+		}
+		stateChanged();
 	}
 
 	/**
@@ -101,9 +119,10 @@ public class BusAgent extends VehicleAgent implements Bus
 	public void msgDoneBoarding(Passenger p)
 	{
 		Do("Passenger "+p+" has boarded");
+		queriedList.remove(p);
+		justAdded.add(p);
 		passengers.add(new MyPassenger(p));
-		justBoarded.add(new MyPassenger(p));
-		sem.release();
+		stateChanged();
 	}
 
 	/**
@@ -113,18 +132,42 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgNotBoarding(Passenger p)
 	{
-		sem.release();
+		queriedList.remove(p);
+		stateChanged();
 	}
 	
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		if(route != null)
+		if(route == null)
 		{
-			goToNextStop();
-			return true;
+			return false;
 		}
-		return false;
+		
+		for(int i = 0; i < passengers.size(); i++)
+		{
+			if(passengers.get(i).s == PassengerState.Leaving)
+			{
+				passengers.remove(i);
+				return true;
+			}
+		}
+		for(MyPassenger pass : passengers)
+		{
+			if(pass.s == PassengerState.InformedArrived)
+			{
+				return false;
+			}
+		}
+		if(!queriedList.isEmpty())
+		{
+			return false;
+		}
+		
+		goToNextStop();
+		
+		//always continues route
+		return true;
 	}
 
 	/*
@@ -132,6 +175,9 @@ public class BusAgent extends VehicleAgent implements Bus
 	 */
 	private void goToNextStop()
 	{
+		BusStop current = (BusStop)currentLocation;
+		current.removePassengers(this, justAdded);
+		
 		BusStop s = route.getNextStop();
 		msgSetDestination(s);
 		
@@ -139,39 +185,17 @@ public class BusAgent extends VehicleAgent implements Bus
 		
 		for(MyPassenger pass : passengers)
 		{
+			pass.s = PassengerState.InformedArrived;
 			pass.p.msgReachedDestination(s);
-			try
-			{
-				sem.acquire();
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
 		}
-		passengers.removeAll(removalList);
-		removalList.clear();
 		
 		List<Passenger> newPassengers = s.getPassengerList(this);
 		
 		for(Passenger pass : newPassengers)
 		{
+			queriedList.add(pass);
 			pass.msgPleaseBoard(this);
-			if(!testing )
-			{
-				try
-				{
-					sem.acquire();
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
 		}
-		
-		//s.removePassengers(this,justBoarded);
-		justBoarded.clear();
 	}
 
 	/**
