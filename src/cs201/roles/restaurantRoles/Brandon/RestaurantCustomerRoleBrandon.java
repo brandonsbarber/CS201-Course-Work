@@ -6,6 +6,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JOptionPane;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
 import cs201.helper.Brandon.MenuBrandon;
@@ -500,8 +502,10 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		if (intent == Intention.RestaurantCustomer) {
+			this.gui.setPresent(true);
+			gotHungry();
+		}
 	}
 
 	@Override

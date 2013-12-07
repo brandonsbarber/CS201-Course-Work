@@ -129,7 +129,6 @@ public class RestaurantBrandon extends Restaurant {
 			RestaurantCustomerRoleBrandon newCustomer = new RestaurantCustomerRoleBrandon("",(RestaurantHostRoleBrandon)host);
 			CustomerGuiBrandon customerGui = new CustomerGuiBrandon((RestaurantCustomerRoleBrandon) newCustomer);
 			((RestaurantCustomerRoleBrandon) newCustomer).setGui(customerGui);
-			customerGui.setPresent(true);
 			//newCustomer.setCashier((RestaurantCashierRoleBrandon) cashier);
 			//newCustomer.setHost((RestaurantHostRoleBrandon) host);
 			this.panel.addGui(customerGui);
