@@ -17,9 +17,23 @@ import cs201.structures.transit.BusStop;
  */
 public class BusAgent extends VehicleAgent implements Bus
 {
-	public List<Passenger> passengers;
-	List<Passenger> justBoarded;
-	List<Passenger> removalList;
+	class MyPassenger
+	{
+		Passenger p;
+		PassengerState s;
+		
+		public MyPassenger(Passenger p)
+		{
+			this.p = p;
+			this.s = PassengerState.None;
+		}
+	}
+	
+	enum PassengerState{None};
+	
+	public List<MyPassenger> passengers;
+	List<MyPassenger> justBoarded;
+	List<MyPassenger> removalList;
 	
 	BusRoute route;
 	
@@ -33,9 +47,9 @@ public class BusAgent extends VehicleAgent implements Bus
 	 */
 	public BusAgent(BusRoute route,int stopNum)
 	{
-		passengers = Collections.synchronizedList(new ArrayList<Passenger>());
-		justBoarded = new ArrayList<Passenger>();
-		removalList = new ArrayList<Passenger>();
+		passengers = Collections.synchronizedList(new ArrayList<MyPassenger>());
+		justBoarded = new ArrayList<MyPassenger>();
+		removalList = new ArrayList<MyPassenger>();
 		this.route = route;
 		sem = new Semaphore(0);
 		
@@ -65,7 +79,7 @@ public class BusAgent extends VehicleAgent implements Bus
 	@Override
 	public void msgLeaving(Passenger p)
 	{
-		removalList.add(p);
+		removalList.add(new MyPassenger(p));
 		sem.release();
 	}
 
@@ -87,8 +101,8 @@ public class BusAgent extends VehicleAgent implements Bus
 	public void msgDoneBoarding(Passenger p)
 	{
 		Do("Passenger "+p+" has boarded");
-		passengers.add(p);
-		justBoarded.add(p);
+		passengers.add(new MyPassenger(p));
+		justBoarded.add(new MyPassenger(p));
 		sem.release();
 	}
 
@@ -123,9 +137,9 @@ public class BusAgent extends VehicleAgent implements Bus
 		
 		animate();
 		
-		for(Passenger pass : passengers)
+		for(MyPassenger pass : passengers)
 		{
-			pass.msgReachedDestination(s);
+			pass.p.msgReachedDestination(s);
 			try
 			{
 				sem.acquire();
@@ -156,7 +170,7 @@ public class BusAgent extends VehicleAgent implements Bus
 			}
 		}
 		
-		s.removePassengers(this,justBoarded);
+		//s.removePassengers(this,justBoarded);
 		justBoarded.clear();
 	}
 
