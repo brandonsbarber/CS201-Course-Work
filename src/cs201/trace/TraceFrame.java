@@ -259,15 +259,21 @@ public class TraceFrame extends JFrame {
 			}
 		});
 		
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+		//rightPanel.setPreferredSize(new Dimension(TRACEX * 2 / 3, TRACEY));
+		//rightPanel.setMaximumSize(new Dimension(TRACEX * 2 / 3, TRACEY));
+		//rightPanel.setMinimumSize(new Dimension(TRACEX * 2 / 3, TRACEY));
 		tracePanel = new TracePanel();
 		AlertLog.getInstance().addAlertListener(tracePanel);
-		tracePanel.setPreferredSize(new Dimension(TRACEX * 2 / 3, TRACEY));
-		tracePanel.setMaximumSize(new Dimension(TRACEX * 2 / 3, TRACEY));
-		tracePanel.setMinimumSize(new Dimension(TRACEX * 2 / 3, TRACEY));
+		//tracePanel.setPreferredSize(new Dimension(0, 0));
+		//tracePanel.setMaximumSize(new Dimension(TRACEX * 2 / 3, 0));
+		//tracePanel.setMinimumSize(new Dimension(TRACEX * 2 / 3, 0));
 		tracePanel.showAlertsForAllLevels();
 		tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
 		tracePanel.showAlertsForAllTags();
-		this.add(BorderLayout.EAST, tracePanel);
+		rightPanel.add(tracePanel);
+		this.add(BorderLayout.EAST, rightPanel);
 		
 		this.pack();
 	}

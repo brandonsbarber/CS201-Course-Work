@@ -44,11 +44,6 @@ public class PersonConfigPanel extends ConfigPanel {
 		c.weightx = 4;
 		left = new PersonInfoPanel();
 		this.add(left, c);
-		
-		PersonAgent p = new PersonAgent("Test One", null);
-		addPerson(p);
-		PersonAgent p2 = new PersonAgent("Test Two", null);
-		addPerson(p2);
 	}
 	
 	public void addPerson(PersonAgent p) {
@@ -94,5 +89,4 @@ public class PersonConfigPanel extends ConfigPanel {
 			personList.ensureIndexIsVisible(index);
 		}
 	}
-
 }

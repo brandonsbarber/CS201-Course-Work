@@ -54,6 +54,7 @@ public class SimCity201 extends JFrame {
 	CityPanel cityPanel;
 	JPanel buildingPanels;
 	CardLayout cardLayout;
+	PersonConfigPanel personPanel;
 	
 	SettingsPanel settingsPanel;
 	
@@ -121,7 +122,9 @@ public class SimCity201 extends JFrame {
 		settingsPanel.setMaximumSize(new Dimension(SIZEX, SIZEY * 2/5));
 		settingsPanel.setPreferredSize(new Dimension(SIZEX, SIZEY * 2/5));
 		
-		settingsPanel.addPanel("PersonAgentPanel", new PersonConfigPanel());
+		personPanel = new PersonConfigPanel();
+		settingsPanel.addPanel("PersonAgentPanel", personPanel);
+		settingsPanel.addPanel("Transit",new TransitConfigPanel());
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
@@ -199,6 +202,7 @@ public class SimCity201 extends JFrame {
 		p1.setHungerEnabled(false);
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		p1.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
@@ -206,6 +210,7 @@ public class SimCity201 extends JFrame {
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
@@ -213,6 +218,7 @@ public class SimCity201 extends JFrame {
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 		
 		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
@@ -220,12 +226,14 @@ public class SimCity201 extends JFrame {
 		p4.setHungerEnabled(false);
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
 		p4.startThread();
 		
 		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
 		p5.setWakeupTime(new CityTime(8, 00));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
 		p5.startThread();
 	}
 	
@@ -987,6 +995,7 @@ public class SimCity201 extends JFrame {
 		
 		p.setupPerson(CityDirectory.getInstance().getTime(), home, workplace, job, location, car);
 		CityDirectory.getInstance().addPerson(p);
+		personPanel.addPerson(p);
 		p.startThread();
 		return p;
 	}
