@@ -5,9 +5,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -24,6 +24,15 @@ public class TraceFrame extends JFrame {
 	private JToggleButton errorButton;
 	private JToggleButton debugButton;
 	
+	private JToggleButton personButton;
+	private JToggleButton bankButton;
+	private JToggleButton busStopButton;
+	private JToggleButton restaurantButton;
+	private JToggleButton marketButton;
+	private JToggleButton residenceButton;
+	private JToggleButton apartmentButton;
+	private JToggleButton generalButton;
+	
 	public TraceFrame() {
 		this.setTitle("Trace Panel");
 		this.setPreferredSize(new Dimension(TRACEX, TRACEY));
@@ -34,18 +43,25 @@ public class TraceFrame extends JFrame {
 		this.setLayout(new BorderLayout());
 		
 		buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		buttonPanel.setLayout(new BorderLayout());
 		buttonPanel.setPreferredSize(new Dimension(TRACEX * 1 / 3, TRACEY));
 		buttonPanel.setMaximumSize(new Dimension(TRACEX * 1 / 3, TRACEY));
 		buttonPanel.setMinimumSize(new Dimension(TRACEX * 1 / 3, TRACEY));
 		this.add(BorderLayout.WEST, buttonPanel);
 		
-		JLabel levelLabel = new JLabel("Alert Levels:");
-		buttonPanel.add(levelLabel);
+		JPanel leftButtonPanel = new JPanel();
+		leftButtonPanel.setLayout(new BoxLayout(leftButtonPanel, BoxLayout.Y_AXIS));
+		leftButtonPanel.setBorder(BorderFactory.createTitledBorder("Alert Levels:"));
+		buttonPanel.add(BorderLayout.WEST, leftButtonPanel);
+		
+		JPanel rightButtonPanel = new JPanel();
+		rightButtonPanel.setLayout(new BoxLayout(rightButtonPanel, BoxLayout.Y_AXIS));
+		rightButtonPanel.setBorder(BorderFactory.createTitledBorder("Tags:"));
+		buttonPanel.add(BorderLayout.EAST, rightButtonPanel);
 		
 		infoButton = new JToggleButton("INFO");
 		infoButton.setSelected(true);
-		buttonPanel.add(infoButton);
+		leftButtonPanel.add(infoButton);
 		infoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -59,7 +75,7 @@ public class TraceFrame extends JFrame {
 		
 		messagesButton = new JToggleButton("MESSAGES");
 		messagesButton.setSelected(true);
-		buttonPanel.add(messagesButton);
+		leftButtonPanel.add(messagesButton);
 		messagesButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -73,7 +89,7 @@ public class TraceFrame extends JFrame {
 		
 		warningButton = new JToggleButton("WARNINGS");
 		warningButton.setSelected(true);
-		buttonPanel.add(warningButton);
+		leftButtonPanel.add(warningButton);
 		warningButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -87,7 +103,7 @@ public class TraceFrame extends JFrame {
 		
 		errorButton = new JToggleButton("ERRORS");
 		errorButton.setSelected(true);
-		buttonPanel.add(errorButton);
+		leftButtonPanel.add(errorButton);
 		errorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -101,7 +117,7 @@ public class TraceFrame extends JFrame {
 		
 		debugButton = new JToggleButton("DEBUG");
 		debugButton.setSelected(false);
-		buttonPanel.add(debugButton);
+		leftButtonPanel.add(debugButton);
 		debugButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -109,6 +125,118 @@ public class TraceFrame extends JFrame {
 					tracePanel.showAlertsWithLevel(AlertLevel.DEBUG);
 				} else {
 					tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
+				}
+			}
+		});
+		
+		personButton = new JToggleButton("PersonAgent");
+		personButton.setSelected(true);
+		rightButtonPanel.add(personButton);
+		personButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (personButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.PERSON_AGENT);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.PERSON_AGENT);
+				}
+			}
+		});
+		
+		bankButton = new JToggleButton("Bank");
+		bankButton.setSelected(true);
+		rightButtonPanel.add(bankButton);
+		bankButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (bankButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.BANK);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.BANK);
+				}
+			}
+		});
+		
+		busStopButton = new JToggleButton("Bus Stop");
+		busStopButton.setSelected(true);
+		rightButtonPanel.add(busStopButton);
+		busStopButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (busStopButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.BUS_STOP);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.BUS_STOP);
+				}
+			}
+		});
+		
+		restaurantButton = new JToggleButton("Restaurant");
+		restaurantButton.setSelected(true);
+		rightButtonPanel.add(restaurantButton);
+		restaurantButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (restaurantButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.RESTAURANT);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.RESTAURANT);
+				}
+			}
+		});
+		
+		marketButton = new JToggleButton("Market");
+		marketButton.setSelected(true);
+		rightButtonPanel.add(marketButton);
+		marketButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (marketButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.MARKET);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.MARKET);
+				}
+			}
+		});
+		
+		residenceButton = new JToggleButton("Residence");
+		residenceButton.setSelected(true);
+		rightButtonPanel.add(residenceButton);
+		residenceButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (residenceButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.RESIDENCE);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.RESIDENCE);
+				}
+			}
+		});
+		
+		apartmentButton = new JToggleButton("Apartment");
+		apartmentButton.setSelected(true);
+		rightButtonPanel.add(apartmentButton);
+		apartmentButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (apartmentButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.APARTMENT_COMPLEX);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.APARTMENT_COMPLEX);
+				}
+			}
+		});
+		
+		generalButton = new JToggleButton("City");
+		generalButton.setSelected(true);
+		rightButtonPanel.add(generalButton);
+		generalButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (generalButton.isSelected()) {
+					tracePanel.showAlertsWithTag(AlertTag.GENERAL_CITY);
+				} else {
+					tracePanel.hideAlertsWithTag(AlertTag.GENERAL_CITY);
 				}
 			}
 		});
