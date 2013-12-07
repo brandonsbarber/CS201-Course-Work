@@ -41,6 +41,12 @@ public class RestaurantMatt extends Restaurant {
 		this.panel.addGui(stand);
 		stand.setPresent(true);
 		
+		// Setup times
+		this.morningShiftStart = new CityTime(8, 00);
+		this.morningShiftEnd = new CityTime(12, 30);
+		this.afternoonShiftStart = new CityTime(13, 00);
+		this.closingTime = new CityTime(18, 00);
+		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
 		HostGuiMatt hostGui = new HostGuiMatt((RestaurantHostRoleMatt) host);
@@ -191,6 +197,8 @@ public class RestaurantMatt extends Restaurant {
 		if (!isOpen) {
 			checkIfRestaurantShouldOpen();
 		}
+		
+		// TODO shifts
 		
 		if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
