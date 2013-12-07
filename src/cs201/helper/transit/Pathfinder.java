@@ -201,6 +201,31 @@ public class Pathfinder
 		return moves;
 	}
 	
+	public static Point findRandomWalkingLocation(MovementDirection[][] map)
+	{
+		Point p = new Point();
+		
+		ArrayList<Point> tiles = new ArrayList<Point>();
+		
+		for(int y = 0; y < map.length; y++)
+		{
+			for(int x = 0; x < map[y].length; x++)
+			{
+				if(map[y][x].isValid())
+				{
+					tiles.add(new Point(x,y));
+				}
+			}
+		}
+		
+		if(!tiles.isEmpty())
+		{
+			p = tiles.get((int)(Math.random()*tiles.size()));
+		}
+		
+		return p;
+	}
+	
 	/*
 	 * Helper method for getting junction
 	 */

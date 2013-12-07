@@ -53,7 +53,7 @@ public class PassengerRole extends Role implements Passenger
 	
 	enum MoveType {Walk,Bus,Car};
 	
-	public enum PassengerState {None,Waiting,Boarding,InTransit,Arrived};
+	public enum PassengerState {None,Waiting,Boarding,InTransit,Arrived,Roaming};
 	public PassengerState state;
 	
 	Semaphore waitingForVehicle;
@@ -131,6 +131,14 @@ public class PassengerRole extends Role implements Passenger
 	public void msgClosingTime() 
 	{
 		
+	}
+	
+	public void msgStartRoaming()
+	{
+		
+		setCurrentLocation(currentLocation);
+		state = PassengerState.Roaming;
+		stateChanged();
 	}
 
 	/**
@@ -220,6 +228,11 @@ public class PassengerRole extends Role implements Passenger
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(state == PassengerState.Roaming)
+		{
+			roam();
+			return true;
+		}
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
 			finishMoving();
@@ -247,6 +260,20 @@ public class PassengerRole extends Role implements Passenger
 			return true;
 		}
 		return false;
+	}
+
+	private void roam()
+	{
+		System.out.println("ROAMING");
+		gui.doRoam();
+		try
+		{
+			animationPause.acquire();
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
 	}
 
 	/*

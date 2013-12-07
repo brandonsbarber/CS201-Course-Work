@@ -137,11 +137,29 @@ public class PassengerGui implements Gui
 		findPath();
 	}
 	
+	public void doGoToLocation(int x, int y)
+	{
+		destX = x;
+		destY = y;
+		fired = false;
+		present = true;
+		
+		findPath();
+	}
+	
+	public void doRoam()
+	{
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+pass.getName(),"I AM GOING TO Point "+p);
+		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
+	}
+	
 	/*
 	 * Performs BFS to find best path
 	 */
 	private void findPath()
 	{
+		System.out.println("FINDING PATH");
 		pathfinding = true;
 		try
 		{
