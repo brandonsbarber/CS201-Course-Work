@@ -1,0 +1,713 @@
+package cs201.roles.restaurantRoles.Ben;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Semaphore;
+
+import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Ben.WaiterGuiBen;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.interfaces.roles.restaurant.Ben.CashierBen;
+import cs201.interfaces.roles.restaurant.Ben.CookBen;
+import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
+import cs201.interfaces.roles.restaurant.Ben.HostBen;
+import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
+import cs201.roles.restaurantRoles.RestaurantWaiterRole;
+
+/**
+ * Restaurant Host Agent
+ */
+public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements WaiterBen {
+	// A global for the number of tables.
+	public static final int NTABLES = 5;
+	boolean foodShouldBeReady = false;
+	/*
+	 * Notice that we implement waitingCustomers using ArrayList, but type it 
+	 * with List semantics.
+	 */
+	public List<MyCustomer> customers = Collections.synchronizedList(new ArrayList<MyCustomer>());
+	
+	/*
+	 * Note that tables is typed with Collection semantics.
+	 * Later we will see how it is implemented.
+	 */
+	public Collection<Table> tables;
+
+	private String name;
+	private Semaphore animating = new Semaphore(0,true);
+	public WaiterGuiBen waiterGui = null;
+	private Boolean talkingToCustomer = false;
+	private Boolean walkingHome = false;
+	
+	private CookBen cook = null;
+	private HostBen host = null;
+	private CashierBen cashier = null;
+	
+	private Boolean okayToBreakAfterCustomers = false;
+	private Boolean onBreak = false;
+	
+	private boolean closingTime = false;
+	
+	private RestaurantAnimationPanelBen animPanel = null;
+	
+	public int waiterNumber;
+
+	public RestaurantWaiterRoleBen() {
+		this("");
+	}
+	
+	public RestaurantWaiterRoleBen(String name) {
+		super();
+
+		this.name = name;
+		
+		// Make some tables
+		tables = Collections.synchronizedList(new ArrayList<Table>(NTABLES));
+		for (int ix = 1; ix <= NTABLES; ix++) {
+			tables.add(new Table(ix));
+		}
+	}
+	
+	/**
+	 * Messages
+	 */
+	
+	public void setCook(CookBen c) {
+		cook = c;
+	}
+	
+	public void setHost(HostBen h) {
+		host = h;
+	}
+	
+	public void setCashier(CashierBen c) {
+		cashier = c;
+	}
+	
+	public void setAnimPanel(RestaurantAnimationPanelBen p) {
+		animPanel = p;
+	}
+	
+	public void msgPleaseSeatCustomer(CustomerBen cust, int table) {
+		customers.add(new MyCustomer(cust, table, CustomerState.waiting));
+		stateChanged();
+	}
+	
+	public void msgReadyToOrder(CustomerBen cust) {
+		// We'll allow this message to interrupt our animation routine, if we're going home, that is
+		if (walkingHome) {
+			animating.release();
+		}
+		
+		// Find the customer in our list
+		MyCustomer readyCustomer = null;
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.customer == cust) {
+					readyCustomer = customer;
+				}
+			}
+		}
+		
+		// Mark him as ready to order
+		readyCustomer.state = CustomerState.readyToOrder;
+		
+		stateChanged();
+	}
+	
+	public void msgOrderReady(String choice, int table) {
+		Do("Got the message that the order is ready.");
+		
+		// Find the customer in our list
+		MyCustomer theCustomer = null;
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.table == table && customer.choice == choice) {
+					theCustomer = customer;
+				}
+			}
+		}
+		
+		// Mark his food as ready
+		theCustomer.state = CustomerState.orderReady;
+		foodShouldBeReady = true;
+		stateChanged();
+	}
+	
+	public void msgHereIsChoice(CustomerBen cust, String choice) {
+		// Find the customer in our list
+		MyCustomer orderingCustomer = null;
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.customer == cust) {
+					orderingCustomer = customer;
+				}
+			}
+		}
+		
+		// Take down his order
+		orderingCustomer.choice = choice;
+		orderingCustomer.state = CustomerState.ordered;
+		
+		// We're done talking for now
+		talkingToCustomer = false;
+		
+		stateChanged();
+	}
+
+	public void msgLeavingTable(CustomerBen cust) {
+		host.msgLeavingTable(cust);
+		
+		synchronized(customers) {
+			for (MyCustomer mc : customers) {
+				if (mc.customer == cust) {
+					mc.state = CustomerState.finished;
+					break;
+				}
+			}
+		}
+		
+		for (Table table : tables) {
+			if (table.getOccupant() == cust) {
+				Do(cust + " leaving " + table);
+				table.setUnoccupied();
+				stateChanged();
+			}
+		}
+		
+		stateChanged();
+	}
+	
+	// Sent by the cook to let the waiter know he's out of food
+	public void msgOutOf(String choice, int table) {
+		Do(cook.getName() + " just told me that he's out of " + choice);
+		
+		// We'll allow this message to interrupt our animation routine, if we're going home, that is
+		if (walkingHome) {
+			animating.release();
+		}
+		
+		// Find the customer who ordered it
+		MyCustomer customer = null;
+		synchronized(customers) {
+			for (MyCustomer mc : customers) {
+				if (mc.table == table && mc.choice == choice)
+					customer = mc;
+			}
+		}
+		
+		// Mark him as having to re-order
+		customer.state = CustomerState.outOfOrder;
+		
+		stateChanged();
+	}
+	
+	// Sent by the GUI
+	public void msgGoOnBreak() {
+		attemptToGoOnBreak();
+	}
+	
+	public void msgContinueWorking() {
+		okayToBreakAfterCustomers = false;
+		onBreak = false;
+		host.msgGoingBackToWork(this);
+		waiterGui.WaiterWorking();
+		
+		stateChanged();
+	}
+	
+	public void msgOkayForBreak() {
+		// We're allowed to go on break! Once we finish our customers..
+		Do("I'm allowd to go on break!");
+		okayToBreakAfterCustomers = true;
+		
+		stateChanged();
+	}
+	
+	public void msgCantGoOnBreak() {
+		// We're not allowed to go on break. Oh well...
+		// ...
+		Do("I'm not allowed to go on break...");
+		okayToBreakAfterCustomers = false;
+		
+		stateChanged();
+	}
+	
+	// Sent from the cashier when a customer's check is ready
+	public void msgHereIsCheck(float amount, CustomerBen cust) {
+		// Find the customer in our list of customers
+		MyCustomer customer = null;
+		synchronized(customers) {
+			for (MyCustomer mc : customers) {
+				if (mc.customer == cust)
+					customer = mc;
+			}
+		}
+		
+		// Take down the check and mark that its ready to be brought to the customer
+		customer.check = amount;
+		customer.state = CustomerState.checkReady;
+				
+		stateChanged();
+	}
+
+	// Sent from the animation to let us know the animation has concluded
+	public void msgAtDestination() {
+		animating.release();
+		stateChanged();
+	}
+	
+	public void msgClosingTime() {
+		closingTime = true;
+		stateChanged();
+	}
+
+	/**
+	 * Scheduler.  Determine what action is called for, and do it.
+	 */
+	
+	public boolean pickAndExecuteAnAction() {		
+		//if (foodShouldBeReady) Do("About to run scheduler...");
+		// Leave the restaurant when its time to close
+		if (closingTime) {
+			leaveRestaurant();
+			return true;
+		}
+	
+		// If we're on break, there's nothing to do
+		if (onBreak) return false;
+		
+		// If we're talking to a customer, just go to sleep and wait for his message to wake us up
+		if (talkingToCustomer) {
+			return false;
+		}
+
+		// If there is a waiting customer, seat him
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.state == CustomerState.waiting) {
+					seatCustomer(customer);
+					return true;
+				}
+			}
+		}
+		
+		// If there is a customer ready to order, walk to him
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.state == CustomerState.readyToOrder) {
+					takeOrder(customer);
+					return true;
+				}
+			}
+		}
+		
+		// If there is a customer who has ordered, go place his order
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.state == CustomerState.ordered) {
+					placeOrder(customer);
+					return true;
+				}
+			}
+		}
+		
+		// If there is a customer whose food is ready, bring him his order
+		//if (foodShouldBeReady) Do("Checking for ready food...");
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.state == CustomerState.orderReady) {
+					bringOrderToCustomer(customer);
+					return true;
+				}
+			}
+		}
+		
+		// If there is a customer whose check is ready, bring it to him
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.state == CustomerState.checkReady) {
+					bringCheckToCustomer(customer);
+					return true;
+				}
+			}
+		}
+		
+		// If there is a customer whose order was out, let him re-order
+		synchronized(customers) {
+			for (MyCustomer customer : customers) {
+				if (customer.state == CustomerState.outOfOrder) {
+					tellCustomerOutOfFood(customer);
+					return true;
+				}
+			}
+		}
+		
+		// If we've finished our customers and we've been okayed to go on break, go on break
+		if (okayToBreakAfterCustomers) {
+			int customerCount = 0;
+			synchronized(customers) {
+				for (MyCustomer customer : customers) {
+					if (customer.state != CustomerState.finished)
+						customerCount++;
+				}
+			}
+			if (customerCount == 0) {
+				goOnBreak();
+				return true;
+			}
+		}
+		
+		// If there is nothing else to do, return home
+		DoReturnHome();
+
+		return false;
+		//we have tried all our rules and found
+		//nothing to do. So return false to main loop of abstract agent
+		//and wait.
+	}
+
+	/**
+	 * Actions
+	 */
+
+	private void seatCustomer(MyCustomer customer) {
+		// First we need to return home to pick the customer up
+		DoGoHome();
+		
+		// Let him know what table he'll be sitting at, and tell him to follow us
+		int table = customer.table;
+		customer.customer.msgFollowMeToTable(table, this, new Menu());
+		
+		DoSeatCustomer(customer.customer, table);
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		customer.state = CustomerState.seated;
+		
+		// HACK - if the waiter is named "tired" he'll go on break
+		if (name.toLowerCase().equals("tired")) {
+			attemptToGoOnBreak();
+		}
+	}
+	
+	private void takeOrder(MyCustomer customer) {
+		// Walk to the customer's table
+		waiterGui.DoWalkToTable(customer.table);
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Ask the customer what he would like
+		customer.customer.msgWhatWouldYouLike();
+		customer.state = CustomerState.askedToOrder;
+		
+		// Don't just walk away from the customer!
+		talkingToCustomer = true;
+	}
+	
+	private void placeOrder(MyCustomer customer) {
+		// Walk to the cook
+		waiterGui.DoWalkToCookingArea();
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Give the cook the customer's order
+		cook.msgHereIsOrder(this, customer.choice, customer.table);
+		
+		// The customer's order has now been placed
+		customer.state = CustomerState.placedOrder;
+	}
+	
+	private void bringOrderToCustomer(MyCustomer customer) {
+		// First walk to the cook
+		waiterGui.DoWalkToPlatingArea();		
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Change the waiter's icon to represent the food he's holding
+		waiterGui.setIconText(customer.choice == "Chicken" ? "C" : "ST");
+		
+		// Remove the item from the plating area
+		animPanel.platingArea.removeItem(customer.choice == "Chicken" ? "C" : "ST");
+		
+		// Now walk to the customer
+		waiterGui.DoWalkToTable(customer.table);
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Give the customer his food
+		customer.customer.msgHereIsYourFood();
+		
+		// Remove the waiter's icon
+		waiterGui.removeIcon();
+		
+		// The customer is now eating
+		customer.state = CustomerState.eating;
+		
+		// Give the cashier the customer's order to compute
+		Do("Giving " + cashier.getName() + " the order to compute the check.");
+		cashier.msgComputeCheckForOrder(customer.choice, this, customer.customer);
+	}
+	
+	private void bringCheckToCustomer(MyCustomer customer) {
+		// First, walk to the customer
+		waiterGui.DoWalkToTable(customer.table);
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Let him know his check is ready
+		customer.customer.msgHereIsCheck(customer.check);
+		Do("Here is your check for $" + customer.check);
+		
+		// Mark him as having the check
+		customer.state = CustomerState.hasCheck;
+	}
+	
+	private void tellCustomerOutOfFood(MyCustomer customer) {
+		Do("Sorry, " + customer.customer.getName() + " but we're out of " + customer.choice);
+		// First, walk to the customer
+		waiterGui.DoWalkToTable(customer.table);
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Let him know the restaurant is out of his chosen food, and give him a new menu
+		Menu newMenu = new Menu();
+		newMenu.remove(customer.choice);	// remove his previous choice
+		customer.customer.msgOutOf(newMenu);
+		
+		// Mark him as seated
+		customer.state = CustomerState.seated;
+	}
+	
+	private void attemptToGoOnBreak() {
+		// Let the host know we're trying to go on break
+		host.msgWantToGoOnBreak(this);
+		Do("I'd like to go on break. Letting " + host.getName() + " know");
+	}
+	
+	private void goOnBreak() {
+		Do("Going on break!");
+		waiterGui.WaiterOnBreak();
+		onBreak = true;
+		// Take a smoke break
+		waiterGui.DoWalkToBreakArea();		
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void leaveRestaurant() {
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.myPerson = null;
+		DoLeaveRestaurant();
+		this.waiterGui.setPresent(false);
+	}
+	
+	/**
+	 * Animation routines
+	 */
+	
+	private void DoSeatCustomer(CustomerBen customer, int table) {
+		//Notice how we print "customer" directly. It's toString method will do it.
+		//Same with "table"
+		Do("Seating " + customer + " at " + table);
+		waiterGui.DoWalkToTable(table); 
+
+	}
+	
+	// Call this method if the waiter is returning home out of boredom (nothing else to do)
+	private void DoReturnHome() {
+		waiterGui.DoWalkHome();
+		walkingHome = true;
+		
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		walkingHome = false;
+	}
+	
+	// Call this method if the waiter needs to return home to pick someone up
+	private void DoGoHome() {
+		waiterGui.DoWalkHome();
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void DoLeaveRestaurant() {
+		waiterGui.DoLeaveRestaurant();
+	}
+
+	/**
+	 * Utilities
+	 */
+	
+	public String getMaitreDName() {
+		return name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Collection getTables() {
+		return tables;
+	}
+
+	public void setGui(WaiterGuiBen gui) {
+		waiterGui = gui;
+	}
+
+	public WaiterGuiBen getGui() {
+		return waiterGui;
+	}
+	
+	public Boolean onBreak() {
+		
+		return onBreak;
+	}
+
+	public class Menu {
+		Map<String, Float> choices = new HashMap<String, Float>();
+		
+		public Menu() {
+			choices.put("Chicken", 6.99f);
+			choices.put("Steak", 11.99f);
+		}
+		public String getRandom() {
+			Random random = new Random();
+			List<String> keys = new ArrayList<String>(choices.keySet());
+			String randomKey = keys.get(random.nextInt(keys.size()));
+			return randomKey;
+		}
+		public String itemUnderPrice(float price) {
+			List<String> affordableItems = new ArrayList<String>();
+			Iterator it = choices.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pairs = (Map.Entry)it.next();
+				if ((Float)pairs.getValue() <= price)
+					affordableItems.add((String)pairs.getKey());
+			}
+			Random random = new Random();
+			if (affordableItems.size() == 0) return null;
+			return affordableItems.get(random.nextInt(affordableItems.size()));
+		}
+		public Boolean itemOnMenu(String item) {
+			Float thePrice = choices.get(item);
+			return (thePrice != null);
+		}
+		public Float getPrice(String item) {
+			return choices.get(item);
+		}
+		public void remove(String foodItem) {
+			choices.remove(foodItem);
+		}
+	}
+	
+	private class Table {
+		CustomerBen occupiedBy;
+		int tableNumber;
+
+		Table(int tableNumber) {
+			this.tableNumber = tableNumber;
+		}
+
+		void setOccupant(CustomerBen cust) {
+			occupiedBy = cust;
+		}
+
+		void setUnoccupied() {
+			occupiedBy = null;
+		}
+
+		CustomerBen getOccupant() {
+			return occupiedBy;
+		}
+
+		boolean isOccupied() {
+			return occupiedBy != null;
+		}
+
+		public String toString() {
+			return "table " + tableNumber;
+		}
+	}
+	
+	// A class to keep track of our customers
+	private enum CustomerState {waiting, seated, readyToOrder, askedToOrder, ordered, 
+								placedOrder, outOfOrder, orderReady, eating, checkReady,
+								hasCheck, finished};
+	private class MyCustomer {
+		CustomerBen customer;
+		int table;
+		String choice;
+		CustomerState state;
+		float check;
+		
+		public MyCustomer(CustomerBen c, int t, CustomerState s) {
+			customer = c;
+			state = s;
+			table = t;
+		}
+	}
+
+	public void setWaiterNumber(int number) {
+		waiterNumber = number;
+	}
+
+	public void startInteraction(Intention intent) {
+		waiterGui.DoEnterRestaurant();
+		this.waiterGui.setPresent(true);
+		closingTime = false;
+	}
+
+	public int getWaiterNumber() {
+		return waiterNumber;
+	}
+}
+

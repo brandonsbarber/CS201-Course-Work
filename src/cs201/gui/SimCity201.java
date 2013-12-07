@@ -24,6 +24,7 @@ import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.gui.transit.BusGui;
@@ -40,6 +41,7 @@ import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
+import cs201.structures.restaurant.RestaurantBen;
 import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 
@@ -125,7 +127,7 @@ public class SimCity201 extends JFrame {
 		Scanner in = new Scanner(System.in);
 
 		boolean running = true;
-		
+
 		while(running)
 		{
 			System.out.print("Which scenario would you like to run?\n" +
@@ -137,7 +139,10 @@ public class SimCity201 extends JFrame {
 					"6) Market Restaurant Delivery (to show truck)\n" +
 					"7) Normative Market\n"+
 					"8) Normative Residence Test\n" +
-					"9) Normative Apartment Complex\nYour choice: ");
+					"9) Normative Apartment Complex\n"+
+					"10) Ben's Normative Restaurant\n" +
+					"11) Ben's Normative Restaurant: Two Customers, Two Waiters\n" +
+					"12) Market Consumer Purchase Car\nYour choice:");
 			String choice = in.nextLine();
 			try
 			{
@@ -153,6 +158,9 @@ public class SimCity201 extends JFrame {
 					case 7: normativeMarket(); running = false; break;
 					case 8: normativeResidence(); running = false; break;
 					case 9: normativeApartmentComplex(); running = false; break;
+					case 10: normativeRestaurantBen(); running = false; break;
+					case 11: normativeRestaurantBenTwoOfEach(); running = false; break;
+					case 12: marketConsumerCar(); running = false; break;
 					default: System.out.println("Please enter a number from the range.");
 				}
 			}
@@ -610,6 +618,259 @@ public class SimCity201 extends JFrame {
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
+	}
+	
+	private void normativeRestaurantBen()
+	{
+		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. Ben's Restaurant opens
+		 * when all of them have arrived at the Restaurant. At 8:30AM a single Customer comes
+		 * and a normative Restaurant scenario starts where he orders food and leaves when done.
+		 * The Restaurant closes at 1:15PM (should be right after the Customer leaves), and all
+		 * the employees go home.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
+		RestaurantBen r = new RestaurantBen(100, 100, 50, 50, Structure.getNextInstance(), g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g, ""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 30));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		p5.startThread();
+	}
+	
+	private void normativeRestaurantBenTwoOfEach() {
+		/* A normal Waiter and rotating stand Waiter, Host, Cashier, and Cook all come to work at 8:00AM. Ben's Restaurant opens
+		 * when the Host, Cashier, Cook, and at least one Waiter have arrived at the Restaurant. At 8:30AM two Customers come
+		 * and a normative Restaurant scenario starts where they both order food and leave when done.
+		 * The Restaurant closes at 1:15PM (should be right after the Customers leave), and all the
+		 * employees go home.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
+		RestaurantBen r = new RestaurantBen(100, 100, 50, 50, Structure.getNextInstance(), g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g, ""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter 1", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p4b = new PersonAgent("Waiter 2", cityPanel);
+		p4b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4b.setHungerEnabled(false);
+		p4b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4b);
+		p4b.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 30));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		p5.startThread();
+		
+		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
+		p6.setWakeupTime(new CityTime(8, 30));
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p6);
+		p6.startThread();
+	}
+	
+	private void marketConsumerCar()
+	{
+		/*
+		 * A Market Manager, Market Employee, and Market Customer all go to a market at 8 AM when it opens.
+		 * The Customer enters the market and wants to purchase a car.
+		 * The Market Manager conveys this to the employee, who brings a new car out from the lot.
+		 * The Customer pays and leaves, and the Employee returns to the back of the Market.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		mcp.setStructure(m);
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		
+		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+			
+		PersonAgent p = new PersonAgent("Market Employee",cityPanel);
+		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p.setHungerEnabled(false);
+		p.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p);
+		p.startThread();
+		
+		PersonAgent employee2 = new PersonAgent("Market Employee",cityPanel);
+		employee2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		employee2.setHungerEnabled(false);
+		employee2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(employee2);
+		employee2.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Customer Car",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerCar, m, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Market Customer Goods",cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerGoods, m, null);
+		p4.setHungerEnabled(false);
+		p4.getMarketChecklist().add(new ItemRequest("Burgers",2));
+		p4.getMarketChecklist().add(new ItemRequest("Pizza",1));
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		p4.startThread();
+	}
+	
+	private void normativeMarketRestaurantBenDelivery()
+	{
+		/* A Restaurant Cook and Cashier go to work at 8:00AM. A Market Manager and Employee also go to work at 8:00AM.
+		 * The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market employee 
+		 * gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring the 
+		 * food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from the 
+		 * cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with negative
+		 * money which is okay. Eventually what will happen is the restaurant will have to cover for this by withdrawing
+		 * from its bank account. If it doesn't have enough, it will take out a loan.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		mcp.setStructure(m);
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+		
+		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
+		RestaurantBen r = new RestaurantBen(475, 225, 50, 50, Structure.getNextInstance(), g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 00));
+		buildingPanels.add(g, ""+r.getId());
+		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
+		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p1b.setHungerEnabled(false);
+		p1b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1b);
+		p1b.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
 	}
 	
 	public void displayStructurePanel(StructurePanel bp) {
