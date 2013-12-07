@@ -2,19 +2,8 @@ package cs201.gui.transit;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Scanner;
 import java.util.Stack;
-
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
@@ -33,24 +22,6 @@ import cs201.trace.AlertTag;
  */
 public class PassengerGui implements Gui
 {
-	class MyPoint extends Point
-	{
-		MyPoint prev;
-		MovementDirection move;
-		
-		public MyPoint(int i, int j, MyPoint previous,MovementDirection moveDir)
-		{
-			super(i,j);
-			prev = previous;
-			move = moveDir;
-		}
-		
-		public boolean equals(MyPoint p)
-		{
-			return p.x == x && p.y == y;
-		}
-	}
-	
 	private PassengerRole pass;
 	
 	private Structure destination;
