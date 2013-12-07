@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import javax.swing.Timer;
-
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
@@ -18,12 +16,10 @@ import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
 
 import cs201.roles.restaurantRoles.Brandon.*;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 
 import cs201.gui.structures.restaurant.*;
 
+@SuppressWarnings("serial")
 public class RestaurantBrandon extends Restaurant {
 
 	private static final int MAXWAITERS = 4;
