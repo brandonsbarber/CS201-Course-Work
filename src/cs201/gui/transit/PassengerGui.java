@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
@@ -155,6 +156,51 @@ public class PassengerGui implements Gui
 		while(!location.isEmpty())
 		{
 			MyPoint p = location.remove();
+			
+			if(p.equals(destination))
+			{
+				MyPoint head = p;
+				while(head != null)
+				{
+					moves.add(head.move);
+					head = head.prev;
+				}
+				break;
+			}
+			
+			//sidewalk direction (turn, h, or v)
+			MovementDirection currentDirection = map[p.y][p.x];
+			
+			if(p.move == MovementDirection.Horizontal || p.move == MovementDirection.Vertical || p.move == MovementDirection.None || currentDirection == MovementDirection.Turn || (p.move.isHorizontal() && currentDirection.isVertical())|| (p.move.isVertical() && currentDirection.isHorizontal()))
+			{
+				//Treat initial state like a junction
+				List<MovementDirection> validDirections = getJunctionDirections(map,p.x,p.y);
+				
+				for(MovementDirection dir : validDirections)
+				{
+					MyPoint nextPoint = getPointFromDirection(p,dir);
+					if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
+					{
+						visitedPoints.add(nextPoint);
+						location.add(nextPoint);
+					}
+				}
+				System.out.println("THIS IS A TEST"+validDirections);
+			}
+			else
+			{
+				MyPoint nextPoint = getPointFromDirection(p,p.move);
+				
+				System.out.println(""+p+"THIS IS THE NEXT POINT"+nextPoint);
+				
+				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
+				{
+					visitedPoints.add(nextPoint);
+					location.add(nextPoint);
+				}
+			}
+			
+			/*MyPoint p = location.remove();
 			System.out.println ("EVALUATING "+p);
 			if(p.equals(destination))
 			{
@@ -186,6 +232,7 @@ public class PassengerGui implements Gui
 			{
 				//Find an adjacent sidewalk piece
 				MyPoint point = getPointFromDirection(p,MovementDirection.Down);
+				System.out.println(point);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
 					visitedPoints.add(point);
@@ -214,6 +261,10 @@ public class PassengerGui implements Gui
 					continue;
 				}
 			}
+			else if(currentDirection == MovementDirection.Horizontal || currentDirection == MovementDirection.Vertical)
+			{
+				
+			}
 			else
 			{
 				MyPoint nextPoint = getPointFromDirection(p,p.move);
@@ -223,7 +274,7 @@ public class PassengerGui implements Gui
 					visitedPoints.add(nextPoint);
 					location.add(nextPoint);
 				}
-			}
+			}*/
 		}
 		
 		if(moves.isEmpty())
@@ -354,19 +405,19 @@ public class PassengerGui implements Gui
 		int upY = y2 - 1;
 		int downY = y2 + 1;
 		
-		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == MovementDirection.Horizontal)
+		if(inBounds(map,leftX,y2) && getDirection(map,leftX, y2) != MovementDirection.None)
 		{
 			validDirections.add(MovementDirection.Left);
 		}
-		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == MovementDirection.Horizontal)
+		if(inBounds(map,rightX,y2) && getDirection(map,rightX, y2) != MovementDirection.None)
 		{
 			validDirections.add(MovementDirection.Right);
 		}
-		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == MovementDirection.Vertical)
+		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) != MovementDirection.None)
 		{
 			validDirections.add(MovementDirection.Up);
 		}
-		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Vertical)
+		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) != MovementDirection.None)
 		{
 			validDirections.add(MovementDirection.Down);
 		}
@@ -378,6 +429,7 @@ public class PassengerGui implements Gui
 	 */
 	private MovementDirection getDirection(MovementDirection[][] map, int x, int y)
 	{
+		System.out.println("GIVING "+map[y][x]+" "+x+" "+y);
 		return map[y][x];
 	}
 	
