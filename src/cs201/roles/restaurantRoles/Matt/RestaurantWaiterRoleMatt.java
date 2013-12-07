@@ -252,8 +252,8 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
-		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.myPerson = null;
 		this.waiterGui.setPresent(false);
 	}
 	
