@@ -2,6 +2,7 @@ package cs201.trace;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +19,7 @@ public class TraceFrame extends JFrame {
 	
 	private TracePanel tracePanel;
 	private JPanel buttonPanel;
+	
 	private JToggleButton messagesButton;
 	private JToggleButton infoButton;
 	private JToggleButton warningButton;
@@ -50,12 +52,12 @@ public class TraceFrame extends JFrame {
 		this.add(BorderLayout.WEST, buttonPanel);
 		
 		JPanel leftButtonPanel = new JPanel();
-		leftButtonPanel.setLayout(new BoxLayout(leftButtonPanel, BoxLayout.Y_AXIS));
+		leftButtonPanel.setLayout(new GridLayout(0, 1));
 		leftButtonPanel.setBorder(BorderFactory.createTitledBorder("Alert Levels:"));
 		buttonPanel.add(BorderLayout.WEST, leftButtonPanel);
 		
 		JPanel rightButtonPanel = new JPanel();
-		rightButtonPanel.setLayout(new BoxLayout(rightButtonPanel, BoxLayout.Y_AXIS));
+		rightButtonPanel.setLayout(new GridLayout(0, 1));
 		rightButtonPanel.setBorder(BorderFactory.createTitledBorder("Tags:"));
 		buttonPanel.add(BorderLayout.EAST, rightButtonPanel);
 		
