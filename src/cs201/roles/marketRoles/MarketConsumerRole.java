@@ -101,9 +101,10 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		stateChanged();
 	}
 	
-	public void msgHereIsYourCar() {
+	public void msgHereIsYourCar(Vehicle car) {
 		// We now have a car!
 		// TODO Ask Brandon how to do this...
+		this.getPerson().setVehicle(car);
 		
 		stateChanged();
 	}

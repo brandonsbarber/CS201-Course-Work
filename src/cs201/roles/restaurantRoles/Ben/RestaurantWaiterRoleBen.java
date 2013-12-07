@@ -133,15 +133,6 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	}
 	
 	public void msgOrderReady(String choice, int table) {
-		Do("Got the message that the order is ready.");
-		
-		System.out.println("**********************************************");
-		System.out.println("Does this role have a Person pointer? " + this.getPerson());
-		System.out.println("Is this role active? " + this.isActive);
-		System.out.println("Is this restaurant open? " + this.restaurant.getOpen());
-		System.out.println("**********************************************");
-		
-		foodShouldBeReady = true;
 		
 		// Find the customer in our list
 		MyCustomer theCustomer = null;
@@ -157,7 +148,6 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		theCustomer.state = CustomerState.orderReady;
 		foodShouldBeReady = true;
 		
-		System.out.println("About to call stateChanged()...");
 		stateChanged();
 	}
 	
@@ -198,7 +188,6 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 			if (table.getOccupant() == cust) {
 				Do(cust + " leaving " + table);
 				table.setUnoccupied();
-				stateChanged();
 			}
 		}
 		
@@ -276,7 +265,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	// Sent from the animation to let us know the animation has concluded
 	public void msgAtDestination() {
 		animating.release();
-		stateChanged();
+		//stateChanged();
 	}
 	
 	public void msgClosingTime() {
@@ -404,12 +393,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		customer.customer.msgFollowMeToTable(table, this, new Menu());
 		
 		DoSeatCustomer(customer.customer, table);
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 		customer.state = CustomerState.seated;
 		
 		// HACK - if the waiter is named "tired" he'll go on break
@@ -421,12 +405,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	private void takeOrder(MyCustomer customer) {
 		// Walk to the customer's table
 		waiterGui.DoWalkToTable(customer.table);
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 		
 		// Ask the customer what he would like
 		customer.customer.msgWhatWouldYouLike();
@@ -441,12 +420,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	private void bringOrderToCustomer(MyCustomer customer) {
 		// First walk to the cook
 		waiterGui.DoWalkToPlatingArea();		
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 		
 		// Change the waiter's icon to represent the food he's holding
 		waiterGui.setIconText(customer.choice == "Chicken" ? "C" : "ST");
@@ -456,12 +430,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		
 		// Now walk to the customer
 		waiterGui.DoWalkToTable(customer.table);
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 		
 		// Give the customer his food
 		customer.customer.msgHereIsYourFood();
@@ -480,12 +449,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	private void bringCheckToCustomer(MyCustomer customer) {
 		// First, walk to the customer
 		waiterGui.DoWalkToTable(customer.table);
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 		
 		// Let him know his check is ready
 		customer.customer.msgHereIsCheck(customer.check);
@@ -499,12 +463,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		Do("Sorry, " + customer.customer.getName() + " but we're out of " + customer.choice);
 		// First, walk to the customer
 		waiterGui.DoWalkToTable(customer.table);
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 		
 		// Let him know the restaurant is out of his chosen food, and give him a new menu
 		Menu newMenu = new Menu();
@@ -527,12 +486,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		onBreak = true;
 		// Take a smoke break
 		waiterGui.DoWalkToBreakArea();		
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pauseForAnimation();
 	}
 	
 	private void leaveRestaurant() {

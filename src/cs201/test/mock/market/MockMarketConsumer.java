@@ -3,6 +3,7 @@ package cs201.test.mock.market;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
@@ -35,7 +36,7 @@ public class MockMarketConsumer extends Mock implements MarketConsumer {
 		log.add(new LoggedEvent(msg));
 	}
 	
-	public void msgHereIsYourCar() {
+	public void msgHereIsYourCar(Vehicle car) {
 		// Log the message
 		String msg = "MarketConsumer: " + this.name + ": Received msgHereIsYourCar";
 		System.out.println(msg);
