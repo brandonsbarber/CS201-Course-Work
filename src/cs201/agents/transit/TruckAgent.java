@@ -154,10 +154,12 @@ public class TruckAgent extends VehicleAgent implements Truck
 		
 		if(!((Restaurant)d.destination).getOpen())
 		{
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT, "Truck: "+getInstance(), "Delivery to restaurant failed");
 			d.s = DeliveryState.Failed;
 		}
 		else
 		{
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT, "Truck: "+getInstance(), "Delivery to restaurant succeeded");
 			for(ItemRequest item : d.inventory)
 			{
 				((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
@@ -174,8 +176,8 @@ public class TruckAgent extends VehicleAgent implements Truck
 		{
 			gui.setPresent(true);
 		}
-		msgSetDestination (homeStructure);
-		animate();
+		
+		returnHome();
 		
 		if(homeStructure instanceof MarketStructure)
 		{
