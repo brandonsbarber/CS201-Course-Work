@@ -185,96 +185,17 @@ public class PassengerGui implements Gui
 						location.add(nextPoint);
 					}
 				}
-				System.out.println("THIS IS A TEST"+validDirections);
 			}
 			else
 			{
 				MyPoint nextPoint = getPointFromDirection(p,p.move);
-				
-				System.out.println(""+p+"THIS IS THE NEXT POINT"+nextPoint);
-				
+								
 				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
 				{
 					visitedPoints.add(nextPoint);
 					location.add(nextPoint);
 				}
 			}
-			
-			/*MyPoint p = location.remove();
-			System.out.println ("EVALUATING "+p);
-			if(p.equals(destination))
-			{
-				MyPoint head = p;
-				while(head != null)
-				{
-					moves.add(head.move);
-					head = head.prev;
-				}
-				break;
-			}
-			MovementDirection currentDirection = map[p.y][p.x];
-			
-			if(currentDirection == MovementDirection.Turn)
-			{
-				List<MovementDirection> validDirections = getJunctionDirections(map,p.x,p.y);
-				System.out.println(validDirections);
-				for(MovementDirection dir : validDirections)
-				{
-					MyPoint nextPoint = getPointFromDirection(p,dir);
-					if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
-					{
-						visitedPoints.add(nextPoint);
-						location.add(nextPoint);
-					}
-				}
-			}
-			else if(currentDirection == MovementDirection.None)
-			{
-				//Find an adjacent sidewalk piece
-				MyPoint point = getPointFromDirection(p,MovementDirection.Down);
-				System.out.println(point);
-				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
-				{
-					visitedPoints.add(point);
-					location.add(point);
-					continue;
-				}
-				point = getPointFromDirection(p,MovementDirection.Up);
-				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
-				{
-					visitedPoints.add(point);
-					location.add(point);
-					continue;
-				}
-				point = getPointFromDirection(p,MovementDirection.Right);
-				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
-				{
-					visitedPoints.add(point);
-					location.add(point);
-					continue;
-				}
-				point = getPointFromDirection(p,MovementDirection.Left);
-				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
-				{
-					visitedPoints.add(point);
-					location.add(point);
-					continue;
-				}
-			}
-			else if(currentDirection == MovementDirection.Horizontal || currentDirection == MovementDirection.Vertical)
-			{
-				
-			}
-			else
-			{
-				MyPoint nextPoint = getPointFromDirection(p,p.move);
-				
-				if(!visitedPoints.contains(nextPoint) && isValidPoint(map,nextPoint))
-				{
-					visitedPoints.add(nextPoint);
-					location.add(nextPoint);
-				}
-			}*/
 		}
 		
 		if(moves.isEmpty())

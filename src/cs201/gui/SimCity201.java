@@ -138,11 +138,10 @@ public class SimCity201 extends JFrame {
 					"7) Normative Market\n"+
 					"8) Normative Residence Test\n" +
 					"9) Normative Apartment Complex\nYour choice: ");
-			//String choice = in.nextLine();
+			String choice = in.nextLine();
 			try
 			{
-				int choiceNum = 4;
-				//int choiceNum = Integer.parseInt(choice);
+				int choiceNum = Integer.parseInt(choice);
 				switch(choiceNum)
 				{
 					case 1: normativeRestaurant();running = false; break;
@@ -364,7 +363,7 @@ public class SimCity201 extends JFrame {
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
-		/*MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
@@ -378,17 +377,17 @@ public class SimCity201 extends JFrame {
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
-		CityDirectory.getInstance().addRestaurant(r);*/
+		CityDirectory.getInstance().addRestaurant(r);
 		
-		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(2*25,1*25,25,25,Structure.getNextInstance(),mG);
+		/*MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(24*25,13*25,25,25,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m,new Point(2*25,1*25), new Point(2*25,1*25));
 		CityDirectory.getInstance().addMarket(m);
 		
-		int x = 8;int y = 3;
+		int x = 14;int y = 6;
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(x*25,y*25,25,25,Structure.getNextInstance(),g);
@@ -396,7 +395,7 @@ public class SimCity201 extends JFrame {
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(x*25,y*25), new Point(x*25,y*25));
-		CityDirectory.getInstance().addRestaurant(r);
+		CityDirectory.getInstance().addRestaurant(r);*/
 		
 		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);

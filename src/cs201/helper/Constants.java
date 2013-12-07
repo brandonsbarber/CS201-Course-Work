@@ -66,7 +66,7 @@ public class Constants {
     /**
      * Whether or not SimCity201 is in debug mode
      */
-    public static boolean DEBUG_MODE = true;
+    public static boolean DEBUG_MODE = false;
     
     /**
      * Scalar describing how fast time passes in SimCity201
