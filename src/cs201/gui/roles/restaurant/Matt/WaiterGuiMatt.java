@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
+import cs201.helper.Constants;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 
@@ -67,8 +68,12 @@ public class WaiterGuiMatt implements Gui {
         g.setColor(Color.MAGENTA);
         g.fillRect(xPos, yPos, WAITERSIZE, WAITERSIZE);
         
-        g.setColor(Color.black);
-        g.drawString("Waiter " + (message != "" ? "(" + message + ")" : ""), xPos, yPos);
+        g.setColor(Color.BLACK);
+        if (Constants.DEBUG_MODE) {
+	        g.drawString("Waiter " + (message != "" ? "(" + message + ")" : ""), xPos, yPos);
+        } else {
+        	g.drawString(message, xPos, yPos);
+        }
     }
     
     public void setMessage(String what) {

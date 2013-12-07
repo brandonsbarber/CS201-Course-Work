@@ -8,6 +8,7 @@ import java.util.List;
 
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 
 public class RestaurantRotatingStand implements Gui {
@@ -61,8 +62,10 @@ public class RestaurantRotatingStand implements Gui {
 		g.setColor(Color.PINK);
 		g.fillOval(STANDX, STANDY, STANDSIZE, STANDSIZE);
 		
-		g.setColor(Color.BLACK);
-		g.drawString("Stand", STANDX, STANDY);
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.BLACK);
+			g.drawString("Stand", STANDX, STANDY);
+		}
 	}
 
 	@Override

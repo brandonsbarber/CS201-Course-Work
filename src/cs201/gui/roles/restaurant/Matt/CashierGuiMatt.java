@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
 
 public class CashierGuiMatt implements Gui {
@@ -33,8 +34,10 @@ public class CashierGuiMatt implements Gui {
 		g.setColor(Color.BLUE);
 		g.fillRect(xPos, yPos, CASHIERSIZE, CASHIERSIZE);
 		
-		g.setColor(Color.black);
-		g.drawString("Cashier", xPos, yPos);
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.black);
+			g.drawString("Cashier", xPos, yPos);
+		}
 	}
 
 	public boolean isPresent() {
