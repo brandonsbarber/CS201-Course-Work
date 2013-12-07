@@ -730,7 +730,15 @@ public class PersonAgent extends Agent implements Person {
 		
 		System.out.println(output.toString());
 	}
-
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 	/**
 	 * Represents anything a PersonAgent might want to do in SimCity201
 	 * @author Matt Pohlmann
