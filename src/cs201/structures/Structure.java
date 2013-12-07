@@ -21,6 +21,7 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected Point deliveryLocation;
 	protected Point parkingLocation;
 	protected CityTime closingTime;
+	protected boolean isOpen;
 	
 	private static int INSTANCES = 0;
 	
@@ -34,6 +35,7 @@ public abstract class Structure extends Rectangle2D.Double {
 		this.deliveryLocation = null;
 		this.parkingLocation = null;
 		this.closingTime = null;
+		this.isOpen = false;
 	}
 	
 	/**
@@ -129,6 +131,22 @@ public abstract class Structure extends Rectangle2D.Double {
 		this.closingTime.day = null;
 		this.closingTime.hour = time.hour;
 		this.closingTime.minute = time.minute;
+	}
+	
+	/**
+	 * Sets whether this Structure is open or closed
+	 * @param open True to set this Structure to open, False to close it down
+	 */
+	public void setOpen(boolean open) {
+		isOpen = open;
+	}
+	
+	/** 
+	 * Returns whether or not this Structure is open
+	 * @return True for an open Structure, false otherwise
+	 */
+	public boolean getOpen() {
+		return isOpen;
 	}
 	
 	/**

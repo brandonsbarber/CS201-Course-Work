@@ -110,22 +110,6 @@ public abstract class Restaurant extends Structure {
 	}
 	
 	/**
-	 * Sets whether this Restaurant is open or closed
-	 * @param open True to set this Restaurant to open, closed to close it down
-	 */
-	public void setOpen(boolean open) {
-		isOpen = open;
-	}
-	
-	/** 
-	 * Returns whether or not this Restaurant is open
-	 * @return True for an open Restaurant, false otherwise
-	 */
-	public boolean getOpen() {
-		return isOpen;
-	}
-	
-	/**
 	 * Should be called by the Host when he believes it's okay for all the other employees to go Home
 	 */
 	public abstract void closingTime();
