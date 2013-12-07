@@ -19,6 +19,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
+import cs201.gui.configPanels.PersonConfigPanel;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.market.MarketConfigPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
@@ -46,8 +47,8 @@ import cs201.structures.transit.BusStop;
 
 @SuppressWarnings("serial")
 public class SimCity201 extends JFrame {
-	private final int SIZEX = 1200;
-	private final int SIZEY	= 800;
+	public static final int SIZEX = 1200;
+	public static final int SIZEY = 800;
 	
 	CityPanel cityPanel;
 	JPanel buildingPanels;
@@ -118,6 +119,8 @@ public class SimCity201 extends JFrame {
 		settingsPanel.setMinimumSize(new Dimension(SIZEX, SIZEY * 2/5));
 		settingsPanel.setMaximumSize(new Dimension(SIZEX, SIZEY * 2/5));
 		settingsPanel.setPreferredSize(new Dimension(SIZEX, SIZEY * 2/5));
+		
+		settingsPanel.addPanel("PersonAgentPanel", new PersonConfigPanel());
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
