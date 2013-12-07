@@ -162,7 +162,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void setCurrentLocation(Structure s2)
 	{
-		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,""+getName(),"Current location set to  "+s2);
+		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,""+getName(),"Current location set to  "+s2);
 		currentLocation = s2;
 		if(gui != null){gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);}
 	}

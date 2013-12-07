@@ -61,8 +61,7 @@ public class PersonInfoPanel extends JPanel {
 		nameTextField.setFocusable(false);
 		nameTextField.setEditable(false);
 		GridBagConstraints gbc_nameTextField = new GridBagConstraints();
-		gbc_nameTextField.anchor = GridBagConstraints.WEST;
-		gbc_nameTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_nameTextField.fill = GridBagConstraints.BOTH;
 		gbc_nameTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_nameTextField.gridx = 2;
 		gbc_nameTextField.gridy = 0;
@@ -84,8 +83,7 @@ public class PersonInfoPanel extends JPanel {
 		moneyTextField.setEditable(false);
 		moneyTextField.setFocusable(false);
 		GridBagConstraints gbc_moneyTextField = new GridBagConstraints();
-		gbc_moneyTextField.anchor = GridBagConstraints.WEST;
-		gbc_moneyTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_moneyTextField.fill = GridBagConstraints.BOTH;
 		gbc_moneyTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_moneyTextField.gridx = 2;
 		gbc_moneyTextField.gridy = 1;
@@ -107,8 +105,7 @@ public class PersonInfoPanel extends JPanel {
 		hungerTextField.setFocusable(false);
 		hungerTextField.setEditable(false);
 		GridBagConstraints gbc_hungerTextField = new GridBagConstraints();
-		gbc_hungerTextField.anchor = GridBagConstraints.WEST;
-		gbc_hungerTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_hungerTextField.fill = GridBagConstraints.BOTH;
 		gbc_hungerTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_hungerTextField.gridx = 2;
 		gbc_hungerTextField.gridy = 2;
@@ -130,8 +127,7 @@ public class PersonInfoPanel extends JPanel {
 		locationTextField.setEditable(false);
 		locationTextField.setFocusable(false);
 		GridBagConstraints gbc_locationTextField = new GridBagConstraints();
-		gbc_locationTextField.anchor = GridBagConstraints.WEST;
-		gbc_locationTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_locationTextField.fill = GridBagConstraints.BOTH;
 		gbc_locationTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_locationTextField.gridx = 2;
 		gbc_locationTextField.gridy = 3;
@@ -153,8 +149,7 @@ public class PersonInfoPanel extends JPanel {
 		stateTextField.setEditable(false);
 		stateTextField.setFocusable(false);
 		GridBagConstraints gbc_stateTextField = new GridBagConstraints();
-		gbc_stateTextField.anchor = GridBagConstraints.WEST;
-		gbc_stateTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_stateTextField.fill = GridBagConstraints.BOTH;
 		gbc_stateTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_stateTextField.gridx = 2;
 		gbc_stateTextField.gridy = 4;
@@ -176,8 +171,7 @@ public class PersonInfoPanel extends JPanel {
 		wakeupTextField.setEditable(false);
 		wakeupTextField.setFocusable(false);
 		GridBagConstraints gbc_wakeupTextField = new GridBagConstraints();
-		gbc_wakeupTextField.anchor = GridBagConstraints.WEST;
-		gbc_wakeupTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_wakeupTextField.fill = GridBagConstraints.BOTH;
 		gbc_wakeupTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_wakeupTextField.gridx = 2;
 		gbc_wakeupTextField.gridy = 5;
@@ -199,8 +193,7 @@ public class PersonInfoPanel extends JPanel {
 		sleepTextField.setFocusable(false);
 		sleepTextField.setEditable(false);
 		GridBagConstraints gbc_sleepTextField = new GridBagConstraints();
-		gbc_sleepTextField.anchor = GridBagConstraints.WEST;
-		gbc_sleepTextField.fill = GridBagConstraints.VERTICAL;
+		gbc_sleepTextField.fill = GridBagConstraints.BOTH;
 		gbc_sleepTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_sleepTextField.gridx = 2;
 		gbc_sleepTextField.gridy = 6;
@@ -222,7 +215,7 @@ public class PersonInfoPanel extends JPanel {
 		actionTextField.setFocusable(false);
 		actionTextField.setEditable(false);
 		GridBagConstraints gbc_actionTextField = new GridBagConstraints();
-		gbc_actionTextField.anchor = GridBagConstraints.WEST;
+		gbc_actionTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_actionTextField.gridx = 2;
 		gbc_actionTextField.gridy = 7;
 		leftPanel.add(actionTextField, gbc_actionTextField);

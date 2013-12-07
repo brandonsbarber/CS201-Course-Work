@@ -123,6 +123,7 @@ public class SimCity201 extends JFrame {
 		
 		personPanel = new PersonConfigPanel();
 		settingsPanel.addPanel("PersonAgentPanel", personPanel);
+		settingsPanel.addPanel("Transit",new TransitConfigPanel());
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
