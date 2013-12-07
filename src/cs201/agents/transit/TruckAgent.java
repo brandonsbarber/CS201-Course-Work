@@ -39,7 +39,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		}
 	};
 	
-	enum DeliveryState {NotDone,InProgress,Done};
+	enum DeliveryState {NotDone,InProgress,Done, Failed};
 	
 	/**
 	 * Creates a truck agent with the given home structure
@@ -90,6 +90,14 @@ public class TruckAgent extends VehicleAgent implements Truck
 		}
 		else
 		{
+			for(Delivery d : deliveries)
+			{
+				if(d.s == DeliveryState.NotDone)
+				{
+					processFailed(d);
+					return true;
+				}
+			}
 			for(int i = 0; i < deliveries.size(); i++)
 			{
 				if(deliveries.get(i).s == DeliveryState.Done)
@@ -141,14 +149,40 @@ public class TruckAgent extends VehicleAgent implements Truck
 		
 		animate();
 		
+		msgSetLocation(d.destination);
 		
-		for(ItemRequest item : d.inventory)
+		if(!((Restaurant)d.destination).getOpen())
 		{
-			((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
+			d.s = DeliveryState.Failed;
+		}
+		else
+		{
+			for(ItemRequest item : d.inventory)
+			{
+				((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
+			}
+			
+			d.s = DeliveryState.Done;
+		}
+	}
+	
+
+	private void processFailed(Delivery d)
+	{
+		if(gui != null)
+		{
+			gui.setPresent(true);
+		}
+		msgSetDestination (homeStructure);
+		animate();
+		
+		if(homeStructure instanceof MarketStructure)
+		{
+			MarketStructure m = (MarketStructure)homeStructure;
+			//FIX THIS AFTER TALKING WITH BEN
+			m.getManager().msgDeliveryFailed();
 		}
 		
-		msgSetLocation(d.destination);
 		d.s = DeliveryState.Done;
-
 	}
 }
