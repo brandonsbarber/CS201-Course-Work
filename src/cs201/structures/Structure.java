@@ -150,9 +150,12 @@ public abstract class Structure extends Rectangle2D.Double {
 	}
 	
 	/**
+	 * This function is now deprecated after the addition of the Trace Panel. Please use that instead.
+	 * 
 	 * General-purpose function for printing to the terminal. Format: "Restaurant 2: Gained $100"
 	 * @param msg The message that should be printed (i.e. Gained $100)
 	 */
+	@Deprecated
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
 		output.append("[");
