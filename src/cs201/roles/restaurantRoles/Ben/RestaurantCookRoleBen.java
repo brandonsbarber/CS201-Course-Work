@@ -12,6 +12,8 @@ import java.util.TimerTask;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.helper.CityDirectory;
+import cs201.helper.Ben.RestaurantRotatingStandBen;
+import cs201.helper.Ben.RestaurantRotatingStandBen.RotatingStandOrderBen;
 import cs201.interfaces.roles.restaurant.Ben.CashierBen;
 import cs201.interfaces.roles.restaurant.Ben.CookBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
@@ -36,6 +38,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 	private boolean checkInventory = true;
 	
 	private RestaurantAnimationPanelBen animPanel = null;
+	private RestaurantRotatingStandBen stand = null;
 	
 	public RestaurantCookRoleBen() {
 		this("");
@@ -67,12 +70,20 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		
 	}
 	
+	/**
+	 * Set corresponding instances...
+	 */
+	
 	public void setCashier(CashierBen c) {
 		cashier = c;
 	}
 	
 	public void setAnimPanel(RestaurantAnimationPanelBen p) {
 		animPanel = p;
+	}
+	
+	public void setRotatingStand(RestaurantRotatingStandBen s) {
+		stand = s;
 	}
 
 	/**
@@ -154,6 +165,11 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 			}
 		}
 		
+		// If there is a pending stand order, take it off the stand
+		if (stand.orderCount() > 0) {
+			takeOrderOffStand();
+		}
+		
 		/*
 		 * We have tried all our rules and found nothing to do.
 		 * Return false to main loop of abstract agent and wait.
@@ -231,6 +247,20 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 				thisFood.orderedMore = true;
 			}
 		}
+	}
+	
+	private void takeOrderOffStand() {
+		// Grab the order from the stand
+		RotatingStandOrderBen standOrder = stand.removeOrder();
+		
+		// Convert it to our own Order
+		Order newOrder = new Order(standOrder.waiter, standOrder.choice, standOrder.table, OrderState.pending);
+		
+		// Add the order to our list
+		orders.add(newOrder);
+		
+		// Let's go ahead and start cooking it
+		attemptToCookOrder(newOrder);
 	}
 	
 	private void plateIt(Order order) {

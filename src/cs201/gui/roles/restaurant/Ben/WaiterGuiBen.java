@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.helper.Ben.RestaurantRotatingStandBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
 
 /*
@@ -126,6 +127,12 @@ public class WaiterGuiBen implements Gui {
     public void DoWalkToCookingArea() {
     	xDestination = RestaurantAnimationPanelBen.COOKINGAREAX;
     	yDestination = RestaurantAnimationPanelBen.COOKINGAREAY + 30;
+    	hasDestination = true;
+    }
+    
+    public void DoWalkToStand() {
+    	xDestination = RestaurantRotatingStandBen.ROTATING_STAND_X;
+    	yDestination = RestaurantRotatingStandBen.ROTATING_STAND_Y + 30;
     	hasDestination = true;
     }
     

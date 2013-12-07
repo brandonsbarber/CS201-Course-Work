@@ -13,6 +13,7 @@ import java.util.concurrent.Semaphore;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Ben.WaiterGuiBen;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.helper.Ben.RestaurantRotatingStandBen;
 import cs201.interfaces.roles.restaurant.Ben.CashierBen;
 import cs201.interfaces.roles.restaurant.Ben.CookBen;
 import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
@@ -23,7 +24,7 @@ import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 /**
  * Restaurant Host Agent
  */
-public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements WaiterBen {
+public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements WaiterBen {
 	// A global for the number of tables.
 	public static final int NTABLES = 5;
 	boolean foodShouldBeReady = false;
@@ -39,25 +40,33 @@ public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements Wai
 	 */
 	public Collection<Table> tables;
 
+	/*
+	 * Properties of this waiter
+	 */
 	private String name;
+	public int waiterNumber;
+
 	private Semaphore animating = new Semaphore(0,true);
-	public WaiterGuiBen waiterGui = null;
+
+	/*
+	 * Flags
+	 */
+	private Boolean okayToBreakAfterCustomers = false;
+	private Boolean onBreak = false;
+	private boolean closingTime = false;
 	private Boolean talkingToCustomer = false;
 	private Boolean walkingHome = false;
 	
-	private CookBen cook = null;
+	/*
+	 * Connections to other instances 
+	 */
+	protected CookBen cook = null;
 	private HostBen host = null;
 	private CashierBen cashier = null;
-	
-	private Boolean okayToBreakAfterCustomers = false;
-	private Boolean onBreak = false;
-	
-	private boolean closingTime = false;
-	
 	private RestaurantAnimationPanelBen animPanel = null;
+	protected RestaurantRotatingStandBen stand;
+	public WaiterGuiBen waiterGui = null;
 	
-	public int waiterNumber;
-
 	public RestaurantWaiterRoleBen() {
 		this("");
 	}
@@ -75,9 +84,9 @@ public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements Wai
 	}
 	
 	/**
-	 * Messages
+	 * Set connections to other instances
 	 */
-	
+
 	public void setCook(CookBen c) {
 		cook = c;
 	}
@@ -93,6 +102,14 @@ public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements Wai
 	public void setAnimPanel(RestaurantAnimationPanelBen p) {
 		animPanel = p;
 	}
+	
+	public void setRotatingStand(RestaurantRotatingStandBen s) {
+		stand = s;
+	}
+	
+	/**
+	 * Messages
+	 */
 	
 	public void msgPleaseSeatCustomer(CustomerBen cust, int table) {
 		customers.add(new MyCustomer(cust, table, CustomerState.waiting));
@@ -418,22 +435,7 @@ public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements Wai
 		talkingToCustomer = true;
 	}
 	
-	private void placeOrder(MyCustomer customer) {
-		// Walk to the cook
-		waiterGui.DoWalkToCookingArea();
-		try {
-			animating.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// Give the cook the customer's order
-		cook.msgHereIsOrder(this, customer.choice, customer.table);
-		
-		// The customer's order has now been placed
-		customer.state = CustomerState.placedOrder;
-	}
+	protected abstract void placeOrder(MyCustomer customer);
 	
 	private void bringOrderToCustomer(MyCustomer customer) {
 		// First walk to the cook
@@ -582,6 +584,14 @@ public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements Wai
 	private void DoLeaveRestaurant() {
 		waiterGui.DoLeaveRestaurant();
 	}
+	
+	protected void pauseForAnimation() {
+		try {
+			animating.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Utilities
@@ -679,10 +689,10 @@ public class RestaurantWaiterRoleBen extends RestaurantWaiterRole implements Wai
 	}
 	
 	// A class to keep track of our customers
-	private enum CustomerState {waiting, seated, readyToOrder, askedToOrder, ordered, 
+	protected enum CustomerState {waiting, seated, readyToOrder, askedToOrder, ordered, 
 								placedOrder, outOfOrder, orderReady, eating, checkReady,
 								hasCheck, finished};
-	private class MyCustomer {
+	protected class MyCustomer {
 		CustomerBen customer;
 		int table;
 		String choice;

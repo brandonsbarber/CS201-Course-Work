@@ -15,6 +15,7 @@ import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityTime;
+import cs201.helper.Ben.RestaurantRotatingStandBen;
 import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
@@ -23,6 +24,8 @@ import cs201.roles.restaurantRoles.Ben.RestaurantCookRoleBen;
 import cs201.roles.restaurantRoles.Ben.RestaurantCustomerRoleBen;
 import cs201.roles.restaurantRoles.Ben.RestaurantHostRoleBen;
 import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBen;
+import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBenNormal;
+import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBenStand;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
@@ -39,19 +42,21 @@ import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
 public class RestaurantBen extends Restaurant {
 	private final int INITIALWAITERS = 2;
 	private final int MAXWAITERS = 4;
-	//private RestaurantRotatingStand stand = new RestaurantRotatingStand();
+	private RestaurantRotatingStandBen stand = new RestaurantRotatingStandBen();
 	
 	public RestaurantBen(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
-		//this.panel.addGui(stand);
-		//stand.setPresent(true);
+		
+		// Set up the stand
+		this.panel.addGui(stand);
+		stand.setPresent(true);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleBen();
 		host.setRestaurant(this);
 		
 		this.cook = new RestaurantCookRoleBen();
-		//((RestaurantCookRoleMatt) cook).setRotatingStand(stand);
+		((RestaurantCookRoleBen) cook).setRotatingStand(stand);
 		cook.setRestaurant(this);
 		((RestaurantCookRoleBen) cook).setAnimPanel((RestaurantAnimationPanelBen) this.panel);
 		
@@ -62,19 +67,16 @@ public class RestaurantBen extends Restaurant {
 		for (int i = 0; i < INITIALWAITERS; i++) {
 			RestaurantWaiterRoleBen newWaiter;
 			
-			/*
 			if (i % 2 == 0) {
-				newWaiter = new RestaurantWaiterRoleMattNormal();
+				newWaiter = new RestaurantWaiterRoleBenNormal();
 			} else {
-				newWaiter = new RestaurantWaiterRoleMattStand();
+				newWaiter = new RestaurantWaiterRoleBenStand();
 			}
-			*/
-			newWaiter = new RestaurantWaiterRoleBen();
 			
 			WaiterGuiBen waiterGui = new WaiterGuiBen(newWaiter);
 			waiterGui.setPresent(false);
 			newWaiter.setGui(waiterGui);
-			//((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
+			newWaiter.setRotatingStand(stand);
 			waiters.add(newWaiter);
 			this.panel.addGui(waiterGui);
 			newWaiter.setRestaurant(this);
@@ -105,7 +107,6 @@ public class RestaurantBen extends Restaurant {
 				for (RestaurantWaiterRole r : waiters) {
 					if (r.getPerson() == null) {
 						((RestaurantHostRoleBen) host).addWaiter((RestaurantWaiterRoleBen) r);
-						//UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleBen) r).getGui().setPresent(true);
 						return r;
 					}
@@ -113,20 +114,17 @@ public class RestaurantBen extends Restaurant {
 				
 				if (waiters.size() < MAXWAITERS) {
 					RestaurantWaiterRoleBen newWaiter;
-					/*
 					if (waiters.size() % 2 == 0) {
-						newWaiter = new RestaurantWaiterRoleMattNormal();
+						newWaiter = new RestaurantWaiterRoleBenNormal();
 					} else {
-						newWaiter = new RestaurantWaiterRoleMattStand();
-					}*/
-					newWaiter = new RestaurantWaiterRoleBen();
+						newWaiter = new RestaurantWaiterRoleBenStand();
+					}
 					
 					WaiterGuiBen waiterGui = new WaiterGuiBen(newWaiter);
 					newWaiter.setGui(waiterGui);
+					newWaiter.setRotatingStand(stand);
 					waiters.add(newWaiter);
 					((RestaurantHostRoleBen) host).addWaiter(newWaiter);
-					//UpdateWaiterHomePositions();
-					//((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
 					this.panel.addGui(waiterGui);
 					newWaiter.setRestaurant(this);
 					newWaiter.getGui().setPresent(true);
