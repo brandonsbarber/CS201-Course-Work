@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import cs201.gui.SimCity201;
 import cs201.roles.Role;
 
+@SuppressWarnings("serial")
 public class RestaurantConfigPanelMatt extends JPanel {
 	
 	public RestaurantConfigPanelMatt(Rectangle2D r, int i, SimCity201 sc) {

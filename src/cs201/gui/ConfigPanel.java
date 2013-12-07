@@ -7,6 +7,7 @@ import javax.swing.JPanel;
  * @author Brandon
  *
  */
+@SuppressWarnings("serial")
 public class ConfigPanel extends JPanel
 {
 	public static int INSTANCES = 1;

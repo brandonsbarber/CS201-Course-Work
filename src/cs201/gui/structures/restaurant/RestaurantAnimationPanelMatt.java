@@ -14,6 +14,7 @@ import cs201.gui.StructurePanel;
  * 
  * @author Matthew Pohlmann
  */
+@SuppressWarnings("serial")
 public class RestaurantAnimationPanelMatt extends StructurePanel {
 	
 	private static final int DEFAULTWINDOWX = 480;

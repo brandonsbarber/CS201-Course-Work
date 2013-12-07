@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+@SuppressWarnings("serial")
 public abstract class StructurePanel extends JPanel implements ActionListener {
 	private String name;
 	SimCity201 city;

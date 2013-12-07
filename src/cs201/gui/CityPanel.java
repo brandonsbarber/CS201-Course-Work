@@ -22,6 +22,7 @@ import cs201.helper.CityDirectory;
 import cs201.helper.Constants;
 import cs201.structures.Structure;
 
+@SuppressWarnings("serial")
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
 	

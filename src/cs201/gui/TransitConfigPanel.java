@@ -7,6 +7,7 @@ import javax.swing.JLabel;
  * @author Brandon
  *
  */
+@SuppressWarnings("serial")
 public class TransitConfigPanel extends ConfigPanel
 {
 	/**
