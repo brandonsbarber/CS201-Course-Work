@@ -57,7 +57,6 @@ public class CityDirectory implements ActionListener {
 		cityTimer.setRepeats(true);
 		cityTimer.start();
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
-		//System.out.println("[SimCity201] Time: " + time);
 	}
 	
 	public void setStartTime(CityTime newTime) {
@@ -78,7 +77,6 @@ public class CityDirectory implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		time.increment(TIMESTEP);
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
-		//System.out.println("[SimCity201] Time: " + time);
 		
 		synchronized(people) {
 			for (PersonAgent p : people) {

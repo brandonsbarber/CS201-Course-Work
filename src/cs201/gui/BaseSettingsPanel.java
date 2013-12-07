@@ -1,20 +1,16 @@
 package cs201.gui;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import cs201.helper.Constants;
-import cs201.trace.AlertLog;
 import cs201.trace.TraceFrame;
-import cs201.trace.TracePanel;
 
 public class BaseSettingsPanel extends JPanel implements ActionListener
 {	

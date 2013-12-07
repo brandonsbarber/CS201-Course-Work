@@ -59,6 +59,7 @@ public abstract class Agent {
     /**
      * The simulated action code
      */
+    @Deprecated
     protected void Do(String msg) {
         print(msg, null);
     }

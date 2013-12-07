@@ -13,11 +13,12 @@ package cs201.trace;
  *
  */
 public enum AlertTag {
-	PERSON,
-	BANK_TELLER,
-	BANK_CUSTOMER,
+	PERSON_AGENT,
+	BANK,
 	BUS_STOP,
-	RESTAURANT,		//For the demo code where you make a new restaurant
-	BANK,			//For the demo code where you make a new bank
+	RESTAURANT,
+	MARKET,
+	RESIDENCE,
+	APARTMENT_COMPLEX,
 	GENERAL_CITY
 }

@@ -18,6 +18,8 @@ import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
 import cs201.structures.Structure;
 import cs201.structures.residence.Residence;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * The PersonAgent that represents all people in SimCity201
@@ -295,7 +297,7 @@ public class PersonAgent extends Agent implements Person {
 	public void goToLocation(Action a) {
 		a.active = true;
 		if (currentLocation != a.location) {
-			Do("Going to " + a.location);
+			AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Going to " + a.location);
 			passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
@@ -308,12 +310,12 @@ public class PersonAgent extends Agent implements Person {
 	 * @param a The Action to be performed
 	 */
 	private void performAction(Action a) {		
-		Do("Performing Action: " + a);
+		AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Performing Action: " + a);
 		
 		Role newRole = a.location.getRole(a.intent);
 		if (newRole == null) {
 			planner.remove(a);
-			Do("Failed to perform Action: " + a);
+			AlertLog.getInstance().logWarning(AlertTag.PERSON_AGENT, name, "Failed to perform Action: " + a);
 			return;
 		}
 		
@@ -404,7 +406,7 @@ public class PersonAgent extends Agent implements Person {
 			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
 			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
 			default: {
-				Do("addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
+				AlertLog.getInstance().logWarning(AlertTag.PERSON_AGENT, name, "addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
 				return;
 			}
 			}
@@ -716,6 +718,7 @@ public class PersonAgent extends Agent implements Person {
 	 * General-purpose function for printing to the terminal. Format: "PersonAgent Matt: Going to work"
 	 * @param msg The message that should be printed (i.e. Going to work)
 	 */
+	@Deprecated
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
 		output.append("[");
