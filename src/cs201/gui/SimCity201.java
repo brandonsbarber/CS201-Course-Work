@@ -121,6 +121,8 @@ public class SimCity201 extends JFrame {
 		settingsPanel.setPreferredSize(new Dimension(SIZEX, SIZEY * 2/5));
 		
 		settingsPanel.addPanel("PersonAgentPanel", new PersonConfigPanel());
+		settingsPanel.addPanel("Transit",new TransitConfigPanel());
+		
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
