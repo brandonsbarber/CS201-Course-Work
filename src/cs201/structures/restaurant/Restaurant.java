@@ -23,7 +23,6 @@ public abstract class Restaurant extends Structure {
 	protected List<RestaurantWaiterRole> waiters;
 	protected double moneyOnHand;
 	protected int bankAccountNumber;
-	protected boolean isOpen;
 	
 	public Restaurant(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
@@ -34,7 +33,6 @@ public abstract class Restaurant extends Structure {
 		this.waiters = null;
 		this.moneyOnHand = INITIALMONEY;
 		this.bankAccountNumber = -1;
-		this.isOpen = false;
 	}
 	
 	/**
