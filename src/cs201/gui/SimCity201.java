@@ -153,7 +153,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Restaurant Shift Change");
 		scenarioList.add("50 People");
 		
-		ScenarioPanel scenarioPanel = new ScenarioPanel(scenarioList);
+		/*ScenarioPanel scenarioPanel = new ScenarioPanel(scenarioList);
 		scenarioPanel.showModalScenarioSelection();
 
 		switch(scenarioPanel.getChosenScenario())
@@ -173,12 +173,18 @@ public class SimCity201 extends JFrame {
 			case 13: normativeMarketRestaurantBenDelivery(); break;
 			case 14: restaurantShiftChange(); break;
 			case 15: fiftyPeople(); break;
-		}
+		}*/
+		
+		brandonRestaurant();
 		
 		pack();
 		CityDirectory.getInstance().startTime();
 	}
 	
+	private void brandonRestaurant() {
+		
+	}
+
 	private void normativeRestaurant() {
 		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
 		 * when all of them have arrived at the Restaurant. At 8:30AM a single Customer comes
