@@ -242,7 +242,6 @@ public class PassengerRole extends Role implements Passenger
 		}
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
-			JOptionPane.showMessageDialog(null,"HELLO");
 			finishMoving();
 			return false;
 		}
