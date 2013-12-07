@@ -16,6 +16,8 @@ import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.Restaurant;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * The CityDirectory for SimCity201 based on a Singleton pattern using eager initialization. This class is accessible from anywhere
@@ -54,7 +56,8 @@ public class CityDirectory implements ActionListener {
 	public void startTime() {
 		cityTimer.setRepeats(true);
 		cityTimer.start();
-		System.out.println("[SimCity201] Time: " + time);
+		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
+		//System.out.println("[SimCity201] Time: " + time);
 	}
 	
 	public void setStartTime(CityTime newTime) {
@@ -74,7 +77,8 @@ public class CityDirectory implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		time.increment(TIMESTEP);
-		System.out.println("[SimCity201] Time: " + time);
+		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
+		//System.out.println("[SimCity201] Time: " + time);
 		
 		synchronized(people) {
 			for (PersonAgent p : people) {
