@@ -12,6 +12,7 @@ import javax.swing.SwingConstants;
 import cs201.helper.Constants;
 import cs201.trace.TraceFrame;
 
+@SuppressWarnings("serial")
 public class BaseSettingsPanel extends JPanel implements ActionListener
 {	
 	private JButton traceButton;

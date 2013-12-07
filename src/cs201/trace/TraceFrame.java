@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+@SuppressWarnings("serial")
 public class TraceFrame extends JFrame {
 	private final int TRACEX = 850;
 	private final int TRACEY = 350;

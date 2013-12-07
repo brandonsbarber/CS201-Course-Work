@@ -18,6 +18,8 @@ import cs201.helper.Matt.TableMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
 import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Waiter Agent
@@ -323,16 +325,16 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
-		Do("Leaving work.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.getName(), "Leaving work.");
 	}
 	
 	private void DoAskForBreak() {
-		Do("Asking " + (RestaurantHostRoleMatt) restaurant.getHost() + " to go on break.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Asking " + (RestaurantHostRoleMatt) restaurant.getHost() + " to go on break.");
 		waiterGui.setWaitingForBreakResponse();
 	}
 	
 	private void DoGoOnBreak() {
-		Do("Going on break.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Going on break.");
 		waiterGui.GoToBreakPosition();
 	}
 	
@@ -350,11 +352,11 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGoOffBreak() {
-		Do("Break is over. Returning to work.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Break is over. Returning to work.");
 	}
 	
 	private void DoBreakNotAllowed() {
-		Do("Break was denied. :(");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Break was denied. :(");
 		state = WaiterState.none;
 		waiterGui.setOffBreak();
 	}
@@ -369,7 +371,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoSeatCustomer(MyCustomer m) {
-		Do("Seating " + m.customer.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Seating " + m.customer.toString() + ".");
 		
 		for (TableMatt t : ((RestaurantHostRoleMatt) restaurant.getHost()).getTables()) {
 			if (t.tableNum() == m.tableNumber) {
@@ -387,7 +389,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoTakeCustomerOrder(MyCustomer m) {
-		Do("Taking " + m.customer.toString() + "'s order.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Taking " + m.customer.toString() + "'s order.");
 		waiterGui.GoToCustomer(m.customer);
 		try {
 			atTargetPosition.acquire();
@@ -397,7 +399,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	protected void DoGiveOrderToCook(MyCustomer m) {
-		Do("Giving " + m.customer.toString() + "'s order to the cook.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Giving " + m.customer.toString() + "'s order to the cook.");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.COOKINGAREA_Y);
 		waiterGui.setMessage(m.choice + "?");
@@ -410,7 +412,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	protected void DoPutOrderOnStand(MyCustomer m) {
-		Do("Putting " + m.customer.toString() + "'s order on rotating stand.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Putting " + m.customer.toString() + "'s order on rotating stand.");
 		waiterGui.GoToLocation(cs201.helper.Matt.RestaurantRotatingStand.STANDX,
 								cs201.helper.Matt.RestaurantRotatingStand.STANDY);
 		waiterGui.setMessage(m.choice + "?");
@@ -423,7 +425,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoRetakeCustomerOrder(MyCustomer m) {
-		Do("Retaking " + m.customer.toString() + "'s order");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Retaking " + m.customer.toString() + "'s order");
 		waiterGui.setMessage("!" + m.choice + "!");
 		waiterGui.GoToCustomer(m.customer);
 		try {
@@ -435,7 +437,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoFeedCustomer(MyCustomer m) {
-		Do("Bringing food to " + m.customer.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Bringing food to " + m.customer.toString() + ".");
 		waiterGui.GoToLocation(cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.PLATINGAREA_X,
 								cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt.PLATINGAREA_Y);
 		try {
@@ -456,7 +458,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGetCustomerCheck(MyCustomer m) {
-		Do("Getting check for " + m.customer.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Getting check for " + m.customer.toString() + ".");
 		waiterGui.GoToCustomer(m.customer);
 		waiterGui.setMessage("");
 		try {
@@ -477,7 +479,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoGiveCustomerCheck(MyCustomer m) {
-		Do("Retrieving check from " + ((RestaurantCashierRoleMatt) this.restaurant.getCashier()).toString() + " for customer " + m.customer.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Retrieving check from " + ((RestaurantCashierRoleMatt) this.restaurant.getCashier()).toString() + " for customer " + m.customer.toString() + ".");
 		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX,
 								cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY + cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
 		waiterGui.setMessage("");
@@ -498,7 +500,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void DoCustomerLeaving(MyCustomer m) {
-		Do("Telling host that " + m.customer.toString() + " is leaving.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Telling host that " + m.customer.toString() + " is leaving.");
 	}
 	
 	private void DoGoToEntrance() {

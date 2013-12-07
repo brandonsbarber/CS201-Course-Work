@@ -13,6 +13,7 @@ import cs201.roles.Role;
  * @author Matthew Pohlmann
  *
  */
+@SuppressWarnings("serial")
 public abstract class Structure extends Rectangle2D.Double {
 	protected int id;
 	protected StructurePanel panel;
