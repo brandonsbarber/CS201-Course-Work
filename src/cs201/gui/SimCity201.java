@@ -150,6 +150,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("100 People");
 		scenarioList.add("Brandon's Restaurant");
 		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");	
+		scenarioList.add("Brandon's Restaurant: Shift Change");	
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -174,6 +175,7 @@ public class SimCity201 extends JFrame {
 			case 15: hundredPeople(); break;
 			case 16: brandonRestaurant(); break;
 			case 17: brandonRestaurantTwoCustomersTwoWaiters(); break;
+			case 18: brandonRestaurantShiftChange(); break;
 		}
 		
 		pack();
@@ -1029,6 +1031,93 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Host AM", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setWorkTime(r.getMorningShiftStart());
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier AM", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setWorkTime(r.getMorningShiftStart());
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook AM", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setWorkTime(r.getMorningShiftStart());
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter AM", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setWorkTime(r.getMorningShiftStart());
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 00));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		p5.startThread();
+		
+		PersonAgent pp1 = new PersonAgent("Host PM", cityPanel);
+		pp1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		pp1.setWorkTime(r.getAfternoonShiftStart());
+		pp1.setHungerEnabled(false);
+		pp1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(pp1);
+		pp1.startThread();
+		
+		PersonAgent pp2 = new PersonAgent("Cashier PM", cityPanel);
+		pp2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		pp2.setWorkTime(r.getAfternoonShiftStart());
+		pp2.setHungerEnabled(false);
+		pp2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(pp2);
+		pp2.startThread();
+		
+		PersonAgent pp3 = new PersonAgent("Cook PM", cityPanel);
+		pp3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		pp3.setWorkTime(r.getAfternoonShiftStart());
+		pp3.setHungerEnabled(false);
+		pp3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(pp3);
+		pp3.startThread();
+		
+		PersonAgent pp4 = new PersonAgent("Waiter PM", cityPanel);
+		pp4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		pp4.setWorkTime(r.getAfternoonShiftStart());
+		pp4.setHungerEnabled(false);
+		pp4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(pp4);
+		pp4.startThread();
+		
+	}
+	
+	private void brandonRestaurantShiftChange() {
+		/*
+		 * 
+		 * 
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
