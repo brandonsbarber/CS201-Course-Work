@@ -1,8 +1,11 @@
 package cs201.roles.restaurantRoles.Brandon;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
+import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
@@ -276,7 +279,21 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 				return true;
 			}
 		}
+		chill();
 		return false;
+	}
+	
+	private void chill()
+	{
+		gui.doGoToChill();
+		try
+		{
+			animationPause.acquire();
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void removeOrder(Order o)
@@ -287,6 +304,16 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	
 	private void plateFood(Order o)
 	{
+		gui.doGoToSlot(o.table);
+		try
+		{
+			animationPause.acquire();
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
 		System.out.println("Cook: Telling "+o.w.getName()+" that "+o.c+" is done");
 		o.w.msgOrderDone(o.table);
 		o.s = OrderState.Plated;
@@ -307,6 +334,16 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		f.useFood();
 		o.s = OrderState.Cooking;
 		timer.schedule (new CookingTask(this,o), cookTime.get(o.c).getCookingTime());
+		
+		gui.doGoToSlot(o.table);
+		try
+		{
+			animationPause.acquire();
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 		
 		kitchen.addOrder(o);
 		
@@ -400,5 +437,21 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		// TODO Auto-generated method stub
 		
 	}
+
+	CookGuiBrandon gui;
+	
+	public void setGui(CookGuiBrandon cookGui) {
+		this.gui = cookGui;		
+	}
+
+	public CookGuiBrandon getGui() {
+		return gui;
+	}
+
+	public void msgReachedDestination() {
+		animationPause.release();
+	}
+	
+	Semaphore animationPause = new Semaphore(0,true);
 }
 

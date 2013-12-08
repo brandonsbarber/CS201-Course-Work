@@ -7,6 +7,7 @@ import java.util.HashMap;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
+import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
@@ -58,6 +59,10 @@ public class RestaurantBrandon extends Restaurant {
 		 * -------------------------------
 		 */
 		
+		kitchen = new KitchenGuiBrandon(4);
+		
+		this.panel.addGui(kitchen);
+		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleBrandon("Host",4);
 		//HostGuiBrandon hostGui = new HostGuiBrandon((RestaurantHostRoleBrandon) host);
@@ -67,11 +72,11 @@ public class RestaurantBrandon extends Restaurant {
 		host.setRestaurant(this);
 			
 		this.cook = new RestaurantCookRoleBrandon(cookingTimes, prices, savedPrices);
-		//CookGuiMatt cookGui = new CookGuiMatt((RestaurantCookRoleMatt) cook);
-		//cookGui.setPresent(false);
-		//((RestaurantCookRoleBrandon) cook).setGui(cookGui);
+		CookGuiBrandon cookGui = new CookGuiBrandon((RestaurantCookRoleBrandon) cook,kitchen);
+		cookGui.setPresent(false);
+		((RestaurantCookRoleBrandon) cook).setGui(cookGui);
 		//((RestaurantCookRoleBrandon) cook).setRotatingStand(stand);
-		//this.panel.addGui(cookGui);
+		this.panel.addGui(cookGui);
 		cook.setRestaurant(this);
 			
 		this.cashier = new RestaurantCashierRoleBrandon(cookingTimes, 0);
@@ -81,10 +86,6 @@ public class RestaurantBrandon extends Restaurant {
 		//((RestaurantCashierRoleBrandon) cashier).setHost((RestaurantHostRoleMatt) host);
 		this.panel.addGui(cashierGui);
 		cashier.setRestaurant(this);
-		
-		kitchen = new KitchenGuiBrandon(4);
-		
-		this.panel.addGui(kitchen);
 		
 		((RestaurantCookRoleBrandon)cook).setKitchen(kitchen);
 		
@@ -107,7 +108,7 @@ public class RestaurantBrandon extends Restaurant {
 		switch (role) {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
-				//((RestaurantCookRoleBrandon) cook).getGui().setPresent(true);
+				((RestaurantCookRoleBrandon) cook).getGui().setPresent(true);
 				return cook;
 			}
 			return null;

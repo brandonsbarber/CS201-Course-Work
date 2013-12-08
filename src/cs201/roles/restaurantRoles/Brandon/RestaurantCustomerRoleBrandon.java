@@ -472,6 +472,9 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 			System.out.println("Problem with customer leaving restaurant");
 		}
 		gui.didLeaveRestaurant();
+		
+		this.isActive = false;
+		this.gui.setPresent(false);
 	}
 	
 	/**

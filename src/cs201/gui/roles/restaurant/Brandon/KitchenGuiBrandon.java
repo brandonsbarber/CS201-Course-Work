@@ -21,7 +21,7 @@ public class KitchenGuiBrandon implements Gui
 	
 	public static int COUNTER_WIDTH = 25;
 	
-	
+	public static int CHILL_Y = (int) (COUNTER_Y + COUNTER_HEIGHT);
 	
 	private List<Order> orders;
 	
@@ -100,5 +100,9 @@ public class KitchenGuiBrandon implements Gui
 	public void setPresent(boolean present) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getSlotY(int slot) {
+		return (int)(COUNTER_Y+(1.0*COUNTER_HEIGHT/numTables)*(slot-1));
 	}
 }
