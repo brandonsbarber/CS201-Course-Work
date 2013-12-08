@@ -101,6 +101,9 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 		// for now, we'll just assume it is
 		theOrder.state = OrderState.paid;
 		
+		// Add the money to our account
+		this.restaurant.addMoney((double)amount);
+		
 		stateChanged();
 	}
 	
