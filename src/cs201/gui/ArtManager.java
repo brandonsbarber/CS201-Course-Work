@@ -42,7 +42,8 @@ public class ArtManager
 		atlas.put("Default_Walker_Left", ImageIO.read(new File("data/DefaultSprites/Left.png")));
 		atlas.put("Default_Walker_Right", ImageIO.read(new File("data/DefaultSprites/Right.png")));
 		
-		atlas.put("Restaurant_Matt", ImageIO.read(new File("data/Restaurant/RestaurantMatt.png")));
+		atlas.put("Restaurant_Matt_Open", ImageIO.read(new File("data/Restaurant/RestaurantMattOpen.png")));
+		atlas.put("Restaurant_Matt_Closed", ImageIO.read(new File("data/Restaurant/RestaurantMattClosed.png")));
 		
 		atlas.put("Waiter_Up", ImageIO.read(new File("data/Restaurant/WaiterUp.png")));
 		atlas.put("Waiter_Down", ImageIO.read(new File("data/Restaurant/WaiterDown.png")));

@@ -313,14 +313,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				
 				g2.setColor(Color.WHITE);
 				g2.drawString("P",r.getParkingLocation().x,r.getParkingLocation().y+25);
-				g2.drawString("E",r.getEntranceLocation().x,r.getEntranceLocation().y+25);	
+				g2.drawString("E",r.getEntranceLocation().x,r.getEntranceLocation().y+25);
+				
+				g2.setColor(Color.WHITE);
+				g2.drawString(r.getOpen() ? "Open" : "Closed", s.x, s.y + s.height / 2);
 			} else {
 				Structure s = buildings.get(i);
 				Rectangle r = s.getRect();
 				g2.drawImage(s.getSprite(), r.x, r.y, r.width, r.height, null);
-				
-				g2.setColor(Color.BLACK);
-				g2.drawString(s.getOpen() ? "Open" : "Closed", r.x, r.y);
 			}
 		}
 		

@@ -28,7 +28,8 @@ public abstract class Structure {
 	protected CityTime afternoonShiftStart;
 	protected boolean isOpen;
 	
-	protected BufferedImage sprite;
+	protected BufferedImage openSprite;
+	protected BufferedImage closedSprite;
 	protected Rectangle rect;
 	
 	private static int INSTANCES = 0;
@@ -50,7 +51,8 @@ public abstract class Structure {
 		this.morningShiftEnd = null;
 		this.afternoonShiftStart = null;
 		this.rect = new Rectangle(r);
-		this.sprite = ArtManager.getImage("Restaurant_Matt");
+		this.closedSprite = ArtManager.getImage("Restaurant_Matt_Closed");
+		this.openSprite = ArtManager.getImage("Restaurant_Matt_Open");
 	}
 	
 	/**
@@ -252,7 +254,7 @@ public abstract class Structure {
 	 * @return the sprite
 	 */
 	public BufferedImage getSprite() {
-		return sprite;
+		return isOpen ? openSprite : closedSprite;
 	}
 
 	/**

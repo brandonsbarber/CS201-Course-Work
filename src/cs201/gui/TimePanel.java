@@ -3,9 +3,6 @@ package cs201.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +11,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -28,6 +24,7 @@ import cs201.helper.CityDirectory;
  * @author Ben Doherty
  *
  */
+@SuppressWarnings("serial")
 public class TimePanel extends JDialog implements ChangeListener {	
 
 	/* *********
