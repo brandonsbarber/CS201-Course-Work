@@ -378,6 +378,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 			record.balance -= amount;
 		}
 		
+		// Add the money to our account
+		this.structure.addMoney((double)amount);
+		
 		stateChanged();
 	}
 	

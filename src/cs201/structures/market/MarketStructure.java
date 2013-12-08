@@ -29,6 +29,7 @@ public class MarketStructure extends Structure {
 	List<MarketEmployeeRole> employees = Collections.synchronizedList(new ArrayList<MarketEmployeeRole>());
 	TruckAgent deliveryTruck = null;
 	StructurePanel panel = null;
+	double totalFunds = 0.0;
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
@@ -142,6 +143,20 @@ public class MarketStructure extends Structure {
 			
 		}
 		return null;
+	}
+	
+	/**
+	 * Adds money to this market's "account"
+	 */
+	public void addMoney(double amount) {
+		totalFunds += amount;
+	}
+	
+	/**
+	 * Removes money from this market's "account"
+	 */
+	public void subtractMoney(double amount) {
+		totalFunds -= amount;
 	}
 	
 	private void checkIfOpen() {
