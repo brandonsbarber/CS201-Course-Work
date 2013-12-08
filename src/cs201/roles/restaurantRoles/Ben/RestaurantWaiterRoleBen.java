@@ -20,6 +20,8 @@ import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
 import cs201.interfaces.roles.restaurant.Ben.HostBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Host Agent
@@ -186,7 +188,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		
 		for (Table table : tables) {
 			if (table.getOccupant() == cust) {
-				Do(cust + " leaving " + table);
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, cust + " leaving table " + table);
+
 				table.setUnoccupied();
 			}
 		}
@@ -196,7 +199,7 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	
 	// Sent by the cook to let the waiter know he's out of food
 	public void msgOutOf(String choice, int table) {
-		Do(cook.getName() + " just told me that he's out of " + choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, cook.getName() + " just told me that he's out of " + choice);
 		
 		// Find the customer who ordered it
 		MyCustomer customer = null;
@@ -229,7 +232,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	
 	public void msgOkayForBreak() {
 		// We're allowed to go on break! Once we finish our customers..
-		Do("I'm allowd to go on break!");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "I'm allowed to go on break!");
+
 		okayToBreakAfterCustomers = true;
 		
 		stateChanged();
@@ -237,8 +241,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	
 	public void msgCantGoOnBreak() {
 		// We're not allowed to go on break. Oh well...
-		// ...
-		Do("I'm not allowed to go on break...");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "I'm not allowed to go on break...");
+
 		okayToBreakAfterCustomers = false;
 		
 		stateChanged();
@@ -442,7 +446,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		customer.state = CustomerState.eating;
 		
 		// Give the cashier the customer's order to compute
-		Do("Giving " + cashier.getName() + " the order to compute the check.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "Giving " + cashier.getName() + " the order to compute the check.");
+
 		cashier.msgComputeCheckForOrder(customer.choice, this, customer.customer);
 	}
 	
@@ -453,14 +458,15 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		
 		// Let him know his check is ready
 		customer.customer.msgHereIsCheck(customer.check);
-		Do("Here is your check for $" + customer.check);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "Here is your check for $" + customer.check);
 		
 		// Mark him as having the check
 		customer.state = CustomerState.hasCheck;
 	}
 	
 	private void tellCustomerOutOfFood(MyCustomer customer) {
-		Do("Sorry, " + customer.customer.getName() + " but we're out of " + customer.choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "Sorry, " + customer.customer.getName() + " but we're out of " + customer.choice);
+
 		// First, walk to the customer
 		waiterGui.DoWalkToTable(customer.table);
 		pauseForAnimation();
@@ -477,11 +483,12 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	private void attemptToGoOnBreak() {
 		// Let the host know we're trying to go on break
 		host.msgWantToGoOnBreak(this);
-		Do("I'd like to go on break. Letting " + host.getName() + " know");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "I'd like to go on break. Letting " + host.getName() + " know");
 	}
 	
 	private void goOnBreak() {
-		Do("Going on break!");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "Going on break!");
+		
 		waiterGui.WaiterOnBreak();
 		onBreak = true;
 		// Take a smoke break
@@ -505,7 +512,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 	private void DoSeatCustomer(CustomerBen customer, int table) {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
-		Do("Seating " + customer + " at " + table);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "Seating " + customer + " at " + table);
+
 		waiterGui.DoWalkToTable(table); 
 
 	}

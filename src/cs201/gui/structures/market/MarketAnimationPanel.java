@@ -19,7 +19,7 @@ public class MarketAnimationPanel extends StructurePanel {
 	 */
     private final static int DEFAULT_WINDOW_WIDTH = 500;
     private final static int DEFAULT_WINDOW_HEIGHT = 500;
-        
+    
     public final static int FIRST_SHELF_X = 50;
     public final static int FIRST_SHELF_Y = 50;
     public final static int SHELF_WIDTH = 50;
