@@ -45,18 +45,16 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		CustomerBrandon cust;
 		double paid;
 	}
-	
-	class Market{}
-	
+
 	public class MarketBill
 	{
-		public MarketBill(Market m, double amount)
+		public MarketBill(MarketStructure market, double amount)
 		{
-			this.m = m;
+			this.m = market;
 			this.amount = amount;
 		}
 		
-		Market m;
+		MarketStructure m;
 		double amount;
 	}
 	
@@ -126,7 +124,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		stateChanged();
 	}
 	
-	public void msgGiveMarketBill(Market market, double amount)
+	public void msgGiveMarketBill(MarketStructure market, double amount)
 	{
 		marketBills.add(new MarketBill(market,amount));
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received market bill from "+market);
@@ -181,7 +179,9 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 			sellSoul();
 		}
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Paying market "+b.m.toString()+" "+b.amount);
-		//b.m.msgPayBill(b.amount);
+		
+		b.m.getManager().msgHereIsMyPayment(this.restaurant,(float) b.amount);
+		
 		budget -= b.amount;
 		
 		marketBills.remove(b);
@@ -269,8 +269,16 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	}
 
 	@Override
-	public void msgHereIsDeliveryFromMarket(MarketStructure market,
-			double amount, ItemRequest item) {		
+	public void msgHereIsDeliveryFromMarket(MarketStructure market, double amount, ItemRequest item)
+	{	
+		HashMap<String,Integer> foods = new HashMap<String,Integer>();
+		foods.put(item.item,item.amount);
+		
+		((RestaurantCookRoleBrandon)this.restaurant.getCook()).msgReceivedOrder(market, foods);
+		
+		marketBills.add(new MarketBill(market,amount));
+		
+		stateChanged();
 	}
 
 	CashierGuiBrandon gui;

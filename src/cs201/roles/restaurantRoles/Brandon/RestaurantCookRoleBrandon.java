@@ -214,7 +214,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		{
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+key+" "+cookTime.get(key).getAmount());
 		}
-		
+		JOptionPane.showMessageDialog(null,"GOT ORDER");
 		stateChanged();
 	}
 	
