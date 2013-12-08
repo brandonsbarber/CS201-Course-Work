@@ -62,6 +62,11 @@ public class RestaurantBrandon extends Restaurant {
 		 * -------------------------------
 		 */
 		
+		this.morningShiftStart = new CityTime(8, 00);
+		this.morningShiftEnd = new CityTime(12, 30);
+		this.afternoonShiftStart = new CityTime(13, 00);
+		this.closingTime = new CityTime(18, 00);
+		
 		kitchen = new KitchenGuiBrandon(4);
 		
 		this.panel.addGui(kitchen);
@@ -218,6 +223,15 @@ public class RestaurantBrandon extends Restaurant {
 		if(!isOpen)
 		{
 			checkIfRestaurantShouldOpen();
+		}
+		
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
 		}
 		
 		if (time.equalsIgnoreDay(this.closingTime)) {
