@@ -17,7 +17,7 @@ public class RestaurantRotatingStandBrandon implements Gui{
 	
 	List<StandOrder> orders = Collections.synchronizedList(new ArrayList<StandOrder>());
 	
-	class StandOrder
+	public class StandOrder
 	{
 		public RestaurantWaiterRoleBrandon waiter;
 		public String choice;

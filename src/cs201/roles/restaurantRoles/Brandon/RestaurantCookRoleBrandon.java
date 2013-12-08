@@ -9,6 +9,7 @@ import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.helper.Brandon.RestaurantRotatingStandBrandon;
+import cs201.helper.Brandon.RestaurantRotatingStandBrandon.StandOrder;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
@@ -280,10 +281,32 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 				return true;
 			}
 		}
+		if(stand.getNumOrders() != 0)
+		{
+			retrieveStandOrder();
+			return true;
+		}
 		chill();
 		return false;
 	}
 	
+	private void retrieveStandOrder()
+	{
+		gui.doGoToStand();
+		try
+		{
+			animationPause.acquire();
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
+		StandOrder order = stand.removeOrder();
+		
+		orders.add(new Order(order.waiter,order.choice,order.table));
+	}
+
 	private void chill()
 	{
 		gui.doGoToChill();
@@ -324,6 +347,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	{
 		System.out.println("Cook: I am preparing to cook "+o.c);
 		FoodBrandon f = cookTime.get(o.c);
+		
 		if(f.isGone ())
 		{
 			System.out.println("Cook: We are out of "+f.getType());
@@ -460,6 +484,12 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	public void setRotatingStand(RestaurantRotatingStandBrandon stand)
 	{
 		this.stand = stand;		
+	}
+
+	public RestaurantRotatingStandBrandon getStand()
+	{
+		// TODO Auto-generated method stub
+		return stand;
 	}
 }
 

@@ -79,4 +79,11 @@ public class CookGuiBrandon implements Gui {
 		this.present = present;
 	}
 
+	public void doGoToStand()
+	{
+		destX = cook.getStand().STAND_X;
+		destY = cook.getStand().STAND_Y;
+		eventFired = false;
+	}
+
 }
