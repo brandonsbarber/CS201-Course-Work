@@ -193,26 +193,59 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
 		
-		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
-		createPerson("Waiter 2", r, r, Intention.RestaurantWaiter, r, null);
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
 		
-		PersonAgent p6 = new PersonAgent("Customer", cityPanel);
-		p6.setWakeupTime(new CityTime(8, 00));
-		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
-		CityDirectory.getInstance().addPerson(p6);
-		personPanel.addPerson(p6);
-		p6.startThread();
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
 		
-		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
-		p5.setWakeupTime(new CityTime(8, 00));
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter 1", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p4b = new PersonAgent("Waiter 2", cityPanel);
+		p4b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4b.setHungerEnabled(false);
+		p4b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4b);
+		personPanel.addPerson(p4b);
+		p4b.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 30));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
 		personPanel.addPerson(p5);
 		p5.startThread();
 		
-		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
-		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
-		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
+		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
+		p6.setWakeupTime(new CityTime(8, 30));
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p6);
+		personPanel.addPerson(p6);
+		p6.startThread();
 	}
 
 	private void brandonRestaurant() {
@@ -227,16 +260,44 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
 		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
+		p4.startThread();
+		
 		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
 		p5.setWakeupTime(new CityTime(8, 00));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
 		personPanel.addPerson(p5);
 		p5.startThread();
-		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
-		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
-		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
-		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
 	}
 
 	private void normativeRestaurant() {

@@ -106,8 +106,12 @@ public class RestaurantBrandon extends Restaurant {
 
 	@Override
 	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+		cashier.msgClosingTime();
+		cook.msgClosingTime();
+		for(RestaurantWaiterRole w : waiters)
+		{
+			w.msgClosingTime();
+		}
 	}
 
 	@Override
@@ -198,11 +202,8 @@ public class RestaurantBrandon extends Restaurant {
 	}
 	
 	private void checkIfRestaurantShouldOpen() {
-		System.out.println("CHECKING IF IT SHOULD OPEN");
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
-			System.out.println("Looping!" +waiters.size());
 			for (RestaurantWaiterRole w : waiters) {
-				
 				if (w.getPerson() != null) {
 					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
 					this.isOpen = true;
@@ -214,10 +215,18 @@ public class RestaurantBrandon extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {
-		System.out.println("IS OPEN:"+isOpen);
 		if(!isOpen)
 		{
 			checkIfRestaurantShouldOpen();
+		}
+		
+		if (time.equalsIgnoreDay(this.closingTime)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
 		}
 	}
 

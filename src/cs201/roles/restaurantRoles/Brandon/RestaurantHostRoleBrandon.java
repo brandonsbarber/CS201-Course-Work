@@ -23,6 +23,9 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	
 	enum WaiterState {Normal,AskedAboutBreak,WaitingOnBreak,Break};
 	
+	int numCustomers;
+	private boolean closingTime = false;
+	
 	class MyCustomer
 	{
 		CustomerBrandon c;
@@ -90,6 +93,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	{
 		System.out.println(this+": "+c.getName()+" has arrived.");
 		waitingCustomers.add(new MyCustomer(c));
+		numCustomers++;
 		stateChanged();
 	}
 	
@@ -100,6 +104,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	 */
 	public void msgCustomerLeft(WaiterBrandon w, int table)
 	{
+		numCustomers--;
 		tables.get(table-1).c = null;
 		System.out.println(this+": "+w.getName()+" now has one fewer customer. Table "+table+" is clear");
 		
@@ -192,6 +197,11 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(closingTime && numCustomers == 0)
+		{
+			closeRestaurant();
+			return true;
+		}
 		for(MyWaiter w : waiters)
 		{
 			if(w.s == WaiterState.AskedAboutBreak)
@@ -229,6 +239,11 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 		return false;
 	}
 	
+	private void closeRestaurant() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void inform(MyCustomer cust)
 	{
 		System.out.println(this+": Telling "+cust.c.getName()+" that tables are full.");
@@ -336,14 +351,27 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		this.gui.setPresent(true);
+		closingTime = false;
+		/*gui.goToDesk();
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
 	}
 
 	@Override
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
+		this.restaurant.closingTime();
+		this.restaurant.setOpen(false);
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.waiters.clear();
+		//DoCloseRestaurant();
+		this.myPerson = null;
+		this.gui.setPresent(false);
 	}
 
 	public void msgReachedDestination() {
@@ -359,7 +387,6 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	}
 
 	public HostGuiBrandon getGui() {
-		// TODO Auto-generated method stub
 		return gui;
 	}
 }

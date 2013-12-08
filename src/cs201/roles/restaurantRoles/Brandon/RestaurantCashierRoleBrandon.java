@@ -21,6 +21,8 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 {
 	private static final double SOUL_SALE_PRICE = 1000000;
 
+	boolean closingTime = false;
+	
 	public List<Bill> bills;
 	public class Bill
 	{
@@ -135,6 +137,12 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(closingTime)
+		{
+			leaveRestaurant();
+			return true;
+		}
+		
 		for(Bill b : bills)
 		{
 			if(b.s == BillState.Paid)
@@ -166,7 +174,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		}
 		return false;
 	}
-	
+
 	private void payMarket(MarketBill b)
 	{
 		if(budget < b.amount)
@@ -248,14 +256,23 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		closingTime = false;
+		this.gui.setPresent(true);
 	}
 
 	@Override
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
+		closingTime = true;
+		stateChanged();
+	}
+	
+	private void leaveRestaurant()
+	{
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson.goOffWork();
+		this.myPerson = null;
+		this.gui.setPresent(false);
 	}
 
 	@Override
