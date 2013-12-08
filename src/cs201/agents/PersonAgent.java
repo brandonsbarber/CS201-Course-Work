@@ -194,6 +194,9 @@ public class PersonAgent extends Agent implements Person {
 			}
 		}
 		
+		// If you're here in the scheduler, you've completed any current actions, so make current action null
+		this.currentAction = null;
+		
 		// If it's time to wake up in the morning
 		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
 			this.state = PersonState.Awake;
