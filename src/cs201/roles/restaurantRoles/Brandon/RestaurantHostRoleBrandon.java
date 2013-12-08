@@ -227,7 +227,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 			}
 			if(fullTables || waitingCustomers.size() > tables.size())
 			{
-				System.out.println(this+": THE TABLES ARE FULL");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"THE TABLES ARE FULL");
 				for(MyCustomer cust : waitingCustomers)
 				{
 					if(!cust.informed)
