@@ -16,7 +16,7 @@ public class CustomerGuiMatt implements Gui {
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 	
-	private final int CUSTOMERSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
+	public static final int CUSTOMERSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .04f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .04f);
 	private final int RESTAURANTENTRANCE = -(int)(RestaurantAnimationPanelMatt.WINDOWX * .08f);
 	private final int RESTAURANTEXIT = -(int)(RestaurantAnimationPanelMatt.WINDOWX * .08f);
 	private final int DEFAULTWAITINGAREA = 0;
@@ -208,8 +208,8 @@ public class CustomerGuiMatt implements Gui {
 	}
 	
 	public void DoGoToCashier() {
-		xDestination = cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX;
-		yDestination = cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY + cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE;
+		xDestination = cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX + (int) (2.5 * cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
+		yDestination = cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY;
 		state = guiState.goingToCashier;
 		eating = "$$";
 		hasPosition = true;

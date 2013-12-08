@@ -11,6 +11,7 @@ import java.util.concurrent.Semaphore;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.MenuMatt;
@@ -381,8 +382,8 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		
 		for (TableMatt t : ((RestaurantHostRoleMatt) restaurant.getHost()).getTables()) {
 			if (t.tableNum() == m.tableNumber) {
-				m.customer.getGui().DoGoToSeat(t.X(), t.Y());
-				waiterGui.GoToLocation(t.X(), t.Y());
+				m.customer.getGui().DoGoToSeat(t.X(), t.Y() - CustomerGuiMatt.CUSTOMERSIZE);
+				waiterGui.GoToLocation(t.X(), t.Y() - CustomerGuiMatt.CUSTOMERSIZE);
 				break;
 			}
 		}
@@ -399,6 +400,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.GoToCustomer(m.customer);
 		try {
 			atTargetPosition.acquire();
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -436,6 +438,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.GoToCustomer(m.customer);
 		try {
 			atTargetPosition.acquire();
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -469,15 +472,17 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.setMessage("");
 		try {
 			atTargetPosition.acquire();
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX,
+		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX + (int) (1.5 * cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE),
 				cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY + cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
 		waiterGui.setMessage("$$");
 		try {
 			atTargetPosition.acquire();
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -486,7 +491,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	
 	private void DoGiveCustomerCheck(MyCustomer m) {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Retrieving check from " + ((RestaurantCashierRoleMatt) this.restaurant.getCashier()).toString() + " for customer " + m.customer.toString() + ".");
-		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX,
+		waiterGui.GoToLocation(cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX + (int) (1.5 * cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE),
 								cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY + cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
 		waiterGui.setMessage("");
 		try {
@@ -499,6 +504,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.setMessage("$$");
 		try {
 			atTargetPosition.acquire();
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -391,6 +391,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	
 	private void DoAskForCheck() {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Asking " + waiter.toString() + " for the bill.");
+		customerGui.setMessage("$$?");
 	}
 	
 	private void DoPayCheck() {
@@ -398,6 +399,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 		customerGui.DoGoToCashier();
 		try {
 			atTargetPosition.acquire();
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
