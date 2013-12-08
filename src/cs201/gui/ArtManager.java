@@ -46,6 +46,10 @@ public class ArtManager
 		atlas.put("Waiter_Down", ImageIO.read(new File("data/Restaurant/WaiterDown.png")));
 		atlas.put("Waiter_Left", ImageIO.read(new File("data/Restaurant/WaiterLeft.png")));
 		atlas.put("Waiter_Right", ImageIO.read(new File("data/Restaurant/WaiterRight.png")));
+		atlas.put("Cashier_Up", ImageIO.read(new File("data/Restaurant/CashierUp.png")));
+		atlas.put("Cashier_Down", ImageIO.read(new File("data/Restaurant/CashierDown.png")));
+		atlas.put("Cashier_Left", ImageIO.read(new File("data/Restaurant/CashierLeft.png")));
+		atlas.put("Cashier_Right", ImageIO.read(new File("data/Restaurant/CashierRight.png")));
 		
 		//James's Sprites
 		

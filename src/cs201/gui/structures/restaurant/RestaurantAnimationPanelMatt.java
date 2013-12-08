@@ -22,6 +22,11 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     public static int WINDOWX = DEFAULTWINDOWX;
     public static int WINDOWY = DEFAULTWINDOWY;
     
+    
+    // Entrance/Exit
+    public static final int RESTAURANT_ENTRANCE_X = -(int)(WINDOWX * .08f);
+    public static final int RESTAURANT_ENTRANCE_Y = -(int)(WINDOWY * .08f);
+    
     // TABLES
     private final int TABLESIZE = (WINDOWX < WINDOWY) ? (int)(WINDOWX * .1f) : (int)(WINDOWY * .1f);
     private final Color TABLECOLOR = Color.ORANGE;

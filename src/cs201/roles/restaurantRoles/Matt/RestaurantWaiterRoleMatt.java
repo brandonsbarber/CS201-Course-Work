@@ -12,6 +12,7 @@ import javax.swing.Timer;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.MenuMatt;
 import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.helper.Matt.TableMatt;
@@ -324,8 +325,13 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
-		// TODO leave restaurant animation
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.getName(), "Leaving work.");
+		waiterGui.GoToLocation(RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void DoAskForBreak() {
@@ -558,7 +564,6 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO maybe animate into restaurant?
 		this.waiterGui.setPresent(true);
 		closingTime = false;
 	}

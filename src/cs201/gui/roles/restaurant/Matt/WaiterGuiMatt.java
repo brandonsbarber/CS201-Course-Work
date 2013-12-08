@@ -25,8 +25,8 @@ public class WaiterGuiMatt implements Gui {
 	private final int BREAKY = 0;
 
 	private int homeX = INITIAL_IDLEX, homeY = INITIAL_IDLEY;
-    private int xPos = INITIAL_IDLEX, yPos = INITIAL_IDLEY;//default waiter position
-    private int xDestination = INITIAL_IDLEX, yDestination = INITIAL_IDLEY;//default start position
+    private int xPos = RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, yPos = RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y; //default waiter position
+    private int xDestination = INITIAL_IDLEX, yDestination = INITIAL_IDLEY; //default start position
     
     private boolean animating = false, goingToIdle = false;
     private enum BreakState { none, waitingForResponse, onBreak };

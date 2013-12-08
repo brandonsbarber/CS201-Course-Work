@@ -3,9 +3,11 @@ package cs201.roles.restaurantRoles.Matt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.MenuMatt;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
@@ -24,7 +26,7 @@ import cs201.trace.AlertTag;
  * @author Matt Pohlmann
  */
 public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements CashierMatt {
-
+	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private MenuMatt menu;
 	public List<Check> checks; // TEMPORARILY PUBLIC FOR TESTING
 	private List<MarketInvoice> invoices;
@@ -201,6 +203,13 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	private void DoLeaveRestaurant() {
 		// TODO leave restaurant animation
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Leaving work.");
+		gui.goToLocation(RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private void DoGiveCheckToWaiter(Check c) {
@@ -256,6 +265,14 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	/**
+	 * The CashierGui tells this CashierAgent that it has reached its destination, freeing up this CashierAgent
+	 * to continue working
+	 */
+	public void DoneAnimating() {
+		atTargetPosition.release();
+	}
+	
+	/**
 	 * Sets this CashierAgent's gui to gui
 	 * @param gui The CashierGui being set
 	 */
@@ -269,9 +286,14 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO maybe animate into restaurant?
-		this.gui.setPresent(true);
 		closingTime = false;
+		this.gui.setPresent(true);
+		gui.goToRegister();
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
