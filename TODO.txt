@@ -1,5 +1,6 @@
 TODO:
 
+[ ] Different behavior for buildings on Weekends
 [ ] Configuration Panels for all buildings
 [ ] Speed up/slow down CityTime and animation timers
 [X] Shifts (Everyone must implement this properly in their own structure, see Matt's Restaurant)
