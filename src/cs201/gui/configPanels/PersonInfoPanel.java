@@ -1,22 +1,22 @@
 package cs201.gui.configPanels;
 
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import cs201.agents.PersonAgent;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.Font;
-import javax.swing.border.EtchedBorder;
 
+@SuppressWarnings("serial")
 public class PersonInfoPanel extends JPanel {
 	private JTextField nameTextField;
 	private JTextField moneyTextField;
