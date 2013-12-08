@@ -2,7 +2,6 @@
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.IOException;
@@ -65,14 +64,11 @@ public class SimCity201 extends JFrame {
 	 * Creates the entire city panel, then prompts for a scenario to execute
 	 */
 	public SimCity201() {
-		try
-		{
+		try {
 			ArtManager.load();
-		}
-		catch(IOException e)
-		{
-			JOptionPane.showMessageDialog(null,"There was a problem loading your images.");
-			System.exit(0);
+		} catch(IOException e) {
+			JOptionPane.showMessageDialog(null, "There was a problem loading your images.");
+			System.exit(1);
 		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -107,8 +103,6 @@ public class SimCity201 extends JFrame {
 		
 		JPanel blankPanel = new JPanel();
 		buildingPanels.add(blankPanel, "blank");
-
-		// Create initial buildings here and add them to cityPanel and buildingPanels
 		
 		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
 		
@@ -155,8 +149,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Restaurant Shift Change");
 		scenarioList.add("100 People");
 		scenarioList.add("Brandon's Restaurant");
-		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");
-		
+		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");	
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
