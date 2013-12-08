@@ -13,6 +13,8 @@ import cs201.helper.Brandon.RestaurantRotatingStandBrandon.StandOrder;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Class representation of a cook at the restaurant
@@ -175,7 +177,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 			//If all are out, puts in a separate list that is not referenced until new markets are added
 			if(allOut)
 			{
-				System.out.println(this+": MARKETS ALL OUT OF "+s.toUpperCase());
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"MARKETS ALL OUT OF "+s.toUpperCase());
 				derelictDeficit.put(s,orderFulfill.remove(s));
 			}
 		}
@@ -193,8 +195,8 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 			}
 		}
 		
-		System.out.println(this+": Received the following deficits."+orderFulfill);
-		System.out.println(this+": Remaining order "+remainingOrder);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received the following deficits."+orderFulfill);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Remaining order "+remainingOrder);
 		stateChanged();
 	}
 	
@@ -213,11 +215,11 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 				menuData.put(key,savedMenu.get(key));
 			}
 		}
-		System.out.println(this+": Received this order "+orderFulfill);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received this order "+orderFulfill);
 		
 		for(String key: cookTime.keySet())
 		{
-			System.out.println(this+": "+key+" "+cookTime.get(key).getAmount());
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+key+" "+cookTime.get(key).getAmount());
 		}
 		
 		stateChanged();
@@ -231,7 +233,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	 */
 	public void msgPresentOrder(WaiterBrandon w, String order, int table)
 	{
-		System.out.println("Cook: Has been given "+order+" from "+w.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Has been given "+order+" from "+w.getName());
 		orders.add(new Order(w,order,table));
 		stateChanged();
 	}
@@ -260,7 +262,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		//Processes if there is any food remaining to be ordered
 		if(remainingOrder.size() != 0)
 		{
-			System.out.println(this+": PLACING A DEFICIT ORDER");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"PLACING A DEFICIT ORDER");
 			calcLowFoods();
 			return true;
 		}
@@ -345,19 +347,19 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 			e.printStackTrace();
 		}
 		
-		System.out.println("Cook: Telling "+o.w.getName()+" that "+o.c+" is done");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Telling "+o.w.getName()+" that "+o.c+" is done");
 		o.w.msgOrderDone(o.table);
 		o.s = OrderState.Plated;
 	}
 	
 	private void cook(Order o)
 	{
-		System.out.println("Cook: I am preparing to cook "+o.c);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am preparing to cook "+o.c);
 		FoodBrandon f = cookTime.get(o.c);
 		
 		if(f.isGone ())
 		{
-			System.out.println("Cook: We are out of "+f.getType());
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"We are out of "+f.getType());
 			o.w.msgOutOfFood(o.c,o.table);
 			orders.remove(o);
 			return;
@@ -381,7 +383,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		
 		if(f.isLow () && !f.ordered())
 		{
-			System.out.println ("Cook: We are low on "+f.getType()+": "+f.getAmount());
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"We are low on "+f.getType()+": "+f.getAmount());
 			calcLowFoods();
 		}
 	}
@@ -412,21 +414,21 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 			currentMarket = 0;
 		}
 		
-		System.out.println(this+": Contents of remaining order: "+remainingOrder);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Contents of remaining order: "+remainingOrder);
 		
 		//Transfers all remaining orders to the order
 		for(String s : remainingOrder.keySet())
 		{
 			//System.out.println(this+": This market is out of "+market.outOf);
-			System.out.println(this+": Adding from remaining order");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Adding from remaining order");
 			//Clobbers the previous order so that there are no duplicate orders
 			foodOrder.put(s,remainingOrder.get(s));
 		}
 		remainingOrder.clear();
 		
-		System.out.println(this+": Low on "+foodOrder.keySet());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Low on "+foodOrder.keySet());
 		
-		System.out.println(this+": Placing order "+foodOrder);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Placing order "+foodOrder);
 		//market.m.msgSendOrder(this,foodOrder);
 	}
 	

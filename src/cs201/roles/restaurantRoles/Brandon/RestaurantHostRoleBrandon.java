@@ -10,6 +10,8 @@ import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Host Agent
@@ -91,7 +93,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	 */
 	public void msgArrived(CustomerBrandon c)
 	{
-		System.out.println(this+": "+c.getName()+" has arrived.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,c.getName()+" has arrived.");
 		waitingCustomers.add(new MyCustomer(c));
 		numCustomers++;
 		stateChanged();
@@ -106,7 +108,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	{
 		numCustomers--;
 		tables.get(table-1).c = null;
-		System.out.println(this+": "+w.getName()+" now has one fewer customer. Table "+table+" is clear");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+w.getName()+" now has one fewer customer. Table "+table+" is clear");
 		
 		for(int i = 0; i < waiters.size(); i++)
 		{
@@ -130,7 +132,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 		{
 			if(a.w == agent)
 			{
-				System.out.println(this+": "+agent.getName()+" asked about break");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+agent.getName()+" asked about break");
 
 				a.s = WaiterState.AskedAboutBreak;
 				break;
@@ -149,10 +151,10 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 		{
 			if(a.w == waiterAgent)
 			{
-				System.out.println(this+": "+waiterAgent.getName()+" is on break");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+waiterAgent.getName()+" is on break");
 
 				a.s = WaiterState.Break;
-				System.out.println(a.w.getName()+" is on break");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,a.w.getName()+" is on break");
 				break;
 			}
 		}
@@ -169,7 +171,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 		{
 			if(w.w == waiterAgent)
 			{
-				System.out.println(this+": "+waiterAgent.getName()+" is off break");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+waiterAgent.getName()+" is off break");
 				w.s = WaiterState.Normal; 
 				break;
 			}
@@ -240,13 +242,20 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	}
 	
 	private void closeRestaurant() {
-		// TODO Auto-generated method stub
-		
+		this.restaurant.closingTime();
+		this.restaurant.setOpen(false);
+		this.isActive = false;
+		this.myPerson.goOffWork();
+		this.myPerson.removeRole(this);
+		this.waiters.clear();
+		//DoCloseRestaurant();
+		this.myPerson = null;
+		this.gui.setPresent(false);
 	}
 
 	private void inform(MyCustomer cust)
 	{
-		System.out.println(this+": Telling "+cust.c.getName()+" that tables are full.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Telling "+cust.c.getName()+" that tables are full.");
 		cust.informed = true;
 		cust.c.msgInformedFull();		
 	}
@@ -255,13 +264,13 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	{
 		if(lastWaiter())
 		{
-			System.out.println(this+": Denying break to "+w.w.getName());
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Denying break to "+w.w.getName());
 			w.w.msgCanGoOnBreak(false);
 			w.s = WaiterState.Normal;
 		}
 		else
 		{
-			System.out.println(this+": Granting break to "+w.w.getName());
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Granting break to "+w.w.getName());
 
 			w.w.msgCanGoOnBreak(true);
 			w.s = WaiterState.WaitingOnBreak;
@@ -294,7 +303,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 		}
 		if(firstIndex == waiters.size())
 		{
-			System.out.println(this+": All waiters on break...");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"All waiters on break...");
 
 			return;
 		}
@@ -313,7 +322,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 		waiters.get(minIndex).numCustomers++;
 		WaiterBrandon waiter = waiters.get(minIndex).w;
 		waiter.msgSeatCustomer(customer, table);
-		System.out.println(this+": Assigned "+customer.getName()+" to "+waiter.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Assigned "+customer.getName()+" to "+waiter.getName());
 	}
 	
 	private class MyWaiter
@@ -363,15 +372,8 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 
 	@Override
 	public void msgClosingTime() {
-		this.restaurant.closingTime();
-		this.restaurant.setOpen(false);
-		this.isActive = false;
-		this.myPerson.goOffWork();
-		this.myPerson.removeRole(this);
-		this.waiters.clear();
-		//DoCloseRestaurant();
-		this.myPerson = null;
-		this.gui.setPresent(false);
+		closingTime = true;
+		stateChanged();
 	}
 
 	public void msgReachedDestination() {

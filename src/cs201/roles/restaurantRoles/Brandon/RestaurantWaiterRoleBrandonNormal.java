@@ -3,13 +3,14 @@ package cs201.roles.restaurantRoles.Brandon;
 import java.util.Map;
 
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 public class RestaurantWaiterRoleBrandonNormal extends RestaurantWaiterRoleBrandon {
 
 	public RestaurantWaiterRoleBrandonNormal(HostBrandon host,
 			Map<String, Double> menu, String name) {
 		super(host, menu, name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -21,10 +22,10 @@ public class RestaurantWaiterRoleBrandonNormal extends RestaurantWaiterRoleBrand
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error with waiter going to kitchen");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with waiter going to kitchen");
 		}
 		
-		System.out.println(this+": Giving order to cook");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Giving order to cook");
 		chef.msgPresentOrder(this, c.choice, c.t);
 	}
 

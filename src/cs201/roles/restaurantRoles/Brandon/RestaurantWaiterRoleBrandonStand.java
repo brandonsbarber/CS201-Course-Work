@@ -9,7 +9,6 @@ public class RestaurantWaiterRoleBrandonStand extends RestaurantWaiterRoleBrando
 	public RestaurantWaiterRoleBrandonStand(HostBrandon host,
 			Map<String, Double> menu, String name) {
 		super(host, menu, name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

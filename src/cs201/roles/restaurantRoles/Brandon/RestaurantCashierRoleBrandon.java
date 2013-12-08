@@ -11,6 +11,8 @@ import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.structures.market.MarketStructure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Class representation of a cook at the restaurant
@@ -99,8 +101,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	 */
 	public void msgAskForBill(WaiterBrandon w, String order, int table, CustomerBrandon cust)
 	{
-		System.out.println(this+": Has been given bill request: "+order+" from "+w.getName());
-		//log.add(new LoggedEvent(this+": Has been given bill request: "+order+" from "+w.getName()));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this, "Has been given bill request: "+order+" from "+w.getName());
 		bills.add(new Bill(w,order,table,cust));
 		stateChanged();
 	}
@@ -112,8 +113,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	 */
 	public void msgPay(CustomerBrandon cust, double billAmount)
 	{
-		System.out.println(this+": "+cust.getName()+" has paid "+billAmount);
-		//log.add(new LoggedEvent(this+": "+cust.getName()+" has paid "+billAmount));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,cust.getName()+" has paid "+billAmount);
 		for(Bill b : bills)
 		{
 			if(b.cust == cust)
@@ -129,8 +129,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	public void msgGiveMarketBill(Market market, double amount)
 	{
 		marketBills.add(new MarketBill(market,amount));
-		System.out.println(this+": Received market bill from "+market);
-		//log.add(new LoggedEvent(this+": Received market bill from "+market));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received market bill from "+market);
 		stateChanged();
 	}
 	
@@ -181,8 +180,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		{
 			sellSoul();
 		}
-		System.out.println(this+": Paying market "+b.m.toString()+" "+b.amount);
-		//log.add(new LoggedEvent(this+": Paying market "+b.m.toString()+" "+b.amount));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Paying market "+b.m.toString()+" "+b.amount);
 		//b.m.msgPayBill(b.amount);
 		budget -= b.amount;
 		
@@ -193,8 +191,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	{
 		if(!soulSold )
 		{
-			System.out.println(this+": Selling soul...");
-			//log.add(new LoggedEvent(this+": Selling soul..."));
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Selling soul...");
 			budget += SOUL_SALE_PRICE;
 			soulSold = true;
 		}
@@ -202,16 +199,12 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 
 	private void processBill(Bill bill)
 	{
-		System.out.println(prices);
-		System.out.println(prices.get(bill.c));
-		System.out.println(bill.c);
 		bill.price = prices.get(bill.c).getPrice();
 		
 		if(penaltyList.containsKey(bill.cust))
 		{
 			bill.price += penaltyList.remove(bill.cust);
-			System.out.println(this+": Added extra to the customer!");
-			//log.add(new LoggedEvent(this+": Added extra to the customer!"));
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Added extra to the customer!");
 		}
 		
 		bill.w.msgGiveWaiterBill(bill.cust,bill.price);
@@ -221,30 +214,30 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	private void calcChange(Bill bill)
 	{
 		double change = bill.paid - bill.price;
-		System.out.println("Change is "+change);
-		//log.add(new LoggedEvent("Change is "+change));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Change is "+change);
+		
 		int changeMult = (int)(change*100);
 		change = ((double)changeMult)/100;
 		//INSERT IF PAID LESS THAN BILL
 		
-		System.out.println(this+": Giving "+change+" back to "+bill.cust);
-		//log.add(new LoggedEvent(this+": Giving "+change+" back to "+bill.cust));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Giving "+change+" back to "+bill.cust);
+
 		bill.s = BillState.Changed;
 		
 		if(change < 0)
 		{
-			System.out.println(this+": CUSTOMER CANNOT PAY! "+change*-1);
-			//log.add(new LoggedEvent(this+": CUSTOMER CANNOT PAY! "+change*-1));
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"CUSTOMER CANNOT PAY! "+change*-1);
+
 			penaltyList.put(bill.cust,change*-1);
 			bill.cust.msgGiveChange(0);
-			System.out.println(this+"Adding "+bill.price+" - "+(-1*change)+" to the budget");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Adding "+bill.price+" - "+(-1*change)+" to the budget");
 			budget += bill.price - -1*change;
 		}
 		else
 		{
 			bill.cust.msgGiveChange(change);
 			budget += bill.price;
-			System.out.println(this+": Adding $"+bill.price+" to the budget");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Adding $"+bill.price+" to the budget");
 
 		}
 	}
@@ -277,9 +270,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 
 	@Override
 	public void msgHereIsDeliveryFromMarket(MarketStructure market,
-			double amount, ItemRequest item) {
-		// TODO Auto-generated method stub
-		
+			double amount, ItemRequest item) {		
 	}
 
 	CashierGuiBrandon gui;

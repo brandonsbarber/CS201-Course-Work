@@ -13,6 +13,8 @@ import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * A waiter agent for use in a restaurant application.
@@ -118,7 +120,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgGotBreak()
 	{
-		System.out.println(this+": GUI said to go on break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"GUI said to go on break");
 		s = WaiterState.WantsToBreak;
 		stateChanged();
 	}
@@ -130,7 +132,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgSeatCustomer(CustomerBrandon c, int table)
 	{
-		System.out.println(this+": Seating customer at "+table);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Seating customer at "+table);
 		customers.add(new MyCustomer(c,table,CustomerState.Waiting));
 		stateChanged();
 	}
@@ -141,7 +143,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgReadyToOrder(CustomerBrandon c)
 	{
-		System.out.println(this+": "+c.getName()+" is ready to order");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,c.getName()+" is ready to order");
 		for(int i = 0; i < customers.size(); i++)
 		{
 			if(customers.get(i).c == c)
@@ -160,7 +162,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgGiveOrder(CustomerBrandon c, String choice)
 	{
-		System.out.println(this+": Got order "+choice+" from "+c.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Got order "+choice+" from "+c.getName());
 		for(int i = 0; i < customers.size(); i++)
 		{
 			if(customers.get(i).c == c)
@@ -178,7 +180,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgOrderDone(int table)
 	{
-		System.out.println(this+": An order is done for table "+table);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"An order is done for table "+table);
 		for(int i = 0; i < customers.size(); i++)
 		{
 			if(customers.get(i).t == table)
@@ -196,7 +198,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgDoneEating(CustomerBrandon c)
 	{
-		System.out.println(this+": A customer was done eating "+c.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"A customer was done eating "+c.getName());
 		for(int i = 0; i < customers.size(); i++)
 		{
 			if(customers.get(i).c == c)
@@ -213,7 +215,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgReachedDestination()
 	{
-		System.out.println(this+": Animation done playing");
+		AlertLog.getInstance().logDebug(AlertTag.RESTAURANT,""+this,"Animation done playing");
 		animationPause.release();
 	}
 	
@@ -225,7 +227,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	public void msgOutOfFood(String choice, int table)
 	{
 		menu.remove(choice);
-		System.out.println(this+"Received updated menu. Menu now has :"+menu);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received updated menu. Menu now has :"+menu);
 		
 		for(MyCustomer cust : customers)
 		{
@@ -244,7 +246,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgCanGoOnBreak(boolean b)
 	{
-		System.out.println(this+": Can "+(b?"":"not")+" go on break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Can "+(b?"":"not")+" go on break");
 		if(b)
 		{
 			s = WaiterState.CanBreak;
@@ -261,7 +263,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgGoOffBreak()
 	{
-		System.out.println(this+": Going off break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Going off break");
 		s = WaiterState.ComingOffBreak;
 		stateChanged();
 	}
@@ -273,7 +275,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgGiveWaiterBill(CustomerBrandon cust, double price)
 	{
-		System.out.println(this+": Received bill from cashier");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received bill from cashier");
 		for(int i = 0; i < customers.size(); i++)
 		{
 			if(customers.get(i).c == cust)
@@ -290,7 +292,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	 */
 	public void msgCustomerLeaving(CustomerBrandon cust)
 	{
-		System.out.println(this+": Told that customer is leaving.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Told that customer is leaving.");
 		for(int i = 0; i < customers.size(); i++)
 		{
 			if(customers.get(i).c == cust)
@@ -311,13 +313,13 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		if(s == WaiterState.WantsToBreak)
 		{
-			System.out.println("Asking about break");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Asking about break");
 			askAboutBreak();
 			return true;
 		}
 		else if(s == WaiterState.CanBreak && customers.size() == 0)
 		{
-			System.out.println("Can break!");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Can break!");
 			goOnBreak();
 			return true;
 		}
@@ -413,20 +415,20 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Problem pausing the animation.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Problem pausing the animation.");
 		}
 	}
 
 	private void processDenial()
 	{
-		System.out.println(this+": My break was denied");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"My break was denied");
 		s = WaiterState.Normal;
 		gui.breakDenied();
 	}
 
 	private void comeOffBreak()
 	{
-		System.out.println(this+": I am coming off break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am coming off break");
 		s = WaiterState.Normal;
 		host.msgOffBreak(this);
 	}
@@ -435,7 +437,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	{
 		s = WaiterState.Break;
 		host.msgOnBreak(this);
-		System.out.println(this+": I am now going on break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am now going on break");
 		gui.doGoOnBreak();
 		try
 		{
@@ -443,21 +445,21 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error with going to waiting area.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with going to waiting area.");
 		}
 		
 	}
 
 	private void askAboutBreak()
 	{
-		System.out.println(this+": Asked about break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Asked about break");
 		host.msgWantToBreak(this);
 		s = WaiterState.AskedAboutBreak;
 	}
 
 	private void presentMenu(MyCustomer c)
 	{
-		System.out.println(this+": Asked "+c.c.getName()+" to reorder.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Asked "+c.c.getName()+" to reorder.");
 		c.c.msgHereIsMenu(new MenuBrandon(menu));
 		c.s = CustomerState.Seated;
 	}
@@ -471,11 +473,11 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error with going to waiting area.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with going to waiting area.");
 		}
 		
 		gui.doSeat(c.c,c.t);
-		System.out.println(this+": Telling "+c.c.getName()+" to follow me");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Telling "+c.c.getName()+" to follow me");
 		c.c.msgFollowMe(this,new MenuBrandon(menu).clone());
 		try
 		{
@@ -483,7 +485,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error when showing customer to their seat.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error when showing customer to their seat.");
 		}
 		c.s = CustomerState.Seated;
 	}
@@ -497,21 +499,19 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Problem in Waiter takeOrder animation!");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Problem in Waiter takeOrder animation!");
 		}
-		System.out.println(this+": Taking order from "+c.c.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Taking order from "+c.c.getName());
 		
 		
 		c.c.msgReadyToTakeOrder();
 		try
 		{
-			System.out.println("BLOCKING ON WAITING FOR ORDER");
 			waitingForOrder.acquire();
-			System.out.println("DONE BLOCKING ON WAITING FOR ORDER");
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error with waiter waiting for order.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with waiter waiting for order.");
 		}
 		gui.doCarryOrder(c.choice);
 		
@@ -531,7 +531,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error with waiter going to kitchen to pick up food.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with waiter going to kitchen to pick up food.");
 		}
 		gui.doCarryFood(c.choice);
 		chef.msgPickingUpOrder(this,c.t);
@@ -543,10 +543,10 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Error with waiter going to table with food.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with waiter going to table with food.");
 		}
 		
-		System.out.println(this+": Presenting order to "+c.c.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Presenting order to "+c.c.getName());
 		c.c.msgPresentFood();
 		c.s = CustomerState.Eating;
 		
@@ -555,7 +555,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	
 	private void clearTable(MyCustomer c)
 	{
-		System.out.println(this+": Clearing table "+c.t);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Clearing table "+c.t);
 		host.msgCustomerLeft(this,c.t);
 		for(int i = 0; i < customers.size(); i++)
 		{
@@ -586,7 +586,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	
 	private void getBill(MyCustomer c)
 	{
-		System.out.println(this+": Going to get bill for "+c.c);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Going to get bill for "+c.c);
 		
 		gui.doGoToCashier();
 		try
@@ -595,7 +595,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Issue with animation.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Issue with animation.");
 		}
 		cashier.msgAskForBill(this, c.choice, c.t, c.c);
 		
@@ -605,7 +605,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Issue with animation.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Issue with animation.");
 		}
 		
 		gui.doGoToTable(c.t);
@@ -615,7 +615,7 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Issue with animation.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Issue with animation.");
 		}
 		
 		c.c.msgPresentBill(c.billAmount,cashier);

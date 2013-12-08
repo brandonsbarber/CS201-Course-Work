@@ -16,6 +16,8 @@ import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.restaurantRoles.RestaurantCustomerRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant customer agent.
@@ -75,7 +77,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 				startingMoney = ((double)moneyRound)/100;
 			}
 		}
-		System.out.println(this+": Initialized with $"+startingMoney);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Initialized with $"+startingMoney);
 	}
 	
 	/**
@@ -110,7 +112,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	 */
 	public void gotHungry()
 	{
-		System.out.println(this+": I am hungry.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am hungry.");
 		hungry = true;
 		stateChanged();
 	}
@@ -122,7 +124,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	 */
 	public void msgFollowMe(WaiterBrandon w, MenuBrandon m)
 	{
-		System.out.println(this+": Told to follow "+w.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Told to follow "+w.getName());
 		this.w = w;
 		this.menu = m.clone();
 		s = CustomerState.Walking;
@@ -143,7 +145,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	 */
 	public void msgPresentFood()
 	{
-		System.out.println(this+": I have received my food.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I have received my food.");
 		s = CustomerState.Eating;
 		stateChanged();
 	}
@@ -153,7 +155,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	 */
 	public void msgReachedDestination()
 	{
-		System.out.println(this+": I have reached my animation destination.");
+		AlertLog.getInstance().logDebug(AlertTag.RESTAURANT,""+this,"I have reached my animation destination.");
 		animationPause.release();
 	}
 	
@@ -163,7 +165,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	 */
 	public void msgHereIsMenu(MenuBrandon newMenu)
 	{
-		System.out.println(this+": I need to reorder from "+newMenu.getFood());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I need to reorder from "+newMenu.getFood());
 		s = CustomerState.Reorder;
 		menu = newMenu.clone();
 		stateChanged();
@@ -190,7 +192,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	public void msgGiveChange(double change)
 	{
 		startingMoney += change;
-		System.out.println(this+": Just received "+change+" in change. I now have "+startingMoney);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Just received "+change+" in change. I now have "+startingMoney);
 		changeWait.release();
 	}
 	
@@ -199,7 +201,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 	 */
 	public void msgInformedFull()
 	{
-		System.out.println(this+": I was told the restaurant was full.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I was told the restaurant was full.");
 		s = CustomerState.Told;
 		stateChanged();
 	}
@@ -266,7 +268,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+" Issue with animation.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Issue with animation.");
 		}
 		double currentAmount = startingMoney;
 		
@@ -278,7 +280,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println(this+": Issue waiting for change.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Issue waiting for change.");
 		}
 		
 		s = CustomerState.Leaving;
@@ -294,7 +296,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 
 	private void reorder()
 	{
-		System.out.println(this+": Preparing to reorder.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Preparing to reorder.");
 		gui.doRemoveLabel();
 		order = "";
 		s = CustomerState.Seated;
@@ -324,7 +326,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 				else
 				{
 					//Customer cannot afford anything on the menu
-					System.out.println("Customer "+name+": There is no food that I can afford!");
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"There is no food that I can afford!");
 					s = CustomerState.Leaving;
 					w.msgCustomerLeaving(cust);
 				}
@@ -335,7 +337,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 
 	private void goToRestaurant()
 	{
-		System.out.println(this+": Going to restaurant.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Going to restaurant.");
 		gui.doGoToRestaurant();
 		try
 		{
@@ -343,7 +345,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println("Error with going to restaurant.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with going to restaurant.");
 		}
 		
 		s = CustomerState.Waiting;
@@ -359,7 +361,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println("Error with customer going to table.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Error with customer going to table.");
 		}
 		
 		final CustomerBrandon cust = this;
@@ -392,7 +394,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 				else
 				{
 					//Customer cannot afford anything on the menu
-					System.out.println(this+": Cannot afford anything.");
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Cannot afford anything.");
 					s = CustomerState.Leaving;
 					w.msgCustomerLeaving(cust);
 				}
@@ -406,7 +408,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		gui.doSelectOrder(order);
 		
 		s = CustomerState.Ready;
-		System.out.println(this+": Signaling that I am ready to order.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Signaling that I am ready to order.");
 		w.msgReadyToOrder(this);
 		try
 		{
@@ -414,17 +416,17 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println("An error has occurred in a customer signalReady() method.");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"An error has occurred in a customer signalReady() method.");
 		}
 		s = CustomerState.Ordered;
-		System.out.println(this+": I am going to order "+order);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am going to order "+order);
 		w.msgGiveOrder(this, order);
 	}
 	
 	private void eat()
 	{
 		gui.doReceiveFood(order);
-		System.out.println(this+": I am eating my food.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am eating my food.");
 		s = CustomerState.Ate;
 		timer.schedule(new TimerTask()
 		{
@@ -445,21 +447,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		billAmount = 0;
 		this.getPerson().setHungerLevel(0);
 		
-		//Resets the amount of money the customer has
-		try
-		{
-			startingMoney = Double.parseDouble(name);
-		}
-		catch(NumberFormatException e)
-		{
-			double money = (Math.random()*MAX_MONEY)+10;
-			int moneyRound = (int)(money*100);
-			startingMoney = ((double)moneyRound)/100;
-		}
-		
-		System.out.println(this+": Reset money level to "+startingMoney);
-		
-		System.out.println(this+": I am leaving the restaurant");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am leaving the restaurant");
 		hungry = false;
 		s = CustomerState.NoState;
 		
@@ -470,17 +458,12 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		}
 		catch(InterruptedException e)
 		{
-			System.out.println("Problem with customer leaving restaurant");
+			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Problem with customer leaving restaurant");
 		}
 		gui.didLeaveRestaurant();
 		
 		this.isActive = false;
 		this.gui.setPresent(false);
-		
-		System.out.println("Left restaurant");
-		System.out.println("Active:"+super.isActive);
-		System.out.println("Active:"+this.isActive);
-		System.out.println("gui"+gui.isPresent());
 	}
 	
 	/**
@@ -494,17 +477,17 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 
 	private void toldAboutFull()
 	{
-		System.out.println(this+"I was told about the restaurant being full.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I was told about the restaurant being full.");
 		if(Math.random() > .5 || name.equals("Leaving"))
 		{
-			System.out.println(this+": FULL RESTAURANT: LEAVING");
+			AlertLog.getInstance().logDebug(AlertTag.RESTAURANT,""+this,"FULL RESTAURANT: LEAVING");
 			hungry = false;
 			h.msgNotWaiting(this);
 			s = CustomerState.Leaving;
 		}
 		else
 		{
-			System.out.println(this+ ": FULL RESTAURANT: STAYING");
+			AlertLog.getInstance().logDebug(AlertTag.RESTAURANT,""+this,"FULL RESTAURANT: STAYING");
 			s = CustomerState.Waiting;
 		}
 	}
@@ -514,13 +497,13 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		if (intent == Intention.RestaurantCustomer) {
 			this.gui.setPresent(true);
 			gotHungry();
+			startingMoney = this.getPerson().getMoney();
 		}
 	}
 
 	@Override
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
+		//Do Nothing
 	}
 }
 
