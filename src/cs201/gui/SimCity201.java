@@ -669,6 +669,7 @@ public class SimCity201 extends JFrame {
 		p.setHungerEnabled(false);
 		p.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p);
+		personPanel.addPerson(p);
 		p.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
@@ -676,15 +677,17 @@ public class SimCity201 extends JFrame {
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Market Customer",cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerGoods, m, null);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, m, null);
 		p3.setHungerEnabled(false);
 		p3.getMarketChecklist().add(new ItemRequest("Burgers",2));
 		p3.getMarketChecklist().add(new ItemRequest("Pizza",1));
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 	}
 	

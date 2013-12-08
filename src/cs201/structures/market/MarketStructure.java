@@ -27,7 +27,6 @@ public class MarketStructure extends Structure {
 	List<MarketEmployeeRole> employees = Collections.synchronizedList(new ArrayList<MarketEmployeeRole>());
 	TruckAgent deliveryTruck = null;
 	StructurePanel panel = null;
-	boolean isOpen = false;
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
