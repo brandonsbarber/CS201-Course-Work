@@ -151,6 +151,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Brandon's Restaurant");
 		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");	
 		scenarioList.add("Brandon's Restaurant: Shift Change");
+		scenarioList.add("Market Shift Change");
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -189,6 +190,7 @@ public class SimCity201 extends JFrame {
 			case 16: brandonRestaurant(); break;
 			case 17: brandonRestaurantTwoCustomersTwoWaiters(); break;
 			case 18: brandonRestaurantShiftChange(); break;
+			case 19: marketShiftChange(); break;
 		}
 	}
 	
@@ -1211,6 +1213,75 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(pp4);
 		pp4.startThread();
 		
+	}
+	
+	private void marketShiftChange() {
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		mcp.setStructure(m);
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		
+		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+			
+		PersonAgent p = new PersonAgent("Market Employee AM",cityPanel);
+		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p.setHungerEnabled(false);
+		p.setHungerLevel(0);
+		p.setWorkTime(m.getMorningShiftStart());
+		CityDirectory.getInstance().addPerson(p);
+		personPanel.addPerson(p);
+		p.startThread();
+		
+		PersonAgent pPM = new PersonAgent("Market Employee PM",cityPanel);
+		pPM.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		pPM.setHungerEnabled(false);
+		pPM.setHungerLevel(0);
+		pPM.setWorkTime(m.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pPM);
+		personPanel.addPerson(pPM);
+		pPM.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Manager AM",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		p2.setWorkTime(m.getMorningShiftStart());
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p2PM = new PersonAgent("Market Manager PM",cityPanel);
+		p2PM.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p2PM.setHungerEnabled(false);
+		p2PM.setHungerLevel(0);
+		p2PM.setWorkTime(m.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(p2PM);
+		personPanel.addPerson(p2PM);
+		p2PM.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Customer",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, m, null);
+		p3.setHungerEnabled(false);
+		p3.getMarketChecklist().add(new ItemRequest("Burgers",2));
+		p3.getMarketChecklist().add(new ItemRequest("Pizza",1));
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
 	}
 	
 	private void hundredPeople() {
