@@ -33,6 +33,8 @@ import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattNormal;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Ben Doherty's Restaurant Structure for SimCity201
@@ -50,6 +52,12 @@ public class RestaurantBen extends Restaurant {
 		// Set up the stand
 		this.panel.addGui(stand);
 		stand.setPresent(true);
+		
+		// Setup times
+		this.morningShiftStart = new CityTime(8, 00);
+		this.morningShiftEnd = new CityTime(12, 30);
+		this.afternoonShiftStart = new CityTime(13, 00);
+		this.closingTime = new CityTime(18, 00);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleBen();
@@ -196,8 +204,17 @@ public class RestaurantBen extends Restaurant {
 			checkIfRestaurantShouldOpen();
 		}
 		
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+		}
+		
 		if (time.equalsIgnoreDay(this.closingTime)) {
-			Do("It's closing time!");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
