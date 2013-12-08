@@ -101,6 +101,8 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	private Map<String,Integer> remainingOrder =Collections.synchronizedMap( new HashMap<String,Integer>());
 	
 	private Map<String,Double> menuData,savedMenu;
+
+	private boolean closingTime = false;
 	
 	/**
 	 * Creates a new CookAgent
@@ -250,6 +252,11 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(closingTime)
+		{
+			leaveRestaurant();
+			return true;
+		}
 		//Processes if there is any food remaining to be ordered
 		if(remainingOrder.size() != 0)
 		{
@@ -453,14 +460,23 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		closingTime = false;
+		this.gui.setPresent(true);
 	}
 
 	@Override
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
+		closingTime  = true;
+		stateChanged();
+	}
+	
+	private void leaveRestaurant()
+	{
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson.goOffWork();
+		this.myPerson = null;
+		this.gui.setPresent(false);
 	}
 
 	CookGuiBrandon gui;
@@ -488,7 +504,6 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 
 	public RestaurantRotatingStandBrandon getStand()
 	{
-		// TODO Auto-generated method stub
 		return stand;
 	}
 }

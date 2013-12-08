@@ -81,7 +81,7 @@ public class PassengerGui implements Gui
 	 */
 	public PassengerGui(PassengerRole pass,CityPanel city, Structure s)
 	{
-		this(pass,city,(int)s.x,(int)s.y);
+		this(pass, city, (int) s.getRect().x, (int) s.getRect().y);
 	}
 	
 	/**

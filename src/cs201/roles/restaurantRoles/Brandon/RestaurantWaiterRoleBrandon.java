@@ -45,6 +45,8 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	
 	public static int instanceCount = 0;
 	private int idNumber;
+
+	private boolean closingTime = false;
 	
 	/**
 	 * Constructs a WaiterAgent
@@ -302,6 +304,11 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(closingTime)
+		{
+			leaveRestaurant();
+			return true;
+		}
 		if(s == WaiterState.WantsToBreak)
 		{
 			System.out.println("Asking about break");
@@ -626,16 +633,24 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-		
+		closingTime = false;
+		this.gui.setPresent(true);
 	}
 
 	@Override
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
-		
+		closingTime  = true;
+		stateChanged();
 	}
-
+	
+	private void leaveRestaurant()
+	{
+		this.isActive = false;
+		this.myPerson.removeRole(this);
+		this.myPerson.goOffWork();
+		this.myPerson = null;
+		this.gui.setPresent(false);
+	}
 	RestaurantRotatingStandBrandon stand;
 	
 	public void setRotatingStand(RestaurantRotatingStandBrandon stand)

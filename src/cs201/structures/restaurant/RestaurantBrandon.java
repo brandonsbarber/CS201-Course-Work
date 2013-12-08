@@ -62,6 +62,11 @@ public class RestaurantBrandon extends Restaurant {
 		 * -------------------------------
 		 */
 		
+		this.morningShiftStart = new CityTime(8, 00);
+		this.morningShiftEnd = new CityTime(12, 30);
+		this.afternoonShiftStart = new CityTime(13, 00);
+		this.closingTime = new CityTime(18, 00);
+		
 		kitchen = new KitchenGuiBrandon(4);
 		
 		this.panel.addGui(kitchen);
@@ -106,8 +111,12 @@ public class RestaurantBrandon extends Restaurant {
 
 	@Override
 	public void closingTime() {
-		// TODO Auto-generated method stub
-		
+		cashier.msgClosingTime();
+		cook.msgClosingTime();
+		for(RestaurantWaiterRole w : waiters)
+		{
+			w.msgClosingTime();
+		}
 	}
 
 	@Override
@@ -196,11 +205,43 @@ public class RestaurantBrandon extends Restaurant {
 		}
 		}
 	}
+	
+	private void checkIfRestaurantShouldOpen() {
+		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
+			for (RestaurantWaiterRole w : waiters) {
+				if (w.getPerson() != null) {
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
+					this.isOpen = true;
+					return;
+				}
+			}
+		}
+	}
 
 	@Override
 	public void updateTime(CityTime time) {
-		// TODO Auto-generated method stub
+		if(!isOpen)
+		{
+			checkIfRestaurantShouldOpen();
+		}
 		
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+		}
+		
+		if (time.equalsIgnoreDay(this.closingTime)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+		}
 	}
 
 }
