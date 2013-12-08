@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -90,7 +91,7 @@ public class SimCity201 extends JFrame {
 		
 		guiPanel.setLayout(new BorderLayout());
 		
-		cityPanel = new CityPanel();
+		cityPanel = new CityPanel(this);
 		cityPanel.setPreferredSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		cityPanel.setMaximumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		cityPanel.setMinimumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
@@ -99,10 +100,13 @@ public class SimCity201 extends JFrame {
 		
 		buildingPanels = new JPanel();
 		buildingPanels.setLayout(cardLayout);
+		buildingPanels.setBorder(BorderFactory.createEtchedBorder());
 		buildingPanels.setMinimumSize(new Dimension(SIZEX * 2/5, SIZEY * 3 / 5));
 		buildingPanels.setMaximumSize(new Dimension(SIZEX * 2/5, SIZEY * 3 / 5));
 		buildingPanels.setPreferredSize(new Dimension(SIZEX * 2/5, SIZEY * 3 / 5));
-		buildingPanels.setBackground(Color.YELLOW);
+		
+		JPanel blankPanel = new JPanel();
+		buildingPanels.add(blankPanel, "blank");
 
 		// Create initial buildings here and add them to cityPanel and buildingPanels
 		
@@ -1057,5 +1061,9 @@ public class SimCity201 extends JFrame {
 	
 	public void displayStructurePanel(StructurePanel bp) {
 		cardLayout.show(buildingPanels, bp.getName());
+	}
+	
+	public void displayBlankPanel() {
+		cardLayout.show(buildingPanels, "blank");
 	}
 }

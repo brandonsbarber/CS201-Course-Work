@@ -41,14 +41,16 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	List<Gui> guis;
 	
 	private String[][] cityGrid;
+	private SimCity201 city;
 
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
 	 * Sets up initial data too
 	 */
-	public CityPanel()
+	public CityPanel(SimCity201 city)
 	{
 		Timer timer = new Timer(1000/240,this);
+		this.city = city;
 		
 		try
 		{
@@ -443,8 +445,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			Structure s = buildings.get(i);
 			if (s.getRect().contains(arg0.getX(), arg0.getY())) {
 				s.displayStructure();
+				return;
 			}
 		}
+		city.displayBlankPanel();
 	}
 	
 	/**
