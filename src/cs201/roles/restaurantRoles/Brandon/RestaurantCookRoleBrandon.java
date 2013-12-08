@@ -3,6 +3,7 @@ package cs201.roles.restaurantRoles.Brandon;
 import java.util.*;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
@@ -15,7 +16,7 @@ import cs201.roles.restaurantRoles.RestaurantCookRole;
  */
 public class RestaurantCookRoleBrandon extends RestaurantCookRole implements CookBrandon
 {
-	//private KitchenGui kitchen;
+	private KitchenGuiBrandon kitchen;
 	
 	private List<Order> orders;
 	public static class Order
@@ -118,10 +119,10 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		calcLowFoods();
 	}
 	
-	/*public void setKitchen(KitchenGui kitchen)
+	public void setKitchen(KitchenGuiBrandon kitchen)
 	{
 		this.kitchen = kitchen;
-	}*/
+	}
 	
 	/**
 	 * Adds a market to the list of markets which the cook pulls from
@@ -307,7 +308,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		o.s = OrderState.Cooking;
 		timer.schedule (new CookingTask(this,o), cookTime.get(o.c).getCookingTime());
 		
-		//kitchen.addOrder(o);
+		kitchen.addOrder(o);
 		
 		if(f.isLow () && !f.ordered())
 		{

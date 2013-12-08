@@ -85,6 +85,8 @@ public class RestaurantBrandon extends Restaurant {
 		
 		this.panel.addGui(kitchen);
 		
+		((RestaurantCookRoleBrandon)cook).setKitchen(kitchen);
+		
 		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 	}
 	
