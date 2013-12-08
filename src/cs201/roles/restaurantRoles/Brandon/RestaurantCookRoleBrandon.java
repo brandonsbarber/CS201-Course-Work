@@ -3,8 +3,6 @@ package cs201.roles.restaurantRoles.Brandon;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import javax.swing.JOptionPane;
-
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
@@ -127,8 +125,17 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		markets = Collections.synchronizedList(new ArrayList<MyMarket>());
 		menuData = prices;
 		savedMenu = savedPrices;
-		JOptionPane.showMessageDialog(null,"CALCULATING");
 		startOrder = false;
+	}
+	
+	public void emptySomeFood()
+	{
+		for(String s : cookTime.keySet())
+		{
+			FoodBrandon food = cookTime.get(s);
+			food.setAmount(0);
+			return;
+		}
 	}
 	
 	boolean startOrder;
@@ -214,7 +221,6 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		{
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+key+" "+cookTime.get(key).getAmount());
 		}
-		JOptionPane.showMessageDialog(null,"GOT ORDER");
 		stateChanged();
 	}
 	
@@ -429,9 +435,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Low on "+foodOrder.keySet());
 		
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Placing order "+foodOrder);
-		
-		JOptionPane.showMessageDialog(null,"HELLO");
-		
+				
 		for(String food : foodOrder.keySet())
 		{
 			System.out.println(this.restaurant);
