@@ -48,8 +48,8 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     private final int CASHAREAMAIN_Y = (int)(WINDOWY * .465f);
     
     // COOKING AREA
-    public static final int COOKINGAREA_X = (int)(WINDOWX * .556f);
-    public static final int COOKINGAREA_Y = (int)(WINDOWY * .85f);;
+    public static final int COOKINGAREA_X = (int)(WINDOWX * .50f);
+    public static final int COOKINGAREA_Y = (int)(WINDOWY * .89f);;
     private final Color COOKAREAMAINCOLOR = Color.GRAY;
     private final Color COOKAREAGRILLCOLOR = Color.RED;
     private final int COOKAREAMAIN_SIZE_X = (int)(WINDOWX * .33f);

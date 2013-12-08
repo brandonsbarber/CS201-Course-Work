@@ -8,7 +8,6 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -133,10 +132,6 @@ public class SimCity201 extends JFrame {
 		add(bottomSettingsPanel,BorderLayout.SOUTH);
 		add(mainPanel);
 		
-		Scanner in = new Scanner(System.in);
-
-		boolean running = true;
-		
 		List<String> scenarioList = new ArrayList<String>();
 		scenarioList.add("Normative Restaurant");
 		scenarioList.add("Normative Restaurant: Two Customers, Two Waiters");
@@ -152,7 +147,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Market Consumer Purchase Car");
 		scenarioList.add("Ben's Normative Restaurant Delivery");
 		scenarioList.add("Restaurant Shift Change");
-		scenarioList.add("50 People");
+		scenarioList.add("100 People");
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -174,7 +169,7 @@ public class SimCity201 extends JFrame {
 			case 12: marketConsumerCar(); break;
 			case 13: normativeMarketRestaurantBenDelivery(); break;
 			case 14: restaurantShiftChange(); break;
-			case 15: fiftyPeople(); break;
+			case 15: hundredPeople(); break;
 		}
 		
 		pack();
@@ -978,7 +973,7 @@ public class SimCity201 extends JFrame {
 		
 	}
 	
-	private void fiftyPeople() {
+	private void hundredPeople() {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
@@ -987,7 +982,7 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
 		
-		for (int i = 0; i < 50; i++) {
+		for (int i = 1; i <= 100; i++) {
 			createPerson(i + "", r, null, null, null, null);
 		}
 	}
