@@ -21,9 +21,9 @@ import cs201.trace.AlertTag;
  * Restaurant customer agent.
  */
 public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implements CustomerMatt {
-	private final int EATINGDURATION = 6500;
-	private final int CHOOSINGDURATION = 2500;
-	private final int WAITINGDURATION = 4000;
+	private final int EATINGDURATION = 1600;
+	private final int CHOOSINGDURATION = 625;
+	private final int WAITINGDURATION = 1000;
 	private Timer customerTimer;
 	private CustomerGuiMatt customerGui;
 

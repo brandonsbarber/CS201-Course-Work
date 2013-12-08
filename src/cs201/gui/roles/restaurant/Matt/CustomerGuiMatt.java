@@ -3,6 +3,7 @@ package cs201.gui.roles.restaurant.Matt;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
@@ -33,6 +34,8 @@ public class CustomerGuiMatt implements Gui {
 	private guiState state;
 	
 	private String eating;
+	
+	private String moveDir = "Default_Walker_Down";
 
 	public CustomerGuiMatt(RestaurantCustomerRoleMatt c, RestaurantConfigPanelMatt r) {
 		agent = c;
@@ -71,14 +74,33 @@ public class CustomerGuiMatt implements Gui {
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.GREEN);
-		g.fillRect(xPos, yPos, CUSTOMERSIZE, CUSTOMERSIZE);
-		
-		g.setColor(Color.black);
 		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.BLACK);
 			g.drawString("Customer " + (eating != "" ? "(" + eating + ")" : ""), xPos, yPos);
+			
+			g.setColor(Color.GREEN);
+			g.fillRect(xPos, yPos, CUSTOMERSIZE, CUSTOMERSIZE);
 		} else {
+			g.setColor(Color.BLACK);
 			g.drawString(eating, xPos, yPos);
+			
+			if (animating && hasPosition) {
+				double theta = Math.atan2(yPos - yDestination, xDestination - xPos);
+				
+				if (theta >= -Math.PI/4 && theta <= Math.PI/4) {
+					moveDir = "Default_Walker_Right";
+				} else if (theta >= Math.PI/4 && theta <= 3*Math.PI/4) {
+					moveDir = "Default_Walker_Up";
+				} else if (theta <= -Math.PI/4 && theta >= -3*Math.PI/4) {
+					moveDir = "Default_Walker_Down";
+				} else {
+					moveDir = "Default_Walker_Left";
+				}
+			} else {
+				moveDir = "Default_Walker_Down";
+			}
+			
+			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, CUSTOMERSIZE, CUSTOMERSIZE, null);
 		}
 	}
 

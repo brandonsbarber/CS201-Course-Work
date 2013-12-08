@@ -35,7 +35,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private final int MAXSTOCK = 25;
 	private final int INITIALSTOCK = 20;
 	private boolean closingTime = false;
-	private final int STANDCHECKTIMER = 3000; // 3 seconds
+	private final int STANDCHECKTIMER = 2000; // 3 seconds
 	private Timer standTimer = new Timer(STANDCHECKTIMER, this);
 	private RestaurantRotatingStand stand = null;
 
@@ -45,12 +45,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		orders = Collections.synchronizedList(new ArrayList<Order>());
 		foods = Collections.synchronizedMap(new Hashtable<String, Food>());
 		
-		foods.put("Steak", new Food("Steak", 3500, INITIALSTOCK)); 
-		foods.put("Pasta", new Food("Pasta", 3100, INITIALSTOCK));
-		foods.put("Ice Cream", new Food("Ice Cream", 1900, INITIALSTOCK));
-		foods.put("Pizza", new Food("Pizza", 2800, INITIALSTOCK));
-		foods.put("Chicken", new Food("Chicken", 3300, INITIALSTOCK));
-		foods.put("Salad", new Food("Salad", 2100, INITIALSTOCK));
+		foods.put("Steak", new Food("Steak", 1200, INITIALSTOCK)); 
+		foods.put("Pasta", new Food("Pasta", 1000, INITIALSTOCK));
+		foods.put("Ice Cream", new Food("Ice Cream", 640, INITIALSTOCK));
+		foods.put("Pizza", new Food("Pizza", 900, INITIALSTOCK));
+		foods.put("Chicken", new Food("Chicken", 1100, INITIALSTOCK));
+		foods.put("Salad", new Food("Salad", 700, INITIALSTOCK));
 		
 		standTimer.setRepeats(true);
 		standTimer.start();

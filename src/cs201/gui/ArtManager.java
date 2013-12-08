@@ -37,7 +37,15 @@ public class ArtManager
 		
 		
 		//Matt's Sprites
-		
+		atlas.put("Default_Walker_Up", ImageIO.read(new File("data/DefaultSprites/Up.png")));
+		atlas.put("Default_Walker_Down", ImageIO.read(new File("data/DefaultSprites/Down.png")));
+		atlas.put("Default_Walker_Left", ImageIO.read(new File("data/DefaultSprites/Left.png")));
+		atlas.put("Default_Walker_Right", ImageIO.read(new File("data/DefaultSprites/Right.png")));
+		atlas.put("Restaurant_Matt", ImageIO.read(new File("data/Restaurant/RestaurantMatt.png")));
+		atlas.put("Waiter_Up", ImageIO.read(new File("data/Restaurant/WaiterUp.png")));
+		atlas.put("Waiter_Down", ImageIO.read(new File("data/Restaurant/WaiterDown.png")));
+		atlas.put("Waiter_Left", ImageIO.read(new File("data/Restaurant/WaiterLeft.png")));
+		atlas.put("Waiter_Right", ImageIO.read(new File("data/Restaurant/WaiterRight.png")));
 		
 		//James's Sprites
 		

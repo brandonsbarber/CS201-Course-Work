@@ -3,6 +3,7 @@ package cs201.gui.roles.restaurant.Matt;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.restaurant.RestaurantConfigPanelMatt;
@@ -35,6 +36,8 @@ public class WaiterGuiMatt implements Gui {
     private RestaurantConfigPanelMatt panel;
     private boolean isPresent;
     
+    private String moveDir = "Waiter_Down";
+    
     public WaiterGuiMatt(RestaurantWaiterRoleMatt role, RestaurantConfigPanelMatt r) {
         this.role = role;
         this.panel = r;
@@ -64,16 +67,35 @@ public class WaiterGuiMatt implements Gui {
 		}
     }
 
-    public void draw(Graphics2D g) {
-        g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, WAITERSIZE, WAITERSIZE);
-        
-        g.setColor(Color.BLACK);
-        if (Constants.DEBUG_MODE) {
-	        g.drawString("Waiter " + (message != "" ? "(" + message + ")" : ""), xPos, yPos);
-        } else {
-        	g.drawString(message, xPos, yPos);
-        }
+    public void draw(Graphics2D g) {        
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.BLACK);
+			g.drawString("Waiter " + (message != "" ? "(" + message + ")" : ""), xPos, yPos);
+			
+	        g.setColor(Color.MAGENTA);
+	        g.fillRect(xPos, yPos, WAITERSIZE, WAITERSIZE);
+		} else {
+			g.setColor(Color.BLACK);
+			g.drawString(message, xPos, yPos);
+			
+			if (animating) {
+				double theta = Math.atan2(yPos - yDestination, xDestination - xPos);
+				
+				if (theta >= -Math.PI/4 && theta <= Math.PI/4) {
+					moveDir = "Waiter_Right";
+				} else if (theta >= Math.PI/4 && theta <= 3*Math.PI/4) {
+					moveDir = "Waiter_Up";
+				} else if (theta <= -Math.PI/4 && theta >= -3*Math.PI/4) {
+					moveDir = "Waiter_Down";
+				} else {
+					moveDir = "Waiter_Left";
+				}
+			} else {
+				moveDir = "Waiter_Down";
+			}
+			
+			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, WAITERSIZE, WAITERSIZE, null);
+		}
     }
     
     public void setMessage(String what) {

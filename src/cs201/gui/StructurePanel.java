@@ -21,7 +21,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	SimCity201 city;
 	
     private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
-    private final int ANIMATIONLENGTH = 10;
+    private final int ANIMATIONLENGTH = 5;
     private Timer timer;
 
 	public StructurePanel(int i, SimCity201 sc) {
