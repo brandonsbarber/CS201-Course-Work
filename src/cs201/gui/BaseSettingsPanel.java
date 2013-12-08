@@ -17,15 +17,19 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 {	
 	private JButton traceButton;
 	private JButton scenarioButton;
+	private JButton timeButton;
 	private JCheckBox debugMode;
 	private TraceFrame traceFrame;
 	private ScenarioPanel scenarioPanel;
+	private TimePanel timePanel;
 	
 	public BaseSettingsPanel()
 	{
 		setLayout(new FlowLayout());
 		
 		traceFrame = new TraceFrame();
+		
+		timePanel = new TimePanel();
 		
 		traceButton = new JButton("Show Trace Panel");
 		traceButton.addActionListener(this);
@@ -34,6 +38,10 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 		scenarioButton = new JButton("Show Scenario Panel");
 		scenarioButton.addActionListener(this);
 		add(scenarioButton);
+		
+		timeButton = new JButton("Show Time Panel");
+		timeButton.addActionListener(this);
+		add(timeButton);
 		
 		debugMode = new JCheckBox("Debug Mode:");
 		debugMode.setSelected(Constants.DEBUG_MODE);
@@ -61,6 +69,9 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 			if (scenarioPanel != null) {
 				scenarioPanel.showScenarioPanel();
 			}
+		}
+		if (e.getSource() == timeButton) {
+			timePanel.showTimePanel();
 		}
 	}
 }
