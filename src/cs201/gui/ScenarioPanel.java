@@ -43,6 +43,7 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 	 * COMPONENETS
 	 * ***********
 	 */
+	
 	JPanel panel = new JPanel();
 	ButtonGroup buttonGroup = new ButtonGroup();
 	JScrollPane scrollPane = new JScrollPane(panel);
@@ -51,6 +52,7 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 	 * VARIABLES
 	 * *********
 	 */
+	
 	private int chosenScenario = 0;
 	boolean modalSelectionMode = false;
 	private SimCity201 theCity = null;

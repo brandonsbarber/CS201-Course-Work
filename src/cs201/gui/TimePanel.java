@@ -1,6 +1,7 @@
 package cs201.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
@@ -45,9 +46,10 @@ public class TimePanel extends JDialog implements ChangeListener {
 	 * COMPONENETS
 	 * ***********
 	 */
+	
 	JPanel panel = new JPanel();
 	JSlider slider = new JSlider(JSlider.HORIZONTAL, SLIDER_MIN, SLIDER_MAX, SLIDER_INIT);
-	JLabel timeLabel = new JLabel("Hello, world");
+	JLabel timeLabel = new JLabel("2.00 seconds of real time = 15 minutes in SimCity201");
 	
 	/* ***********
 	 * CONNECTIONS
@@ -101,12 +103,14 @@ public class TimePanel extends JDialog implements ChangeListener {
 		slider.setMinorTickSpacing(MINOR_TICK);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
+		slider.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(slider);
 		
 		// Add some space
 		panel.add(Box.createRigidArea(new Dimension(0, 20)));
 		
 		// Add a label
+		timeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(timeLabel);
 	}
 	
@@ -139,6 +143,5 @@ public class TimePanel extends JDialog implements ChangeListener {
 			CityDirectory.getInstance().setTimerOut(source.getValue());
 		}
 	}
-	
 
 }
