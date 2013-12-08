@@ -12,6 +12,8 @@ import cs201.interfaces.roles.market.MarketEmployee;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 	
@@ -100,7 +102,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	 * ********** MESSAGES **********
 	 */
 	
-	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {	
+	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market employee " + name, "Was just told to retrieve items for a consumer.");
+		
 		// Add the new retrieval request to the list of requests
 		requests.add(new RetrievalRequest(manager, items, id, RequestState.PENDING));
 		
@@ -108,6 +112,8 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 	
 	public void msgRetrieveCar(MarketManager manager, int id) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market employee " + name, "Was just told to retrieve a car for a consumer.");
+		
 		// Add the new retrieval request to the list of requests
 		// Because we don't specify any items, the RetrievalRequest constructor makes it a CAR request
 		requests.add(new RetrievalRequest(manager, id, RequestState.PENDING));

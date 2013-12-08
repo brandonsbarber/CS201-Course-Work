@@ -54,6 +54,17 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Speeds up or slows down the animation for this structure panel by a given factor.
+	 * @param speedFactor The factor to increase / decrease the animation speed. This is INVERSE, because it changes the timer delay. 2.0 would half the
+	 * animation speed.
+	 */
+	public void setTimerOut(double speedFactor) {
+		timer.setDelay((int)(ANIMATIONLENGTH * speedFactor));
+		timer.setInitialDelay((int)(ANIMATIONLENGTH * speedFactor));
+		timer.restart();
+	}
+	
 	public void displayStructurePanel() {
 		city.displayStructurePanel(this);
 	}

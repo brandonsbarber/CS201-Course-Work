@@ -21,6 +21,8 @@ import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.Ben.RestaurantCookRoleBen.MarketOrder.Item;
 import cs201.structures.market.MarketStructure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Cook Agent
@@ -62,7 +64,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		if (!steakString.equals(""))
 			steakAmount = Integer.parseInt(steakString);
 			*/
-		int chickenAmount = 10;
+		int chickenAmount = 0;
 		int steakAmount = 10;
 
 		inventory.put("Chicken", new MyFood("Chicken", 10000, chickenAmount, 1, 10));
@@ -95,8 +97,9 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 	}
 	
 	public void msgHereIsOrder(WaiterBen waiter, String choice, int table) {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "Just got an order for " + choice);
+		
 		orders.add(new Order(waiter, choice, table, OrderState.pending));
-		Do("Just got an order of " + choice);
 		
 		stateChanged();
 	}
@@ -110,15 +113,16 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		if (f != null) {
 			f.quantity += request.amount;
 			f.orderedMore = false;
-			Do("Just received my order of " + request.item);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "Just received my order of " + request.item + " from the market.");
 		}
 		
 		stateChanged();
 	}
 	
 	public void timerDone(Order order) {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "The " + order.choice + " is finished cooking!");
+		
 		order.state = OrderState.done;
-		Do("The " + order.choice + " is done!");
 		
 		stateChanged();
 	}
@@ -187,7 +191,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		if (f.quantity == 0) {
 			// We're out of food, so let the waiter know
 			order.waiter.msgOutOf(order.choice, order.table);
-			Do("Out of " + f.type);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "Sorry, we're all out of " + f.type);
 			
 			// Try to order more food
 			orderFoodIfInventoryLow();

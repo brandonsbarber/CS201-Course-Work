@@ -38,6 +38,7 @@ import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
+import cs201.roles.restaurantRoles.Brandon.RestaurantCookRoleBrandon;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
@@ -57,6 +58,7 @@ public class SimCity201 extends JFrame {
 	CardLayout cardLayout;
 	PersonConfigPanel personPanel;
 	ScenarioPanel scenarioPanel;
+	TimePanel timePanel;
 	
 	SettingsPanel settingsPanel;
 	
@@ -81,6 +83,9 @@ public class SimCity201 extends JFrame {
 		JPanel guiPanel = new JPanel();
 		
 		BaseSettingsPanel bottomSettingsPanel = new BaseSettingsPanel();
+		
+		timePanel = new TimePanel();
+		bottomSettingsPanel.setTimePanel(timePanel);
 		
 		mainPanel.setLayout(new BorderLayout());
 		setLayout(new BorderLayout());
@@ -233,6 +238,8 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		
+		((RestaurantCookRoleBrandon)r.getCook()).emptySomeFood();
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
@@ -813,6 +820,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
 		
 		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
@@ -1086,6 +1094,20 @@ public class SimCity201 extends JFrame {
 		p1b.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1b);
 		p1b.startThread();
+		
+		PersonAgent p1c = new PersonAgent("Host",cityPanel);
+		p1c.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1c.setHungerEnabled(false);
+		p1c.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1c);
+		p1c.startThread();
+		
+		PersonAgent p1d = new PersonAgent("Waiter",cityPanel);
+		p1d.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p1d.setHungerEnabled(false);
+		p1d.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1d);
+		p1d.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);

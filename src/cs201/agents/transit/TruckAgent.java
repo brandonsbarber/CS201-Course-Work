@@ -3,8 +3,6 @@ package cs201.agents.transit;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import cs201.gui.CityPanel;
 import cs201.gui.transit.TruckGui;
 import cs201.gui.transit.VehicleGui;
@@ -59,7 +57,6 @@ public class TruckAgent extends VehicleAgent implements Truck
 			gui = new TruckGui(this,CityPanel.INSTANCE,(int)homeStructure.getParkingLocation().x,(int)homeStructure.getParkingLocation().y);
 			CityPanel.INSTANCE.addGui(gui);
 		}
-		JOptionPane.showMessageDialog(null,"TRUCK CREATED");
 	}
 	
 	/**

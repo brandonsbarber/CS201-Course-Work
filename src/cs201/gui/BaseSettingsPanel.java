@@ -29,8 +29,6 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 		
 		traceFrame = new TraceFrame();
 		
-		timePanel = new TimePanel();
-		
 		traceButton = new JButton("Show Trace Panel");
 		traceButton.addActionListener(this);
 		add(traceButton);
@@ -54,6 +52,10 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 	public void setScenarioPanel(ScenarioPanel panel) {
 		scenarioPanel = panel;
 	}
+	
+	public void setTimePanel(TimePanel panel) {
+		timePanel = panel;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)
@@ -71,7 +73,9 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 			}
 		}
 		if (e.getSource() == timeButton) {
-			timePanel.showTimePanel();
+			if (timePanel != null) {
+				timePanel.showTimePanel();
+			}
 		}
 	}
 }
