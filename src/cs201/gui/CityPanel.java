@@ -294,24 +294,28 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		
 		for (int i = 0; i < buildings.size(); i++)
-		{
-			g2.setColor(Color.BLACK);
-			Structure s = buildings.get(i);
-			g2.fill(s);
-			
-			g2.setColor(Color.WHITE);
-			g2.drawString(""+s.getId(),(int)s.x,(int)(s.y + s.height));
-			
+		{			
 			if(Constants.DEBUG_MODE)
 			{
-				g2.setColor(Color.BLUE);
-				g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
-				g2.fill(new Rectangle(s.getEntranceLocation().x,s.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
+				g2.setColor(Color.BLACK);
+				Structure r = buildings.get(i);
+				Rectangle s = r.getRect();
+				g2.fill(s);
 				
 				g2.setColor(Color.WHITE);
-				g2.drawString("P",s.getParkingLocation().x,s.getParkingLocation().y+25);
-				g2.drawString("E",s.getEntranceLocation().x,s.getEntranceLocation().y+25);
+				g2.drawString("" + r.getId(), (int) s.x, (int) (s.y + s.height));
 				
+				g2.setColor(Color.BLUE);
+				g2.fill(new Rectangle(r.getParkingLocation().x,r.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
+				g2.fill(new Rectangle(r.getEntranceLocation().x,r.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
+				
+				g2.setColor(Color.WHITE);
+				g2.drawString("P",r.getParkingLocation().x,r.getParkingLocation().y+25);
+				g2.drawString("E",r.getEntranceLocation().x,r.getEntranceLocation().y+25);	
+			} else {
+				Structure s = buildings.get(i);
+				Rectangle r = s.getRect();
+				g2.drawImage(s.getSprite(), r.x, r.y, r.width, r.height, null);
 			}
 		}
 		
@@ -346,14 +350,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		//testing hacks
 		buildings.add(s);
 		Point location = new Point();
-		location.x = (int)s.getX();
-		location.y = (int)s.getY();
+		location.x = (int)s.getRect().x;
+		location.y = (int)s.getRect().y;
 		
 		//Calculating street entrance
 		int leftX = location.x/GRID_SIZE - 2;
-		int rightX = (int)((1.0*location.x+s.width)/GRID_SIZE) + 1;
+		int rightX = (int)((1.0*location.x+s.getRect().width)/GRID_SIZE) + 1;
 		int upY = location.y/GRID_SIZE - 2;
-		int downY = (int)((1.0*location.y+s.height)/GRID_SIZE) + 1;
+		int downY = (int)((1.0*location.y+s.getRect().height)/GRID_SIZE) + 1;
 		
 		if(downY < drivingMap.length && drivingMap[downY][location.x/GRID_SIZE].isValid())
 		{
@@ -377,14 +381,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		
 		location = new Point();
-		location.x = (int)s.getX();
-		location.y = (int)s.getY();
+		location.x = (int)s.getRect().x;
+		location.y = (int)s.getRect().y;
 		
 		//Calculating sidewalk entrance
 		leftX = location.x/GRID_SIZE - 1;
-		rightX = (int)((1.0*location.x+s.width)/GRID_SIZE);
+		rightX = (int)((1.0*location.x+s.getRect().width)/GRID_SIZE);
 		upY = location.y/GRID_SIZE - 1;
-		downY = (int)((1.0*location.y+s.height)/GRID_SIZE);
+		downY = (int)((1.0*location.y+s.getRect().height)/GRID_SIZE);
 		
 		if(downY < walkingMap.length && walkingMap[downY][location.x/GRID_SIZE].isValid())
 		{
@@ -437,7 +441,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	public void mouseClicked(MouseEvent arg0) {
 		for (int i = 0; i < buildings.size(); i++) {
 			Structure s = buildings.get(i);
-			if (s.contains(arg0.getX(), arg0.getY())) {
+			if (s.getRect().contains(arg0.getX(), arg0.getY())) {
 				s.displayStructure();
 			}
 		}

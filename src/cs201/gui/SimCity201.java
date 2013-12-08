@@ -535,7 +535,7 @@ public class SimCity201 extends JFrame {
 		
 		for(BusStop stop : stops)
 		{
-			cityPanel.addStructure(stop,new Point((int)stop.x,((int)stop.y==25?2*25:12*25)),new Point((int)stop.x,(int)stop.y));
+			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:12*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
 		}
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
-import javax.swing.JOptionPane;
-
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.transit.PassengerGui;
 import cs201.helper.transit.BusRoute;
@@ -315,7 +313,7 @@ public class PassengerRole extends Role implements Passenger
 		
 		for(BusStop stop : busStops)
 		{
-			double stopDistance = Math.sqrt(Math.pow(stop.x - currentLocation.x,2) + Math.pow(stop.y - currentLocation.y,2));
+			double stopDistance = Math.sqrt(Math.pow(stop.getRect().x - currentLocation.getRect().x,2) + Math.pow(stop.getRect().y - currentLocation.getRect().y,2));
 			if(stopDistance < minDistance)
 			{
 				closest = stop;
@@ -333,7 +331,7 @@ public class PassengerRole extends Role implements Passenger
 		
 		for(BusStop stop : busStops)
 		{
-			double stopDistance = Math.sqrt(Math.pow(destination.x - stop.x,2) + Math.pow(destination.y - stop.y,2));
+			double stopDistance = Math.sqrt(Math.pow(destination.getRect().x - stop.getRect().x,2) + Math.pow(destination.getRect().y - stop.getRect().y,2));
 			if(stopDistance < minDistance)
 			{
 				closest = stop;
@@ -365,7 +363,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public boolean shouldWalk()
 	{
-		double distance = Math.sqrt(Math.pow(destination.x - currentLocation.x,2) + Math.pow(destination.y - currentLocation.y,2));
+		double distance = Math.sqrt(Math.pow(destination.getRect().x - currentLocation.getRect().x,2) + Math.pow(destination.getRect().y - currentLocation.getRect().y,2));
 		return distance < walkDistance;
 	}
 	
@@ -441,12 +439,12 @@ public class PassengerRole extends Role implements Passenger
 				}
 				else
 				{
-					gui.setLocation((int)currentLocation.x, (int)currentLocation.y);
+					gui.setLocation((int)currentLocation.getRect().x, (int)currentLocation.getRect().y);
 				}
 			}
 			else
 			{
-				gui.setLocation((int)currentLocation.x,(int)currentLocation.y);
+				gui.setLocation((int)currentLocation.getRect().x,(int)currentLocation.getRect().y);
 			}
 			gui.setPresent(true);
 			state = PassengerState.None;
