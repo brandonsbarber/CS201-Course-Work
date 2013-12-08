@@ -38,6 +38,7 @@ import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
+import cs201.roles.restaurantRoles.Brandon.RestaurantCookRoleBrandon;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
@@ -233,6 +234,8 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		
+		((RestaurantCookRoleBrandon)r.getCook()).emptySomeFood();
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);

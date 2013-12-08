@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
@@ -542,7 +540,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 			 */
 			
 			// Dispatch a truck
-			JOptionPane.showMessageDialog(null,"Dispatching truck");
 			dispatchDeliveryTruckForOrder(o);
 		}	
 		
