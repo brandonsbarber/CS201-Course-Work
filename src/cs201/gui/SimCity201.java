@@ -280,6 +280,7 @@ public class SimCity201 extends JFrame {
 		p1.setHungerEnabled(false);
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		p1.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
@@ -287,6 +288,7 @@ public class SimCity201 extends JFrame {
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
@@ -294,6 +296,7 @@ public class SimCity201 extends JFrame {
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 		
 		PersonAgent p4 = new PersonAgent("Waiter 1", cityPanel);
@@ -301,6 +304,7 @@ public class SimCity201 extends JFrame {
 		p4.setHungerEnabled(false);
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
 		p4.startThread();
 		
 		PersonAgent p4b = new PersonAgent("Waiter 2", cityPanel);
@@ -308,18 +312,21 @@ public class SimCity201 extends JFrame {
 		p4b.setHungerEnabled(false);
 		p4b.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4b);
+		personPanel.addPerson(p4b);
 		p4b.startThread();
 		
 		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
 		p5.setWakeupTime(new CityTime(8, 30));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
 		p5.startThread();
 		
 		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
 		p6.setWakeupTime(new CityTime(8, 30));
 		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p6);
+		personPanel.addPerson(p6);
 		p6.startThread();
 	}
 	

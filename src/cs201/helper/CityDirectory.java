@@ -41,7 +41,7 @@ public class CityDirectory implements ActionListener {
 		return INSTANCE;
 	}
 	
-	private final int INITIALTIMEROUT = 1875; // 1.875 real life seconds
+	private final int INITIALTIMEROUT = 2000; // 2 real life seconds
 	private final int TIMESTEP = 15; // 15 SimCity201 minutes
 	private Timer cityTimer = new Timer(INITIALTIMEROUT, this);
 	private CityTime time = new CityTime();
