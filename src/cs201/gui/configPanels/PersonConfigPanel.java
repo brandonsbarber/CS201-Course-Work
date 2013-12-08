@@ -1,13 +1,11 @@
 package cs201.gui.configPanels;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,7 +25,7 @@ public class PersonConfigPanel extends ConfigPanel {
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		c.gridx = 2;
+		c.gridx = 1;
 		c.gridy = 0;
 		c.gridwidth = 1;
 		c.gridheight = 1;
@@ -39,7 +37,7 @@ public class PersonConfigPanel extends ConfigPanel {
 		
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 2;
+		c.gridwidth = 1;
 		c.gridheight = 1;
 		c.weightx = 4;
 		left = new PersonInfoPanel();
@@ -66,7 +64,6 @@ public class PersonConfigPanel extends ConfigPanel {
 			personList.addListSelectionListener(new ListSelectionListener() {
 				@Override
 				public void valueChanged(ListSelectionEvent e) {
-					// TODO Auto-generated method stub
 					if (personList.getSelectedIndex() == -1) {
 					    //No selection, reset info panel.
 						left.resetInfo();
