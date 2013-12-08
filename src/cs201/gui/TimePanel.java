@@ -7,8 +7,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -31,11 +33,13 @@ public class TimePanel extends JDialog implements ChangeListener {
 	 */
 	
 	private static final int BORDER_THICKNESS 	= 20;
-	private static final int FRAME_HEIGHT 		= 300;
+	private static final int FRAME_HEIGHT 		= 200;
 	private static final int FRAME_WIDTH 		= 500;
 	private static final int SLIDER_MIN			= 100;
 	private static final int SLIDER_MAX			= 5000;
 	private static final int SLIDER_INIT		= 2000;
+	private static final int MAJOR_TICK 		= 500;
+	private static final int MINOR_TICK 		= 100;
 	
 	/* ***********
 	 * COMPONENETS
@@ -43,6 +47,7 @@ public class TimePanel extends JDialog implements ChangeListener {
 	 */
 	JPanel panel = new JPanel();
 	JSlider slider = new JSlider(JSlider.HORIZONTAL, SLIDER_MIN, SLIDER_MAX, SLIDER_INIT);
+	JLabel timeLabel = new JLabel("Hello, world");
 	
 	/* ***********
 	 * CONNECTIONS
@@ -89,28 +94,51 @@ public class TimePanel extends JDialog implements ChangeListener {
 	 * *****************
 	 */
 	
+	private void setUpComponents() {
+		// Add a slider
+		slider.addChangeListener(this);
+		slider.setMajorTickSpacing(MAJOR_TICK);
+		slider.setMinorTickSpacing(MINOR_TICK);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		panel.add(slider);
+		
+		// Add some space
+		panel.add(Box.createRigidArea(new Dimension(0, 20)));
+		
+		// Add a label
+		panel.add(timeLabel);
+	}
+	
+	private void setTimeLabel(int value) {
+		double realSeconds = value / 1000.0;		// convert from milliseconds to seconds
+		String text = String.format("%.2f seconds of real time = 15 minutes in SimCity201", realSeconds);
+		timeLabel.setText(text);
+	}
+	
 	/* *****************
 	 * SETTERS / GETTERS
 	 * *****************
 	 */
-	
-	private void setUpComponents() {
-		// Add a slider
-		slider.addChangeListener(this);
-		slider.setMajorTickSpacing(500);
-		slider.setMinorTickSpacing(100);
-		slider.setPaintTicks(true);
-		slider.setPaintLabels(true);
-		panel.add(slider);
-	}
 
+	
+	/* *********
+	 * CALLBACKS
+	 * *********
+	 */
+	
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider)e.getSource();
+		
+		// Update the label
+		setTimeLabel(source.getValue());
+		
+		// Once the user has stopped adjusting the slider, update SimCity time
 		if (!source.getValueIsAdjusting()) {
-			//JOptionPane.showMessageDialog(this, source.getValue());
 			CityDirectory.getInstance().setTimerOut(source.getValue());
 		}
 	}
+	
 
 }
