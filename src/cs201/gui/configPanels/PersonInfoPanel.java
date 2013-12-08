@@ -1,21 +1,18 @@
 package cs201.gui.configPanels;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
-import javax.swing.border.TitledBorder;
 
 @SuppressWarnings("serial")
 public class PersonInfoPanel extends JPanel {
@@ -30,6 +27,7 @@ public class PersonInfoPanel extends JPanel {
 	private JTextField carTextField;
 	private JTextField jobTextField;
 	private JTextField workTimeTextField;
+	private JTextField homeTextField;
 
 	/**
 	 * Create the panel.
@@ -38,7 +36,7 @@ public class PersonInfoPanel extends JPanel {
 		setBorder(null);
 		setForeground(UIManager.getColor("window"));
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 225, 0};
+		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{300, 0, 0};
 		gridBagLayout.columnWeights = new double[]{3.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
@@ -77,7 +75,7 @@ public class PersonInfoPanel extends JPanel {
 		nameTextField.setFocusable(false);
 		nameTextField.setEditable(false);
 		GridBagConstraints gbc_nameTextField = new GridBagConstraints();
-		gbc_nameTextField.fill = GridBagConstraints.BOTH;
+		gbc_nameTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_nameTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_nameTextField.gridx = 1;
 		gbc_nameTextField.gridy = 0;
@@ -99,7 +97,7 @@ public class PersonInfoPanel extends JPanel {
 		moneyTextField.setEditable(false);
 		moneyTextField.setFocusable(false);
 		GridBagConstraints gbc_moneyTextField = new GridBagConstraints();
-		gbc_moneyTextField.fill = GridBagConstraints.BOTH;
+		gbc_moneyTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_moneyTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_moneyTextField.gridx = 1;
 		gbc_moneyTextField.gridy = 1;
@@ -121,7 +119,7 @@ public class PersonInfoPanel extends JPanel {
 		hungerTextField.setFocusable(false);
 		hungerTextField.setEditable(false);
 		GridBagConstraints gbc_hungerTextField = new GridBagConstraints();
-		gbc_hungerTextField.fill = GridBagConstraints.BOTH;
+		gbc_hungerTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_hungerTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_hungerTextField.gridx = 1;
 		gbc_hungerTextField.gridy = 2;
@@ -143,7 +141,7 @@ public class PersonInfoPanel extends JPanel {
 		locationTextField.setEditable(false);
 		locationTextField.setFocusable(false);
 		GridBagConstraints gbc_locationTextField = new GridBagConstraints();
-		gbc_locationTextField.fill = GridBagConstraints.BOTH;
+		gbc_locationTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_locationTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_locationTextField.gridx = 1;
 		gbc_locationTextField.gridy = 3;
@@ -165,7 +163,7 @@ public class PersonInfoPanel extends JPanel {
 		stateTextField.setEditable(false);
 		stateTextField.setFocusable(false);
 		GridBagConstraints gbc_stateTextField = new GridBagConstraints();
-		gbc_stateTextField.fill = GridBagConstraints.BOTH;
+		gbc_stateTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_stateTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_stateTextField.gridx = 1;
 		gbc_stateTextField.gridy = 4;
@@ -187,7 +185,7 @@ public class PersonInfoPanel extends JPanel {
 		wakeupTextField.setEditable(false);
 		wakeupTextField.setFocusable(false);
 		GridBagConstraints gbc_wakeupTextField = new GridBagConstraints();
-		gbc_wakeupTextField.fill = GridBagConstraints.BOTH;
+		gbc_wakeupTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_wakeupTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_wakeupTextField.gridx = 1;
 		gbc_wakeupTextField.gridy = 5;
@@ -209,7 +207,7 @@ public class PersonInfoPanel extends JPanel {
 		sleepTextField.setFocusable(false);
 		sleepTextField.setEditable(false);
 		GridBagConstraints gbc_sleepTextField = new GridBagConstraints();
-		gbc_sleepTextField.fill = GridBagConstraints.BOTH;
+		gbc_sleepTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_sleepTextField.insets = new Insets(0, 0, 5, 0);
 		gbc_sleepTextField.gridx = 1;
 		gbc_sleepTextField.gridy = 6;
@@ -241,9 +239,9 @@ public class PersonInfoPanel extends JPanel {
 		panel.add(centerPanel);
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
 		gbl_centerPanel.columnWidths = new int[]{0, 0, 0};
-		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gbl_centerPanel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		centerPanel.setLayout(gbl_centerPanel);
 		
 		JLabel lblHasCar = new JLabel("Has Car:");
@@ -262,7 +260,7 @@ public class PersonInfoPanel extends JPanel {
 		carTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		GridBagConstraints gbc_carTextField = new GridBagConstraints();
 		gbc_carTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_carTextField.fill = GridBagConstraints.BOTH;
+		gbc_carTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_carTextField.gridx = 1;
 		gbc_carTextField.gridy = 0;
 		centerPanel.add(carTextField, gbc_carTextField);
@@ -284,7 +282,7 @@ public class PersonInfoPanel extends JPanel {
 		jobTextField.setEditable(false);
 		GridBagConstraints gbc_jobTextField = new GridBagConstraints();
 		gbc_jobTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_jobTextField.fill = GridBagConstraints.BOTH;
+		gbc_jobTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jobTextField.gridx = 1;
 		gbc_jobTextField.gridy = 1;
 		centerPanel.add(jobTextField, gbc_jobTextField);
@@ -294,7 +292,7 @@ public class PersonInfoPanel extends JPanel {
 		lblWorkTime.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		GridBagConstraints gbc_lblWorkTime = new GridBagConstraints();
 		gbc_lblWorkTime.anchor = GridBagConstraints.EAST;
-		gbc_lblWorkTime.insets = new Insets(0, 0, 0, 5);
+		gbc_lblWorkTime.insets = new Insets(0, 0, 5, 5);
 		gbc_lblWorkTime.gridx = 0;
 		gbc_lblWorkTime.gridy = 2;
 		centerPanel.add(lblWorkTime, gbc_lblWorkTime);
@@ -305,11 +303,34 @@ public class PersonInfoPanel extends JPanel {
 		workTimeTextField.setFocusable(false);
 		workTimeTextField.setEditable(false);
 		GridBagConstraints gbc_workTimeTextField = new GridBagConstraints();
-		gbc_workTimeTextField.fill = GridBagConstraints.BOTH;
+		gbc_workTimeTextField.insets = new Insets(0, 0, 5, 0);
+		gbc_workTimeTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_workTimeTextField.gridx = 1;
 		gbc_workTimeTextField.gridy = 2;
 		centerPanel.add(workTimeTextField, gbc_workTimeTextField);
 		workTimeTextField.setColumns(10);
+		
+		JLabel lblHasHome = new JLabel("Has Home:");
+		lblHasHome.setFocusable(false);
+		lblHasHome.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		GridBagConstraints gbc_lblHasHome = new GridBagConstraints();
+		gbc_lblHasHome.anchor = GridBagConstraints.EAST;
+		gbc_lblHasHome.insets = new Insets(0, 0, 0, 5);
+		gbc_lblHasHome.gridx = 0;
+		gbc_lblHasHome.gridy = 3;
+		centerPanel.add(lblHasHome, gbc_lblHasHome);
+		
+		homeTextField = new JTextField();
+		homeTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		homeTextField.setFocusable(false);
+		homeTextField.setEditable(false);
+		lblHasHome.setLabelFor(homeTextField);
+		GridBagConstraints gbc_homeTextField = new GridBagConstraints();
+		gbc_homeTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_homeTextField.gridx = 1;
+		gbc_homeTextField.gridy = 3;
+		centerPanel.add(homeTextField, gbc_homeTextField);
+		homeTextField.setColumns(10);
 		
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBorder(new TitledBorder(null, "Create Person:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));
@@ -334,6 +355,7 @@ public class PersonInfoPanel extends JPanel {
 		this.carTextField.setText("");
 		this.jobTextField.setText("");
 		this.workTimeTextField.setText("");
+		this.homeTextField.setText("");
 	}
 	
 	public void updateInfo(PersonAgent p) {
@@ -344,7 +366,7 @@ public class PersonInfoPanel extends JPanel {
 		this.nameTextField.setText(p.getName());
 		this.moneyTextField.setText(String.format("$%.2f", p.getMoney()));
 		this.hungerTextField.setText(p.getHungerLevel() > PersonAgent.STARVING ? "Starving" : p.getHungerLevel() > PersonAgent.HUNGRY ? "Hungry" : "Full");
-		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentLocation().toString());
+		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentAction() == null ? "In City" : p.getCurrentLocation().toString());
 		this.stateTextField.setText(p.getState().toString());
 		this.wakeupTextField.setText(p.getWakeupTime().toString());
 		this.sleepTextField.setText(p.getSleepTime().toString());
@@ -352,6 +374,7 @@ public class PersonInfoPanel extends JPanel {
 		this.carTextField.setText(p.getVehicle() == null ? "No" : "Yes");
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
 		this.workTimeTextField.setText(p.getWorkTime() == null ? "N/A" : p.getWorkTime().toString());
+		this.homeTextField.setText(p.getHome() == null ? "No" : "Yes");
 	}
 
 }

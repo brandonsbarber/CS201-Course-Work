@@ -30,7 +30,6 @@ import cs201.trace.AlertTag;
  * @author Matthew Pohlmann
  *
  */
-@SuppressWarnings("serial")
 public class RestaurantMatt extends Restaurant {
 	private final int INITIALWAITERS = 2;
 	private final int MAXWAITERS = 4;
@@ -207,7 +206,7 @@ public class RestaurantMatt extends Restaurant {
 			}
 		}
 		
-		if (time.equalsIgnoreDay(this.closingTime)) {
+		else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			if (host.getPerson() != null) {
 				host.msgClosingTime();

@@ -318,6 +318,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				Structure s = buildings.get(i);
 				Rectangle r = s.getRect();
 				g2.drawImage(s.getSprite(), r.x, r.y, r.width, r.height, null);
+				
+				g2.setColor(Color.BLACK);
+				g2.drawString(s.getOpen() ? "Open" : "Closed", r.x, r.y);
 			}
 		}
 		

@@ -59,7 +59,6 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	}
 	
 	public void addGui(Gui g) {
-		System.out.println("Adding a GUI");
 		guis.add(g);
 	}
 	
@@ -85,7 +84,6 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		try {
 			for(Gui gui : guis) {
-				//System.out.println(gui);
 	            if (gui.isPresent()) {
 	                gui.updatePosition();
 	            }

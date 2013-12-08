@@ -219,7 +219,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to sleep
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, sleepTime) >= 0) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && (CityTime.timeDifference(time, sleepTime) >= 0 || CityTime.timeDifference(time, wakeupTime) < 0)) {
 			this.planner.clear();
 			this.state = PersonState.Sleeping;
 			this.addActionToPlanner(Intention.ResidenceSleep, home, false);
@@ -238,7 +238,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you're hungry, but not at home
-		if (state == PersonState.Awake && currentLocation != home && hungerLevel >= HUNGRY) {
+		if (state == PersonState.Awake && (currentLocation != home || currentLocation == null) && hungerLevel >= HUNGRY) {
 			boolean performAction = checkForExistingAction(Intention.RestaurantCustomer);
 			
 			if (performAction && CityDirectory.getInstance().getOpenRestaurants().size() > 0) {
@@ -788,9 +788,9 @@ public class PersonAgent extends Agent implements Person {
 	 *
 	 */
 	public class Action {
-		Structure location;
-		Intention intent;
-		boolean active;
+		public Structure location;
+		public Intention intent;
+		public boolean active;
 		
 		public Action() {
 			this.location = null;
