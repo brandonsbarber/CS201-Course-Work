@@ -400,7 +400,6 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 	private void stayFrosty()
 	{
 		gui.doChillOut();
-		System.out.println("CHILLING");
 		try
 		{
 			animationPause.acquire();
@@ -409,7 +408,6 @@ public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole i
 		{
 			System.out.println(this+": Problem pausing the animation.");
 		}
-		System.out.println("HELLO");
 	}
 
 	private void processDenial()

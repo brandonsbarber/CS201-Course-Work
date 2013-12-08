@@ -150,7 +150,9 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Ben's Normative Restaurant Delivery");
 		scenarioList.add("Restaurant Shift Change");
 		scenarioList.add("100 People");
-		scenarioList.add("Brandon Restaurant");
+		scenarioList.add("Brandon's Restaurant");
+		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");
+		
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -174,12 +176,35 @@ public class SimCity201 extends JFrame {
 			case 14: restaurantShiftChange(); break;
 			case 15: hundredPeople(); break;
 			case 16: brandonRestaurant(); break;
+			case 17: brandonRestaurantTwoCustomersTwoWaiters(); break;
 		}
 		
 		pack();
 		CityDirectory.getInstance().startTime();
 	}
 	
+	private void brandonRestaurantTwoCustomersTwoWaiters()
+	{
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
+		createPerson("Waiter 2", r, r, Intention.RestaurantWaiter, r, null);
+		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
+		createPerson("Customer 2", r, r, Intention.RestaurantCustomer, r, null);
+		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
+		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
+		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
+	}
+
 	private void brandonRestaurant() {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
@@ -192,7 +217,7 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
 		
-		createPerson("Cashier", r, r, Intention.RestaurantWaiter, r, null);
+		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
 		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
 		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
 		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
