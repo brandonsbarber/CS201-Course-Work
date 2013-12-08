@@ -737,17 +737,19 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeMarketRestaurantDelivery()
 	{
-		/* A Restaurant Cook and Cashier go to work at 8:00AM. A Market Manager and Employee also go to work at 8:00AM.
-		 * The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market employee 
-		 * gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring the 
-		 * food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from the 
-		 * cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with negative
-		 * money which is okay. Eventually what will happen is the restaurant will have to cover for this by withdrawing
-		 * from its bank account. If it doesn't have enough, it will take out a loan.
+		/* A Restaurant Cook and Cashier go to work at 8:00AM. The Restaurant is forced open for this scenario (normally
+		 * it would be closed if only a Cook and Cashier were present). A Market Manager and Employee also go to work at
+		 * 8:00AM. The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market
+		 * employee gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring
+		 * the food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from
+		 * the cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with
+		 * negative money which is okay. Eventually what will happen is the restaurant will have to cover for this by
+		 * withdrawing from its bank account. If it doesn't have enough, it will take out a loan.
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		timePanel.addAnimationPanel(mG);
 		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
@@ -763,6 +765,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addMarket(m);
 			
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
 		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
@@ -777,6 +780,7 @@ public class SimCity201 extends JFrame {
 		p1.setHungerEnabled(false);
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		p1.startThread();
 		
 		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
@@ -784,6 +788,7 @@ public class SimCity201 extends JFrame {
 		p1b.setHungerEnabled(false);
 		p1b.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1b);
+		personPanel.addPerson(p1b);
 		p1b.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
@@ -791,6 +796,7 @@ public class SimCity201 extends JFrame {
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
@@ -798,6 +804,7 @@ public class SimCity201 extends JFrame {
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 		
 		((RestaurantCookRoleMatt) r.getCook()).emptySteakInventory();
@@ -1128,13 +1135,16 @@ public class SimCity201 extends JFrame {
 	}
 	
 	private void restaurantShiftChange() {
-		/*
-		 * 
-		 * 
+		/* This scenario simply tests that shifts work as intended at RestaurantMatt. The morning and afternoon 
+		 * shifts have a different set of employees working them. The first shift is from 8:00AM - 12:30PM. At 
+		 * the end of the shift, everybody gets off work and the restaurant closes until the next shift starts. 
+		 * The afternoon shift is from 1:00PM - 6:00PM. The Restaurant closes again after the afternoon shift is 
+		 * done, until the next day, etc..
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
 		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
@@ -1148,6 +1158,7 @@ public class SimCity201 extends JFrame {
 		p1.setHungerEnabled(false);
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		p1.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Cashier AM", cityPanel);
@@ -1156,6 +1167,7 @@ public class SimCity201 extends JFrame {
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Cook AM", cityPanel);
@@ -1164,6 +1176,7 @@ public class SimCity201 extends JFrame {
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 		
 		PersonAgent p4 = new PersonAgent("Waiter AM", cityPanel);
@@ -1172,12 +1185,14 @@ public class SimCity201 extends JFrame {
 		p4.setHungerEnabled(false);
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
 		p4.startThread();
 		
 		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
 		p5.setWakeupTime(new CityTime(8, 00));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
 		p5.startThread();
 		
 		PersonAgent pp1 = new PersonAgent("Host PM", cityPanel);
@@ -1186,6 +1201,7 @@ public class SimCity201 extends JFrame {
 		pp1.setHungerEnabled(false);
 		pp1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp1);
+		personPanel.addPerson(pp1);
 		pp1.startThread();
 		
 		PersonAgent pp2 = new PersonAgent("Cashier PM", cityPanel);
@@ -1194,6 +1210,7 @@ public class SimCity201 extends JFrame {
 		pp2.setHungerEnabled(false);
 		pp2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp2);
+		personPanel.addPerson(pp2);
 		pp2.startThread();
 		
 		PersonAgent pp3 = new PersonAgent("Cook PM", cityPanel);
@@ -1202,6 +1219,7 @@ public class SimCity201 extends JFrame {
 		pp3.setHungerEnabled(false);
 		pp3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp3);
+		personPanel.addPerson(pp3);
 		pp3.startThread();
 		
 		PersonAgent pp4 = new PersonAgent("Waiter PM", cityPanel);
@@ -1210,6 +1228,7 @@ public class SimCity201 extends JFrame {
 		pp4.setHungerEnabled(false);
 		pp4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp4);
+		personPanel.addPerson(pp4);
 		pp4.startThread();
 		
 	}

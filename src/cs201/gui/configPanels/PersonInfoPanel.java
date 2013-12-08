@@ -373,7 +373,7 @@ public class PersonInfoPanel extends JPanel {
 		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
 		this.carTextField.setText(p.getVehicle() == null ? "No" : "Yes");
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
-		this.workTimeTextField.setText(p.getWorkTime() == null ? "N/A" : p.getWorkTime().toString());
+		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString());
 		this.homeTextField.setText(p.getHome() == null ? "No" : "Yes");
 	}
 
