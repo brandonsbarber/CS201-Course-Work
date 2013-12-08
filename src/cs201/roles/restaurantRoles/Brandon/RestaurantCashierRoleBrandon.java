@@ -3,6 +3,7 @@ package cs201.roles.restaurantRoles.Brandon;
 import java.util.*;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CashierBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
@@ -262,6 +263,16 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 			double amount, ItemRequest item) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	CashierGuiBrandon gui;
+	
+	public void setGui(CashierGuiBrandon cashierGui) {
+		gui = cashierGui;
+	}
+
+	public CashierGuiBrandon getGui() {
+		return gui;
 	}
 }
 

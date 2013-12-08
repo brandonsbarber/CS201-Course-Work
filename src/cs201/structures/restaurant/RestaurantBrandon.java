@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
@@ -74,11 +75,11 @@ public class RestaurantBrandon extends Restaurant {
 		cook.setRestaurant(this);
 			
 		this.cashier = new RestaurantCashierRoleBrandon(cookingTimes, 0);
-		//CashierGuiMatt cashierGui = new CashierGuiMatt((RestaurantCashierRoleMatt) cashier);
-		//cashierGui.setPresent(false);
-		//((RestaurantCashierRoleBrandon) cashier).setGui(cashierGui);
+		CashierGuiBrandon cashierGui = new CashierGuiBrandon((RestaurantCashierRoleBrandon) cashier);
+		cashierGui.setPresent(false);
+		((RestaurantCashierRoleBrandon) cashier).setGui(cashierGui);
 		//((RestaurantCashierRoleBrandon) cashier).setHost((RestaurantHostRoleMatt) host);
-		//this.panel.addGui(cashierGui);
+		this.panel.addGui(cashierGui);
 		cashier.setRestaurant(this);
 		
 		kitchen = new KitchenGuiBrandon(4);
@@ -159,7 +160,7 @@ public class RestaurantBrandon extends Restaurant {
 		}
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
-				//((RestaurantCashierRoleBrandon) cashier).getGui().setPresent(true);
+				((RestaurantCashierRoleBrandon) cashier).getGui().setPresent(true);
 				return cashier;
 			}
 			return null;
