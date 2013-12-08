@@ -129,8 +129,10 @@ public class RestaurantBrandon extends Restaurant {
 		}
 		case RestaurantWaiter: {
 			synchronized(waiters) {
-				for (RestaurantWaiterRole r : waiters) {
-					if (r.getPerson() == null) {
+				for (RestaurantWaiterRole r : waiters)
+				{
+					if (r.getPerson() == null)
+					{
 						((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) r);
 						//UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleBrandon) r).getGui().setPresent(true);
@@ -138,14 +140,18 @@ public class RestaurantBrandon extends Restaurant {
 					}
 				}
 				
-				if (waiters.size() < MAXWAITERS) {
-					RestaurantWaiterRoleBrandon newWaiter = new RestaurantWaiterRoleBrandonStand((HostBrandon)host,prices,"");
+				if (waiters.size() < MAXWAITERS)
+				{
+					RestaurantWaiterRoleBrandon newWaiter;
 					System.out.println("ADDING A WAITER");
-					/*if (waiters.size() % 2 == 0) {
-						newWaiter = new RestaurantWaiterRoleMattNormal();
-					} else {
-						newWaiter = new RestaurantWaiterRoleMattStand();
-					}*/
+					if (waiters.size() % 2 == 0)
+					{
+						newWaiter = new RestaurantWaiterRoleBrandonNormal((HostBrandon)host,prices,"");
+					}
+					else
+					{
+						newWaiter = new RestaurantWaiterRoleBrandonStand((HostBrandon)host,prices,"");
+					}
 					WaiterGuiBrandon waiterGui = new WaiterGuiBrandon((RestaurantWaiterRoleBrandon) newWaiter, null);
 					((RestaurantWaiterRoleBrandon) newWaiter).setGui(waiterGui);
 					waiters.add(newWaiter);
