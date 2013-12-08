@@ -13,7 +13,7 @@ import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 
 public class RestaurantRotatingStand implements Gui {
-	private final int STANDSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .045f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .045f);
+	public static final int STANDSIZE = (RestaurantAnimationPanelMatt.WINDOWX < RestaurantAnimationPanelMatt.WINDOWY) ? (int)(RestaurantAnimationPanelMatt.WINDOWX * .045f) : (int)(RestaurantAnimationPanelMatt.WINDOWY * .045f);
 	public static final int STANDX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .70f);
 	public static final int STANDY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .9f);
 	
@@ -33,6 +33,10 @@ public class RestaurantRotatingStand implements Gui {
 			return orders.remove(0);
 		}
 		return null;
+	}
+	
+	public int getNumOrders() {
+		return orders.size();
 	}
 	
 	public class RotatingStandOrder {

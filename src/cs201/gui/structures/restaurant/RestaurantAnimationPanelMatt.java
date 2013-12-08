@@ -49,7 +49,11 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     
     // COOKING AREA
     public static final int COOKINGAREA_X = (int)(WINDOWX * .50f);
-    public static final int COOKINGAREA_Y = (int)(WINDOWY * .89f);;
+    public static final int COOKINGAREA_Y = (int)(WINDOWY * .89f);
+    public static final int FRIDGE_X = (int)(WINDOWX * .60f);
+    public static final int FRIDGE_Y = (int)(WINDOWY * .95f);
+    public static final int STOVES_X = (int)(WINDOWX * .55f);
+    public static final int STOVES_Y = (int)(WINDOWY * .95f);
     private final Color COOKAREAMAINCOLOR = Color.GRAY;
     private final Color COOKAREAGRILLCOLOR = Color.RED;
     private final int COOKAREAMAIN_SIZE_X = (int)(WINDOWX * .33f);
@@ -66,6 +70,8 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     // PLATING AREA
     public static final int PLATINGAREA_X = (int)(WINDOWX * .34f);
     public static final int PLATINGAREA_Y = (int)(WINDOWY * .89f);
+    public static final int PLATING_X = (int)(WINDOWX * .34f);
+    public static final int PLATING_Y = (int)(WINDOWY * .95f);
     private final Color PLATINGAREAMAINCOLOR = Color.YELLOW;
     private final int PLATINGAREA_SIZE = (int)(WINDOWX * .03f);
     private final int PLATINGAREA1_X = (int)(WINDOWX * .35f);

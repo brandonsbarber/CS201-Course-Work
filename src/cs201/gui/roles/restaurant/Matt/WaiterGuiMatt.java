@@ -2,7 +2,6 @@ package cs201.gui.roles.restaurant.Matt;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.io.FileNotFoundException;
 
 import cs201.gui.ArtManager;
 import cs201.gui.Gui;

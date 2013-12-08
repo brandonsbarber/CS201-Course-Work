@@ -31,6 +31,7 @@ public class CookGuiMatt implements Gui {
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	private boolean animating = false;
+	private boolean goingToIdle = false;
 	
 	private String moveDir = "Cook_Down";
 
@@ -59,7 +60,9 @@ public class CookGuiMatt implements Gui {
 			
 			if (xPos == xDestination && yPos == yDestination) {
 				animating = false;
-				role.DoneAnimating();
+				if (!goingToIdle) {
+					role.DoneAnimating();
+				}
 			}
 		} else {
 			return;
@@ -134,12 +137,17 @@ public class CookGuiMatt implements Gui {
 		xDestination = x;
 		yDestination = y;
 		animating = true;
+		goingToIdle = false;
 	}
 	
 	public void goToKitchen() {
+		if (xPos == COOKX && yPos == COOKY) {
+			return;
+		}
 		xDestination = COOKX;
 		yDestination = COOKY;
 		animating = true;
+		goingToIdle = true;
 	}
 
 	public boolean isPresent() {

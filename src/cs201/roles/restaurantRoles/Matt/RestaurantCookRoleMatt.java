@@ -41,6 +41,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	private final int STANDCHECKTIMER = 2000; // 3 seconds
 	private Timer standTimer = new Timer(STANDCHECKTIMER, this);
 	private RestaurantRotatingStand stand = null;
+	private boolean checkForStandOrder = false;
 
 	public RestaurantCookRoleMatt() {
 		super();
@@ -115,6 +116,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			}
 		}
 		
+		if (checkForStandOrder) {
+			checkForStandOrder = false;
+			GetOrderFromStand();
+			return true;
+		}
+		
 		synchronized(orders) {
 			for (Order o : orders) {
 				if (o.state == OrderState.done) {
@@ -132,6 +139,8 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			}
 		}
 		
+		gui.goToKitchen();
+		
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -146,6 +155,17 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		DoLeaveRestaurant();
 		this.myPerson = null;
 		this.gui.setPresent(false);
+	}
+	
+	private void GetOrderFromStand() {
+		DoGetOrderFromStand();
+		RotatingStandOrder r = stand.removeOrder();
+		if (r == null) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "No orders to pick up.");
+			return;
+		} else {
+			orders.add(new Order(r.choice, r.waiter, r.tableNum));
+		}
 	}
 	
 	private void CookOrder(Order o) {
@@ -195,8 +215,32 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		}
 	}
 	
+	private void DoGetOrderFromStand() {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Retrieving an order from the Rotating Stand.");
+		gui.goToLocation(RestaurantRotatingStand.STANDX, RestaurantRotatingStand.STANDY + RestaurantRotatingStand.STANDSIZE);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void DoCookOrder(Order o) {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Cooking " + o.toString() + " for " + foods.get(o.choice).cookTime);
+		gui.goToLocation(RestaurantAnimationPanelMatt.FRIDGE_X, RestaurantAnimationPanelMatt.FRIDGE_Y);
+		try {
+			atTargetPosition.acquire();
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		gui.goToLocation(RestaurantAnimationPanelMatt.STOVES_X, RestaurantAnimationPanelMatt.STOVES_Y);
+		try {
+			atTargetPosition.acquire();
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		gui.addCookingItem(o.choice);
 	}
 	
@@ -206,7 +250,20 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	
 	private void DoInformWaiter(Order o) {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Telling " + o.waiter.toString() + " that order " + o.toString() + " is ready.");
+		gui.goToLocation(RestaurantAnimationPanelMatt.STOVES_X, RestaurantAnimationPanelMatt.STOVES_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		gui.removeCookingItem(o.choice);
+		gui.goToLocation(RestaurantAnimationPanelMatt.PLATING_X, RestaurantAnimationPanelMatt.PLATING_Y);
+		try {
+			atTargetPosition.acquire();
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		gui.addPlatingItem(o.choice);
 	}
 	
@@ -304,20 +361,12 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		closingTime = false;
 		this.gui.setPresent(true);
 		gui.goToKitchen();
-		try {
-			atTargetPosition.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		RotatingStandOrder r = stand.removeOrder();
-		if (r == null) {
-			return;
-		} else {
-			orders.add(new Order(r.choice, r.waiter, r.tableNum));
+		if (stand.getNumOrders() > 0 && !checkForStandOrder) {
+			checkForStandOrder = true;
 			stateChanged();
 		}
 	}
