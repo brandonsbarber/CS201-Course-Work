@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -61,6 +63,8 @@ public class TimePanel extends JDialog implements ChangeListener {
 	 * *********
 	 */
 	
+	List<StructurePanel> structurePanels = new ArrayList<StructurePanel>();
+	
 	/* ************
 	 * CONSTRUCTORS
 	 * ************
@@ -89,6 +93,14 @@ public class TimePanel extends JDialog implements ChangeListener {
 	 */
 	public void showTimePanel() {
 		this.setVisible(true);
+	}
+	
+	/**
+	 * Adds a structure panel to the list of structure panels that will be affected by time shifts.
+	 * @param panel
+	 */
+	public void addAnimationPanel(StructurePanel panel) {
+		structurePanels.add(panel);
 	}
 	
 	/* *****************
@@ -120,6 +132,12 @@ public class TimePanel extends JDialog implements ChangeListener {
 		timeLabel.setText(text);
 	}
 	
+	private void updateTimeForStructurePanels(double speedFactor) {
+		for (StructurePanel thisPanel : structurePanels) {
+			thisPanel.setTimerOut(speedFactor);
+		}
+	}
+	
 	/* *****************
 	 * SETTERS / GETTERS
 	 * *****************
@@ -138,9 +156,16 @@ public class TimePanel extends JDialog implements ChangeListener {
 		// Update the label
 		setTimeLabel(source.getValue());
 		
+		// Get the new value
+		int timeValue = source.getValue();
+		
 		// Once the user has stopped adjusting the slider, update SimCity time
 		if (!source.getValueIsAdjusting()) {
-			CityDirectory.getInstance().setTimerOut(source.getValue());
+			// Update the overall city time
+			CityDirectory.getInstance().setTimerOut(timeValue);
+			
+			// Update each individual structure panel
+			updateTimeForStructurePanels(timeValue / 2000.0);
 		}
 	}
 

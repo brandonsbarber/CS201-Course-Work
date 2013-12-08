@@ -58,6 +58,7 @@ public class SimCity201 extends JFrame {
 	CardLayout cardLayout;
 	PersonConfigPanel personPanel;
 	ScenarioPanel scenarioPanel;
+	TimePanel timePanel;
 	
 	SettingsPanel settingsPanel;
 	
@@ -82,6 +83,9 @@ public class SimCity201 extends JFrame {
 		JPanel guiPanel = new JPanel();
 		
 		BaseSettingsPanel bottomSettingsPanel = new BaseSettingsPanel();
+		
+		timePanel = new TimePanel();
+		bottomSettingsPanel.setTimePanel(timePanel);
 		
 		mainPanel.setLayout(new BorderLayout());
 		setLayout(new BorderLayout());
@@ -816,6 +820,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
 		
 		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
