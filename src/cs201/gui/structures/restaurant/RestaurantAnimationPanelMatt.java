@@ -30,7 +30,7 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     public static final int RESTAURANT_ENTRANCE_Y = -(int)(WINDOWY * .08f);
     
     // TABLES
-    private final int TABLESIZE = (WINDOWX < WINDOWY) ? (int)(WINDOWX * .1f) : (int)(WINDOWY * .1f);
+    private final int TABLESIZE = (WINDOWX < WINDOWY) ? (int)(WINDOWX * .09f) : (int)(WINDOWY * .09f);
     private final Color TABLECOLOR = Color.ORANGE;
     public static final int TABLEX_1 = (int)(WINDOWX * 3 / 10);
     public static final int TABLEY_1 = (int)(WINDOWY * 3 / 10);
@@ -40,6 +40,12 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     public static final int TABLEY_3 = (int)(WINDOWY * 6 / 10);
     public static final int TABLEX_4 = (int)(WINDOWX * 6 / 10);
     public static final int TABLEY_4 = (int)(WINDOWY * 6 / 10);
+    
+    // CASH REGISTER
+    private final int CASHAREAMAIN_SIZE_X = (int)(WINDOWX * .035f);
+    private final int CASHAREAMAIN_SIZE_Y = (int)(WINDOWY * .15f);
+    private final int CASHAREAMAIN_X = (int)(WINDOWX * .10f);
+    private final int CASHAREAMAIN_Y = (int)(WINDOWY * .465f);
     
     // COOKING AREA
     public static final int COOKINGAREA_X = (int)(WINDOWX * .556f);
@@ -92,12 +98,12 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
 	@Override
     public void paintComponent(Graphics g) {
     	Graphics2D g2 = (Graphics2D)g;
-
-        //Clear the screen by painting a rectangle the size of the frame
-        g2.setColor(getBackground());
-        g2.fillRect(0, 0, WINDOWX, WINDOWY );
         
         if (Constants.DEBUG_MODE) {
+            //Clear the screen by painting a rectangle the size of the frame
+            g2.setColor(getBackground());
+            g2.fillRect(0, 0, WINDOWX, WINDOWY );
+        	
         	//Here is table 1
             g2.setColor(TABLECOLOR);
             g2.fillRect(TABLEX_1, TABLEY_1, TABLESIZE, TABLESIZE);
@@ -142,12 +148,15 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
             g2.setColor(Color.BLACK);
             g2.drawString(":Plating", PLATINGAREA_X, PLATINGAREA_Y);
         } else {
+        	g.drawImage(ArtManager.getImage("Floor"), 0, 0, WINDOWX, WINDOWY, null);
+        	
         	g.drawImage(ArtManager.getImage("Table"), TABLEX_1, TABLEY_1, TABLESIZE, TABLESIZE, null);
         	g.drawImage(ArtManager.getImage("Table"), TABLEX_2, TABLEY_2, TABLESIZE, TABLESIZE, null);
         	g.drawImage(ArtManager.getImage("Table"), TABLEX_3, TABLEY_3, TABLESIZE, TABLESIZE, null);
         	g.drawImage(ArtManager.getImage("Table"), TABLEX_4, TABLEY_4, TABLESIZE, TABLESIZE, null);
         	
         	g.drawImage(ArtManager.getImage("Kitchen"), COOKAREAMAIN_X, COOKAREAMAIN_Y, COOKAREAMAIN_SIZE_X, COOKAREAMAIN_SIZE_Y, null);
+        	g.drawImage(ArtManager.getImage("Cash_Register"), CASHAREAMAIN_X, CASHAREAMAIN_Y, CASHAREAMAIN_SIZE_X, CASHAREAMAIN_SIZE_Y, null);
         }
         
         super.paintComponent(g);
