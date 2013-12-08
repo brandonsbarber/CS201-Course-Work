@@ -255,7 +255,7 @@ public class MarketEmployeeGui implements Gui {
 	public void doLeaveMarket() {
 		animating = true;
 		guiMoveFromCurrentPositionTo(new Position(1, 1));
-		ultimateDestination = new Position(-1, -1);
+		ultimateDestination = new Position(1, 1);
 		positionQueue.add(ultimateDestination);
 	}
 	

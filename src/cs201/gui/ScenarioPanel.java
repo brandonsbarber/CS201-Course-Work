@@ -166,7 +166,7 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 		chosenScenario = getButtonIndex((JToggleButton)e.getSource()) + 1;
 		this.setVisible(false);
 		
-		// If we are in modal mode, call the appropriate methods in SimCity201 to reset the stage and initialize a new scenario
+		// If we aren't in modal mode, call the appropriate methods in SimCity201 to reset the stage and initialize a new scenario
 		if (!modalSelectionMode && theCity != null) {
 			theCity.clearScenario();
 			theCity.runScenario(chosenScenario);

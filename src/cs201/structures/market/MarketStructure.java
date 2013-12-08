@@ -18,6 +18,8 @@ import cs201.roles.marketRoles.MarketConsumerRole;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 public class MarketStructure extends Structure {
 	private final int INITIALEMPLOYEES 	= 1;
@@ -35,6 +37,12 @@ public class MarketStructure extends Structure {
 		super(x, y, width, height, id, p);
 
 		panel = p;
+		
+		// Setup times
+		this.morningShiftStart = new CityTime(8, 00);
+		this.morningShiftEnd = new CityTime(12, 30);
+		this.afternoonShiftStart = new CityTime(13, 00);
+		this.closingTime = new CityTime(18, 00);
 				
 		// Create a manager to manage this market
 		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
@@ -216,10 +224,20 @@ public class MarketStructure extends Structure {
 			checkIfOpen();
 		}
 		
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
+			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "Morning shift over!");
+			if (manager.getPerson() != null) {
+				manager.msgClosingTime();
+				isOpen = false;
+			}
+		}
+		
 		if (time.equalsIgnoreDay(this.closingTime)) {
-			// Message everyone to go home
-			manager.msgClosingTime();
-			isOpen = false;
+			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "It's closing time!");
+			if (manager.getPerson() != null) {
+				manager.msgClosingTime();
+				isOpen = false;
+			}
 		}
 		
 	}
