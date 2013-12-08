@@ -41,23 +41,32 @@ public class ArtManager
 		atlas.put("Default_Walker_Down", ImageIO.read(new File("data/DefaultSprites/Down.png")));
 		atlas.put("Default_Walker_Left", ImageIO.read(new File("data/DefaultSprites/Left.png")));
 		atlas.put("Default_Walker_Right", ImageIO.read(new File("data/DefaultSprites/Right.png")));
+		
 		atlas.put("Restaurant_Matt", ImageIO.read(new File("data/Restaurant/RestaurantMatt.png")));
+		
 		atlas.put("Waiter_Up", ImageIO.read(new File("data/Restaurant/WaiterUp.png")));
 		atlas.put("Waiter_Down", ImageIO.read(new File("data/Restaurant/WaiterDown.png")));
 		atlas.put("Waiter_Left", ImageIO.read(new File("data/Restaurant/WaiterLeft.png")));
 		atlas.put("Waiter_Right", ImageIO.read(new File("data/Restaurant/WaiterRight.png")));
+		
 		atlas.put("Cashier_Up", ImageIO.read(new File("data/Restaurant/CashierUp.png")));
 		atlas.put("Cashier_Down", ImageIO.read(new File("data/Restaurant/CashierDown.png")));
 		atlas.put("Cashier_Left", ImageIO.read(new File("data/Restaurant/CashierLeft.png")));
 		atlas.put("Cashier_Right", ImageIO.read(new File("data/Restaurant/CashierRight.png")));
+		
 		atlas.put("Host_Up", ImageIO.read(new File("data/Restaurant/HostUp.png")));
 		atlas.put("Host_Down", ImageIO.read(new File("data/Restaurant/HostDown.png")));
 		atlas.put("Host_Left", ImageIO.read(new File("data/Restaurant/HostLeft.png")));
 		atlas.put("Host_Right", ImageIO.read(new File("data/Restaurant/HostRight.png")));
+		
 		atlas.put("Cook_Up", ImageIO.read(new File("data/Restaurant/CookUp.png")));
 		atlas.put("Cook_Down", ImageIO.read(new File("data/Restaurant/CookDown.png")));
 		atlas.put("Cook_Left", ImageIO.read(new File("data/Restaurant/CookLeft.png")));
 		atlas.put("Cook_Right", ImageIO.read(new File("data/Restaurant/CookRight.png")));
+		
+		atlas.put("Kitchen", ImageIO.read(new File("data/Restaurant/Kitchen.png")));
+		atlas.put("Table", ImageIO.read(new File("data/Restaurant/Table.png")));
+		
 		
 		//James's Sprites
 		

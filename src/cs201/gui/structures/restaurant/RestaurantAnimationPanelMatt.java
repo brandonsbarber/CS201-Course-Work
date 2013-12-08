@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
+import cs201.helper.Constants;
 
 /**
  * Animation panel for Matthew Pohlmann's Restaurant in SimCity201. Changing the DEFAULTWINDOWX AND
@@ -44,8 +46,8 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     public static final int COOKINGAREA_Y = (int)(WINDOWY * .85f);;
     private final Color COOKAREAMAINCOLOR = Color.GRAY;
     private final Color COOKAREAGRILLCOLOR = Color.RED;
-    private final int COOKAREAMAIN_SIZE_X = (int)(WINDOWX * .32f);
-    private final int COOKAREAMAIN_SIZE_Y = (int)(WINDOWY * .08f);
+    private final int COOKAREAMAIN_SIZE_X = (int)(WINDOWX * .33f);
+    private final int COOKAREAMAIN_SIZE_Y = (int)(WINDOWY * .09f);
     private final int COOKAREAMAIN_X = (int)(WINDOWX * .5f - COOKAREAMAIN_SIZE_X * .5f);
     private final int COOKAREAMAIN_Y = (int)(WINDOWY * .86f);
     private final int COOKAREAGRILL_SIZE_X = (int)(WINDOWX * .06f);
@@ -94,50 +96,59 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, WINDOWX, WINDOWY );
-
-        //Here is table 1
-        g2.setColor(TABLECOLOR);
-        g2.fillRect(TABLEX_1, TABLEY_1, TABLESIZE, TABLESIZE);
         
-        //Here is table 2
-        g2.setColor(TABLECOLOR);
-        g2.fillRect(TABLEX_2, TABLEY_2, TABLESIZE, TABLESIZE);
-        
-        //Here is table 3
-        g2.setColor(TABLECOLOR);
-        g2.fillRect(TABLEX_3, TABLEY_3, TABLESIZE, TABLESIZE);
-        
-        //Here is table 4
-        g2.setColor(TABLECOLOR);
-        g2.fillRect(TABLEX_4, TABLEY_4, TABLESIZE, TABLESIZE);
-        
-        //Cooking Area
-          //Main
-        g2.setColor(COOKAREAMAINCOLOR);
-        g2.fillRect(COOKAREAMAIN_X, COOKAREAMAIN_Y, COOKAREAMAIN_SIZE_X, COOKAREAMAIN_SIZE_Y);
-          //Grill1
-        g2.setColor(COOKAREAGRILLCOLOR);
-        g2.fillRect(COOKAREAGRILL1_X, COOKAREAGRILL1_Y, COOKAREAGRILL_SIZE_X, COOKAREAGRILL_SIZE_Y);
-          //Grill2
-        g2.setColor(COOKAREAGRILLCOLOR);
-        g2.fillRect(COOKAREAGRILL2_X, COOKAREAGRILL2_Y, COOKAREAGRILL_SIZE_X, COOKAREAGRILL_SIZE_Y);
-          //CookingAreaLabel
-        g2.setColor(Color.BLACK);
-        g2.drawString("Cooking:", COOKINGAREA_X, COOKINGAREA_Y);
-        
-        //Plating Area
-          //Plate1
-        g2.setColor(PLATINGAREAMAINCOLOR);
-        g2.fillRect(PLATINGAREA1_X, PLATINGAREA1_Y, PLATINGAREA_SIZE, PLATINGAREA_SIZE);
-          //Plate2
-        g2.setColor(PLATINGAREAMAINCOLOR);
-        g2.fillRect(PLATINGAREA2_X, PLATINGAREA1_Y, PLATINGAREA_SIZE, PLATINGAREA_SIZE);
-          //Plate3
-        g2.setColor(PLATINGAREAMAINCOLOR);
-        g2.fillRect(PLATINGAREA3_X, PLATINGAREA1_Y, PLATINGAREA_SIZE, PLATINGAREA_SIZE);
-          //PlatingAreaLabel
-        g2.setColor(Color.BLACK);
-        g2.drawString(":Plating", PLATINGAREA_X, PLATINGAREA_Y);
+        if (Constants.DEBUG_MODE) {
+        	//Here is table 1
+            g2.setColor(TABLECOLOR);
+            g2.fillRect(TABLEX_1, TABLEY_1, TABLESIZE, TABLESIZE);
+            
+            //Here is table 2
+            g2.setColor(TABLECOLOR);
+            g2.fillRect(TABLEX_2, TABLEY_2, TABLESIZE, TABLESIZE);
+            
+            //Here is table 3
+            g2.setColor(TABLECOLOR);
+            g2.fillRect(TABLEX_3, TABLEY_3, TABLESIZE, TABLESIZE);
+            
+            //Here is table 4
+            g2.setColor(TABLECOLOR);
+            g2.fillRect(TABLEX_4, TABLEY_4, TABLESIZE, TABLESIZE);
+            
+            //Cooking Area
+              //Main
+            g2.setColor(COOKAREAMAINCOLOR);
+            g2.fillRect(COOKAREAMAIN_X, COOKAREAMAIN_Y, COOKAREAMAIN_SIZE_X, COOKAREAMAIN_SIZE_Y);
+              //Grill 1
+            g2.setColor(COOKAREAGRILLCOLOR);
+            g2.fillRect(COOKAREAGRILL1_X, COOKAREAGRILL1_Y, COOKAREAGRILL_SIZE_X, COOKAREAGRILL_SIZE_Y);
+              //Grill 2
+            g2.setColor(COOKAREAGRILLCOLOR);
+            g2.fillRect(COOKAREAGRILL2_X, COOKAREAGRILL2_Y, COOKAREAGRILL_SIZE_X, COOKAREAGRILL_SIZE_Y);
+              //CookingAreaLabel
+            g2.setColor(Color.BLACK);
+            g2.drawString("Cooking:", COOKINGAREA_X, COOKINGAREA_Y);
+            
+            //Plating Area
+              //Plate 1
+            g2.setColor(PLATINGAREAMAINCOLOR);
+            g2.fillRect(PLATINGAREA1_X, PLATINGAREA1_Y, PLATINGAREA_SIZE, PLATINGAREA_SIZE);
+              //Plate 2
+            g2.setColor(PLATINGAREAMAINCOLOR);
+            g2.fillRect(PLATINGAREA2_X, PLATINGAREA1_Y, PLATINGAREA_SIZE, PLATINGAREA_SIZE);
+              //Plate 3
+            g2.setColor(PLATINGAREAMAINCOLOR);
+            g2.fillRect(PLATINGAREA3_X, PLATINGAREA1_Y, PLATINGAREA_SIZE, PLATINGAREA_SIZE);
+              //PlatingAreaLabel
+            g2.setColor(Color.BLACK);
+            g2.drawString(":Plating", PLATINGAREA_X, PLATINGAREA_Y);
+        } else {
+        	g.drawImage(ArtManager.getImage("Table"), TABLEX_1, TABLEY_1, TABLESIZE, TABLESIZE, null);
+        	g.drawImage(ArtManager.getImage("Table"), TABLEX_2, TABLEY_2, TABLESIZE, TABLESIZE, null);
+        	g.drawImage(ArtManager.getImage("Table"), TABLEX_3, TABLEY_3, TABLESIZE, TABLESIZE, null);
+        	g.drawImage(ArtManager.getImage("Table"), TABLEX_4, TABLEY_4, TABLESIZE, TABLESIZE, null);
+        	
+        	g.drawImage(ArtManager.getImage("Kitchen"), COOKAREAMAIN_X, COOKAREAMAIN_Y, COOKAREAMAIN_SIZE_X, COOKAREAMAIN_SIZE_Y, null);
+        }
         
         super.paintComponent(g);
     }
