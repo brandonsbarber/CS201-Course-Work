@@ -153,6 +153,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Brandon's Restaurant: Shift Change");
 		scenarioList.add("Market Shift Change");
 		scenarioList.add("Ben's Restaurant Shift Change");
+		scenarioList.add("Brandon Restaurant Market Order");
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -193,6 +194,7 @@ public class SimCity201 extends JFrame {
 			case 18: brandonRestaurantShiftChange(); break;
 			case 19: marketShiftChange(); break;
 			case 20: benRestaurantShiftChange(); break;
+			case 21: brandonRestaurantMarketOrder(); break;
 		}
 	}
 	
@@ -201,6 +203,64 @@ public class SimCity201 extends JFrame {
 	 */
 	public void clearScenario() {
 		// TODO figure out what to do to clear the stage for a new scenario.
+	}
+	
+	private void brandonRestaurantMarketOrder()
+	{
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		mcp.setStructure(m);
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+			
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(475,225,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 0));
+		r.setOpen(true);
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
+		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p1b.setHungerEnabled(false);
+		p1b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1b);
+		p1b.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
 	}
 	
 	private void brandonRestaurantTwoCustomersTwoWaiters()

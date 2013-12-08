@@ -50,10 +50,10 @@ public class RestaurantBrandon extends Restaurant {
     	savedPrices = (HashMap<String,java.lang.Double>)prices.clone();
     	
 		cookingTimes = new HashMap<String,FoodBrandon>();
-		cookingTimes.put("Steak",new FoodBrandon ("Steak",1,2,2,1000,prices.get("Steak")));
-		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",1,2,2,1000,prices.get("Chicken")));
-		cookingTimes.put("Salad",new FoodBrandon ("Salad",1,2,2,1000,prices.get("Salad")));
-		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",1,2,3,1000,prices.get("Pizza")));
+		cookingTimes.put("Steak",new FoodBrandon ("Steak",0,2,2,1000,prices.get("Steak")));
+		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",5,2,2,1000,prices.get("Chicken")));
+		cookingTimes.put("Salad",new FoodBrandon ("Salad",5,2,2,1000,prices.get("Salad")));
+		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",5,2,3,1000,prices.get("Pizza")));
 		
 		MenuBrandon menu = new MenuBrandon(prices);
 		

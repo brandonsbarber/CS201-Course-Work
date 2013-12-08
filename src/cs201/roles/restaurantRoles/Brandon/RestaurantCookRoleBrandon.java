@@ -3,16 +3,20 @@ package cs201.roles.restaurantRoles.Brandon;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JOptionPane;
+
 import cs201.agents.PersonAgent.Intention;
-import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
+import cs201.helper.CityDirectory;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.helper.Brandon.RestaurantRotatingStandBrandon;
 import cs201.helper.Brandon.RestaurantRotatingStandBrandon.StandOrder;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
+import cs201.structures.market.MarketStructure;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
 
@@ -76,17 +80,15 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	
 	class MyMarket
 	{
-		/*public MyMarket(Market agent)
+		public MyMarket(MarketStructure agent)
 		{
 			this.m = agent;
 			outOf = new TreeSet<String>();
 		}
 		
-		Market m;
-		Set<String> outOf;*/
+		MarketStructure m;
+		Set<String> outOf;
 	}
-	
-	class Market {}
 	
 	public static enum OrderState{Pending,Cooking,Done,Plated, PickedUp};
 	
@@ -125,8 +127,11 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		markets = Collections.synchronizedList(new ArrayList<MyMarket>());
 		menuData = prices;
 		savedMenu = savedPrices;
-		calcLowFoods();
+		JOptionPane.showMessageDialog(null,"CALCULATING");
+		startOrder = false;
 	}
+	
+	boolean startOrder;
 	
 	public void setKitchen(KitchenGuiBrandon kitchen)
 	{
@@ -134,26 +139,14 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	}
 	
 	/**
-	 * Adds a market to the list of markets which the cook pulls from
-	 * @param m the new market to be referenced.
-	 */
-	public void addMarket(Market m)
-	{
-		markets.add(new MyMarket());
-		remainingOrder.putAll(derelictDeficit);
-		derelictDeficit.clear();
-		stateChanged();
-	}
-	
-	/**
 	 * Message from a market indicating that some parts of the order cannot be fulfilled
 	 * @param agent the market sending this message
 	 * @param orderFulfill the food not provided by the market
 	 */
-	public void msgCannotFulfill(Market agent, HashMap<String,Integer> orderFulfill)
+	/*public void msgCannotFulfill(Market agent, HashMap<String,Integer> orderFulfill)
 	{
 		//Changes state of this market to being out of the food item
-		/*for(MyMarket m : markets)
+		for(MyMarket m : markets)
 		{
 			if(m.m == agent)
 			{
@@ -162,18 +155,18 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 					m.outOf.add(s);
 				}
 			}
-		}*/
+		}
 		//Determines if all markets are out of a given food item
 		for(String s : orderFulfill.keySet())
 		{
 			boolean allOut = true;
-			/*for(MyMarket m : markets)
+			for(MyMarket m : markets)
 			{
 				if(!m.outOf.contains(s))
 				{
 					allOut = false;
 				}
-			}*/
+			}
 			//If all are out, puts in a separate list that is not referenced until new markets are added
 			if(allOut)
 			{
@@ -198,14 +191,14 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Received the following deficits."+orderFulfill);
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Remaining order "+remainingOrder);
 		stateChanged();
-	}
+	}*/
 	
 	/**
 	 * Message from a market indicating that a food restock order has been received 
 	 * @param agent the market sending the message
 	 * @param orderFulfill the food order that is fulfilled
 	 */
-	public void msgReceivedOrder(Market agent, HashMap<String,Integer> orderFulfill)
+	public void msgReceivedOrder(MarketStructure agent, HashMap<String,Integer> orderFulfill)
 	{
 		for(String key:orderFulfill.keySet())
 		{
@@ -254,6 +247,13 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		if(!startOrder)
+		{
+			calcLowFoods();
+			startOrder = true;
+			return true;
+		}
+		
 		if(closingTime)
 		{
 			leaveRestaurant();
@@ -401,14 +401,14 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 			}
 		}
 		//Keeps it from processing with no markets
-		if(markets.size() == 0)
+		if(CityDirectory.getInstance().getMarkets().size() == 0)
 		{
 			derelictDeficit.putAll(foodOrder);
 			return;
 		}
 		
 		//Gets the market to use in this case
-		MyMarket market = markets.get(currentMarket++);
+		MarketStructure market = CityDirectory.getInstance().getMarkets().get(currentMarket++);
 		if(currentMarket == markets.size())
 		{
 			currentMarket = 0;
@@ -429,7 +429,14 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Low on "+foodOrder.keySet());
 		
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Placing order "+foodOrder);
-		//market.m.msgSendOrder(this,foodOrder);
+		
+		JOptionPane.showMessageDialog(null,"HELLO");
+		
+		for(String food : foodOrder.keySet())
+		{
+			System.out.println(this.restaurant);
+			market.getManager().msgHereIsMyOrderForDelivery(this.restaurant, new ItemRequest(food,foodOrder.get(food)));
+		}
 	}
 	
 	private class CookingTask extends TimerTask
