@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
 import cs201.helper.Brandon.MenuBrandon;
+import cs201.helper.Brandon.RestaurantRotatingStandBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CashierBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
@@ -18,7 +19,7 @@ import cs201.roles.restaurantRoles.RestaurantWaiterRole;
  * @author Brandon
  *
  */
-public class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements WaiterBrandon
+public abstract class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements WaiterBrandon
 {
 	private List<MyCustomer> customers;
 	
@@ -30,12 +31,12 @@ public class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements
 	
 	private Map<String,Double> menu;
 	
-	private CookBrandon chef;
+	protected CookBrandon chef;
 	private CashierBrandon cashier;
 	
-	private WaiterGuiBrandon gui;
+	protected WaiterGuiBrandon gui;
 	
-	private Semaphore animationPause;
+	protected Semaphore animationPause;
 	private Semaphore billPause;
 	private String name;
 	
@@ -494,6 +495,8 @@ public class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements
 			System.out.println(this+": Problem in Waiter takeOrder animation!");
 		}
 		System.out.println(this+": Taking order from "+c.c.getName());
+		
+		
 		c.c.msgReadyToTakeOrder();
 		try
 		{
@@ -507,22 +510,13 @@ public class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements
 		}
 		gui.doCarryOrder(c.choice);
 		
-		gui.doGoToKitchen(c.t);
-		try
-		{
-			animationPause.acquire();
-		}
-		catch(InterruptedException e)
-		{
-			System.out.println(this+": Error with waiter going to kitchen");
-		}
-		
-		System.out.println(this+": Giving order to cook");
-		chef.msgPresentOrder(this, c.choice, c.t);
+		deliverOrder(c);
 		
 		gui.doDropCarry();
 	}
 	
+	protected abstract void deliverOrder(MyCustomer c);
+
 	private void giveFood(MyCustomer c)
 	{
 		gui.doGoToKitchen(c.t);
@@ -568,7 +562,7 @@ public class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements
 		}
 	}
 	
-	private class MyCustomer
+	class MyCustomer
 	{
 		CustomerBrandon c;
 		int t;
@@ -642,6 +636,17 @@ public class RestaurantWaiterRoleBrandon extends RestaurantWaiterRole implements
 	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	RestaurantRotatingStandBrandon stand;
+	
+	public void setRotatingStand(RestaurantRotatingStandBrandon stand)
+	{
+		this.stand = stand;
+	}
+
+	public RestaurantRotatingStandBrandon getStand() {
+		return stand;
 	}
 }
 

@@ -228,4 +228,11 @@ public class WaiterGuiBrandon implements Gui
 	{
 		this.present = present;
 	}
+
+	public void doGoToStand()
+	{
+		xDestination = agent.getStand().STAND_X;
+		yDestination = agent.getStand().STAND_Y;
+		eventFired = false;
+	}
 }

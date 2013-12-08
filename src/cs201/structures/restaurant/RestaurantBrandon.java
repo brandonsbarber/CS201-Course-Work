@@ -15,6 +15,7 @@ import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
 import cs201.helper.CityTime;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.helper.Brandon.MenuBrandon;
+import cs201.helper.Brandon.RestaurantRotatingStandBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CashierBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
@@ -31,6 +32,7 @@ import cs201.gui.structures.restaurant.*;
 public class RestaurantBrandon extends Restaurant {
 
 	private static final int MAXWAITERS = 4;
+	private RestaurantRotatingStandBrandon stand;
 
 	public RestaurantBrandon(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
@@ -64,6 +66,10 @@ public class RestaurantBrandon extends Restaurant {
 		
 		this.panel.addGui(kitchen);
 		
+		stand = new RestaurantRotatingStandBrandon();
+		
+		this.panel.addGui(stand);
+		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleBrandon("Host",4);
 		HostGuiBrandon hostGui = new HostGuiBrandon((RestaurantHostRoleBrandon) host);
@@ -76,7 +82,7 @@ public class RestaurantBrandon extends Restaurant {
 		CookGuiBrandon cookGui = new CookGuiBrandon((RestaurantCookRoleBrandon) cook,kitchen);
 		cookGui.setPresent(false);
 		((RestaurantCookRoleBrandon) cook).setGui(cookGui);
-		//((RestaurantCookRoleBrandon) cook).setRotatingStand(stand);
+		((RestaurantCookRoleBrandon) cook).setRotatingStand(stand);
 		this.panel.addGui(cookGui);
 		cook.setRestaurant(this);
 			
@@ -133,7 +139,7 @@ public class RestaurantBrandon extends Restaurant {
 				}
 				
 				if (waiters.size() < MAXWAITERS) {
-					RestaurantWaiterRoleBrandon newWaiter = new RestaurantWaiterRoleBrandon((HostBrandon)host,prices,"");
+					RestaurantWaiterRoleBrandon newWaiter = new RestaurantWaiterRoleBrandonStand((HostBrandon)host,prices,"");
 					System.out.println("ADDING A WAITER");
 					/*if (waiters.size() % 2 == 0) {
 						newWaiter = new RestaurantWaiterRoleMattNormal();
@@ -148,7 +154,7 @@ public class RestaurantBrandon extends Restaurant {
 					waiterGui.setTables(((RestaurantAnimationPanelBrandon)panel).getTables());
 					((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) newWaiter);
 					//UpdateWaiterHomePositions();
-					//((RestaurantWaiterRoleBrandon) newWaiter).setRotatingStand(stand);
+					((RestaurantWaiterRoleBrandon) newWaiter).setRotatingStand(stand);
 					this.panel.addGui(waiterGui);
 					System.out.println(this.panel);
 					newWaiter.setRestaurant(this);

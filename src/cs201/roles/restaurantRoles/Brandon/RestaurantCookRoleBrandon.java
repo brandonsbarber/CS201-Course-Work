@@ -8,6 +8,7 @@ import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.helper.Brandon.FoodBrandon;
+import cs201.helper.Brandon.RestaurantRotatingStandBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CookBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
@@ -453,5 +454,12 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	}
 	
 	Semaphore animationPause = new Semaphore(0,true);
+
+	RestaurantRotatingStandBrandon stand;
+	
+	public void setRotatingStand(RestaurantRotatingStandBrandon stand)
+	{
+		this.stand = stand;		
+	}
 }
 
