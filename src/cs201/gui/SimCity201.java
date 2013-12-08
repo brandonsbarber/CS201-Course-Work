@@ -153,12 +153,24 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Brandon's Restaurant");
 		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");
 		
-		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
+		scenarioPanel.setSimCity(this);
 		scenarioPanel.showModalScenarioSelection();
 
-		switch(scenarioPanel.getChosenScenario())
+		runScenario(scenarioPanel.getChosenScenario());
+		
+		pack();
+		CityDirectory.getInstance().startTime();
+	}
+	
+	/**
+	 * Runs a given scenario. This method is called internally, and also by the scenarioPanel to invoke new scenarios.
+	 * @param scenarioNumber The number of the scenario to run, corresponding to the order they are added to the scenarioList.
+	 * (The first scenario is 1)
+	 */
+	public void runScenario(int scenarioNumber) {
+		switch(scenarioNumber)
 		{
 			case 1: normativeRestaurant(); break;
 			case 2: normativeRestaurantTwoCustomersTwoWaiters(); break;
@@ -178,9 +190,13 @@ public class SimCity201 extends JFrame {
 			case 16: brandonRestaurant(); break;
 			case 17: brandonRestaurantTwoCustomersTwoWaiters(); break;
 		}
-		
-		pack();
-		CityDirectory.getInstance().startTime();
+	}
+	
+	/**
+	 * Clears SimCity201 to run a new scenario. This method is called by the scenario panel when the user wants to run a new scenario.
+	 */
+	public void clearScenario() {
+		// TODO figure out what to do to clear the stage for a new scenario.
 	}
 	
 	private void brandonRestaurantTwoCustomersTwoWaiters()

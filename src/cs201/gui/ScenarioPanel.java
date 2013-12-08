@@ -53,6 +53,7 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 	 */
 	private int chosenScenario = 0;
 	boolean modalSelectionMode = false;
+	private SimCity201 theCity = null;
 	
 	/*
 	 * Managing the scenarios
@@ -105,8 +106,20 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Shows the scenario panel for the user to choose a new scenario.
+	 */
+	public void showScenarioPanel() {
+		modalSelectionMode = false;
+		this.setVisible(true);
+	}
+	
 	public int getChosenScenario() {
 		return chosenScenario;
+	}
+	
+	public void setSimCity(SimCity201 city) {
+		theCity = city;
 	}
 	
 	private void setUpComponents() {
@@ -150,10 +163,13 @@ public class ScenarioPanel extends JDialog implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (modalSelectionMode) {
-			chosenScenario = getButtonIndex((JToggleButton)e.getSource()) + 1;
-			modalSelectionMode = false;
-			this.setVisible(false);
+		chosenScenario = getButtonIndex((JToggleButton)e.getSource()) + 1;
+		this.setVisible(false);
+		
+		// If we are in modal mode, call the appropriate methods in SimCity201 to reset the stage and initialize a new scenario
+		if (!modalSelectionMode && theCity != null) {
+			theCity.clearScenario();
+			theCity.runScenario(chosenScenario);
 		}
 	}
 	

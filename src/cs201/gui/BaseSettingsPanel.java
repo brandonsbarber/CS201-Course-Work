@@ -59,7 +59,7 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 		}
 		if (e.getSource() == scenarioButton) {
 			if (scenarioPanel != null) {
-				scenarioPanel.setVisible(true);
+				scenarioPanel.showScenarioPanel();
 			}
 		}
 	}
