@@ -198,8 +198,21 @@ public class SimCity201 extends JFrame {
 		
 		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
 		createPerson("Waiter 2", r, r, Intention.RestaurantWaiter, r, null);
-		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
-		createPerson("Customer 2", r, r, Intention.RestaurantCustomer, r, null);
+		
+		PersonAgent p6 = new PersonAgent("Customer", cityPanel);
+		p6.setWakeupTime(new CityTime(8, 00));
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p6);
+		personPanel.addPerson(p6);
+		p6.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 00));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
+		p5.startThread();
+		
 		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
 		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
 		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
@@ -217,9 +230,14 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
 		
-		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
-		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 00));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
+		p5.startThread();
 		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
+		createPerson("Waiter", r, r, Intention.RestaurantWaiter, r, null);
 		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
 		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
 	}

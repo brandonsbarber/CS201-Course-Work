@@ -62,7 +62,6 @@ public class CustomerGuiBrandon implements Gui{
 	public void didLeaveRestaurant()
 	{
 		isHungry = false;
-		//gui.updateAgent(agent);
 		setPresent(false);
 	}
 

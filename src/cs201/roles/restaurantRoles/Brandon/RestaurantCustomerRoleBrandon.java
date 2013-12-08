@@ -443,6 +443,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		order = "";
 		
 		billAmount = 0;
+		this.getPerson().setHungerLevel(0);
 		
 		//Resets the amount of money the customer has
 		try
@@ -475,6 +476,11 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		
 		this.isActive = false;
 		this.gui.setPresent(false);
+		
+		System.out.println("Left restaurant");
+		System.out.println("Active:"+super.isActive);
+		System.out.println("Active:"+this.isActive);
+		System.out.println("gui"+gui.isPresent());
 	}
 	
 	/**

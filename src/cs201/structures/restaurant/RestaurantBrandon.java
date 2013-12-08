@@ -196,11 +196,29 @@ public class RestaurantBrandon extends Restaurant {
 		}
 		}
 	}
+	
+	private void checkIfRestaurantShouldOpen() {
+		System.out.println("CHECKING IF IT SHOULD OPEN");
+		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
+			System.out.println("Looping!" +waiters.size());
+			for (RestaurantWaiterRole w : waiters) {
+				
+				if (w.getPerson() != null) {
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
+					this.isOpen = true;
+					return;
+				}
+			}
+		}
+	}
 
 	@Override
 	public void updateTime(CityTime time) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("IS OPEN:"+isOpen);
+		if(!isOpen)
+		{
+			checkIfRestaurantShouldOpen();
+		}
 	}
 
 }
