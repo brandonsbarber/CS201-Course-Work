@@ -10,6 +10,8 @@ import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
 import cs201.interfaces.roles.restaurant.Ben.HostBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Host Agent
@@ -108,7 +110,8 @@ public class RestaurantHostRoleBen extends RestaurantHostRole implements HostBen
 		// Mark the table as free
 		for (Table table : tables) {
 			if (table.getOccupant() == cust) {
-				Do(cust + " leaving " + table);
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Host " + name, cust + " leaving table " + table);
+				
 				table.setUnoccupied();
 			}
 		}
@@ -138,8 +141,8 @@ public class RestaurantHostRoleBen extends RestaurantHostRole implements HostBen
 			}
 		}
 		waiter.state = WaiterState.wantsABreak;
-		Do(waiter.waiter.getName() + " wants to go on break.");
-		
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Host " + name, waiter.waiter.getName() + " wants to go on break.");
+
 		stateChanged();
 	}
 	
@@ -153,7 +156,7 @@ public class RestaurantHostRoleBen extends RestaurantHostRole implements HostBen
 			}
 		}
 		waiter.state = WaiterState.working;
-		Do(waiter.waiter.getName() + " is going back to work.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Host " + name, waiter.waiter.getName() + " is going back to work.");
 		
 		stateChanged();
 	}
@@ -186,7 +189,7 @@ public class RestaurantHostRoleBen extends RestaurantHostRole implements HostBen
 			CloseRestaurant();
 			return true;
 		} else if (closingTime) {
-			Do("It's time to close, but I can't shut the restaurant down yet. We have " + getNumberOfActiveCustomers() + " customer(s).");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Host " + name, "It's time to close, but I can't shut the restaurant down yet. We have " + getNumberOfActiveCustomers() + " customer(s).");
 		}
 
 		/* Think of this next rule as:
@@ -262,14 +265,16 @@ public class RestaurantHostRoleBen extends RestaurantHostRole implements HostBen
 	
 	private void letCustomerKnowThereIsWait(MyCustomer customer) {
 		// Let the customer know he'll have to wait a bit
-		Do("Sorry " + customer.customer.getName() + ", but we're at capacity at the moment. Do you mind waiting?");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Host " + name, "Sorry " + customer.customer.getName() + ", but we're at capacity at the moment. Do you mind waiting?");
+
 		customer.customer.msgItWillBeAwhile();
 		
 		customer.state = CustomerState.waiting;
 	}
 	
 	private void decideIfWaiterCanBreak(MyWaiter waiter) {
-		Do("Deciding if " + waiter.waiter.getName() + " can go on break.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Host " + name, "Deciding if " + waiter.waiter.getName() + " can go on break.");
+
 		// We'll let him go on break, unless...
 		Boolean decision = true;
 		

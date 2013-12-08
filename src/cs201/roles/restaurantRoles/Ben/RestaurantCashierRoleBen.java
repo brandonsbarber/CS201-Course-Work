@@ -18,6 +18,8 @@ import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.CheckState;
 import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.CheckType;
 import cs201.structures.market.MarketStructure;
 import cs201.test.mock.EventLog;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Restaurant Cashier Agent
@@ -59,6 +61,8 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	 */
 	
 	public void msgComputeCheckForOrder(String choice, WaiterBen waiter, CustomerBen cust) {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, "Asked to compute the check for the order.");
+		
 		// See if the customer owes us money already
 		Order theOrder = null;
 		synchronized(orders) {
@@ -80,6 +84,8 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	}
 	
 	public void msgHereIsPayment(CustomerBen cust, float amount) {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, String.format("Got a payment of %.2f from customer", amount));
+		
 		// Find the customer's order
 		Order theOrder = null;
 		synchronized(orders) {
@@ -99,7 +105,7 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	}
 	
 	public void msgICantPay(CustomerBen cust) {
-		Do("You cannot pay for your food? You can owe us.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, "Got msgICantPay from customer.");
 		
 		// Find the customer's order
 		Order theOrder = null;
@@ -119,7 +125,7 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	
 	@Override
 	public void msgHereIsDeliveryFromMarket(MarketStructure market, double amount, ItemRequest request) {
-		Do("Just got a delivery from the market");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, "Just got a delivery from market " + market.getId());
 		
 		// Add the bill from the Market to be paid
 		marketBills.add(new MarketBill(market, amount, request, MarketBillState.pending));
@@ -181,7 +187,7 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	}
 	
 	private void payMarketBill(MarketBill bill) {
-		Do("Just paid the market bill");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, "Paying the bill from market " + bill.market.getId());
 		
 		// We need to check to see if we got what we ordered
 		// TODO this

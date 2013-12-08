@@ -13,7 +13,6 @@ import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -162,6 +161,7 @@ public class TracePanel extends JScrollPane implements AlertListener {
 			}
 			newAlerts.clear();	//We've dealt with the new alerts, so remove them form the new alerts list.
 		}
+		traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength());
 	}
 
 	/**

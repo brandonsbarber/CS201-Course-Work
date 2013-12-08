@@ -12,6 +12,8 @@ import cs201.interfaces.roles.restaurant.Ben.HostBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
 import cs201.roles.restaurantRoles.RestaurantCustomerRole;
 import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBen.Menu;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 /**
  * Restaurant customer agent.
  */
@@ -105,21 +107,23 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		} else {
 			if (name.toLowerCase().equals("flake")) funds += 100.0f;
 		}
-		
-		Do("I'm hungry");
+
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
 	
 	// Sent from host to let the customer know he'll have to wait
 	public void msgItWillBeAwhile() {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "I was just told it will be awhile from the host.");
+		
 		event = AgentEvent.theresAWait;
 		
 		stateChanged();
 	}
 
 	public void msgFollowMeToTable(int tablenumber, WaiterBen waiter, Menu menu) {
-		Do("Received msgSitAtTable");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "I was just told to follow the host to a table.");
+		
 		// Grab the menu and record who our waiter is
 		myMenu = menu;
 		myWaiter = waiter;
@@ -263,7 +267,6 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 	 */
 	
 	private void goToRestaurant() {
-		Do("Going to restaurant");
 		host.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 	
@@ -281,19 +284,20 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		}
 		
 		if (!waiting) {
-			Do("Sorry, I don't have time to wait. Leaving...");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "Sorry, I don't have time to wait. Leaving...");
+
 			host.msgICantWait(this);
 			state = AgentState.DoingNothing;
 			customerGui.DoExitRestaurant();
 		}
 		else {
-			Do("That's find, I don't mind waiting.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "I don't mind waiting for a table.");
+			
 			state = AgentState.waitingInRestaurant;
 		}
 	}
 
 	private void SitDown() {
-		Do("Being seated. Going to table");
 		customerGui.DoGoToSeat(destinationTable);//hack; only one table
 	}
 	
@@ -314,7 +318,8 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		
 		// Leave if necessary
 		if (leaving) {
-			Do("I can't afford anything, so I'm leaving. Sorry.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "I can't afford anything, so I'm leaving.");
+			
 			state = AgentState.Leaving;
 			leaveRestaurant();
 			return;
@@ -333,7 +338,7 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		timer.schedule(new TimerTask() {
 			public void run() {
 				event = AgentEvent.readyToOrder;
-				Do("I'll have the " + myChoice);
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "I'll have the " + myChoice);
 				stateChanged();
 			}
 		}, 2000);
@@ -356,7 +361,7 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		// Remove '?' from the customer's icon
 		customerGui.setIconText(myChoice == "Chicken" ? "C" : "ST");
 		
-		Do("Eating Food");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "Eating Food");
 		
 		/**
 		 * This next complicated line creates and starts a timer thread.
@@ -372,7 +377,6 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		timer.schedule(new TimerTask() {
 			Object cookie = 1;
 			public void run() {
-				Do("Done eating, cookie=" + cookie);
 				event = AgentEvent.doneEating;
 				//isHungry = false;
 				stateChanged();
@@ -386,14 +390,14 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		if (funds >= check) {
 			// Remove the money from our wallet
 			funds -= check;
-			Do("Here's my payment of $" + check + ". I have $" + funds + " left in my wallet.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, String.format("Here's my payment of $%.2f. I have $%.2f left.", check, funds));
 			
 			// Give it to the cashier
 			cashier.msgHereIsPayment(this, check);
 		}
 		else {
 			// Let the cashier know we can't pay
-			Do("Oops, looks like I don't have enough money to pay.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "Oops, looks like I don't have enough money to pay.");
 			cashier.msgICantPay(this);
 		}
 	}
@@ -402,7 +406,7 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		// Remove the customer's icon
 		customerGui.removeIcon();
 		
-		Do("Leaving.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Customer " + name, "Leaving.");
 		//host.msgLeavingTable(this);
 		if (myWaiter != null)
 			myWaiter.msgLeavingTable(this);

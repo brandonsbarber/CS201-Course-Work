@@ -19,6 +19,8 @@ import cs201.roles.Role;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * The MarketManagerRole, the head of a market. Deals directly with customers and money. Dispatches MarketEmployees to retrieve items
@@ -315,7 +317,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 	/**
 	 * Sent by MarketConsumers in-person at a Market
 	 */
-	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {		
+	public void msgHereIsMyOrder(MarketConsumer consumer, List<ItemRequest> items) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, "Just got a new order from a consumer.");
+		
 		// Add the new order to the list of orders
 		synchronized(orders) {
 			orders.add(new Order(consumer, items, OrderState.PENDING, nextOrderID));
@@ -331,6 +335,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param item An ItemRequest
 	 */
 	public void msgHereIsMyOrderForDelivery(Restaurant restaurant, ItemRequest item) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, "Just got a new order from a restaurant.");
+		
 		List<ItemRequest> items = new ArrayList<ItemRequest>();
 		items.add(item);
 		
@@ -348,6 +354,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param consumer The MarketConsumer who wants a new set of wheels.
 	 */
 	public void msgIWouldLikeACar(MarketConsumer consumer) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, "A consumer just told me he wants a car.");
+		
 		synchronized(carOrders) {
 			carOrders.add(new CarOrder(consumer, CarOrderState.PENDING, nextCarOrderID));
 			nextCarOrderID++;
@@ -362,6 +370,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param amount The amount to put towards the outstanding balance.
 	 */
 	public void msgHereIsMyPayment(Structure structure, float amount) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Just received a payment of $.2f from structure " + structure.getId(), amount));
+		
 		// Pay the structure's balance
 		StructureRecord record = structureBalance.get(structure);
 		if (record != null) {
@@ -377,6 +387,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param amount The amount to put towards the outstanding balance.
 	 */
 	public void msgHereIsMyPayment(MarketConsumer consumer, float amount) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Just received a payment of $.2f from a market consumer. ", amount));
+		
 		// Pay the consumer's balance
 		ConsumerRecord record = consumerBalance.get(consumer);
 		if (record != null) {
@@ -391,6 +403,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * 
 	 */
 	public void msgDeliveryFailed(/* discuss what parameters we need */) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that a delivery failed."));
+		
 		//Order o = null; // for now assume o points to the order
 		
 		/* The delivery truck wasn't able to deliver the goods, probably because the restaurant was closed. Mark the
@@ -402,6 +416,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereAreItems(MarketEmployee employee, List<ItemRequest> items, int id) {		
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, "Just got the requested items from my employee.");
 		
 		// Find the consumer's order in our list
 		Order theOrder = null;
@@ -434,6 +449,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public void msgHereIsCar(MarketEmployee employee, int id) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, "Just got the requested car from my employee.");
 		
 		// Find the CarOrder in our list
 		CarOrder theOrder = null;
