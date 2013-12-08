@@ -201,7 +201,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
-		// TODO leave restaurant animation
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Leaving work.");
 		gui.goToLocation(RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y);
 		try {
@@ -209,7 +208,6 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private void DoGiveCheckToWaiter(Check c) {

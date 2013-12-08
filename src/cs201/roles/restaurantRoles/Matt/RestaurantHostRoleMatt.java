@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.HostGuiMatt;
@@ -20,6 +21,7 @@ import cs201.trace.AlertTag;
  * Restaurant Host Agent
  */
 public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMatt {
+	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private static final int NTABLES = 4;//a global for the number of tables. SHOULD BE A PERFECT SQUARE
 	
 	//Notice that we implement waitingCustomers using ArrayList, but type it
@@ -278,6 +280,12 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 	// Utilities -------------------------------------------------------------
 	private void DoCloseRestaurant() {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Closing down the restaurant.");
+		gui.goToLocation(RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void DoCallWaiter(WaiterMatt w, TableMatt t, CustomerMatt c) {
@@ -364,6 +372,14 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		}
 	}
 	
+	/**
+	 * The HostGui tells this HostAgent that it has reached its destination, freeing up this HostAgent
+	 * to continue working
+	 */
+	public void DoneAnimating() {
+		atTargetPosition.release();
+	}
+	
 	public void setGui(HostGuiMatt g) {
 		gui = g;
 	}
@@ -374,9 +390,14 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO maybe animate into restaurant?
 		this.gui.setPresent(true);
 		timeToClose = false;
+		gui.goToDesk();
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
