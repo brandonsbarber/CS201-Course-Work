@@ -25,6 +25,7 @@ import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelBrandon;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.gui.transit.BusGui;
@@ -42,6 +43,7 @@ import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
 import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.RestaurantBen;
+import cs201.structures.restaurant.RestaurantBrandon;
 import cs201.structures.restaurant.RestaurantMatt;
 import cs201.structures.transit.BusStop;
 
@@ -148,6 +150,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Ben's Normative Restaurant Delivery");
 		scenarioList.add("Restaurant Shift Change");
 		scenarioList.add("100 People");
+		scenarioList.add("Brandon Restaurant");
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -170,12 +173,32 @@ public class SimCity201 extends JFrame {
 			case 13: normativeMarketRestaurantBenDelivery(); break;
 			case 14: restaurantShiftChange(); break;
 			case 15: hundredPeople(); break;
+			case 16: brandonRestaurant(); break;
 		}
 		
 		pack();
 		CityDirectory.getInstance().startTime();
 	}
 	
+	private void brandonRestaurant() {
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		createPerson("Cashier", r, r, Intention.RestaurantWaiter, r, null);
+		createPerson("Customer", r, r, Intention.RestaurantCustomer, r, null);
+		createPerson("Host", r, r, Intention.RestaurantHost, r, null);
+		createPerson("Cashier",r,r,Intention.RestaurantCashier,r,null);
+		createPerson("Cook",r,r,Intention.RestaurantCook,r,null);
+	}
+
 	private void normativeRestaurant() {
 		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
 		 * when all of them have arrived at the Restaurant. At 8:30AM a single Customer comes
