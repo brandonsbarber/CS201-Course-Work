@@ -2,13 +2,13 @@
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -64,14 +64,11 @@ public class SimCity201 extends JFrame {
 	 * Creates the entire city panel, then prompts for a scenario to execute
 	 */
 	public SimCity201() {
-		try
-		{
+		try {
 			ArtManager.load();
-		}
-		catch(IOException e)
-		{
-			JOptionPane.showMessageDialog(null,"There was a problem loading your images.");
-			System.exit(0);
+		} catch(IOException e) {
+			JOptionPane.showMessageDialog(null, "There was a problem loading your images.");
+			System.exit(1);
 		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,7 +87,7 @@ public class SimCity201 extends JFrame {
 		
 		guiPanel.setLayout(new BorderLayout());
 		
-		cityPanel = new CityPanel();
+		cityPanel = new CityPanel(this);
 		cityPanel.setPreferredSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		cityPanel.setMaximumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		cityPanel.setMinimumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
@@ -99,12 +96,13 @@ public class SimCity201 extends JFrame {
 		
 		buildingPanels = new JPanel();
 		buildingPanels.setLayout(cardLayout);
+		buildingPanels.setBorder(BorderFactory.createEtchedBorder());
 		buildingPanels.setMinimumSize(new Dimension(SIZEX * 2/5, SIZEY * 3 / 5));
 		buildingPanels.setMaximumSize(new Dimension(SIZEX * 2/5, SIZEY * 3 / 5));
 		buildingPanels.setPreferredSize(new Dimension(SIZEX * 2/5, SIZEY * 3 / 5));
-		buildingPanels.setBackground(Color.YELLOW);
-
-		// Create initial buildings here and add them to cityPanel and buildingPanels
+		
+		JPanel blankPanel = new JPanel();
+		buildingPanels.add(blankPanel, "blank");
 		
 		JScrollPane cityScrollPane = new JScrollPane(cityPanel);
 		
@@ -151,8 +149,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Restaurant Shift Change");
 		scenarioList.add("100 People");
 		scenarioList.add("Brandon's Restaurant");
-		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");
-		
+		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");	
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
@@ -553,7 +550,7 @@ public class SimCity201 extends JFrame {
 		
 		for(BusStop stop : stops)
 		{
-			cityPanel.addStructure(stop,new Point((int)stop.x,((int)stop.y==25?2*25:12*25)),new Point((int)stop.x,(int)stop.y));
+			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:12*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
 		}
 		
 		BusAgent bus = new BusAgent(new BusRoute(stops),0);
@@ -687,6 +684,7 @@ public class SimCity201 extends JFrame {
 		p.setHungerEnabled(false);
 		p.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p);
+		personPanel.addPerson(p);
 		p.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
@@ -694,15 +692,17 @@ public class SimCity201 extends JFrame {
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Market Customer",cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerGoods, m, null);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, m, null);
 		p3.setHungerEnabled(false);
 		p3.getMarketChecklist().add(new ItemRequest("Burgers",2));
 		p3.getMarketChecklist().add(new ItemRequest("Pizza",1));
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 	}
 	
@@ -1072,5 +1072,9 @@ public class SimCity201 extends JFrame {
 	
 	public void displayStructurePanel(StructurePanel bp) {
 		cardLayout.show(buildingPanels, bp.getName());
+	}
+	
+	public void displayBlankPanel() {
+		cardLayout.show(buildingPanels, "blank");
 	}
 }

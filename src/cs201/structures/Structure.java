@@ -1,9 +1,11 @@
 package cs201.structures;
 
 import java.awt.Point;
-import java.awt.geom.Rectangle2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import cs201.agents.PersonAgent;
+import cs201.gui.ArtManager;
 import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
@@ -13,8 +15,7 @@ import cs201.roles.Role;
  * @author Matthew Pohlmann
  *
  */
-@SuppressWarnings("serial")
-public abstract class Structure extends Rectangle2D.Double {
+public abstract class Structure {
 	protected int id;
 	protected StructurePanel panel;
 	protected Point guiLocation;
@@ -27,11 +28,16 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected CityTime afternoonShiftStart;
 	protected boolean isOpen;
 	
+	protected BufferedImage sprite;
+	protected Rectangle rect;
+	
 	private static int INSTANCES = 0;
 	
 	public Structure(int x, int y, int width, int height, int id, StructurePanel p) {
-		super(x, y, width, height);
-		
+		this(new Rectangle(x, y, width, height), p);
+	}
+	
+	public Structure(Rectangle r, StructurePanel p) {
 		this.id = ++INSTANCES;
 		this.panel = p;
 		this.guiLocation = null;
@@ -43,6 +49,8 @@ public abstract class Structure extends Rectangle2D.Double {
 		this.morningShiftStart = null;
 		this.morningShiftEnd = null;
 		this.afternoonShiftStart = null;
+		this.rect = new Rectangle(r);
+		this.sprite = ArtManager.getImage("Restaurant_Matt");
 	}
 	
 	/**
@@ -238,6 +246,20 @@ public abstract class Structure extends Rectangle2D.Double {
 	 */
 	public void setMorningShiftEnd(CityTime morningShiftEnd) {
 		this.morningShiftEnd = morningShiftEnd;
+	}
+
+	/**
+	 * @return the sprite
+	 */
+	public BufferedImage getSprite() {
+		return sprite;
+	}
+
+	/**
+	 * @return the rect
+	 */
+	public Rectangle getRect() {
+		return rect;
 	}
 	
 }
