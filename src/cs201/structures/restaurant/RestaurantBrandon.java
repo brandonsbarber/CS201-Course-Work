@@ -9,6 +9,7 @@ import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
+import cs201.gui.roles.restaurant.Brandon.HostGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.WaiterGuiBrandon;
 import cs201.helper.CityTime;
@@ -65,10 +66,10 @@ public class RestaurantBrandon extends Restaurant {
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleBrandon("Host",4);
-		//HostGuiBrandon hostGui = new HostGuiBrandon((RestaurantHostRoleBrandon) host);
-		//hostGui.setPresent(false);
-		//(RestaurantHostRoleMatt) host).setGui(hostGui);
-		//this.panel.addGui(hostGui);
+		HostGuiBrandon hostGui = new HostGuiBrandon((RestaurantHostRoleBrandon) host);
+		hostGui.setPresent(false);
+		((RestaurantHostRoleBrandon) host).setGui(hostGui);
+		this.panel.addGui(hostGui);
 		host.setRestaurant(this);
 			
 		this.cook = new RestaurantCookRoleBrandon(cookingTimes, prices, savedPrices);
@@ -115,6 +116,7 @@ public class RestaurantBrandon extends Restaurant {
 		}
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
+				((RestaurantHostRoleBrandon) host).getGui().setPresent(true);
 				return host;
 			}
 			return null;

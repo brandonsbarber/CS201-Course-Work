@@ -1,8 +1,11 @@
 package cs201.roles.restaurantRoles.Brandon;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
+import cs201.gui.roles.restaurant.Brandon.HostGuiBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.HostBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.WaiterBrandon;
@@ -341,6 +344,23 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void msgReachedDestination() {
+		animationPause.release();
+	}
+	
+	Semaphore animationPause = new Semaphore(0,true);
+
+	HostGuiBrandon gui;
+	
+	public void setGui(HostGuiBrandon hostGui) {
+		this.gui = hostGui;
+	}
+
+	public HostGuiBrandon getGui() {
+		// TODO Auto-generated method stub
+		return gui;
 	}
 }
 

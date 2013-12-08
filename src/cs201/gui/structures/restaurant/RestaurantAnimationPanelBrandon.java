@@ -2,6 +2,7 @@ package cs201.gui.structures.restaurant;
 
 import javax.swing.*;
 
+import cs201.helper.Constants;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
@@ -20,7 +21,7 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
     public static final int TABLE_DIMEN_Y = 50;
     public static final int TABLE_DIMEN_X = 50;
 	private static final int FRAME_RATE = 100;
-	private static final int REFRESH_RATE = 1000/FRAME_RATE;
+	private static final int REFRESH_RATE = Constants.ANIMATION_SPEED;
 	public static final int CASHIER_X = 150;
 	public static final int CASHIER_Y = 50;
 
@@ -47,6 +48,8 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
 	
 	public static final int WINDOWX = 500;
 	public static final int WINDOWY = 500;
+	public static final int HOST_X = 75;
+	public static final int HOST_Y = 15;
 	
     private Dimension bufferSize;
     
