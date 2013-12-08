@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Constants;
@@ -26,24 +27,47 @@ public class CookGuiMatt implements Gui {
 	private final int cookingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
 	private final int platingAreaX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .2f);
 	private final int platingAreaY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .85f);
+	
+	private int xPos, yPos;
+	private int xDestination, yDestination;
+	private boolean animating = false;
+	
+	private String moveDir = "Cook_Down";
 
 	public CookGuiMatt(RestaurantCookRoleMatt c) {
-		role = c;
-		isPresent = false;
 		cooking = Collections.synchronizedList(new ArrayList<String>());
 		plating = Collections.synchronizedList(new ArrayList<String>());
+		role = c;
+		xPos = RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X;
+		xDestination = xPos;
+		yPos = RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y;
+		yDestination = yPos;
+		isPresent = false;
 	}
 
 	public void updatePosition() {			
-		return;
+    	if (animating) {
+			if (xPos < xDestination)
+				xPos++;
+			else if (xPos > xDestination)
+				xPos--;
+	
+			if (yPos < yDestination)
+				yPos++;
+			else if (yPos > yDestination)
+				yPos--;
+			
+			if (xPos == xDestination && yPos == yDestination) {
+				animating = false;
+				role.DoneAnimating();
+			}
+		} else {
+			return;
+		}
 	}
 
 	public void draw(Graphics2D g) {
 		g.setColor(Color.BLACK);
-		
-		if (Constants.DEBUG_MODE) {
-			g.drawString("Cook", COOKX, COOKY);
-		}
 		
 		int x = cookingAreaX;
 		int y = cookingAreaY;
@@ -63,8 +87,31 @@ public class CookGuiMatt implements Gui {
 			}
 		}
 		
-		g.setColor(Color.WHITE);
-		g.fillRect(COOKX, COOKY, COOKSIZE, COOKSIZE);
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.black);
+			g.drawString("Cook", COOKX, COOKY);
+			
+			g.setColor(Color.WHITE);
+			g.fillRect(xPos, yPos, COOKSIZE, COOKSIZE);
+		} else {			
+			if (animating) {
+				double theta = Math.atan2(yPos - yDestination, xDestination - xPos);
+				
+				if (theta >= -Math.PI/4 && theta <= Math.PI/4) {
+					moveDir = "Cook_Right";
+				} else if (theta >= Math.PI/4 && theta <= 3*Math.PI/4) {
+					moveDir = "Cook_Up";
+				} else if (theta <= -Math.PI/4 && theta >= -3*Math.PI/4) {
+					moveDir = "Cook_Down";
+				} else {
+					moveDir = "Cook_Left";
+				}
+			} else {
+				moveDir = "Cook_Down";
+			}
+			
+			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, COOKSIZE, COOKSIZE, null);
+		}
 	}
 	
 	public void addCookingItem(String food) {
@@ -81,6 +128,18 @@ public class CookGuiMatt implements Gui {
 	
 	public void removePlatingItem(String food) {
 		plating.remove(food);
+	}
+	
+	public void goToLocation(int x, int y) {
+		xDestination = x;
+		yDestination = y;
+		animating = true;
+	}
+	
+	public void goToKitchen() {
+		xDestination = COOKX;
+		yDestination = COOKY;
+		animating = true;
 	}
 
 	public boolean isPresent() {

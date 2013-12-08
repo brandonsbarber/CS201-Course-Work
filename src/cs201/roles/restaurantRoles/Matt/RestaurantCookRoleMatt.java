@@ -7,11 +7,13 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
 import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.helper.Matt.RestaurantRotatingStand.RotatingStandOrder;
@@ -27,6 +29,7 @@ import cs201.trace.AlertTag;
  * Restaurant Cook Agent
  */
 public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMatt, ActionListener {
+	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private CookGuiMatt gui = null;
 	private List<Order> orders;
 	private Map<String, Food> foods;
@@ -183,8 +186,13 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
-		// TODO leave restaurant animation
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Leaving work.");
+		gui.goToLocation(RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void DoCookOrder(Order o) {
@@ -279,15 +287,28 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		return this.gui;
 	}
 	
+	/**
+	 * The CookGui tells this CookAgent that it has reached its destination, freeing up this CookAgent
+	 * to continue working
+	 */
+	public void DoneAnimating() {
+		atTargetPosition.release();
+	}
+	
 	public void setRotatingStand(RestaurantRotatingStand stand) {
 		this.stand = stand;
 	}
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO maybe animate into restaurant?
 		closingTime = false;
 		this.gui.setPresent(true);
+		gui.goToKitchen();
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
