@@ -245,7 +245,7 @@ public class PersonInfoPanel extends JPanel {
 		
 		this.nameTextField.setText(p.getName());
 		this.moneyTextField.setText(String.format("$%.2f", p.getMoney()));
-		this.hungerTextField.setText(p.getHungerLevel() + "");
+		this.hungerTextField.setText(p.getHungerLevel() + " (" + (p.getHungerLevel() > PersonAgent.STARVING ? "Starving" : p.getHungerLevel() > PersonAgent.HUNGRY ? "Hungry" : "Full") + ")");
 		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentLocation().toString());
 		this.stateTextField.setText(p.getState().toString());
 		this.wakeupTextField.setText(p.getWakeupTime().toString());

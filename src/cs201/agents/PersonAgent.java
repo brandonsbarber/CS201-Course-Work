@@ -31,9 +31,9 @@ public class PersonAgent extends Agent implements Person {
 	 *                              Constants                                 *
 	 **************************************************************************/
 	private static final int HUNGERPERMINUTE = 2;
-	private static final int FULL = 0;
-	private static final int HUNGRY = 480;
-	private static final int STARVING = 840;
+	public static final int FULL = 0;
+	public static final int HUNGRY = 480;
+	public static final int STARVING = 840;
 	private static final int INITIALMONEY = 40;
 	private static final int MONEYTHRESHOLD = 10;
 	private static final int INITIALWAKEUPHOUR = 7;
