@@ -65,7 +65,7 @@ public class RestaurantAnimationPanelMatt extends StructurePanel {
     
     // PLATING AREA
     public static final int PLATINGAREA_X = (int)(WINDOWX * .34f);
-    public static final int PLATINGAREA_Y = (int)(WINDOWY * .85f);
+    public static final int PLATINGAREA_Y = (int)(WINDOWY * .89f);
     private final Color PLATINGAREAMAINCOLOR = Color.YELLOW;
     private final int PLATINGAREA_SIZE = (int)(WINDOWX * .03f);
     private final int PLATINGAREA1_X = (int)(WINDOWX * .35f);

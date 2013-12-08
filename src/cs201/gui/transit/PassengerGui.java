@@ -7,6 +7,7 @@ import java.util.Stack;
 
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
+import cs201.helper.Constants;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.gui.Gui;
@@ -170,9 +171,12 @@ public class PassengerGui implements Gui
 		}
 		
 		g.drawImage (ArtManager.getImage(moveDir),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
-		g.setColor(Color.BLACK);
-		g.drawString(""+destination, x,y);
-		g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
+		
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.BLACK);
+			g.drawString(""+destination, x,y);
+			g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
+		}
 	}
 
 	/**

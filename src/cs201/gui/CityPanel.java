@@ -2,6 +2,7 @@ package cs201.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -332,7 +333,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		
 		g2.setColor(Color.BLACK);
-		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
+		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 17);
+		g2.setFont(font);
+		g2.drawString("Current Time: " + CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
 	}
 	
 	/**
