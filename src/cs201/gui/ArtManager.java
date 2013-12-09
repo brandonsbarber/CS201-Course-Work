@@ -42,6 +42,9 @@ public class ArtManager
 		atlas.put("Restaurant_Brandon_Grill_Filled",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonGrillFilled.png")));
 		atlas.put("Restaurant_Brandon_Pokeball",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonPokeball.png")));
 		atlas.put("Restaurant_Brandon_Kitchen_Counter",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonKitchenCounter.png")));
+		atlas.put("Restaurant_Brandon_Kitchen_Counter_Top",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonKitchenCounterTop.png")));
+		atlas.put("Restaurant_Brandon_Kitchen_Counter_Bottom",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonKitchenCounterBottom.png")));
+
 		
 		atlas.put("Grass_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/GrassTile.png")));
 		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
