@@ -160,14 +160,11 @@ public class TimePanel extends JDialog implements ChangeListener {
 		// Get the new value
 		int timeValue = source.getValue();
 		
-		// Once the user has stopped adjusting the slider, update SimCity time
-		if (!source.getValueIsAdjusting()) {
-			// Update the overall city time
-			CityDirectory.getInstance().setTimerOut(timeValue);
-			
-			// Update each individual structure panel
-			updateTime(timeValue / 2000.0);
-		}
+		// Update the overall city time
+		CityDirectory.getInstance().setTimerOut(timeValue);
+	
+		// Update each individual structure panel
+		updateTime(timeValue / 2000.0);
 	}
 
 }

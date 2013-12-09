@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.helper.CityDirectory;
+import cs201.helper.Constants;
 import cs201.helper.Ben.RestaurantRotatingStandBen;
 import cs201.helper.Ben.RestaurantRotatingStandBen.RotatingStandOrderBen;
 import cs201.interfaces.roles.restaurant.Ben.CashierBen;
@@ -212,7 +213,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		
 		// Look at our cooking times
 		MyFood theFood = inventory.get(order.choice);
-		int cookingTime = theFood.cookingTime;
+		int cookingTime = (int)(theFood.cookingTime * Constants.ANIMATION_SPEED_FACTOR);
 				
 		// Set a timer so we don't burn the food
 		timer.schedule(new TimerTask() {

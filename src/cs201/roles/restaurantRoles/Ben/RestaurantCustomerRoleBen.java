@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Ben.CustomerGuiBen;
+import cs201.helper.Constants;
 import cs201.interfaces.roles.restaurant.Ben.CashierBen;
 import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
 import cs201.interfaces.roles.restaurant.Ben.HostBen;
@@ -375,14 +376,12 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		 */
 
 		timer.schedule(new TimerTask() {
-			Object cookie = 1;
 			public void run() {
 				event = AgentEvent.doneEating;
-				//isHungry = false;
 				stateChanged();
 			}
 		},
-		getHungerLevel() * 1000);//how long to wait before running task
+		(int)(getHungerLevel() * 1000 * Constants.ANIMATION_SPEED_FACTOR));//how long to wait before running task
 	}
 	
 	private void PayForMeal() {
