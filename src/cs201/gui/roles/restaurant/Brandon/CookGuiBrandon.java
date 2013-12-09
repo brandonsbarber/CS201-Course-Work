@@ -77,6 +77,18 @@ public class CookGuiBrandon implements Gui {
 			{
 				g.drawImage(ArtManager.getImage("Cook_Up"), x,y,20,20,null);
 			}
+			else if(destY > y)
+			{
+				g.drawImage(ArtManager.getImage("Cook_Down"), x,y,20,20,null);
+			}
+			else if(destX < x)
+			{
+				g.drawImage(ArtManager.getImage("Cook_Left"), x,y,20,20,null);
+			}
+			else if(destX > x)
+			{
+				g.drawImage(ArtManager.getImage("Cook_Right"), x,y,20,20,null);
+			}
 			else
 			{
 				g.drawImage(ArtManager.getImage("Cook_Down"), x,y,20,20,null);
