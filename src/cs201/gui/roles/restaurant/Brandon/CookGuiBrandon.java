@@ -3,7 +3,9 @@ package cs201.gui.roles.restaurant.Brandon;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Brandon.RestaurantCookRoleBrandon;
 
 public class CookGuiBrandon implements Gui {
@@ -64,8 +66,22 @@ public class CookGuiBrandon implements Gui {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.YELLOW);
-		g.fillRect(x, y, 20, 20);
+		if(Constants.DEBUG_MODE)
+		{
+			g.setColor(Color.YELLOW);
+			g.fillRect(x, y, 20, 20);
+		}
+		else
+		{
+			if(destY < y)
+			{
+				g.drawImage(ArtManager.getImage("Cook_Up"), x,y,20,20,null);
+			}
+			else
+			{
+				g.drawImage(ArtManager.getImage("Cook_Down"), x,y,20,20,null);
+			}
+		}
 	}
 
 	@Override

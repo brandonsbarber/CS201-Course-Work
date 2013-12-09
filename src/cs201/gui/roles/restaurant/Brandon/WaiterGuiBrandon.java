@@ -3,8 +3,10 @@ package cs201.gui.roles.restaurant.Brandon;
 import java.awt.*;
 import java.util.HashMap;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBrandon;
+import cs201.helper.Constants;
 import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
 import cs201.roles.restaurantRoles.Brandon.RestaurantWaiterRoleBrandon;
 
@@ -77,14 +79,39 @@ public class WaiterGuiBrandon implements Gui
     }
 
     public void draw(Graphics2D g) {
-    	//System.out.println("DRAWING WAITER");
-        g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, WAITER_DIMEN_X, WAITER_DIMEN_Y);
-        
-        g.setColor(Color.BLACK);
-        g.drawString(agent.getName(),xPos,yPos);
-        g.drawRect(xPos, yPos, WAITER_DIMEN_X, WAITER_DIMEN_Y);
-        
+    	if(Constants.DEBUG_MODE)
+    	{
+	        g.setColor(Color.MAGENTA);
+	        g.fillRect(xPos, yPos, WAITER_DIMEN_X, WAITER_DIMEN_Y);
+	        
+	        g.setColor(Color.BLACK);
+	        g.drawString(agent.getName(),xPos,yPos);
+	        g.drawRect(xPos, yPos, WAITER_DIMEN_X, WAITER_DIMEN_Y);
+    	}
+    	else
+    	{
+    		if(yDestination < yPos)
+			{
+				g.drawImage(ArtManager.getImage("Waiter_Up"), xPos,yPos,WAITER_DIMEN_X,WAITER_DIMEN_Y,null);
+			}
+			else if(yDestination > yPos)
+			{
+				g.drawImage(ArtManager.getImage("Waiter_Down"), xPos,yPos,WAITER_DIMEN_X,WAITER_DIMEN_Y,null);
+			}
+			else if(xDestination > xPos)
+			{
+				g.drawImage(ArtManager.getImage("Waiter_Right"), xPos,yPos,WAITER_DIMEN_X,WAITER_DIMEN_Y,null);
+			}
+			else if(xDestination < xPos)
+			{
+				g.drawImage(ArtManager.getImage("Waiter_Left"), xPos,yPos,WAITER_DIMEN_X,WAITER_DIMEN_Y,null);
+			}
+    		else
+    		{
+    			g.drawImage(ArtManager.getImage("Waiter_Down"), xPos,yPos,WAITER_DIMEN_X,WAITER_DIMEN_Y,null);
+    		}
+    	}
+    	
         if(!currentCarry.equals(""))
         {
         	String s = isCarryingOrder?"?":"";
