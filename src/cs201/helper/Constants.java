@@ -76,7 +76,7 @@ public class Constants {
     /**
      * Time (in milliseconds) between animation timer timeouts
      */
-    public static int ANIMATION_SPEED = 10;
+    public static final int ANIMATION_SPEED = 5;
 
     /**
      * Default path from which to load the map of the city

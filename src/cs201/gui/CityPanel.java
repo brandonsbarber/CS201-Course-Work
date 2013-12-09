@@ -42,6 +42,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private String[][] cityGrid;
 	private SimCity201 city;
+	
+	private Timer timer;
+	
+	private final double TIME_FACTOR = 1.5;
 
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
@@ -49,7 +53,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	 */
 	public CityPanel(SimCity201 city)
 	{
-		Timer timer = new Timer(1000/240,this);
+		timer = new Timer((int) (Constants.ANIMATION_SPEED / TIME_FACTOR), this);
 		this.city = city;
 		
 		try
@@ -83,6 +87,17 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	public void addGui(Gui gui)
 	{
 		guis.add(gui);
+	}
+	
+	/**
+	 * Speeds up or slows down the animation for the CityPanel.
+	 * @param speedFactor The factor to increase / decrease the animation speed. This is INVERSE, because it changes the timer delay. 2.0 would half the
+	 * animation speed.
+	 */
+	public void setTimerOut(double speedFactor) {
+		timer.setDelay((int)(Constants.ANIMATION_SPEED / TIME_FACTOR * speedFactor));
+		timer.setInitialDelay((int)(Constants.ANIMATION_SPEED / TIME_FACTOR * speedFactor));
+		timer.restart();
 	}
 	
 	/**

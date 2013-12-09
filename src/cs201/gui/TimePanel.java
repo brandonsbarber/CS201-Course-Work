@@ -100,6 +100,7 @@ public class TimePanel extends JDialog implements ChangeListener {
 		structurePanels.add(panel);
 	}
 	
+	
 	/* *****************
 	 * PRIVATE FUNCTIONS
 	 * *****************
@@ -129,10 +130,11 @@ public class TimePanel extends JDialog implements ChangeListener {
 		timeLabel.setText(text);
 	}
 	
-	private void updateTimeForStructurePanels(double speedFactor) {
+	private void updateTime(double speedFactor) {
 		for (StructurePanel thisPanel : structurePanels) {
 			thisPanel.setTimerOut(speedFactor);
 		}
+		CityPanel.INSTANCE.setTimerOut(speedFactor);
 	}
 	
 	/* *****************
@@ -162,7 +164,7 @@ public class TimePanel extends JDialog implements ChangeListener {
 			CityDirectory.getInstance().setTimerOut(timeValue);
 			
 			// Update each individual structure panel
-			updateTimeForStructurePanels(timeValue / 2000.0);
+			updateTime(timeValue / 2000.0);
 		}
 	}
 
