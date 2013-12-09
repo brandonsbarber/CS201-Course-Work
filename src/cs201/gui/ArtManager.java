@@ -36,6 +36,8 @@ public class ArtManager
 		atlas.put("Restaurant_Brandon_Open",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonOpen.png")));
 		atlas.put("Restaurant_Brandon_Closed",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonClosed.png")));
 		
+		atlas.put("Grass_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/GrassTile.png")));
+		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
 		//Ben's Sprites
 		
 		
