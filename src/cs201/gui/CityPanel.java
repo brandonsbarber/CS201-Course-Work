@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -42,6 +43,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	List<Gui> guis;
 	
 	private String[][] cityGrid;
+	public Semaphore[][] permissions;
+	
 	private SimCity201 city;
 	
 	private Timer timer;
@@ -79,6 +82,15 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		populateDrivingMap();
 
 		timer.start();
+		
+		permissions = new Semaphore[cityGrid.length][cityGrid[0].length];
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				permissions[y][x] = new Semaphore(1,true);
+			}
+		}
 	}
 	
 	/**
@@ -383,6 +395,20 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 17);
 		g2.setFont(font);
 		g2.drawString("Current Time: " + CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
+	
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				if(permissions[y][x].availablePermits() == 0)
+				{
+					g2.setColor(Color.WHITE);
+					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				}
+				g2.setColor(Color.BLACK);
+				g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+			}
+		}
 	}
 	
 	/**

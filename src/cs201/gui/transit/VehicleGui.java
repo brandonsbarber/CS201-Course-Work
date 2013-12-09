@@ -45,6 +45,9 @@ public abstract class VehicleGui implements Gui
 
 	private boolean pathfinding;
 	
+	private Point prev;
+	private Point current;
+	
 	/**
 	 * Creates a vehicle gui
 	 * @param vehicle the vehicle who holds the gui
@@ -98,6 +101,9 @@ public abstract class VehicleGui implements Gui
 		destY = (int)destination.getParkingLocation().getY();
 		fired = false;
 		present = true;
+		
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		prev = current;
 		
 		findPath();
 	}
@@ -164,6 +170,18 @@ public abstract class VehicleGui implements Gui
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
+				city.permissions[prev.y][prev.x].release();
+				prev = current;
+				current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+				try
+				{
+					city.permissions[current.y][current.x].acquire();
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				
 				currentDirection = moves.pop();
 				return;
 			}

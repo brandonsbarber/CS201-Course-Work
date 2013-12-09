@@ -13,6 +13,7 @@ import cs201.gui.CityPanel;
 
 public class Pathfinder
 {
+	@SuppressWarnings("serial")
 	static class MyPoint extends Point
 	{
 		MyPoint prev;
