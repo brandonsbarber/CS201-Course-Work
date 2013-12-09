@@ -104,7 +104,6 @@ public abstract class VehicleGui implements Gui
 		
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		prev = current;
-		
 		findPath();
 	}
 	
@@ -149,6 +148,10 @@ public abstract class VehicleGui implements Gui
 				fired = true;
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
+				
+				city.permissions[prev.y][prev.x].release();
+				city.permissions[current.y][current.x].release();
+				
 				return;
 			}
 			switch(currentDirection)
@@ -170,17 +173,15 @@ public abstract class VehicleGui implements Gui
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
-				city.permissions[prev.y][prev.x].release();
+				System.out.println("Releasing "+prev);
+				if(prev != current)
+				{
+					city.permissions[prev.y][prev.x].release();
+				}
 				prev = current;
 				current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
-				try
-				{
-					city.permissions[current.y][current.x].acquire();
-				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
+			
+				city.permissions[current.y][current.x].tryAcquire();
 				
 				currentDirection = moves.pop();
 				return;
