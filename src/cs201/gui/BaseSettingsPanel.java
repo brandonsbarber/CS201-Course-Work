@@ -56,6 +56,16 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 	public void setTimePanel(TimePanel panel) {
 		timePanel = panel;
 	}
+	
+	/**
+	 * Used to reset any settings/the trace panel
+	 */
+	public void resetCity() {
+		this.traceFrame.resetCity();
+		this.debugMode.setSelected(false);
+		Constants.DEBUG_MODE = false;
+		this.timePanel.resetCity();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)

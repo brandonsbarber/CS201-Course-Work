@@ -81,6 +81,18 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	}
 	
 	/**
+	 * Called when resetting the city for a new scenario
+	 */
+	public void resetCity() {
+		timer.stop();
+		
+		guis.clear();
+		buildings.clear();
+		
+		timer.start();
+	}
+	
+	/**
 	 * Adds a gui for rendering
 	 * @param gui the gui to add
 	 */

@@ -270,5 +270,31 @@ public class TraceFrame extends JFrame {
 		
 		this.pack();
 	}
+	
+	/**
+	 * Used to reset the TraceFrame and its internal components
+	 */
+	public void resetCity() {
+		this.tracePanel.resetCity();
+		tracePanel.showAlertsForAllLevels();
+		tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
+		tracePanel.showAlertsForAllTags();
+		
+		messagesButton.setSelected(true);
+		infoButton.setSelected(true);
+		warningButton.setSelected(true);
+		errorButton.setSelected(true);
+		debugButton.setSelected(false);
+		
+		personButton.setSelected(true);
+		bankButton.setSelected(true);
+		busStopButton.setSelected(true);
+		restaurantButton.setSelected(true);
+		marketButton.setSelected(true);
+		residenceButton.setSelected(true);
+		apartmentButton.setSelected(true);
+		generalButton.setSelected(true);
+		transitButton.setSelected(true);
+	}
 
 }

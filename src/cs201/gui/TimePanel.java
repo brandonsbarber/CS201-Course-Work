@@ -94,6 +94,14 @@ public class TimePanel extends JDialog implements ChangeListener {
 	}
 	
 	/**
+	 * Called to reset this panel when starting a new scenario/resetting the city
+	 */
+	public void resetCity() {
+		this.slider.setValue(SLIDER_INIT);
+		this.setTimeLabel(SLIDER_INIT);
+	}
+	
+	/**
 	 * Adds a structure panel to the list of structure panels that will be affected by time shifts.
 	 * @param panel
 	 */

@@ -33,6 +33,7 @@ import cs201.gui.transit.CarGui;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
 import cs201.helper.CityTime.WeekDay;
+import cs201.helper.Constants;
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.roles.housing.Renter;
 import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
@@ -61,6 +62,7 @@ public class SimCity201 extends JFrame {
 	TimePanel timePanel;
 	
 	SettingsPanel settingsPanel;
+	BaseSettingsPanel bottomSettingsPanel;
 	
 	/**
 	 * Creates the entire city panel, then prompts for a scenario to execute
@@ -82,7 +84,7 @@ public class SimCity201 extends JFrame {
 		
 		JPanel guiPanel = new JPanel();
 		
-		BaseSettingsPanel bottomSettingsPanel = new BaseSettingsPanel();
+		bottomSettingsPanel = new BaseSettingsPanel();
 		
 		timePanel = new TimePanel();
 		bottomSettingsPanel.setTimePanel(timePanel);
@@ -160,12 +162,11 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Ben's Restaurant Shift Change");
 		scenarioList.add("Brandon Restaurant Market Order");
 		
+		scenarioList.add("Reset City"); // keep as last item
+		
 		scenarioPanel = new ScenarioPanel(scenarioList);
 		bottomSettingsPanel.setScenarioPanel(scenarioPanel);
 		scenarioPanel.setSimCity(this);
-		scenarioPanel.showModalScenarioSelection();
-
-		runScenario(scenarioPanel.getChosenScenario());
 		
 		pack();
 		CityDirectory.getInstance().startTime();
@@ -177,6 +178,8 @@ public class SimCity201 extends JFrame {
 	 * (The first scenario is 1)
 	 */
 	public void runScenario(int scenarioNumber) {
+		clearScenario();
+		
 		switch(scenarioNumber)
 		{
 			case 1: normativeRestaurant(); break;
@@ -200,6 +203,7 @@ public class SimCity201 extends JFrame {
 			case 19: marketShiftChange(); break;
 			case 20: benRestaurantShiftChange(); break;
 			case 21: brandonRestaurantMarketOrder(); break;
+			default: return;
 		}
 	}
 	
@@ -208,6 +212,17 @@ public class SimCity201 extends JFrame {
 	 */
 	public void clearScenario() {
 		// TODO figure out what to do to clear the stage for a new scenario.
+		this.personPanel.resetCity();
+		CityDirectory.getInstance().resetCity();
+		Constants.ANIMATION_SPEED_FACTOR = 1.0f;
+		cityPanel.resetCity();
+		for(int i = 0; i < buildingPanels.getComponents().length; i++) {
+			cardLayout.removeLayoutComponent(buildingPanels.getComponents()[i]);
+		}
+		buildingPanels.removeAll();
+		JPanel blankPanel = new JPanel();
+		buildingPanels.add(blankPanel, "blank");
+		bottomSettingsPanel.resetCity();
 	}
 	
 	private void brandonRestaurantMarketOrder()

@@ -48,6 +48,11 @@ public class PersonConfigPanel extends ConfigPanel {
 		this.right.addPerson(p);
 	}
 	
+	public void resetCity() {
+		this.right.reset();
+		this.left.resetInfo();
+	}
+	
 	
 	private class RightPanel extends JPanel {
 		private JScrollPane scrollPane;
@@ -84,6 +89,10 @@ public class PersonConfigPanel extends ConfigPanel {
 			model.add(index, p);
 			personList.setSelectedIndex(index);
 			personList.ensureIndexIsVisible(index);
+		}
+		
+		public void reset() {
+			this.model.clear();
 		}
 	}
 }

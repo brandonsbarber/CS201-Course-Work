@@ -176,6 +176,13 @@ public class AlertLog {
 	}
 	
 	/**
+	 * Used to clear all alerts from the AlertLog
+	 */
+	public void resetAlerts() {
+		this.alerts.clear();
+	}
+	
+	/**
 	 * Registers someone to be notified when an alert is added.
 	 * @param alertListener the listener to register.
 	 */

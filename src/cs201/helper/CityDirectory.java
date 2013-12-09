@@ -52,8 +52,32 @@ public class CityDirectory implements ActionListener {
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
 	private List<ApartmentComplex> apartments = Collections.synchronizedList(new ArrayList<ApartmentComplex>());
 	
+	public void resetCity() {
+		this.cityTimer.stop();
+		this.time = new CityTime();
+		
+		// Clear People
+		synchronized(people) {
+			for (PersonAgent p : people) {
+				// stop thread
+			}
+		}
+		this.people.clear();
+		
+		// Clear buildings
+		this.restaurants.clear();
+		this.banks.clear();
+		this.markets.clear();
+		this.residences.clear();
+		this.apartments.clear();
+		
+		this.startTime();
+	}
+	
 	// SimCity201 Time Stuff
 	public void startTime() {
+		cityTimer.setDelay(INITIALTIMEROUT);
+		cityTimer.setInitialDelay(INITIALTIMEROUT);
 		cityTimer.setRepeats(true);
 		cityTimer.start();
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());

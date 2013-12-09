@@ -102,7 +102,14 @@ public class TracePanel extends JScrollPane implements AlertListener {
 		//Sets up the TracePanel to automatically be tied with the AlertLog.
 		AlertLog.getInstance().addAlertListener(this);
 	}
-
+	
+	/**
+	 * Used when resetting a scenario/the city
+	 */
+	public void resetCity() {
+		this.newAlerts.clear();
+		AlertLog.getInstance().resetAlerts();
+	}
 	
 	/**
 	 * Determines if a given alert should be displayed based on all of the currently enabled {@link AlertLevel}
@@ -161,7 +168,6 @@ public class TracePanel extends JScrollPane implements AlertListener {
 			}
 			newAlerts.clear();	//We've dealt with the new alerts, so remove them form the new alerts list.
 		}
-		traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength());
 	}
 
 	/**
@@ -184,6 +190,7 @@ public class TracePanel extends JScrollPane implements AlertListener {
 		}
 
 		updateTracePanel();	//update the panel to now reflect the correct alerts
+		traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength()); // scroll to bottom
 	}
 
 	/**
