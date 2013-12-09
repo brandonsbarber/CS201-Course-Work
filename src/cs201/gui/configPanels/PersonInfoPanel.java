@@ -13,8 +13,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
-import java.awt.Component;
-import javax.swing.Box;
+import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
 public class PersonInfoPanel extends JPanel {
@@ -26,10 +25,10 @@ public class PersonInfoPanel extends JPanel {
 	private JTextField wakeupTextField;
 	private JTextField sleepTextField;
 	private JTextField actionTextField;
-	private JTextField carTextField;
 	private JTextField jobTextField;
 	private JTextField workTimeTextField;
 	private JTextField homeTextField;
+	private JCheckBox carCheckBox;
 
 	/**
 	 * Create the panel.
@@ -243,7 +242,7 @@ public class PersonInfoPanel extends JPanel {
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
 		gbl_centerPanel.columnWidths = new int[] {0, 0};
 		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gbl_centerPanel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_centerPanel.columnWeights = new double[]{0.0, 1.0};
 		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		centerPanel.setLayout(gbl_centerPanel);
 		
@@ -256,18 +255,16 @@ public class PersonInfoPanel extends JPanel {
 		gbc_lblHasCar.gridy = 0;
 		centerPanel.add(lblHasCar, gbc_lblHasCar);
 		
-		carTextField = new JTextField();
-		carTextField.setEditable(false);
-		carTextField.setFocusable(false);
-		lblHasCar.setLabelFor(carTextField);
-		carTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		GridBagConstraints gbc_carTextField = new GridBagConstraints();
-		gbc_carTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_carTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_carTextField.gridx = 1;
-		gbc_carTextField.gridy = 0;
-		centerPanel.add(carTextField, gbc_carTextField);
-		carTextField.setColumns(10);
+		carCheckBox = new JCheckBox("");
+		carCheckBox.setFocusable(false);
+		carCheckBox.setEnabled(false);
+		lblHasCar.setLabelFor(carCheckBox);
+		GridBagConstraints gbc_carCheckBox = new GridBagConstraints();
+		gbc_carCheckBox.anchor = GridBagConstraints.WEST;
+		gbc_carCheckBox.insets = new Insets(0, 0, 5, 0);
+		gbc_carCheckBox.gridx = 1;
+		gbc_carCheckBox.gridy = 0;
+		centerPanel.add(carCheckBox, gbc_carCheckBox);
 		
 		JLabel lblJob = new JLabel("Job:");
 		lblJob.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -313,7 +310,7 @@ public class PersonInfoPanel extends JPanel {
 		centerPanel.add(workTimeTextField, gbc_workTimeTextField);
 		workTimeTextField.setColumns(10);
 		
-		JLabel lblHasHome = new JLabel("Has Home:");
+		JLabel lblHasHome = new JLabel("Home:");
 		lblHasHome.setFocusable(false);
 		lblHasHome.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		GridBagConstraints gbc_lblHasHome = new GridBagConstraints();
@@ -355,7 +352,7 @@ public class PersonInfoPanel extends JPanel {
 		this.wakeupTextField.setText("");
 		this.sleepTextField.setText("");
 		this.actionTextField.setText("");
-		this.carTextField.setText("");
+		this.carCheckBox.setSelected(false);
 		this.jobTextField.setText("");
 		this.workTimeTextField.setText("");
 		this.homeTextField.setText("");
@@ -371,13 +368,13 @@ public class PersonInfoPanel extends JPanel {
 		this.hungerTextField.setText(p.getHungerLevel() > PersonAgent.STARVING ? "Starving" : p.getHungerLevel() > PersonAgent.HUNGRY ? "Hungry" : "Full");
 		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentAction() == null ? "In City" : p.getCurrentLocation().toString());
 		this.stateTextField.setText(p.getState().toString());
-		this.wakeupTextField.setText(p.getWakeupTime().toString());
-		this.sleepTextField.setText(p.getSleepTime().toString());
+		this.wakeupTextField.setText(p.getWakeupTime().toString().trim());
+		this.sleepTextField.setText(p.getSleepTime().toString().trim());
 		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
-		this.carTextField.setText(p.getVehicle() == null ? "No" : "Yes");
+		this.carCheckBox.setSelected(p.getVehicle() != null);
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
-		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString());
-		this.homeTextField.setText(p.getHome() == null ? "No" : "Yes");
+		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString().trim());
+		this.homeTextField.setText(p.getHome() == null ? "None" : p.getHome().toString());
 	}
 
 }
