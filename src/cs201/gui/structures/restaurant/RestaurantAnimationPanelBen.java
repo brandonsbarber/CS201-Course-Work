@@ -12,9 +12,11 @@ import java.util.List;
 
 import javax.swing.Timer;
 
+import cs201.gui.ArtManager;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Ben.CustomerGuiBen;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Ben.RestaurantHostRoleBen;
 
 public class RestaurantAnimationPanelBen extends StructurePanel {
@@ -67,6 +69,8 @@ public class RestaurantAnimationPanelBen extends StructurePanel {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
+        
+       // if (Constants.DEBUG_MODE) {
 
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
@@ -83,6 +87,10 @@ public class RestaurantAnimationPanelBen extends StructurePanel {
         
         // Here is the cooking area
         cookingArea.draw(g2);
+        
+        //} else {
+
+        //}
 
         super.paintComponent(g);
     }
