@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.ArtManager;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
@@ -36,6 +37,8 @@ public class RestaurantBrandon extends Restaurant {
 
 	public RestaurantBrandon(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
+		this.openSprite = ArtManager.getImage("Restaurant_Brandon_Open");
+		this.closedSprite = ArtManager.getImage("Restaurant_Brandon_Closed");
 
 		/*--------------------------------
 		 * 
