@@ -3,6 +3,7 @@ package cs201.gui.structures.restaurant;
 import javax.swing.*;
 
 import cs201.helper.Constants;
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
@@ -66,6 +67,7 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
     	tables.put(1,new Dimension(200,200));
     	tables.put(2,new Dimension(100,200));
     	tables.put(3,new Dimension(100,100));
+    	tables.put(4,new Dimension(200,100));
  
     	Timer timer = new Timer(REFRESH_RATE, this );
     	timer.start();
@@ -79,15 +81,19 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
         g2.setColor(getBackground());
         g2.fillRect(0,0,bufferSize.width,bufferSize.height);
         
+        g2.drawImage(ArtManager.getImage("Restaurant_Brandon_Floor"),0,0,this);
+        
         for(Integer i : tables.keySet())
         {
-        	g2.setColor(Color.ORANGE);
+        	g2.drawImage(ArtManager.getImage("Restaurant_Brandon_Table"), tables.get(i).width, tables.get(i).height, TABLE_DIMEN_X, TABLE_DIMEN_Y,this);
+        	
+        	/*g2.setColor(Color.ORANGE);
         	
         	g2.fillRect(tables.get(i).width, tables.get(i).height, TABLE_DIMEN_X, TABLE_DIMEN_Y);
         	
         	g2.setColor(Color.BLACK);
         	
-        	g2.drawString(""+i,tables.get(i).width,tables.get(i).height+TABLE_DIMEN_Y);
+        	g2.drawString(""+i,tables.get(i).width,tables.get(i).height+TABLE_DIMEN_Y);*/
         }
         
         g2.setColor(Color.GREEN);
