@@ -223,6 +223,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -238,6 +239,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		((RestaurantCookRoleBrandon)r.getCook()).emptySomeFood();
 		
@@ -282,6 +284,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -349,6 +352,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -538,6 +542,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(acap,""+ac.getId());
 		cityPanel.addStructure(ac, new Point(14*25,7*25), new Point(14*25, 8*25));
 		CityDirectory.getInstance().addApartment(ac);
+		timePanel.addAnimationPanel(acap);
 		
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
 		Residence res = new Residence(14*25, 10*25, 25, 25, Structure.getNextInstance(), resPanel, true);
@@ -581,6 +586,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(resPanel,""+res.getId());
 		cityPanel.addStructure(res, new Point(12*25, 10*25), new Point(13*25, 10*25));
 		CityDirectory.getInstance().addResidence(res);
+		timePanel.addAnimationPanel(resPanel);
 		
 		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
@@ -606,6 +612,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
+		timePanel.addAnimationPanel(mG);
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
@@ -614,6 +621,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
 		//p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.None, m, null);
@@ -641,6 +649,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
+		timePanel.addAnimationPanel(mG);
 			
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
@@ -649,6 +658,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(18*25,9*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 	
 		CarAgent car = new CarAgent();
 		CarGui cGui = new CarGui(car,cityPanel);
@@ -678,21 +688,27 @@ public class SimCity201 extends JFrame {
 
 		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(22*25,13*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
 		
 		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(12*25,13*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
 		
 		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(2*25,13*25,25,25,3, panel3));
+		timePanel.addAnimationPanel(panel3);
 		
 		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(22*25,1*25,25,25,4, panel4));
+		timePanel.addAnimationPanel(panel4);
 		
 		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(12*25,1*25,25,25,5, panel5));
+		timePanel.addAnimationPanel(panel5);
 		
 		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(2*25,1*25,25,25,6, panel6));
+		timePanel.addAnimationPanel(panel6);
 		
 		buildingPanels.add(panel,""+stops.get(0).getId());
 		buildingPanels.add(panel2,""+stops.get(1).getId());
@@ -719,6 +735,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		CityDirectory.getInstance().addMarket(m);
+		timePanel.addAnimationPanel(mG);
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
@@ -727,6 +744,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 
 		PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
@@ -885,6 +903,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g, ""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -938,6 +957,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g, ""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -1006,6 +1026,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
 		
 		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
@@ -1075,6 +1096,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1089,6 +1111,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g, ""+r.getId());
 		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
@@ -1151,6 +1174,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host AM", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -1243,6 +1267,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host AM", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -1330,6 +1355,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host AM", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -1415,6 +1441,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
 		
 		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
@@ -1480,6 +1507,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
 		
 		for (int i = 1; i <= 100; i++) {
 			createPerson(i + "", r, null, null, null, null);
