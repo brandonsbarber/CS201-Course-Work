@@ -510,7 +510,6 @@ public class PassengerRole extends Role implements Passenger
 						e.printStackTrace();
 					}
 				}
-				
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);

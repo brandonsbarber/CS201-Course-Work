@@ -91,6 +91,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				permissions[y][x] = new Semaphore(1,true);
 			}
 		}
+		permissions[7][13].tryAcquire();
 	}
 	
 	/**
@@ -374,6 +375,20 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				if(permissions[y][x].availablePermits() == 0)
+				{
+					g2.setColor(Color.WHITE);
+					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				}
+				g2.setColor(Color.BLACK);
+				g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+			}
+		}
+		
 		try
 		{
 			for(Gui gui: guis)
@@ -396,19 +411,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		g2.setFont(font);
 		g2.drawString("Current Time: " + CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
 	
-		for(int y = 0; y < permissions.length;y++)
-		{
-			for(int x = 0; x < permissions[y].length; x++)
-			{
-				if(permissions[y][x].availablePermits() == 0)
-				{
-					g2.setColor(Color.WHITE);
-					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-				}
-				g2.setColor(Color.BLACK);
-				g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
-			}
-		}
+		
 	}
 	
 	/**
