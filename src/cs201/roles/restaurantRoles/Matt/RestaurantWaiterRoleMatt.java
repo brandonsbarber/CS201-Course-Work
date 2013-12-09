@@ -14,6 +14,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
 import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.helper.Constants;
 import cs201.helper.Matt.MenuMatt;
 import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.helper.Matt.TableMatt;
@@ -346,7 +347,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 	}
 	
 	private void BreakTimer() {
-		breakTimer = new Timer(BREAKTIME,
+		breakTimer = new Timer((int) (BREAKTIME * Constants.ANIMATION_SPEED_FACTOR),
 				new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				state = WaiterState.breakOver;
@@ -400,7 +401,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.GoToCustomer(m.customer);
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -438,7 +439,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.GoToCustomer(m.customer);
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -472,7 +473,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.setMessage("");
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -482,7 +483,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		waiterGui.setMessage("$$");
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -501,10 +502,10 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		}
 		
 		waiterGui.GoToCustomer(m.customer);
-		waiterGui.setMessage("$$");
+		waiterGui.setMessage(String.format("$%.2f", m.checkAmount));
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

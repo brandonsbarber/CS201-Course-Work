@@ -8,6 +8,7 @@ import javax.swing.Timer;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
+import cs201.helper.Constants;
 import cs201.helper.Matt.MenuMatt;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
@@ -328,7 +329,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void ChooseFoodTimer() {
-		customerTimer = new Timer(CHOOSINGDURATION, 
+		customerTimer = new Timer((int) (CHOOSINGDURATION * Constants.ANIMATION_SPEED_FACTOR), 
 				new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -376,7 +377,7 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	}
 	
 	private void EatFoodTimer() {
-		customerTimer = new Timer(EATINGDURATION, 
+		customerTimer = new Timer((int) (EATINGDURATION * Constants.ANIMATION_SPEED_FACTOR), 
 				new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -397,9 +398,10 @@ public class RestaurantCustomerRoleMatt extends RestaurantCustomerRole implement
 	private void DoPayCheck() {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Going to " + cashier.toString() + " to pay bill.");
 		customerGui.DoGoToCashier();
+		customerGui.setMessage(String.format("$%.2f", this.checkAmount));
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

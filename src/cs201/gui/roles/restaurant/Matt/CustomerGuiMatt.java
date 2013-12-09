@@ -211,7 +211,6 @@ public class CustomerGuiMatt implements Gui {
 		xDestination = cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERX + (int) (2.5 * cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERSIZE);
 		yDestination = cs201.gui.roles.restaurant.Matt.CashierGuiMatt.CASHIERY;
 		state = guiState.goingToCashier;
-		eating = "$$";
 		hasPosition = true;
 		animating = true;
 	}

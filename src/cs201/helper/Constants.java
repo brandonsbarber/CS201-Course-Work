@@ -71,7 +71,7 @@ public class Constants {
     /**
      * Scalar describing how fast time passes in SimCity201
      */
-    public static float TIME_WARP = 1.0f;
+    public static double ANIMATION_SPEED_FACTOR = 1.0f;
     
     /**
      * Time (in milliseconds) between animation timer timeouts

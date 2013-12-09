@@ -17,6 +17,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import cs201.helper.CityDirectory;
+import cs201.helper.Constants;
 
 
 /**
@@ -135,6 +136,7 @@ public class TimePanel extends JDialog implements ChangeListener {
 			thisPanel.setTimerOut(speedFactor);
 		}
 		CityPanel.INSTANCE.setTimerOut(speedFactor);
+		Constants.ANIMATION_SPEED_FACTOR = speedFactor;
 	}
 	
 	/* *****************

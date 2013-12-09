@@ -15,6 +15,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityDirectory;
+import cs201.helper.Constants;
 import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.helper.Matt.RestaurantRotatingStand.RotatingStandOrder;
 import cs201.interfaces.roles.restaurant.Matt.CookMatt;
@@ -230,14 +231,14 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		gui.goToLocation(RestaurantAnimationPanelMatt.FRIDGE_X, RestaurantAnimationPanelMatt.FRIDGE_Y);
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		gui.goToLocation(RestaurantAnimationPanelMatt.STOVES_X, RestaurantAnimationPanelMatt.STOVES_Y);
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -260,7 +261,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		gui.goToLocation(RestaurantAnimationPanelMatt.PLATING_X, RestaurantAnimationPanelMatt.PLATING_Y);
 		try {
 			atTargetPosition.acquire();
-			Thread.sleep(500);
+			Thread.sleep((int) (500 * Constants.ANIMATION_SPEED_FACTOR));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -319,7 +320,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		}
 		
 		public void CookOrder(int howLong) {
-			cookTimer = new Timer(howLong, 
+			cookTimer = new Timer((int) (howLong * Constants.ANIMATION_SPEED_FACTOR), 
 					new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
