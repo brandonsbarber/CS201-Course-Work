@@ -250,6 +250,11 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		stateChanged();
 	}
 	
+	public void msgCheckStand()
+	{
+		stateChanged();
+	}
+	
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{

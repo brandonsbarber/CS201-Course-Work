@@ -68,9 +68,6 @@ public class RestaurantAnimationPanelBrandon extends StructurePanel implements A
     	tables.put(2,new Dimension(100,200));
     	tables.put(3,new Dimension(100,100));
     	tables.put(4,new Dimension(200,100));
- 
-    	Timer timer = new Timer(REFRESH_RATE, this );
-    	timer.start();
     }
 
     public void paintComponent(Graphics g) {

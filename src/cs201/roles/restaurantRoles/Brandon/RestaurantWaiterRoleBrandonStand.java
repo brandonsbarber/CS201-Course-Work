@@ -25,6 +25,7 @@ public class RestaurantWaiterRoleBrandonStand extends RestaurantWaiterRoleBrando
 		}
 		
 		stand.addOrder(this, c.choice, c.t);
+		((RestaurantCookRoleBrandon)(this.restaurant.getCook())).msgCheckStand();
 	}
 
 }
