@@ -781,7 +781,11 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
-			
+		
+		TruckAgent truck2 = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck2);
+		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
 		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);

@@ -27,7 +27,8 @@ public class MarketStructure extends Structure {
 	
 	MarketManagerRole manager = null;
 	List<MarketEmployeeRole> employees = Collections.synchronizedList(new ArrayList<MarketEmployeeRole>());
-	TruckAgent deliveryTruck = null;
+	List<TruckAgent> trucks = Collections.synchronizedList(new ArrayList<TruckAgent>());
+	int currentTruck = 0;
 	StructurePanel panel = null;
 	double totalFunds = 0.0;
 	
@@ -212,13 +213,18 @@ public class MarketStructure extends Structure {
 	/**
 	 * @return The delivery truck for the market.
 	 */
-	public TruckAgent getDeliveryTruck() {
-		return deliveryTruck;
+	public TruckAgent getNextDeliveryTruck() {
+		if (trucks.size() > 0) {
+			TruckAgent nextTruck = trucks.get(currentTruck);
+			currentTruck = (currentTruck + 1) % trucks.size();
+			return nextTruck;
+		}
+		return null;
 	}
 	
 	public void addTruck(TruckAgent truck)
 	{
-		deliveryTruck = truck;
+		trucks.add(truck);
 	}
 	
 	/**

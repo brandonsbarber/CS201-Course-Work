@@ -598,7 +598,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 		//if (structure != null && o.structure != null && o.structure.getOpen()) {
 		if (structure != null && o.structure != null) {
 			// Get our delivery truck
-			TruckAgent deliveryTruck = structure.getDeliveryTruck();
+			TruckAgent deliveryTruck = structure.getNextDeliveryTruck();
 		
 			// Tell him to make a run
 			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure, o.totalPrice);
