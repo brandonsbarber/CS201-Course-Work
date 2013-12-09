@@ -59,7 +59,10 @@ public class CityDirectory implements ActionListener {
 		// Clear People
 		synchronized(people) {
 			for (PersonAgent p : people) {
-				// stop thread
+				p.stopGoOn();
+				p.stateChanged();
+				p.stateChanged();
+				p.stateChanged();
 			}
 		}
 		this.people.clear();

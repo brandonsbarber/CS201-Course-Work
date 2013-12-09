@@ -213,6 +213,7 @@ public class SimCity201 extends JFrame {
 	public void clearScenario() {
 		// TODO figure out what to do to clear the stage for a new scenario.
 		this.personPanel.resetCity();
+		bottomSettingsPanel.resetCity();
 		CityDirectory.getInstance().resetCity();
 		Constants.ANIMATION_SPEED_FACTOR = 1.0f;
 		cityPanel.resetCity();
@@ -222,7 +223,8 @@ public class SimCity201 extends JFrame {
 		buildingPanels.removeAll();
 		JPanel blankPanel = new JPanel();
 		buildingPanels.add(blankPanel, "blank");
-		bottomSettingsPanel.resetCity();
+		
+		System.gc();
 	}
 	
 	private void brandonRestaurantMarketOrder()
