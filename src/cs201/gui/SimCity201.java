@@ -76,7 +76,7 @@ public class SimCity201 extends JFrame {
 		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+		setVisible(false);
 		setSize(SIZEX, SIZEY);
 		setTitle("SimCity201 - Team 21");
 		
