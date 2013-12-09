@@ -140,8 +140,11 @@ public class PassengerRole extends Role implements Passenger
 	
 	public void msgStartRoaming()
 	{
-		setCurrentLocation(currentLocation);
-		state = PassengerState.Roaming;
+		if(state != PassengerState.Roaming)
+		{
+			setCurrentLocation(currentLocation);
+			state = PassengerState.Roaming;
+		}
 		stateChanged();
 	}
 
@@ -238,8 +241,22 @@ public class PassengerRole extends Role implements Passenger
 			roam();
 			return false;
 		}
+		if(currentLocation == destination && !gui.locationEquals(currentLocation))
+		{
+			gui.doGoToLocation(currentLocation.getEntranceLocation().x, currentLocation.getEntranceLocation().y);
+			try
+			{
+				animationPause.acquire();
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			return true;
+		}
 		if(currentLocation == destination && state == PassengerState.None && waypoints.isEmpty())
 		{
+			System.out.println("REACHED DESTINATION");
 			finishMoving();
 			return false;
 		}
@@ -278,7 +295,7 @@ public class PassengerRole extends Role implements Passenger
 		{
 			e1.printStackTrace();
 		}
-		gui.doGoToLocation(currentLocation);
+		/*gui.doGoToLocation(currentLocation);
 		try
 		{
 			animationPause.acquire();
@@ -286,8 +303,8 @@ public class PassengerRole extends Role implements Passenger
 		catch (InterruptedException e1)
 		{
 			e1.printStackTrace();
-		}
-		gui.setPresent(false);
+		}*/
+		//gui.setPresent(false);
 		setActive(false);
 	}
 
@@ -510,5 +527,10 @@ public class PassengerRole extends Role implements Passenger
 				}
 				break;
 		}
+	}
+
+	public boolean isAtLocation(Structure location)
+	{
+		return gui.locationEquals(location);
 	}
 }

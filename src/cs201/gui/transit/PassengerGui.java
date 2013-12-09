@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Stack;
 
+import javax.swing.JOptionPane;
+
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.helper.Constants;
@@ -237,8 +239,14 @@ public class PassengerGui implements Gui
 	 */
 	public void setLocation(int x, int y)
 	{
+		System.out.println("Setting location: "+this.pass.getName()+" "+x+" "+y);
 		this.x = x;
 		this.y = y;
+	}
+
+	public boolean locationEquals(Structure currentLocation) 
+	{
+		return currentLocation.getEntranceLocation().x == x && currentLocation.getEntranceLocation().y == y;
 	}
 
 }

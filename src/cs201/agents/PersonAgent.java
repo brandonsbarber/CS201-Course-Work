@@ -301,9 +301,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void goToLocation(Action a) {
 		a.active = true;
-		if (currentLocation != a.location) {
+		if (!passengerRole.isAtLocation(a.location)) {
 			AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Going to " + a.location);
-			passengerRole.setCurrentLocation(currentLocation);
+			//passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);
