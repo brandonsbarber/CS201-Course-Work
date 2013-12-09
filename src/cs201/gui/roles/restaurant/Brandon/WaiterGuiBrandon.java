@@ -182,11 +182,8 @@ public class WaiterGuiBrandon implements Gui
     
     public void doGoOnBreak()
     {
-    	xDestination = RestaurantAnimationPanelBrandon.BREAK_X;
-    	yDestination = RestaurantAnimationPanelBrandon.BREAK_Y;
-    	eventFired = false;
+    	doChillOut();
     	onBreak = true;
-    	//gui.updateAgent(agent);
     }
     
     public void signalGoOnBreak()
@@ -194,7 +191,6 @@ public class WaiterGuiBrandon implements Gui
     	agent.msgGotBreak();
     	breakTime = true;
     	System.out.println("GOT SIGNAL TO BREAK IN GUI");
-    	//gui.updateAgent(agent);
     }
     
     public void signalGoOffBreak()
@@ -202,7 +198,6 @@ public class WaiterGuiBrandon implements Gui
     	breakTime = false;
     	onBreak = false;
     	agent.msgGoOffBreak();
-    	//gui.updateAgent(agent);
     }
     
     private boolean breakTime = false;
@@ -242,7 +237,7 @@ public class WaiterGuiBrandon implements Gui
 	public void doChillOut()
 	{
 		xDestination = CHILL_X;
-		yDestination = CHILL_Y+idNumber*2;
+		yDestination = CHILL_Y+idNumber*10;
 		eventFired = false;
 	}
 
