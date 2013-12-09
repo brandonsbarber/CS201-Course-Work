@@ -36,7 +36,7 @@ public class TimePanel extends JDialog implements ChangeListener {
 	private static final int BORDER_THICKNESS 	= 20;
 	private static final int FRAME_HEIGHT 		= 200;
 	private static final int FRAME_WIDTH 		= 500;
-	private static final int SLIDER_MIN			= 100;
+	private static final int SLIDER_MIN			= 200;
 	private static final int SLIDER_MAX			= 5000;
 	private static final int SLIDER_INIT		= 2000;
 	private static final int MAJOR_TICK 		= 500;

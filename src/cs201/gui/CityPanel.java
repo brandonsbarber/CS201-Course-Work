@@ -45,7 +45,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private Timer timer;
 	
-	private final double TIME_FACTOR = 1.5;
+	private final double TIME_FACTOR = 2;
 
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
