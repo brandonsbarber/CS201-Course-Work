@@ -116,6 +116,7 @@ public class WaiterGuiBrandon implements Gui
         {
         	String s = isCarryingOrder?"?":"";
         	s += currentCarry;
+        	g.setColor(Color.BLACK);
         	g.drawString(s,xPos,yPos+WAITER_DIMEN_Y);
         }
     }
