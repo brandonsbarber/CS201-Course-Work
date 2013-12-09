@@ -287,6 +287,7 @@ public class PassengerRole extends Role implements Passenger
 	{
 		System.out.println("ROAMING");
 		gui.doRoam();
+		//gui.startRoaming(); DO NOT ACQUIRE anymore; setActive(false);
 		try
 		{
 			animationPause.acquire();
