@@ -13,6 +13,8 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
+import java.awt.Component;
+import javax.swing.Box;
 
 @SuppressWarnings("serial")
 public class PersonInfoPanel extends JPanel {
@@ -55,6 +57,7 @@ public class PersonInfoPanel extends JPanel {
 		JPanel leftPanel = new JPanel();
 		panel.add(leftPanel);
 		GridBagLayout gbl_leftPanel = new GridBagLayout();
+		gbl_leftPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_leftPanel.columnWeights = new double[]{0.0, 7.0};
 		gbl_leftPanel.columnWidths = new int[]{0, 0};
 		leftPanel.setLayout(gbl_leftPanel);
@@ -238,7 +241,7 @@ public class PersonInfoPanel extends JPanel {
 		JPanel centerPanel = new JPanel();
 		panel.add(centerPanel);
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
-		gbl_centerPanel.columnWidths = new int[]{0, 0, 0};
+		gbl_centerPanel.columnWidths = new int[] {0, 0};
 		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gbl_centerPanel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};

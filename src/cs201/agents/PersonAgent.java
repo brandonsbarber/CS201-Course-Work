@@ -128,7 +128,7 @@ public class PersonAgent extends Agent implements Person {
 		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
 			this.state = PersonState.Awake;
 		}
-		if (CityTime.timeDifference(curTime,  sleepTime) > 0) {
+		if (CityTime.timeDifference(curTime,  sleepTime) > 0 || CityTime.timeDifference(curTime, wakeupTime) < 0) {
 			this.state = PersonState.Sleeping;
 		}
 	}
@@ -198,7 +198,7 @@ public class PersonAgent extends Agent implements Person {
 		this.currentAction = null;
 		
 		// If it's time to wake up in the morning
-		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
+		if (state == PersonState.Sleeping && time.equalsIgnoreDay(wakeupTime)) {
 			this.state = PersonState.Awake;
 			
 			// If you need to pay rent

@@ -199,7 +199,7 @@ public class RestaurantMatt extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {		
-		if (time.equalsIgnoreDay(morningShiftEnd)) {
+		if (isOpen && time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
 			if (host.getPerson() != null) {
@@ -207,7 +207,7 @@ public class RestaurantMatt extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (time.equalsIgnoreDay(this.closingTime)) {
+		} else if (isOpen && time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
 			if (host.getPerson() != null) {
