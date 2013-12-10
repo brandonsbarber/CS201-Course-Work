@@ -126,4 +126,9 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	{
 		return instance;
 	}
+	
+	public String toString()
+	{
+		return this.getClass().getSimpleName()+""+instance;
+	}
 }

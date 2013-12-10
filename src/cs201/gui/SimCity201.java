@@ -253,6 +253,7 @@ public class SimCity201 extends JFrame {
 	 */
 	public void clearScenario() {
 		this.personPanel.resetCity();
+		transitPanel.resetCity();
 		bottomSettingsPanel.resetCity();
 		CityDirectory.getInstance().resetCity();
 		Constants.ANIMATION_SPEED_FACTOR = 1.0f;
@@ -650,6 +651,7 @@ public class SimCity201 extends JFrame {
 		car.setGui(cGui);
 		cityPanel.addGui(cGui);
 		car.startThread();
+		transitPanel.addVehicle(car);
 	
 		PersonAgent p1 = new PersonAgent("Car Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
@@ -703,6 +705,7 @@ public class SimCity201 extends JFrame {
 			bus.setGui(busG);
 			cityPanel.addGui(busG);
 			bus.startThread();
+			transitPanel.addVehicle(bus);
 		}
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
@@ -760,10 +763,12 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
 		
 		TruckAgent truck2 = new TruckAgent(m);
 		truck.startThread();
 		m.addTruck(truck2);
+		transitPanel.addVehicle(truck2);
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
@@ -851,6 +856,7 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
 			
 		PersonAgent p = new PersonAgent("Market Employee",cityPanel);
 		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
@@ -1031,6 +1037,7 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
 			
 		PersonAgent p = new PersonAgent("Market Employee",cityPanel);
 		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
@@ -1103,6 +1110,7 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
 		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
 		RestaurantBen r = new RestaurantBen(23*25, 11*25, 50, 50, Structure.getNextInstance(), g);
@@ -1461,6 +1469,7 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
 			
 		PersonAgent p = new PersonAgent("Market Employee AM",cityPanel);
 		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
@@ -1564,6 +1573,7 @@ public class SimCity201 extends JFrame {
 			bus.setGui(busG);
 			cityPanel.addGui(busG);
 			bus.startThread();
+			transitPanel.addVehicle(bus);
 		}
 	}
 
@@ -1709,6 +1719,7 @@ public class SimCity201 extends JFrame {
 		truck.startThread();
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
 			
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
 		RestaurantBrandon r = new RestaurantBrandon(23*25,11*25,50,50,Structure.getNextInstance(),g);
@@ -1805,6 +1816,7 @@ public class SimCity201 extends JFrame {
 			bus.setGui(busG);
 			cityPanel.addGui(busG);
 			bus.startThread();
+			transitPanel.addVehicle(bus);
 		}
 	}
 	
