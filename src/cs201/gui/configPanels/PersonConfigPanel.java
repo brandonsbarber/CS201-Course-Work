@@ -78,7 +78,9 @@ public class PersonConfigPanel extends ConfigPanel {
 						left.resetInfo();
 					} else {
 					    //Selection, update info panel.
-					    left.updateInfo(personList.getModel().getElementAt(personList.getSelectedIndex()));
+						if (!left.isInEditMode()) {
+							left.updateInfo(personList.getModel().getElementAt(personList.getSelectedIndex()));
+						}
 					}
 				}	
 			});

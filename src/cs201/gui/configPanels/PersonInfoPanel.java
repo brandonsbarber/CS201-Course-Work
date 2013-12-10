@@ -14,17 +14,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
+
 import javax.swing.border.EtchedBorder;
 
 @SuppressWarnings("serial")
 public class PersonInfoPanel extends JPanel implements ActionListener {
 	private PersonConfigPanel personPanel;
+	private boolean editMode = false;
 	
 	private JTextField nameTextField;
 	private JTextField moneyTextField;
@@ -483,12 +486,33 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.jobTextField.setFocusable(editMode);
 		this.workTimeTextField.setFocusable(editMode);
 		this.homeTextField.setFocusable(editMode);
-		this.buyTextField.setFocusable(editMode);
-		this.inventoryTextField.setFocusable(editMode);
+		//this.buyTextField.setFocusable(editMode);
+		//this.inventoryTextField.setFocusable(editMode);
+	}
+	
+	private void setupDefaults() {
+		this.nameTextField.setText("Person");
+		this.moneyTextField.setText("$40.00");
+		this.hungerTextField.setText("Hungry");
+		this.locationTextField.setText("In City");
+		this.stateTextField.setText("Sleeping");
+		this.wakeupTextField.setText("7:00AM");
+		this.sleepTextField.setText("10:00PM");
+		this.actionTextField.setText("None");
+		this.carCheckBox.setSelected(false);
+		this.jobTextField.setText("None");
+		this.workTimeTextField.setText("N/A");
+		this.homeTextField.setText("None");
+		this.buyTextField.setText("");
+		this.inventoryTextField.setText("");
 	}
 	
 	private boolean checkIfNewPersonValid() {
 		return true;
+	}
+	
+	private void createPerson() {
+		
 	}
 	
 	public void updateInfo(PersonAgent p) {
@@ -511,21 +535,31 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.buyTextField.setText(p.getMarketChecklist().toString().substring(1, p.getMarketChecklist().toString().length()-1));
 		this.inventoryTextField.setText(p.getInventory().toString().substring(1, p.getInventory().toString().length()-1));
 	}
+	
+	public boolean isInEditMode() {
+		return editMode;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == this.btnConfirm) {
+		if (e.getSource() == this.btnConfirm) { // CONFIRM
 			if (checkIfNewPersonValid()) {
-				//make new person here somehow
+				this.editMode = false;
 				this.setupEditing(false);
 				this.lblMode.setText("Mode: View");
+				this.createPerson();
+			} else {
+				JOptionPane.showMessageDialog(null, "Please provide valid input for the new PersonAgent.");
 			}
-		} else if (e.getSource() == this.btnNewPerson) {
+		} else if (e.getSource() == this.btnNewPerson) { // NEW PERSON
+			this.editMode = true;
 			this.personPanel.deselectPersonList();
 			this.resetInfo();
 			this.setupEditing(true);
+			this.setupDefaults();
 			this.lblMode.setText("Mode: Edit");
-		} else if (e.getSource() == this.btnCancel) {
+		} else if (e.getSource() == this.btnCancel) { // CANCEL
+			this.editMode = false;
 			this.lblMode.setText("Mode: View");
 			this.setupEditing(false);
 			this.resetInfo();
