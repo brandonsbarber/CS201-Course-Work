@@ -30,6 +30,7 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	DefaultListModel listModel;
 	JList inventoryList;
 	JButton addInventoryButton;
+	JButton shutdownButton;
 	MarketStructure currentStructure;
 	
 	public MarketConfigPanel() {
@@ -48,11 +49,17 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout(layout);
 		
-		// GUI Elements
+		// Inventory button
 		addInventoryButton = new JButton("Add inventory");
 		addInventoryButton.addActionListener(this);
 		addInventoryButton.setEnabled(true);
 		this.add(addInventoryButton);
+		
+		// Shutdown button
+		shutdownButton = new JButton("Shutdown Market");
+		shutdownButton.addActionListener(this);
+		shutdownButton.setEnabled(true);
+		this.add(shutdownButton);
 		
 		//loadInventoryFromStructure();
 	}
@@ -83,6 +90,11 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 			loadInventoryFromStructure(selectedStructure);
 			currentStructure = selectedStructure;
 		}
+		
+		if (e.getSource() == shutdownButton) {
+			// Shut 'er down
+			currentStructure.closeMarket();
+		}
 	}
 	
 	/**
@@ -99,6 +111,9 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	 */
 	public void addMarketStructure(MarketStructure structure) {
 		marketsComboBox.addItem(structure);
+		if (marketsComboBox.getModel().getSize() == 1) {
+			currentStructure = structure;
+		}
 	}
 	
 	private void loadInventoryFromStructure(MarketStructure structure) {
