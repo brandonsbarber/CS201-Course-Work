@@ -150,34 +150,38 @@ public class PassengerGui implements Gui
 	 * @param g the graphics object in which to draw
 	 */
 	public void draw(Graphics2D g)
-	{
-		g.setColor(Color.RED);
-		String moveDir = "Person_";
-		switch(currentDirection)
+	{	
+		if (Constants.DEBUG_MODE)
 		{
-		case Right:moveDir+="Right";
-			break;
-		case None:moveDir+="Down";
-			break;
-		case Up:moveDir+="Up";
-			break;
-		case Down:moveDir+="Down";
-			break;
-		case Turn:moveDir+="Down";
-			break;
-		case Left:moveDir+="Left";
-			break;
-		default:moveDir+="Down";
-			break;
-		
-		}
-		
-		g.drawImage (ArtManager.getImage(moveDir),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
-		
-		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.RED);
+			g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
+			
 			g.setColor(Color.BLACK);
 			g.drawString(""+destination, x,y);
 			g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
+		}
+		else
+		{
+			String moveDir = "Person_";
+			switch(currentDirection)
+			{
+			case Right:moveDir+="Right";
+				break;
+			case None:moveDir+="Down";
+				break;
+			case Up:moveDir+="Up";
+				break;
+			case Down:moveDir+="Down";
+				break;
+			case Turn:moveDir+="Down";
+				break;
+			case Left:moveDir+="Left";
+				break;
+			default:moveDir+="Down";
+				break;
+			}
+			
+			g.drawImage (ArtManager.getImage(moveDir),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
 		}
 	}
 
@@ -247,6 +251,13 @@ public class PassengerGui implements Gui
 	public boolean locationEquals(Structure currentLocation) 
 	{
 		return currentLocation.getEntranceLocation().x == x && currentLocation.getEntranceLocation().y == y;
+	}
+
+	public void setLocation()
+	{
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
+		setLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
+		setPresent(true);
 	}
 
 }

@@ -165,7 +165,14 @@ public class PassengerRole extends Role implements Passenger
 	{
 		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,""+getName(),"Current location set to  "+s2);
 		currentLocation = s2;
-		if(gui != null){gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);}
+		if(gui != null)
+		{
+			if(currentLocation != null)
+			{
+				gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);
+			}
+			gui.setLocation();
+		}
 	}
 
 	/**
@@ -511,7 +518,6 @@ public class PassengerRole extends Role implements Passenger
 						e.printStackTrace();
 					}
 				}
-				
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);

@@ -14,9 +14,12 @@ import javax.swing.JOptionPane;
 import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.Gui;
+import cs201.helper.Constants;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -44,6 +47,11 @@ public abstract class VehicleGui implements Gui
 	private Stack<MovementDirection> moves;
 
 	private boolean pathfinding;
+	
+	private Point next;
+	private Point current;
+
+	private boolean allowedToMove = true;
 	
 	/**
 	 * Creates a vehicle gui
@@ -83,6 +91,10 @@ public abstract class VehicleGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
+		if(!present)
+		{
+			city.permissions[next.y][next.x].release();
+		}
 	}
 	
 	/**
@@ -98,6 +110,11 @@ public abstract class VehicleGui implements Gui
 		destY = (int)destination.getParkingLocation().getY();
 		fired = false;
 		present = true;
+
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
+		city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
 	}
@@ -120,8 +137,11 @@ public abstract class VehicleGui implements Gui
 	{
 		drawBody(g);
 		
-		g.setColor(Color.BLACK);
-		g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+		if(Constants.DEBUG_MODE)
+		{
+			g.setColor(Color.BLACK);
+			g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+		}
 	}
 	
 	/**
@@ -143,28 +163,69 @@ public abstract class VehicleGui implements Gui
 				fired = true;
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
+
+				city.permissions[current.y][current.x].release();
+				
 				return;
 			}
-			switch(currentDirection)
+			if(allowedToMove)
 			{
-				case Right:
-					x++;
-					break;
-				case Up:
-					y--;
-					break;
-				case Down:
-					y++;
-					break;
-				case Left:
-					x--;
-					break;
-				default:
-					break;
+				switch(currentDirection)
+				{
+					case Right:
+						x++;
+						break;
+					case Up:
+						y--;
+						break;
+					case Down:
+						y++;
+						break;
+					case Left:
+						x--;
+						break;
+					default:
+						break;
+				}
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
-				currentDirection = moves.pop();
+				if(allowedToMove)
+				{
+					currentDirection = moves.pop();
+				
+					if(current != next)
+					{
+						city.permissions[current.y][current.x].release();
+					}
+					
+					current = next;
+					
+					switch(currentDirection)
+					{
+					case Down:next = new Point(current.x,current.y + 1);
+						break;
+					case Left:next = new Point(current.x - 1,current.y);
+						break;
+					case Right:next = new Point(current.x + 1,current.y);
+						break;
+					case Up:next = new Point(current.x,current.y - 1);
+						break;
+					default:next = current;
+						break;
+					
+					}
+				}
+				
+				if(city.permissions[next.y][next.x].tryAcquire())
+				{
+					allowedToMove = true;
+				}
+				else
+				{
+					allowedToMove = false;
+				}
+				
 				return;
 			}
 			

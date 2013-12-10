@@ -13,6 +13,7 @@ import cs201.gui.CityPanel;
 
 public class Pathfinder
 {
+	@SuppressWarnings("serial")
 	static class MyPoint extends Point
 	{
 		MyPoint prev;
@@ -75,7 +76,6 @@ public class Pathfinder
 			}
 			else if(currentDirection == MovementDirection.None)
 			{
-				//Find an adjacent sidewalk piece
 				MyPoint point = getPointFromDirection(p,MovementDirection.Down);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
@@ -238,19 +238,19 @@ public class Pathfinder
 		int upY = y2 - 1;
 		int downY = y2 + 1;
 		
-		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == MovementDirection.Left)
+		if(inBounds(map,leftX,y2) && (getDirection(map,leftX,y2) == MovementDirection.Left || getDirection(map,leftX,y2) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Left);
 		}
-		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == MovementDirection.Right)
+		if(inBounds(map,rightX,y2) && (getDirection(map,rightX,y2) == MovementDirection.Right || getDirection(map,rightX,y2) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Right);
 		}
-		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == MovementDirection.Up)
+		if(inBounds(map,x2,upY) && (getDirection(map,x2,upY) == MovementDirection.Up || getDirection(map,x2,upY) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Up);
 		}
-		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Down)
+		if(inBounds(map,x2,downY) && (getDirection(map,x2,downY) == MovementDirection.Down || getDirection(map,x2,downY) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Down);
 		}

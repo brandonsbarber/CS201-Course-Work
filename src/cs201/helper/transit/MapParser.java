@@ -31,11 +31,13 @@ public class MapParser
 			for(int x = 0; x < xDimen; x++)
 			{
 				String contents = in.next();
+				System.out.printf("%3s",contents);
 				map[y][x] = contents;
 			}
 			if(in.hasNextLine())
 			{
 				in.nextLine();
+				System.out.println();
 			}
 		}
 		
