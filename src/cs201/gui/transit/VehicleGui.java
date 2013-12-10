@@ -4,10 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TimerTask;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -53,6 +58,8 @@ public abstract class VehicleGui implements Gui
 
 	private boolean allowedToMove = true;
 	
+	private Set<Point> acquiredPoints;
+	
 	/**
 	 * Creates a vehicle gui
 	 * @param vehicle the vehicle who holds the gui
@@ -82,6 +89,7 @@ public abstract class VehicleGui implements Gui
 		present = false;
 		currentDirection = MovementDirection.None;
 		moves = new Stack<MovementDirection>();
+		acquiredPoints = new HashSet<Point>();
 	}
 	
 	/**
@@ -94,6 +102,7 @@ public abstract class VehicleGui implements Gui
 		if(!present)
 		{
 			city.permissions[next.y][next.x].release();
+			revertCrosswalk();
 		}
 	}
 	
@@ -164,6 +173,7 @@ public abstract class VehicleGui implements Gui
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
 
+				revertCrosswalk();
 				city.permissions[current.y][current.x].release();
 				
 				return;
@@ -189,7 +199,7 @@ public abstract class VehicleGui implements Gui
 				}
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
-			{
+			{	
 				if(allowedToMove)
 				{
 					currentDirection = moves.pop();
@@ -197,6 +207,8 @@ public abstract class VehicleGui implements Gui
 					if(current != next)
 					{
 						city.permissions[current.y][current.x].release();
+						revertCrosswalk();
+						acquiredPoints.remove(current);
 					}
 					
 					current = next;
@@ -217,7 +229,7 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				if(city.permissions[next.y][next.x].tryAcquire())
+				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()))
 				{
 					allowedToMove = true;
 				}
@@ -229,6 +241,35 @@ public abstract class VehicleGui implements Gui
 				return;
 			}
 			
+		}
+	}
+
+	private boolean timerStarted = false;
+	private boolean cancelled = true;
+	
+	private boolean canMoveCrosswalk()
+	{
+		if(city.getWalkingMap()[next.y][next.x].isValid())
+		{
+			List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+			synchronized(list)
+			{
+				if(list.size() != 0)
+				{
+					return false;
+				}
+				list.add(this);
+			}
+		}
+		return true;
+	}
+	
+	private void revertCrosswalk()
+	{
+		List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+		synchronized(list)
+		{
+			list.remove(this);
 		}
 	}
 
@@ -287,5 +328,10 @@ public abstract class VehicleGui implements Gui
 	 */
 	public void setVehicle(VehicleAgent vehicle) {
 		this.vehicle = vehicle;
+	}
+	
+	public void destroy()
+	{
+		setPresent(false);
 	}
 }
