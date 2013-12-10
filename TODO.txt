@@ -1,23 +1,34 @@
 TODO:
 
-[X] Different behavior for buildings on Weekends
-[ ] Configuration Panels for all buildings
-[X] PersonAgent creation/viewer panel
-[X] Speed up/slow down CityTime and animation timers (make sure to add your buildings to the timePanel)
-[X] Shifts (Everyone must implement this properly in their own structure, see Matt's Restaurant)
-[ ] Hiring/Firing People (Probably canceled because Shifts are sufficient for the grade)
-[ ] Restaurant Integration
-[X] Trace Panel (Everyone change all System.out and Do prints to Trace Panel)
-[X] Fix car start location
-[ ] Prettier art assets
-[ ] Prettier animations
-[ ] Art Manager (add all art assets here)
-[ ] Non-norms
-    [ ] Truck failed delivery / market failed delivery status
-    [-] Collisions
-    [ ] Out of food at home
-[-] Person walks aimlessly around city
-[X] Better scenario manager
-[ ] Configuration File I/O
+All:
+    [ ] Update design docs
 
+Brandon:
+    [ ] Transit config panel
+    [ ] Updated graphics
+    [X] Change restaurant closing behavior
+    [ ] Fix boat jam behavior
+    [X] Fix car warp
+    [ ] Crosswalks
+    [ ] Fully implement collisions
+    [ ] Testing failed market delivery
 
+Skyler:
+    [ ] Animation upgrades
+    [ ] Finish restaurant integration/testing
+    [ ] Clean up housing scenarios
+    [ ] Potentially adding multiple residents to a single residence
+    [ ] Add random gui animation for 'relaxing'
+    [ ] Config panels for housing/apartments
+
+Matt:
+    [ ] Test car buying
+    [ ] Restaurant config panel
+    [ ] Finalize code integration
+
+Ben:
+    [ ] Testing failed market delivery
+    [ ] Entry/exit animations Market
+    [ ] Car artwork
+    [ ] Test car buying
+    [ ] Reset market config panel on scenario reset

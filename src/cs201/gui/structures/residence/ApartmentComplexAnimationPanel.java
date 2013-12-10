@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
@@ -45,6 +46,12 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 		
 		g2.setColor(getBackground());
 		g2.fillRect(0, 0, WINDOWX, WINDOWY); //clear screen
+		
+		for (int i=0; i<WINDOWX; i=i+32) {
+        	for (int j=0; j<WINDOWY; j=j+32) {
+        		g.drawImage(ArtManager.getImage("Apartment_Complex_Floor2"), i, j, 32, 32, null);
+        	}
+        }
 		
 		g2.setColor(Color.darkGray);
 		g2.fillRect(deskX, deskY, deskWidth, deskHeight);

@@ -112,8 +112,11 @@ public abstract class VehicleGui implements Gui
 	 */
 	public void doGoToLocation(Structure structure)
 	{
-		x = (int)vehicle.currentLocation.getParkingLocation().getX();
-		y = (int)vehicle.currentLocation.getParkingLocation().getY();
+		if(vehicle.currentLocation != null)
+		{
+			x = (int)vehicle.currentLocation.getParkingLocation().getX();
+			y = (int)vehicle.currentLocation.getParkingLocation().getY();
+		}
 		destination = structure;
 		destX = (int)destination.getParkingLocation().getX();
 		destY = (int)destination.getParkingLocation().getY();
@@ -134,6 +137,7 @@ public abstract class VehicleGui implements Gui
 	private void findPath()
 	{
 		pathfinding = true;
+		System.out.println(""+x+" "+y);
 		moves = Pathfinder.calcOneWayMove(city.getDrivingMap(), x, y, destX, destY);
 		pathfinding = false;
 	}
@@ -333,5 +337,26 @@ public abstract class VehicleGui implements Gui
 	public void destroy()
 	{
 		setPresent(false);
+	}
+
+	public void doGoToLocation(Point destinationPoint)
+	{
+		if(vehicle.currentLocation != null)
+		{
+			x = (int)vehicle.currentLocation.getParkingLocation().getX();
+			y = (int)vehicle.currentLocation.getParkingLocation().getY();
+		}
+		
+		destX = (int)destinationPoint.getX();
+		destY = (int)destinationPoint.getY();
+		fired = false;
+		present = true;
+
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
+		city.permissions[current.y][current.x].tryAcquire();
+		
+		findPath();
 	}
 }
