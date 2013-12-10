@@ -234,7 +234,7 @@ public class PassengerGui implements Gui
 				
 				return;
 			}
-			if(true)
+			if(allowedToMove)
 			{
 				switch(currentDirection)
 				{
@@ -256,6 +256,8 @@ public class PassengerGui implements Gui
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
+				if(allowedToMove)
+				{
 					currentDirection = moves.pop();
 				
 					if(current != next)
@@ -281,21 +283,23 @@ public class PassengerGui implements Gui
 						break;
 					default:next = current;
 						break;
-					
 					}
 					
-					List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
-					synchronized(list)
+				}
+				List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+				synchronized(list)
+				{
+					for(Gui g : list)
 					{
-						/*for(Gui g : list)
+						if(g instanceof VehicleGui)
 						{
-							if(g instanceof VehicleGui)
-							{
-								return;
-							}
-						}*/
-						list.add(this);
+							allowedToMove = false;
+							return;
+						}
 					}
+					list.add(this);
+					allowedToMove = true;
+				}
 			}
 		}
 	}

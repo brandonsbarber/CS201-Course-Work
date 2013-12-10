@@ -217,7 +217,7 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				if(city.permissions[next.y][next.x].tryAcquire())
+				if(canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire())
 				{
 					allowedToMove = true;
 				}
@@ -230,6 +230,19 @@ public abstract class VehicleGui implements Gui
 			}
 			
 		}
+	}
+
+	private boolean canMoveCrosswalk()
+	{
+		List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+		synchronized(list)
+		{
+			if(list.size() != 0)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
