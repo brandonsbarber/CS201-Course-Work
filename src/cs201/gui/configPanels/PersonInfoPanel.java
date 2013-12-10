@@ -6,9 +6,12 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,9 +20,12 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
+import javax.swing.border.EtchedBorder;
 
 @SuppressWarnings("serial")
-public class PersonInfoPanel extends JPanel {
+public class PersonInfoPanel extends JPanel implements ActionListener {
+	private PersonConfigPanel personPanel;
+	
 	private JTextField nameTextField;
 	private JTextField moneyTextField;
 	private JTextField hungerTextField;
@@ -34,11 +40,17 @@ public class PersonInfoPanel extends JPanel {
 	private JCheckBox carCheckBox;
 	private JTextField buyTextField;
 	private JTextField inventoryTextField;
+	private JButton btnNewPerson;
+	private JButton btnConfirm;
+	private JButton btnCancel;
+	private JLabel lblMode;
 
 	/**
 	 * Create the panel.
 	 */
-	public PersonInfoPanel() {
+	public PersonInfoPanel(PersonConfigPanel personPanel) {
+		this.personPanel = personPanel;
+		
 		setBorder(null);
 		setForeground(UIManager.getColor("window"));
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -49,7 +61,7 @@ public class PersonInfoPanel extends JPanel {
 		setLayout(gridBagLayout);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Selected Person:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));
+		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Person:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -399,6 +411,30 @@ public class PersonInfoPanel extends JPanel {
 		gbc_rightPanel.gridx = 1;
 		gbc_rightPanel.gridy = 0;
 		add(rightPanel, gbc_rightPanel);
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+		
+		btnNewPerson = new JButton("New Person");
+		btnNewPerson.addActionListener(this);
+		
+		lblMode = new JLabel("Mode: View");
+		lblMode.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+		lblMode.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(lblMode);
+		btnNewPerson.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(btnNewPerson);
+		
+		btnConfirm = new JButton("Confirm");
+		btnConfirm.addActionListener(this);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		rightPanel.add(verticalStrut);
+		btnConfirm.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(btnConfirm);
+		
+		btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(this);
+		btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(btnCancel);
 
 	}
 	
@@ -417,6 +453,42 @@ public class PersonInfoPanel extends JPanel {
 		this.homeTextField.setText("");
 		this.buyTextField.setText("");
 		this.inventoryTextField.setText("");
+	}
+	
+	private void setupEditing(boolean editMode) {
+		this.nameTextField.setEditable(editMode);
+		this.moneyTextField.setEditable(editMode);
+		this.hungerTextField.setEditable(editMode);
+		this.locationTextField.setEditable(editMode);
+		this.stateTextField.setEditable(editMode);
+		this.wakeupTextField.setEditable(editMode);
+		this.sleepTextField.setEditable(editMode);
+		this.actionTextField.setEditable(editMode);
+		this.carCheckBox.setEnabled(editMode);
+		this.jobTextField.setEditable(editMode);
+		this.workTimeTextField.setEditable(editMode);
+		this.homeTextField.setEditable(editMode);
+		this.buyTextField.setEditable(editMode);
+		this.inventoryTextField.setEditable(editMode);
+		
+		this.nameTextField.setFocusable(editMode);
+		this.moneyTextField.setFocusable(editMode);
+		this.hungerTextField.setFocusable(editMode);
+		this.locationTextField.setFocusable(editMode);
+		this.stateTextField.setFocusable(editMode);
+		this.wakeupTextField.setFocusable(editMode);
+		this.sleepTextField.setFocusable(editMode);
+		this.actionTextField.setFocusable(editMode);
+		this.carCheckBox.setFocusable(editMode);
+		this.jobTextField.setFocusable(editMode);
+		this.workTimeTextField.setFocusable(editMode);
+		this.homeTextField.setFocusable(editMode);
+		this.buyTextField.setFocusable(editMode);
+		this.inventoryTextField.setFocusable(editMode);
+	}
+	
+	private boolean checkIfNewPersonValid() {
+		return true;
 	}
 	
 	public void updateInfo(PersonAgent p) {
@@ -440,4 +512,23 @@ public class PersonInfoPanel extends JPanel {
 		this.inventoryTextField.setText(p.getInventory().toString().substring(1, p.getInventory().toString().length()-1));
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == this.btnConfirm) {
+			if (checkIfNewPersonValid()) {
+				//make new person here somehow
+				this.setupEditing(false);
+				this.lblMode.setText("Mode: View");
+			}
+		} else if (e.getSource() == this.btnNewPerson) {
+			this.personPanel.deselectPersonList();
+			this.resetInfo();
+			this.setupEditing(true);
+			this.lblMode.setText("Mode: Edit");
+		} else if (e.getSource() == this.btnCancel) {
+			this.lblMode.setText("Mode: View");
+			this.setupEditing(false);
+			this.resetInfo();
+		}
+	}
 }
