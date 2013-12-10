@@ -609,6 +609,7 @@ public class SimCity201 extends JFrame {
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
+		personPanel.addPerson(p1);
 	}
 	
 	private void normativeDriving()
@@ -651,6 +652,7 @@ public class SimCity201 extends JFrame {
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
+		personPanel.addPerson(p1);
 	}
 	
 	private void normativeBus()
@@ -718,11 +720,12 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 
-		/*PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
+		PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		p1.getPassengerRole().setBusStops(stops);
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();*/
+		p1.startThread();
+		personPanel.addPerson(p1);
 	}
 	
 	private void normativeMarketRestaurantDelivery()
@@ -1359,6 +1362,7 @@ public class SimCity201 extends JFrame {
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
+		personPanel.addPerson(p1);
 		
 		PersonAgent p2 = new PersonAgent("Cashier AM", cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
@@ -1367,6 +1371,7 @@ public class SimCity201 extends JFrame {
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
 		p2.startThread();
+		personPanel.addPerson(p2);
 		
 		PersonAgent p3 = new PersonAgent("Cook AM", cityPanel);
 		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
@@ -1375,6 +1380,7 @@ public class SimCity201 extends JFrame {
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
+		personPanel.addPerson(p3);
 		
 		PersonAgent p4 = new PersonAgent("Waiter AM", cityPanel);
 		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
@@ -1383,12 +1389,14 @@ public class SimCity201 extends JFrame {
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();
+		personPanel.addPerson(p4);
 		
 		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
 		p5.setWakeupTime(new CityTime(8, 00));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
 		p5.startThread();
+		personPanel.addPerson(p5);
 		
 		PersonAgent pp1 = new PersonAgent("Host PM", cityPanel);
 		pp1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -1397,6 +1405,7 @@ public class SimCity201 extends JFrame {
 		pp1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp1);
 		pp1.startThread();
+		personPanel.addPerson(pp1);
 		
 		PersonAgent pp2 = new PersonAgent("Cashier PM", cityPanel);
 		pp2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
@@ -1405,6 +1414,7 @@ public class SimCity201 extends JFrame {
 		pp2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp2);
 		pp2.startThread();
+		personPanel.addPerson(pp2);
 		
 		PersonAgent pp3 = new PersonAgent("Cook PM", cityPanel);
 		pp3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
@@ -1413,6 +1423,7 @@ public class SimCity201 extends JFrame {
 		pp3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp3);
 		pp3.startThread();
+		personPanel.addPerson(pp3);
 		
 		PersonAgent pp4 = new PersonAgent("Waiter PM", cityPanel);
 		pp4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
@@ -1421,7 +1432,7 @@ public class SimCity201 extends JFrame {
 		pp4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(pp4);
 		pp4.startThread();
-		
+		personPanel.addPerson(pp4);
 	}
 	
 	private void marketShiftChange() {
@@ -1715,6 +1726,7 @@ public class SimCity201 extends JFrame {
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
 		p1.startThread();
+		personPanel.addPerson(p1);
 		
 		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
 		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
@@ -1722,6 +1734,7 @@ public class SimCity201 extends JFrame {
 		p1b.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1b);
 		p1b.startThread();
+		personPanel.addPerson(p1b);
 		
 		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
@@ -1729,6 +1742,7 @@ public class SimCity201 extends JFrame {
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
 		p2.startThread();
+		personPanel.addPerson(p2);
 		
 		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
 		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
@@ -1736,37 +1750,38 @@ public class SimCity201 extends JFrame {
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
+		personPanel.addPerson(p3);
 	}
 	
 	private void beaucoupBuses()
 	{
-			CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		
+		ArrayList<BusStop> stops = new ArrayList<BusStop>();
+	
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(5*25,1*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
 			
-			ArrayList<BusStop> stops = new ArrayList<BusStop>();
-
-			BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-			stops.add(new BusStop(5*25,1*25,25,25,1, panel));
-			timePanel.addAnimationPanel(panel);
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,1*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
 			
-			BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-			stops.add(new BusStop(12*25,1*25,25,25,2, panel2));
-			timePanel.addAnimationPanel(panel2);
+		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,1*25,25,25,3, panel3));
+		timePanel.addAnimationPanel(panel3);
 			
-			BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-			stops.add(new BusStop(24*25,1*25,25,25,3, panel3));
-			timePanel.addAnimationPanel(panel3);
+		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(5*25,13*25,25,25,4, panel4));
+		timePanel.addAnimationPanel(panel4);
 			
-			BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-			stops.add(new BusStop(5*25,13*25,25,25,4, panel4));
-			timePanel.addAnimationPanel(panel4);
+		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,13*25,25,25,5, panel5));
+		timePanel.addAnimationPanel(panel5);
 			
-			BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-			stops.add(new BusStop(12*25,13*25,25,25,5, panel5));
-			timePanel.addAnimationPanel(panel5);
-			
-			BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-			stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
-			timePanel.addAnimationPanel(panel6);
+		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
+		timePanel.addAnimationPanel(panel6);
 			
 		buildingPanels.add(panel,""+stops.get(0).getId());
 		buildingPanels.add(panel2,""+stops.get(1).getId());
