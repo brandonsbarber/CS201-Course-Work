@@ -61,6 +61,16 @@ public class MarketManagerRole extends Role implements MarketManager {
 			item = i;
 			amount = a;
 		}
+		
+		public String toString() {
+			StringBuffer string = new StringBuffer();
+			string.append(item);
+			string.append(" [");
+			string.append(amount);
+			string.append("]");
+			
+			return string.toString();
+		}
 	}
 	
 	public static class InventoryEntry {
