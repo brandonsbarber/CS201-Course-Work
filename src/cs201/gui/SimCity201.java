@@ -603,6 +603,7 @@ public class SimCity201 extends JFrame {
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		m.setConfigPanel(mcp);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -679,10 +680,11 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
 		
-		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().addInventoryEntry(new InventoryEntry("Fritos",15,200));
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -858,10 +860,11 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
 		
-		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().addInventoryEntry(new InventoryEntry("Fritos",15,200));
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -928,6 +931,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1273,10 +1277,11 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
 		
-		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().addInventoryEntry(new InventoryEntry("Fritos",15,200));
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1525,6 +1530,7 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();

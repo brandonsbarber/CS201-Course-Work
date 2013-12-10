@@ -131,10 +131,12 @@ public class WaiterGuiBen implements Gui {
 	}
 
     public void DoWalkToTable(int tablenumber) {
+    	System.out.println("The Waiter gui got the message to walk to a table.");
+    	
     	animating = true;
+        hasDestination = true;
         xDestination = xTable + (tableWidth + tablePad) * (tablenumber - 1) + (tableWidth / 2 + 10);
         yDestination = yTable - 20;
-        hasDestination = true;
     }
     
     public void DoEnterRestaurant() {

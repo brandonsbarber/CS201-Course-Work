@@ -93,8 +93,8 @@ public class MarketIntegrationTest {
 	@Test
 	public void guiIntegrationTest() {
 		// Give the market a starting amount of chicken for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("lettuce", 200, 1.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("lettuce", 200, 1.99f));
 		
 		consumer.startInteraction(null);
 
@@ -130,8 +130,8 @@ public class MarketIntegrationTest {
 	@Ignore
 	public void guiIntegrationTest2Employees() {
 		// Give the market a starting amount of chicken for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("lettuce", 200, 1.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("lettuce", 200, 1.99f));
 
 		// Create some item requests
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("chicken", 4);

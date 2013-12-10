@@ -7,6 +7,7 @@ import java.util.List;
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.StructurePanel;
+import cs201.gui.configPanels.MarketConfigPanel;
 import cs201.gui.roles.market.MarketConsumerGui;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
@@ -17,6 +18,7 @@ import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketConsumerRole;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 import cs201.roles.marketRoles.MarketManagerRole;
+import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.structures.Structure;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
@@ -31,6 +33,7 @@ public class MarketStructure extends Structure {
 	int currentTruck = 0;
 	StructurePanel panel = null;
 	double totalFunds = 0.0;
+	private MarketConfigPanel configPanel;
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
@@ -235,8 +238,26 @@ public class MarketStructure extends Structure {
 	 */
 	public void addInventory(String item, int quantity, float price) {
 		if (manager != null) {
-			manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry(item, quantity, price));
+			manager.addInventoryEntry(new MarketManagerRole.InventoryEntry(item, quantity, price));
 		}
+	}
+	
+	public void updateConfigPanel() {
+		if (configPanel != null) {
+			configPanel.updateInventoryList();
+		}
+	}
+	
+	public void setConfigPanel(MarketConfigPanel config) {
+		configPanel = config;
+	}
+	
+	/**
+	 * Queries the MarketManager for his current inventory.
+	 * @return
+	 */
+	public List<InventoryEntry> getInventory() {
+		return manager.getInventory();
 	}
 
 	@Override
