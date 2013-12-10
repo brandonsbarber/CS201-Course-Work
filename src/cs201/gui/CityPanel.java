@@ -42,6 +42,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private String[][] cityGrid;
 	public Semaphore[][] permissions;
+	public List<List<List<Gui>>> crosswalkPermissions;
 	
 	private SimCity201 city;
 	
@@ -93,6 +94,15 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				permissions[y][x] = new Semaphore(1,true);
 			}
 		}
+		crosswalkPermissions = new ArrayList<List<List<Gui>>>();
+		for(int y = 0; y < permissions.length;y++)
+		{
+			crosswalkPermissions.add(new ArrayList<List<Gui>>());
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
+			}
+		}
 	}
 	
 	/**
@@ -105,6 +115,24 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		buildings.clear();
 		
 		timer.start();
+		
+		permissions = new Semaphore[cityGrid.length][cityGrid[0].length];
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				permissions[y][x] = new Semaphore(1,true);
+			}
+		}
+		crosswalkPermissions = new ArrayList<List<List<Gui>>>();
+		for(int y = 0; y < permissions.length;y++)
+		{
+			crosswalkPermissions.add(new ArrayList<List<Gui>>());
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
+			}
+		}
 	}
 	
 	/**
@@ -235,7 +263,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					}
 					else if(cityGrid[y][x].equals("ST") || cityGrid[y][x].equals("V") ||  cityGrid[y][x].equals("H"))
 					{
-						g2.setColor(Color.GRAY.brighter().brighter());
+						g2.setColor(Color.GRAY.brighter());
 					}
 					else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
 					{
@@ -377,6 +405,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					}
 					g2.setColor(Color.BLACK);
 					g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
+					if(crosswalkPermissions.get(y).get(x).size() != 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
 				}
 			}
 		}
