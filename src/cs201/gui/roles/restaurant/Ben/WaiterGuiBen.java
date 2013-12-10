@@ -143,7 +143,7 @@ public class WaiterGuiBen implements Gui {
     	animating = true;
     	xPos = -40;
     	yPos = -40;
-    	DoWalkToHome();
+    	DoWalkToHomeIfBored();
     }
     
     /**
