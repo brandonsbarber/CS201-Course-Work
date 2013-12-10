@@ -236,6 +236,7 @@ public class RestaurantCustomerRoleBen extends RestaurantCustomerRole implements
 		}
 		
 		if (state == AgentState.Eating && event == AgentEvent.doneEating) {
+			this.getPerson().setHungerLevel(0);		// our person is no longer hungry
 			if (gotCheck) {
 				state = AgentState.Leaving;
 				PayForMeal();
