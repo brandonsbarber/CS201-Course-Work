@@ -570,6 +570,7 @@ public class SimCity201 extends JFrame {
 		
 		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		p1.setSleepTime(new CityTime(11, 0));
 		personPanel.addPerson(p1);
 		CityDirectory.getInstance().addPerson(p1);
 		

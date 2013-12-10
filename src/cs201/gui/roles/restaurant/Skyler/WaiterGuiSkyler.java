@@ -15,8 +15,11 @@ public class WaiterGuiSkyler implements Gui {
 
     private int currentTableNum;  
     
-    private int cookX = 430;
-    private int cookY = 65;
+    private int cookX = 420; //was 430
+    private int cookY = 82; //was 65
+    
+    private int cookX2 = 360; //was 430
+    private int cookY2 = 62; //was 65
     
     private int waitingX = 90;
     private int waitingY = 70;
@@ -65,7 +68,7 @@ public class WaiterGuiSkyler implements Gui {
     			if (xPos == waitingX && yPos == waitingY) {
     				agent.msgAtWaitingArea();
     			}
-    			if (xPos == cookX && yPos == cookY) {
+    			if (xPos == cookX && yPos == cookY || xPos == cookX2 && yPos == cookY2) {
     				agent.msgAtCook();
     			}
     			if (xPos == 200 && yPos == -19) {
@@ -188,8 +191,8 @@ public class WaiterGuiSkyler implements Gui {
     public void DoGetFood() {
     	arrived = false;
     	displayString = "";
-    	xDestination = cookX;
-    	yDestination = cookY;
+    	xDestination = cookX2;
+    	yDestination = cookY2;
     }
     
     public void DoDeliverFood (String choice, int tableNumber) {

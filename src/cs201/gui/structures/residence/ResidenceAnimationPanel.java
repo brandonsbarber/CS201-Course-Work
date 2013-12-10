@@ -18,7 +18,7 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	private final int bedWidth = 70;
 	private final int bedHeight = 30;
 	private final int bedX = 250;
-	private final int bedY = 430;
+	private final int bedY = 330;
 	
 	private final int entranceY = 250;
 	
@@ -67,19 +67,26 @@ public class ResidenceAnimationPanel extends StructurePanel {
         }
 		
 		
-		g2.setColor(Color.GRAY);
-		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);
-		g2.setColor(Color.WHITE);
+		/*g2.setColor(Color.GRAY);
+		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);*/
+		g.drawImage(ArtManager.getImage("Fridge"), fridgeX+15, fridgeY, 48, 59, null);
+		
+		/*g2.setColor(Color.WHITE);
 		g2.fillRect(fridgeDoor1X, fridgeDoorY, fridgeDoorWidth, fridgeDoorHeight);
-		g2.fillRect(fridgeDoor2X, fridgeDoorY, fridgeDoorWidth, fridgeDoorHeight);
+		g2.fillRect(fridgeDoor2X, fridgeDoorY, fridgeDoorWidth, fridgeDoorHeight);*/
 		
 		// draws refrigerator
 		
-		g2.setColor(Color.GREEN);
-		g2.fillRect(tableX, tableY, tableWidth, tableHeight); // draws dining table
+		/*g2.setColor(Color.GREEN);
+		g2.fillRect(tableX, tableY, tableWidth, tableHeight);*/ // draws dining table
 		
-		g2.setColor(Color.BLUE);
-		g2.fillRect(bedX, bedY, bedWidth, bedHeight); // draws bed
+		//g.drawImage(ArtManager.getImage("Dining_Table"), tableX+5, tableY+10, 22, 43, null);
+		g.drawImage(ArtManager.getImage("Dining_Table_Blank"), tableX, tableY+10, tableWidth, tableHeight, null);
+		
+		/*g2.setColor(Color.BLUE);
+		g2.fillRect(bedX, bedY, bedWidth, bedHeight);*/ // draws bed
+		
+		g.drawImage(ArtManager.getImage("Bed"), bedX-10, bedY, 63, 32, null);
 		
 		g2.setColor(Color.WHITE);
 		g2.drawString("Fridge", fridgeX, fridgeY+13);
