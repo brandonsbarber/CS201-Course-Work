@@ -166,7 +166,7 @@ public class MarketStructure extends Structure {
 	private void checkIfOpen() {
 		if (manager.getPerson() != null && atLeastOneEmployeeWorking()) {
 			isOpen = true;
-			Do("Open for business.");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, "Market Structure", "Open for business");
 		}
 	}
 	
