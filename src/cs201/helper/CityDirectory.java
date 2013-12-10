@@ -64,6 +64,15 @@ public class CityDirectory implements ActionListener {
 		return buildings;
 	}
 	
+	public List<Structure> getAllWorkplaces() {
+		List<Structure> workplaces = new LinkedList<Structure>();
+		workplaces.addAll(restaurants);
+		workplaces.addAll(banks);
+		workplaces.addAll(markets);
+		
+		return workplaces;
+	}
+	
 	public void resetCity() {
 		this.cityTimer.stop();
 		this.time = new CityTime();
