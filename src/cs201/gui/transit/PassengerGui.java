@@ -154,7 +154,6 @@ public class PassengerGui implements Gui
 	 */
 	private void findPath()
 	{
-		System.out.println("pass FINDING PATH from "+x+" "+y);
 		pathfinding = true;
 		try
 		{

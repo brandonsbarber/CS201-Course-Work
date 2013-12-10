@@ -49,7 +49,6 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	 */
 	public void msgAnimationDestinationReached()
 	{
-		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Done animating");
 		animationSemaphore.release();
 	}
 	
