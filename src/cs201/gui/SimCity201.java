@@ -761,10 +761,10 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(stops.get(0),new Point(3*25,7*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
 		
 		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(10*25,4*25,25,25,2, panel2));
+		stops.add(new BusStop(1*25,6*25,25,25,2, panel2));
 		timePanel.addAnimationPanel(panel2);
 		
-		cityPanel.addStructure(stops.get(1),new Point(10*25,3*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		cityPanel.addStructure(stops.get(1),new Point(2*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
 		
 		/*BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(2*25,13*25,25,25,3, panel3));
