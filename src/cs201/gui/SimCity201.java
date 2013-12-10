@@ -887,6 +887,7 @@ public class SimCity201 extends JFrame {
 		p.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p);
 		p.startThread();
+		personPanel.addPerson(p);
 		
 		PersonAgent employee2 = new PersonAgent("Market Employee",cityPanel);
 		employee2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
@@ -894,6 +895,7 @@ public class SimCity201 extends JFrame {
 		employee2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(employee2);
 		employee2.startThread();
+		personPanel.addPerson(employee2);
 		
 		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
@@ -901,22 +903,25 @@ public class SimCity201 extends JFrame {
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
 		p2.startThread();
+		personPanel.addPerson(p2);
 		
 		PersonAgent p3 = new PersonAgent("Market Customer Car",cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerCar, m, null);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, null, m, null);
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
+		personPanel.addPerson(p3);
 		
 		PersonAgent p4 = new PersonAgent("Market Customer Goods",cityPanel);
-		p4.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerGoods, m, null);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, m, null, m, null);
 		p4.setHungerEnabled(false);
 		p4.getMarketChecklist().add(new ItemRequest("Burgers",2));
 		p4.getMarketChecklist().add(new ItemRequest("Pizza",1));
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();
+		personPanel.addPerson(p4);
 	}
 	
 	private void normativeMarketRestaurantBenDelivery()
