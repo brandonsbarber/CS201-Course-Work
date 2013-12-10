@@ -94,15 +94,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				permissions[y][x] = new Semaphore(1,true);
 			}
 		}
-		permissions[7][13].tryAcquire();
-		
-		java.util.Timer t = new java.util.Timer();
-		t.schedule(new TimerTask(){
-
-			@Override
-			public void run() {
-				release();
-			}}, 10000);
 	}
 	
 	/**
@@ -229,7 +220,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				}
 				else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
 				{
-					g2.setColor(Color.GRAY.darker());
+					img = ArtManager.getImage("Road_Tile");
+					//g2.setColor(Color.GRAY.darker());
 				}
 				
 				if(img != null)
