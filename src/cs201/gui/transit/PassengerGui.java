@@ -3,6 +3,7 @@ package cs201.gui.transit;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.List;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -44,6 +45,10 @@ public class PassengerGui implements Gui
 
 	private boolean pathfinding = false;
 
+	private boolean allowedToMove;
+
+	private Point current, next;
+
 	/**
 	 * Creates a passenger gui
 	 * @param pass the passenger who holds the gui
@@ -52,6 +57,7 @@ public class PassengerGui implements Gui
 	public PassengerGui(PassengerRole pass,CityPanel city)
 	{
 		this(pass,city,pass.getCurrentLocation());
+		allowedToMove = true;
 	}
 	
 	/**
@@ -93,6 +99,10 @@ public class PassengerGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
+		if(!present)
+		{
+			//city.permissions[next.y][next.x].release();
+		}
 	}
 	
 	/**
@@ -107,6 +117,12 @@ public class PassengerGui implements Gui
 		destY = (int)structure.getEntranceLocation().y;
 		fired = false;
 		present = true;
+		
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
+		//city.permissions[current.y][current.x].tryAcquire();
+		
 		findPath();
 	}
 	
@@ -116,6 +132,9 @@ public class PassengerGui implements Gui
 		destY = y;
 		fired = false;
 		present = true;
+		
+		current = new Point(this.x/CityPanel.GRID_SIZE,this.y/CityPanel.GRID_SIZE);
+		next = current;
 		
 		findPath();
 	}
@@ -198,28 +217,71 @@ public class PassengerGui implements Gui
 				fired = true;
 				pass.msgAnimationFinished ();
 				currentDirection = MovementDirection.None;
+				
+				List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+				synchronized(list)
+				{
+					list.remove(this);
+				}
+				
 				return;
 			}
-			switch(currentDirection)
+			if(true)
 			{
-				case Right:
-					x++;
-					break;
-				case Up:
-					y--;
-					break;
-				case Down:
-					y++;
-					break;
-				case Left:
-					x--;
-					break;
-				default:
-					break;
+				switch(currentDirection)
+				{
+					case Right:
+						x++;
+						break;
+					case Up:
+						y--;
+						break;
+					case Down:
+						y++;
+						break;
+					case Left:
+						x--;
+						break;
+					default:
+						break;
+				}
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
-				currentDirection = moves.pop();
+					currentDirection = moves.pop();
+				
+					if(current != next)
+					{
+						List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+						synchronized(list)
+						{
+							list.remove(this);
+						}
+					}
+					
+					current = next;
+					
+					switch(currentDirection)
+					{
+					case Down:next = new Point(current.x,current.y + 1);
+						break;
+					case Left:next = new Point(current.x - 1,current.y);
+						break;
+					case Right:next = new Point(current.x + 1,current.y);
+						break;
+					case Up:next = new Point(current.x,current.y - 1);
+						break;
+					default:next = current;
+						break;
+					
+					}
+					
+					List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+					synchronized(list)
+					{
+						list.add(this);
+					}
+				
 				return;
 			}
 			
@@ -256,6 +318,10 @@ public class PassengerGui implements Gui
 	{
 		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
 		setLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
+		
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
 		setPresent(true);
 	}
 

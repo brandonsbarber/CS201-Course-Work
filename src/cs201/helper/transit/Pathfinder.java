@@ -332,4 +332,9 @@ public class Pathfinder
 		
 		}
 	}
+	
+	public static boolean isCrossWalk(Point p, MovementDirection[][] walking, MovementDirection[][] driving)
+	{
+		return walking[p.y][p.x].isValid() && driving[p.y][p.x].isValid();
+	}
 }
