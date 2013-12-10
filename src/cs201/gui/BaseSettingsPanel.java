@@ -1,14 +1,17 @@
 package cs201.gui;
 
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import cs201.helper.CityDirectory;
 import cs201.helper.Constants;
 import cs201.trace.TraceFrame;
 
@@ -22,10 +25,16 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 	private TraceFrame traceFrame;
 	private ScenarioPanel scenarioPanel;
 	private TimePanel timePanel;
+	private JLabel currentTime;
 	
 	public BaseSettingsPanel()
 	{
 		setLayout(new FlowLayout());
+		
+		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+		currentTime = new JLabel("Time: " + CityDirectory.getInstance().getTime());
+		currentTime.setFont(font);
+		add(currentTime);
 		
 		traceFrame = new TraceFrame();
 		
@@ -61,6 +70,7 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 	 * Used to reset any settings/the trace panel
 	 */
 	public void resetCity() {
+		currentTime.setText("Time: " + CityDirectory.getInstance().getTime());
 		this.traceFrame.resetCity();
 		this.debugMode.setSelected(false);
 		Constants.DEBUG_MODE = false;
@@ -73,19 +83,18 @@ public class BaseSettingsPanel extends JPanel implements ActionListener
 		if(e.getSource() == debugMode)
 		{
 			Constants.DEBUG_MODE = debugMode.isSelected();
-		}
-		if (e.getSource() == traceButton) {
+		} else if (e.getSource() == traceButton) {
 			traceFrame.setVisible(!traceFrame.isVisible());
-		}
-		if (e.getSource() == scenarioButton) {
+		} else if (e.getSource() == scenarioButton) {
 			if (scenarioPanel != null) {
 				scenarioPanel.showScenarioPanel();
 			}
-		}
-		if (e.getSource() == timeButton) {
+		} else if (e.getSource() == timeButton) {
 			if (timePanel != null) {
 				timePanel.showTimePanel();
 			}
+		} else if (e.getSource() == CityDirectory.getInstance().getCityTimer()) {
+			currentTime.setText("Time: " + CityDirectory.getInstance().getTime());
 		}
 	}
 }
