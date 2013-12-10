@@ -161,7 +161,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Brandon Restaurant Market Order");
 		scenarioList.add("Beaucoup Buses");
 		scenarioList.add("Killer Buses");
-		
+		scenarioList.add("Weekend Behavior Change");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -206,6 +206,7 @@ public class SimCity201 extends JFrame {
 			case 21: brandonRestaurantMarketOrder(); break;
 			case 22: beaucoupBuses();break;
 			case 23: hundredPeopleBus();break;
+			case 24: weekendDifference(); break;
 			default: return;
 		}
 	}
@@ -229,6 +230,41 @@ public class SimCity201 extends JFrame {
 		System.gc();
 	}
 	
+	private void weekendDifference() {
+		/* Employees work at a Restaurant during the week, but workplaces are closed on the weekends 
+		 * so people must eat at home or find other things to do. In this scenario, the time begins on 
+		 * Friday and a Host wakes up at 7:00AM goes to work at the Restaurant normally at 8:00AM, but 
+		 * on Saturday people sleep in instead so the Host wakes up at 8:30AM and doesn't go to work 
+		 * at the Restaurant.
+		 */
+		CityTime time = new CityTime();
+		time.day = CityTime.WeekDay.Friday;
+		CityDirectory.getInstance().setStartTime(time);
+		
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
+		RestaurantMatt r = new RestaurantMatt(125, 125, 50, 50, Structure.getNextInstance(), g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
+		r.setStructurePanel(g);
+		buildingPanels.add(g, "" + r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
+		CityDirectory.getInstance().addResidence(res);
+		timePanel.addAnimationPanel(resPanel);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), res, r, Intention.RestaurantHost, res, null);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+	}
+	
 	private void normativeRestaurant() {
 		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
 		 * when all of them have arrived at the Restaurant. At 8:00AM a single Customer wakes up 
@@ -241,7 +277,7 @@ public class SimCity201 extends JFrame {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
 		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g,""+r.getId());
