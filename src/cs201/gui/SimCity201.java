@@ -283,7 +283,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
@@ -299,7 +299,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addMarket(m);
 			
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantBrandon r = new RestaurantBrandon(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
@@ -345,7 +345,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantBrandon r = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -413,7 +413,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantBrandon r = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -473,7 +473,7 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -532,7 +532,7 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -666,7 +666,7 @@ public class SimCity201 extends JFrame {
 	private void normativeWalking()
 	{
 		/*
-		 * Creates a Person who will walk from the market at 100,100 to the restaurant at 475,225 by way of crosswalks and sidewalks.
+		 * Creates a Person who will walk from the market at 125,125 to the restaurant at 23*25,11*25 by way of crosswalks and sidewalks.
 		 * The route that is taken is defined by arrows shown in Debug mode (viewed by typing zero). When the Person reaches his destination, he
 		 * goes inside the structure there and performs structure actions.
 		 * He begins his walk at 7:00 AM.
@@ -674,7 +674,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
@@ -683,11 +683,11 @@ public class SimCity201 extends JFrame {
 		timePanel.addAnimationPanel(mG);
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(21*25,11*25), new Point(22*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
@@ -701,7 +701,7 @@ public class SimCity201 extends JFrame {
 	private void normativeDriving()
 	{
 		/*
-		 * Creates a Person who will drive from the market at 100,100 to the restaurant at 475,225 by way of roads.
+		 * Creates a Person who will drive from the market at 125,125 to the restaurant at 23*25,11*25 by way of roads.
 		 * The person does this by calling a car, who comes to pick up the person. The person gets into the car, which then drives
 		 * on a path determined by BFS on a movement map (visible in Debug mode), which takes him or her to the parking location
 		 * of the building. The person then walks to the sidewalk location and is brought inside the building.
@@ -711,7 +711,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
@@ -720,11 +720,11 @@ public class SimCity201 extends JFrame {
 		timePanel.addAnimationPanel(mG);
 			
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(18*25,9*25));
+		cityPanel.addStructure(r,new Point(21*25,11*25), new Point(22*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 	
@@ -855,7 +855,7 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		timePanel.addAnimationPanel(mG);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
@@ -875,7 +875,7 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
@@ -930,7 +930,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
@@ -1109,7 +1109,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
@@ -1179,7 +1179,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
@@ -1259,7 +1259,7 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1352,7 +1352,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(),this, 0, 0);
-		RestaurantBen r = new RestaurantBen(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantBen r = new RestaurantBen(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1440,7 +1440,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantBrandon r = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1524,7 +1524,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
 		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
@@ -1592,7 +1592,7 @@ public class SimCity201 extends JFrame {
 	
 	private void hundredPeople() {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());

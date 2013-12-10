@@ -90,6 +90,11 @@ public abstract class VehicleGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
+		if(!present)
+		{
+			//city.permissions[current.y][current.x].release();
+			city.permissions[next.y][next.x].release();
+		}
 	}
 	
 	/**

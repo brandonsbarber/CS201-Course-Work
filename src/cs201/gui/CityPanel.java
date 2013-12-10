@@ -398,7 +398,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 				}
 				g2.setColor(Color.BLACK);
-				//g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+				g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
 			}
 		}
 		
