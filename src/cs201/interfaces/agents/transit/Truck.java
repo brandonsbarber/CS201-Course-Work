@@ -18,5 +18,5 @@ public interface Truck extends Vehicle
 	 * @param destination where to deliver
 	 * @param price what to charge
 	 */
-	public void msgMakeDeliveryRun (List<ItemRequest> inventory, Structure destination, double price);
+	public void msgMakeDeliveryRun (List<ItemRequest> inventory, Structure destination, double price, int id);
 }
