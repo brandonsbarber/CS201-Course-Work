@@ -182,33 +182,40 @@ public abstract class VehicleGui implements Gui
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
-				currentDirection = moves.pop();
-				
-				if(current != next)
+				if(allowedToMove)
 				{
-					city.permissions[current.y][current.x].release();
-				}
+					currentDirection = moves.pop();
 				
-				current = next;
-				
-				switch(currentDirection)
-				{
-				case Down:next = new Point(current.x,current.y + 1);
-					break;
-				case Left:next = new Point(current.x - 1,current.y);
-					break;
-				case Right:next = new Point(current.x + 1,current.y);
-					break;
-				case Up:next = new Point(current.x,current.y - 1);
-					break;
-				default:next = current;
-					break;
-				
+					if(current != next)
+					{
+						city.permissions[current.y][current.x].release();
+					}
+					
+					current = next;
+					
+					switch(currentDirection)
+					{
+					case Down:next = new Point(current.x,current.y + 1);
+						break;
+					case Left:next = new Point(current.x - 1,current.y);
+						break;
+					case Right:next = new Point(current.x + 1,current.y);
+						break;
+					case Up:next = new Point(current.x,current.y - 1);
+						break;
+					default:next = current;
+						break;
+					
+					}
 				}
 				
 				if(city.permissions[next.y][next.x].tryAcquire())
 				{
-					
+					allowedToMove = true;
+				}
+				else
+				{
+					allowedToMove = false;
 				}
 				
 				return;

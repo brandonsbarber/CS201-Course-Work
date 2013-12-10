@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.JPanel;
@@ -92,6 +93,15 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		permissions[7][13].tryAcquire();
+		
+		java.util.Timer t = new java.util.Timer();
+		t.schedule(new TimerTask(){
+
+			@Override
+			public void run() {
+				release();
+				
+			}}, 10000);
 	}
 	
 	/**
@@ -584,4 +594,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		repaint();
 	}
 	
+	
+	public void release()
+	{
+		permissions[7][13].release();
+	}
 }
