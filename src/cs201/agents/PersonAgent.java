@@ -532,6 +532,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void setVehicle(Vehicle newVehicle) {
 		this.vehicle = newVehicle;
+		if (vehicle != null) {
+			passengerRole.addCar((CarAgent) vehicle);
+		}
 	}
 	
 	/**

@@ -26,8 +26,8 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
-import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.CarAgent;
+import cs201.gui.CityPanel;
 import cs201.helper.CityDirectory;
 import cs201.helper.CityTime;
 import cs201.interfaces.agents.transit.Vehicle;
@@ -58,7 +58,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private JComboBox<Structure> homeComboBox;
 	private JComboBox<CityTime> wakeupComboBox;
 	private JComboBox<CityTime> sleepComboBox;
-	private JComboBox<Structure> workplaceComboBox;
+	private JTextField workplaceTextField;
 
 	/**
 	 * Create the panel.
@@ -105,6 +105,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		lblName.setLabelFor(nameTextField);
 		
 		nameTextField = new JTextField();
+		nameTextField.setPreferredSize(new Dimension(12, 28));
+		nameTextField.setMaximumSize(new Dimension(2147483647, 28));
+		nameTextField.setMinimumSize(new Dimension(12, 28));
 		nameTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		nameTextField.setName("");
 		nameTextField.setFocusable(false);
@@ -128,6 +131,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		lblMoney.setLabelFor(moneyTextField);
 		
 		moneyTextField = new JTextField();
+		moneyTextField.setPreferredSize(new Dimension(12, 28));
+		moneyTextField.setMaximumSize(new Dimension(2147483647, 28));
+		moneyTextField.setMinimumSize(new Dimension(12, 28));
 		moneyTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		moneyTextField.setEditable(false);
 		moneyTextField.setFocusable(false);
@@ -200,6 +206,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		lblAction.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		
 		actionTextField = new JTextField();
+		actionTextField.setPreferredSize(new Dimension(12, 28));
+		actionTextField.setMaximumSize(new Dimension(2147483647, 28));
+		actionTextField.setMinimumSize(new Dimension(12, 28));
 		lblAction.setLabelFor(actionTextField);
 		GridBagConstraints gbc_actionTextField = new GridBagConstraints();
 		gbc_actionTextField.fill = GridBagConstraints.HORIZONTAL;
@@ -308,19 +317,21 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		gbc_lblWorkplace.gridy = 1;
 		centerPanel.add(lblWorkplace, gbc_lblWorkplace);
 		
-		workplaceComboBox = new JComboBox<Structure>();
-		workplaceComboBox.setEnabled(false);
-		workplaceComboBox.setFocusable(false);
-		workplaceComboBox.setMaximumSize(new Dimension(32767, 28));
-		workplaceComboBox.setMinimumSize(new Dimension(34, 28));
-		workplaceComboBox.setPreferredSize(new Dimension(34, 28));
-		lblWorkplace.setLabelFor(workplaceComboBox);
-		GridBagConstraints gbc_workplaceComboBox = new GridBagConstraints();
-		gbc_workplaceComboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_workplaceComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_workplaceComboBox.gridx = 1;
-		gbc_workplaceComboBox.gridy = 1;
-		centerPanel.add(workplaceComboBox, gbc_workplaceComboBox);
+		workplaceTextField = new JTextField();
+		workplaceTextField.setPreferredSize(new Dimension(12, 28));
+		workplaceTextField.setMaximumSize(new Dimension(2147483647, 28));
+		workplaceTextField.setMinimumSize(new Dimension(12, 28));
+		lblWorkplace.setLabelFor(workplaceTextField);
+		workplaceTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		workplaceTextField.setFocusable(false);
+		workplaceTextField.setEditable(false);
+		GridBagConstraints gbc_workplaceTextField = new GridBagConstraints();
+		gbc_workplaceTextField.insets = new Insets(0, 0, 5, 0);
+		gbc_workplaceTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_workplaceTextField.gridx = 1;
+		gbc_workplaceTextField.gridy = 1;
+		centerPanel.add(workplaceTextField, gbc_workplaceTextField);
+		workplaceTextField.setColumns(10);
 		
 		JLabel lblJob = new JLabel("Job:");
 		lblJob.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -332,6 +343,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		centerPanel.add(lblJob, gbc_lblJob);
 		
 		jobTextField = new JTextField();
+		jobTextField.setPreferredSize(new Dimension(12, 28));
+		jobTextField.setMaximumSize(new Dimension(2147483647, 28));
+		jobTextField.setMinimumSize(new Dimension(12, 28));
 		lblJob.setLabelFor(jobTextField);
 		jobTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		jobTextField.setFocusable(false);
@@ -354,6 +368,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		centerPanel.add(lblWorkTime, gbc_lblWorkTime);
 		
 		workTimeTextField = new JTextField();
+		workTimeTextField.setPreferredSize(new Dimension(12, 28));
+		workTimeTextField.setMaximumSize(new Dimension(2147483647, 28));
+		workTimeTextField.setMinimumSize(new Dimension(12, 28));
 		lblWorkTime.setLabelFor(workTimeTextField);
 		workTimeTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		workTimeTextField.setFocusable(false);
@@ -401,6 +418,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		centerPanel.add(lblToBuy, gbc_lblToBuy);
 		
 		buyTextField = new JTextField();
+		buyTextField.setPreferredSize(new Dimension(12, 28));
+		buyTextField.setMaximumSize(new Dimension(2147483647, 28));
+		buyTextField.setMinimumSize(new Dimension(12, 28));
 		buyTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		lblToBuy.setLabelFor(buyTextField);
 		buyTextField.setEditable(false);
@@ -423,6 +443,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		centerPanel.add(lblInventory, gbc_lblInventory);
 		
 		inventoryTextField = new JTextField();
+		inventoryTextField.setPreferredSize(new Dimension(12, 28));
+		inventoryTextField.setMaximumSize(new Dimension(2147483647, 28));
+		inventoryTextField.setMinimumSize(new Dimension(12, 28));
 		inventoryTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		lblInventory.setLabelFor(inventoryTextField);
 		inventoryTextField.setFocusable(false);
@@ -494,7 +517,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.sleepComboBox.removeAllItems();
 		this.actionTextField.setText("");
 		this.carCheckBox.setSelected(false);
-		this.workplaceComboBox.removeAllItems();
+		this.workplaceTextField.setText("");
 		this.jobTextField.setText("");
 		this.workTimeTextField.setText("");
 		this.homeComboBox.removeAllItems();
@@ -510,9 +533,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.wakeupComboBox.setEnabled(editMode);
 		this.sleepComboBox.setEnabled(editMode);
 		this.carCheckBox.setEnabled(editMode);
-		this.workplaceComboBox.setEnabled(editMode);
-		this.jobTextField.setEditable(editMode);
-		this.workTimeTextField.setEditable(editMode);
 		this.homeComboBox.setEnabled(editMode);
 		
 		this.nameTextField.setFocusable(editMode);
@@ -522,9 +542,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.wakeupComboBox.setFocusable(editMode);
 		this.sleepComboBox.setFocusable(editMode);
 		this.carCheckBox.setFocusable(editMode);
-		this.workplaceComboBox.setFocusable(editMode);
-		this.jobTextField.setFocusable(editMode);
-		this.workTimeTextField.setFocusable(editMode);
 		this.homeComboBox.setFocusable(editMode);
 	}
 	
@@ -562,15 +579,11 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		
 		this.carCheckBox.setSelected(false);
 		
-		List<Structure> workplaces = CityDirectory.getInstance().getAllWorkplaces();
-		this.workplaceComboBox.addItem(null);
-		for(Structure s : workplaces) {
-			this.workplaceComboBox.addItem(s);
-		}
+		this.workplaceTextField.setText("None - Cannot Edit");
 		
-		this.jobTextField.setText("None");
+		this.jobTextField.setText("None - Cannot Edit");
 		
-		this.workTimeTextField.setText("N/A");
+		this.workTimeTextField.setText("N/A - Cannot Edit");
 		
 		List<Residence> homes = CityDirectory.getInstance().getUnoccupiedResidences();
 		this.homeComboBox.addItem(null);
@@ -581,10 +594,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.buyTextField.setText("Cannot Edit");
 		
 		this.inventoryTextField.setText("Cannot Edit");
-	}
-	
-	private boolean checkIfNewPersonValid() {
-		return true;
 	}
 	
 	/**
@@ -598,11 +607,11 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		String name = this.nameTextField.getText().trim();
 		if (name.equals("")) {
 			// FAILED
-			System.out.println("FAILED IN NAME");
+			AlertLog.getInstance().logError(AlertTag.GENERAL_CITY, "PersonCreationPanel", "Failed to create Person. Provide input for 'Name' field.");
 			return false;
 		}
 		output.append("\n\tName: " + name);
-		PersonAgent p = new PersonAgent(name, null);
+		PersonAgent p = new PersonAgent(name, CityPanel.INSTANCE);
 		
 		double money;
 		try {
@@ -611,7 +620,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 			money = Double.parseDouble(sMoney);
 		} catch(NumberFormatException e) {
 			// FAILED
-			System.out.println("FAILED IN MONEY");
+			AlertLog.getInstance().logError(AlertTag.GENERAL_CITY, "PersonCreationPanel", "Failed to create Person. Provide correct input for 'Money' field.");
 			return false;
 		}
 		output.append("\n\tMoney: " + money);
@@ -664,12 +673,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		output.append("\n\tCar: " + (car == null ? "None" : car.toString()));
 		p.setVehicle(car);
 		
-		Intention job;
-		
-		Structure workplace;
-		
-		CityTime worktime;
-		
 		Residence home = null;
 		if (this.homeComboBox.getSelectedIndex() == -1 || this.homeComboBox.getSelectedIndex() == 0) {
 			home = null;
@@ -686,6 +689,14 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		// personPanel.addPerson(p);
 		// p.startThread();
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "PersonCreationPanel", output.toString());
+		p.setWakeupTime(wakeup);
+		p.setMoney(money);
+		p.setHungerLevel(hunger);
+		p.setSleepTime(sleep);
+		p.setupPerson(CityDirectory.getInstance().getTime(), home, null, null, location, car);
+		personPanel.addPerson(p);
+		CityDirectory.getInstance().addPerson(p);
+		p.startThread();
 		return true;
 	}
 	
@@ -708,9 +719,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.sleepComboBox.setSelectedIndex(0);
 		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
 		this.carCheckBox.setSelected(p.getVehicle() != null);
-		this.workplaceComboBox.removeAllItems();
-		this.workplaceComboBox.addItem(p.getWorkplace());
-		this.workplaceComboBox.setSelectedIndex(0);
+		this.workplaceTextField.setText(p.getWorkplace() == null ? "None" : p.getWorkplace().toString());
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
 		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString().trim());
 		this.homeComboBox.removeAllItems();
@@ -727,11 +736,12 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == this.btnConfirm) { // CONFIRM
-			if (editMode && checkIfNewPersonValid()) {
+			if (editMode) {
 				if (createPerson()) {
 					this.editMode = false;
 					this.setupEditing(false);
 					this.lblMode.setText("Mode: View");
+					this.personPanel.showInfo();
 				}
 			}
 		} else if (e.getSource() == this.btnNewPerson) { // NEW PERSON

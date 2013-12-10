@@ -42,9 +42,9 @@ public class RestaurantMatt extends Restaurant {
 		
 		// Setup times
 		this.morningShiftStart = new CityTime(8, 00);
-		this.morningShiftEnd = new CityTime(12, 30);
-		this.afternoonShiftStart = new CityTime(13, 00);
-		this.closingTime = new CityTime(18, 00);
+		this.morningShiftEnd = new CityTime(14, 00);
+		this.afternoonShiftStart = new CityTime(15, 30);
+		this.closingTime = new CityTime(20, 00);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
