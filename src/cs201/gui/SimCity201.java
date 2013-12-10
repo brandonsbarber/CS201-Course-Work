@@ -637,7 +637,7 @@ public class SimCity201 extends JFrame {
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(21*25,11*25), new Point(22*25,11*25));
+		cityPanel.addStructure(r,new Point(26*25,11*25), new Point(25*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 	

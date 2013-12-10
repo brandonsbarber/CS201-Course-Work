@@ -378,6 +378,11 @@ public class PassengerGui implements Gui
 		roaming = false;
 	}
 	
+	public Point findRoad(int i, int j)
+	{
+		return Pathfinder.findRoad(city,i,j);
+	}
+	
 	boolean roaming;
 
 }

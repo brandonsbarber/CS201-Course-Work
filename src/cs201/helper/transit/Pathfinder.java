@@ -28,6 +28,13 @@ public class Pathfinder
 			move = moveDir;
 		}
 		
+		 public MyPoint(int x, int y)
+         {
+                 super(x,y);
+                 prev = null;
+                 move = MovementDirection.None;
+         }
+		
 		public boolean equals(MyPoint p)
 		{
 			return p.x == x && p.y == y;
@@ -381,4 +388,38 @@ public class Pathfinder
 	{
 		return city.getDrivingMap()[p.y][p.x] == MovementDirection.Turn;
 	}
+	
+	public static Point findRoad(CityPanel city, int x, int y)
+    {
+            ArrayList<Point> checked = new ArrayList<Point>();
+            Queue<MyPoint> toCheck = new LinkedList<MyPoint>();
+            
+            toCheck.add(new MyPoint(x,y));
+            checked.add(toCheck.peek());
+            
+            while(checked.size() < city.getDrivingMap().length*city.getDrivingMap()[0].length)
+            {
+                    MyPoint point = toCheck.remove();
+                    ArrayList<MyPoint> points = new ArrayList<MyPoint>();
+                    
+                    points.add(getPointFromDirection(point,MovementDirection.Up));
+                    points.add(getPointFromDirection(point,MovementDirection.Down));
+                    points.add(getPointFromDirection(point,MovementDirection.Left));
+                    points.add(getPointFromDirection(point,MovementDirection.Right));
+                    
+                    for(MyPoint p : points)
+                    {
+                            if(!checked.contains(p))
+                            {
+                                    checked.add(p);
+                                    toCheck.add(p);
+                            }
+                            if(isValidPoint(city.getDrivingMap(),p) && getDirection(city.getDrivingMap(),p.x,p.y).isValid())
+                            {
+                                    return p;
+                            }
+                    }
+            }
+            return new Point(x,y);
+    }
 }

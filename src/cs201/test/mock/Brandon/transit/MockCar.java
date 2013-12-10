@@ -1,5 +1,7 @@
 package cs201.test.mock.Brandon.transit;
 
+import java.awt.Point;
+
 import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
@@ -42,6 +44,11 @@ public class MockCar extends Mock implements Car
 	@Override
 	public void msgCallCar(Passenger p, Structure s, Structure d) {
 		log.add(new LoggedEvent("Passenger "+p+" has asked me to pick up from "+s+" and go to "+d));
+	}
+	
+	@Override
+	public void msgCallCar(Passenger p, Point point, Structure d) {
+		log.add(new LoggedEvent("Passenger "+p+" has asked me to pick up from "+point+" and go to "+d));
 	}
 
 	@Override
