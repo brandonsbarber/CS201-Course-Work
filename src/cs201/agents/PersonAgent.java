@@ -62,7 +62,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile int hungerLevel;
 	private volatile boolean hungerEnabled;
 	private volatile Vehicle vehicle;
-	private volatile Structure home;
+	private volatile Residence home;
 	private volatile Structure workplace;
 	private volatile Intention job;
 	private volatile CityTime workTime;
@@ -110,12 +110,15 @@ public class PersonAgent extends Agent implements Person {
 	}
 	
 	@Override
-	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
+	public void setupPerson(CityTime curTime, Residence home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
 		
-		this.home = home;		
+		this.home = home;
+		if (this.home != null) {
+			this.home.setOccupied(true);
+		}
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
@@ -619,7 +622,7 @@ public class PersonAgent extends Agent implements Person {
 	 * Sets a new home for this PersonAgent
 	 * @param home The new Structure where this PersonAgent lives
 	 */
-	public void setHome(Structure home)
+	public void setHome(Residence home)
 	{
 		this.home = home;
 	}
@@ -672,6 +675,15 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public PersonState getState() {
 		return this.state;
+	}
+	
+	/**
+	 * Sets this PersonAgent's current location. SHOULD ONLY BE CALLED WHEN THE THREAD IS NOT RUNNING.
+	 * @param location The new location.
+	 */
+	public void setCurrentLocation(Structure location) {
+		this.currentLocation = location;
+		this.passengerRole.setCurrentLocation(location);
 	}
 	
 	
