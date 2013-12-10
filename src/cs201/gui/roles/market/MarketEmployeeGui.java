@@ -264,14 +264,7 @@ public class MarketEmployeeGui implements Gui {
 	
 	public void doGoToManager() {
 		gettingShelfItem = false;
-		for (int x = 10; x > 0; x--) {
-			if (guiMoveFromCurrentPositionTo(new Position(x, 14)))
-				return;
-		}
-		//guiMoveFromCurrentPositionTo(new Position(10, 14));
-		// There isn't a spot, so just release the semaphore
-		if (role != null)
-			role.animationFinished();
+		guiMoveFromCurrentPositionTo(new Position(13, 14));
 	}
 	
 	public void doEnterMarket() {

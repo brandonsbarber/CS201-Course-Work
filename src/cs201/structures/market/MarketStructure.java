@@ -74,7 +74,7 @@ public class MarketStructure extends Structure {
 	private MarketEmployeeRole createNewEmployeeRole() {
 		// Set up the new employee
 		MarketEmployeeRole newEmployee = new MarketEmployeeRole();
-		MarketEmployeeGui employeeGui = new MarketEmployeeGui(newEmployee, (MarketAnimationPanel) panel, 2 + (employees.size() * 2), 2);
+		MarketEmployeeGui employeeGui = new MarketEmployeeGui(newEmployee, (MarketAnimationPanel) panel, 2, 2 + (employees.size() * 2));
 		newEmployee.setGui(employeeGui);
 		panel.addGui(employeeGui);
 
