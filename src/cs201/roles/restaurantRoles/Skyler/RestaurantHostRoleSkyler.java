@@ -23,6 +23,8 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 	public List<RestaurantWaiterRoleSkyler> waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRoleSkyler>());
 	public Collection<Table> tables;
 	private boolean closingTime = false;
+	
+	int numCustomers = 0;
 
 	private String name;
 	//private Semaphore atTable = new Semaphore(0,true);
@@ -60,6 +62,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 	@Override
 	public void msgIWantFood(CustomerSkyler cust) {
 		waitingCustomers.add(cust);
+		numCustomers++;
 		stateChanged();
 	}
 
@@ -83,6 +86,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 				stateChanged();
 			}
 		}
+		numCustomers--;
 	}
 
 	@Override
@@ -93,7 +97,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if (closingTime) {
+		if (closingTime && numCustomers==0) {
 			closeRestaurant();
 		}
 		synchronized(waiters) {

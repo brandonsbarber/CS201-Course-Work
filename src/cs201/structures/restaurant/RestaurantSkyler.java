@@ -132,13 +132,16 @@ public class RestaurantSkyler extends Restaurant {
 		}
 	}
 
-	private void checkIfItsTimeToOpen() {
-		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
-			for (RestaurantWaiterRole w : waiters) {
-				if (w.getPerson() != null) {
-					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
-					this.isOpen = true;
-					return;
+	private void checkIfItsTimeToOpen(CityTime time) {
+		if (CityTime.timeDifference(time, this.morningShiftStart)>=0 && CityTime.timeDifference(this.morningShiftEnd, time)>=0
+				|| CityTime.timeDifference(time, this.afternoonShiftStart)>=0 && CityTime.timeDifference(this.closingTime, time)>=0) {
+			if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
+				for (RestaurantWaiterRole w : waiters) {
+					if (w.getPerson() != null) {
+						AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
+						this.isOpen = true;
+						return;
+					}
 				}
 			}
 		}
@@ -148,7 +151,7 @@ public class RestaurantSkyler extends Restaurant {
 	@Override
 	public void updateTime(CityTime time) {
 		if(!isOpen) {
-			checkIfItsTimeToOpen();
+			checkIfItsTimeToOpen(time);
 		}
 		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
