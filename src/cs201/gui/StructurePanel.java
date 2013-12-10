@@ -101,7 +101,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	            }
 	        }
 		} catch (ConcurrentModificationException e) {
-    		return;
+			
     	}
 		
 		repaint();  //Will have paintComponent called
