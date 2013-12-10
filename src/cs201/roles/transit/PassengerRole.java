@@ -477,6 +477,7 @@ public class PassengerRole extends Role implements Passenger
 			case Walk :
 				if(!testing)
 				{
+					AlertLog.getInstance().logMessage(AlertTag.TRANSIT,this.getPerson().getName(),"Walking to destination");
 					gui.doGoToLocation(point.s);
 					try
 					{
@@ -498,7 +499,6 @@ public class PassengerRole extends Role implements Passenger
 				else
 				{
 					Point p = gui.findRoad(gui.getX()/CityPanel.GRID_SIZE,gui.getY()/CityPanel.GRID_SIZE);
-					gui.stopRoam();
 					car.msgCallCar(this,new Point(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE),destination);
 				}
 				if(!testing)

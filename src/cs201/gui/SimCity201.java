@@ -166,6 +166,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Weekend Behavior Change");
 		scenarioList.add("Joust");
 		scenarioList.add("Skyler Restaurant");
+		scenarioList.add("Normative Driving: No Roaming");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -213,6 +214,7 @@ public class SimCity201 extends JFrame {
 			case 24: weekendDifference(); break;
 			case 25: joust();break;
 			case 26: skylerRestaurant();break;
+			case 27: normativeDrivingNoRoam();break;
 			default: return;
 		}
 	}
@@ -622,6 +624,48 @@ public class SimCity201 extends JFrame {
 		 * He currently moves around the block due to the nature of the sidewalks and his movement priorities.
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		CityDirectory.getInstance().addMarket(m);
+		timePanel.addAnimationPanel(mG);
+			
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 0));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r,new Point(26*25,11*25), new Point(25*25,11*25));
+		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
+	
+		CarAgent car = new CarAgent();
+		CarGui cGui = new CarGui(car,cityPanel);
+		car.setGui(cGui);
+		cityPanel.addGui(cGui);
+		car.startThread();
+	
+		PersonAgent p1 = new PersonAgent("Car Rider",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, car);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+	}
+	
+	private void normativeDrivingNoRoam()
+	{
+		/*
+		 * Creates a Person who will drive from the market at 125,125 to the restaurant at 23*25,11*25 by way of roads.
+		 * The person does this by calling a car, who comes to pick up the person. The person gets into the car, which then drives
+		 * on a path determined by BFS on a movement map (visible in Debug mode), which takes him or her to the parking location
+		 * of the building. The person then walks to the sidewalk location and is brought inside the building.
+		 * This starts at 7:00 AM.
+		 * He currently moves around the block due to the nature of the sidewalks and his movement priorities.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
