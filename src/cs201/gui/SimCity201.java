@@ -517,7 +517,7 @@ public class SimCity201 extends JFrame {
 		 * The bus moves from the very beginning.
 		 * The person moves at 7:00 AM
 		 */
-		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
 

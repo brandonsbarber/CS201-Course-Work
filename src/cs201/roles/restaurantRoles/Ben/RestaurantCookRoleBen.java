@@ -65,8 +65,8 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		if (!steakString.equals(""))
 			steakAmount = Integer.parseInt(steakString);
 			*/
-		int chickenAmount = 0;
-		int steakAmount = 0;
+		int chickenAmount = 10;
+		int steakAmount = 10;
 
 		inventory.put("Chicken", new MyFood("Chicken", 10000, chickenAmount, 1, 10));
 		inventory.put("Steak", new MyFood("Steak", 12000, steakAmount, 1, 10));

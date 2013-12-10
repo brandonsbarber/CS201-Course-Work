@@ -4,8 +4,10 @@ package cs201.gui.roles.restaurant.Ben;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.helper.Constants;
 import cs201.helper.Ben.RestaurantRotatingStandBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
 
@@ -33,6 +35,8 @@ public class WaiterGuiBen implements Gui {
 	private String iconText = "";
 	
 	private boolean isPresent = false;
+	private boolean animating = false;
+	private String moveDir = "Restaurant_Ben_Waiter_Down";
 	
 	// The default home position for the waiter
 	private int homeX = 5;
@@ -68,20 +72,49 @@ public class WaiterGuiBen implements Gui {
         		agent.msgAtDestination();
         		hasDestination = false;
         	}
+        	if (animating) {
+        		animating = false;
+        	}
         }
         
     }
 
     public void draw(Graphics2D g) {
-    	// Draw the magenta waiter rectangle
-        g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, 20, 20);
-        
-		// Draw his icon, if he has one
-		if (hasIcon) {
-			g.setColor(Color.BLACK);
-			g.drawString(iconText, xPos, yPos + 15);
-		}
+    	if (Constants.DEBUG_MODE) {
+	    	// Draw the magenta waiter rectangle
+	        g.setColor(Color.MAGENTA);
+	        g.fillRect(xPos, yPos, 20, 20);
+	        
+			// Draw his icon, if he has one
+			if (hasIcon) {
+				g.setColor(Color.BLACK);
+				g.drawString(iconText, xPos, yPos + 15);
+			}
+    	} else {
+    		if (animating) {
+				double theta = Math.atan2(yPos - yDestination, xDestination - xPos);
+				
+				if (theta >= -Math.PI/4 && theta <= Math.PI/4) {
+					moveDir = "Restaurant_Ben_Waiter_Right";
+				} else if (theta >= Math.PI/4 && theta <= 3*Math.PI/4) {
+					moveDir = "Restaurant_Ben_Waiter_Up";
+				} else if (theta <= -Math.PI/4 && theta >= -3*Math.PI/4) {
+					moveDir = "Restaurant_Ben_Waiter_Down";
+				} else {
+					moveDir = "Restaurant_Ben_Waiter_Left";
+				}
+			} else {
+				moveDir = "Restaurant_Ben_Waiter_Down";
+			}
+			
+    		g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, null);
+    		
+    		// Draw his icon, if he has one
+			if (hasIcon) {
+				g.setColor(Color.BLACK);
+				g.drawString(iconText, xPos + 15, yPos - 15);
+			}
+    	}
     }
 
     public boolean isPresent() {
@@ -98,12 +131,14 @@ public class WaiterGuiBen implements Gui {
 	}
 
     public void DoWalkToTable(int tablenumber) {
-        xDestination = xTable + (tableWidth + tablePad) * (tablenumber - 1) + 20;
-        yDestination = yTable;
+    	animating = true;
+        xDestination = xTable + (tableWidth + tablePad) * (tablenumber - 1) + (tableWidth / 2 + 10);
+        yDestination = yTable - 20;
         hasDestination = true;
     }
     
     public void DoEnterRestaurant() {
+    	animating = true;
     	xPos = -40;
     	yPos = -40;
     	DoWalkToHome();
@@ -114,6 +149,7 @@ public class WaiterGuiBen implements Gui {
      * in the agent (or role) code, as this will also release the semaphore when he's finished.
      */
     public void DoWalkToHome() {
+    	animating = true;
     	homeX = 5;
 		homeY = 5 + (agent.getWaiterNumber() * 25);
     	
@@ -127,6 +163,7 @@ public class WaiterGuiBen implements Gui {
      * the semaphore when he gets there. Don't follow this method with pauseForAnimation()
      */
     public void DoWalkToHomeIfBored() {
+    	animating = true;
     	homeX = 5;
     	homeY = 5 + (agent.getWaiterNumber() * 25);
     	
@@ -135,30 +172,35 @@ public class WaiterGuiBen implements Gui {
     }
     
     public void DoWalkToPlatingArea() {
+    	animating = true;
     	xDestination = RestaurantAnimationPanelBen.PLATINGAREAX;
     	yDestination = RestaurantAnimationPanelBen.PLATINGAREAY + 30;
     	hasDestination = true;
     }
     
     public void DoWalkToCookingArea() {
+    	animating = true;
     	xDestination = RestaurantAnimationPanelBen.COOKINGAREAX;
     	yDestination = RestaurantAnimationPanelBen.COOKINGAREAY + 30;
     	hasDestination = true;
     }
     
     public void DoWalkToStand() {
+    	animating = true;
     	xDestination = RestaurantRotatingStandBen.ROTATING_STAND_X;
     	yDestination = RestaurantRotatingStandBen.ROTATING_STAND_Y + 30;
     	hasDestination = true;
     }
     
     public void DoWalkToBreakArea() {
+    	animating = true;
     	xDestination = BREAKAREAX;
     	yDestination = BREAKAREAY;
     	hasDestination = true;
     }
     
     public void DoLeaveRestaurant() {
+    	animating = true;
     	xDestination = xPos;
     	yDestination = -40;
     	hasDestination = true;

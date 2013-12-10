@@ -106,7 +106,6 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 	 */
 	public void msgCustomerLeft(WaiterBrandon w, int table)
 	{
-		numCustomers--;
 		tables.get(table-1).c = null;
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+w.getName()+" now has one fewer customer. Table "+table+" is clear");
 		
@@ -120,6 +119,12 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 				break;
 			}
 		}
+	}
+	
+	public void msgLeft(CustomerBrandon c)
+	{
+		numCustomers--;
+		stateChanged();
 	}
 	
 	/**
@@ -193,6 +198,7 @@ public class RestaurantHostRoleBrandon extends RestaurantHostRole implements Hos
 				break;
 			}
 		}
+		numCustomers--;
 		stateChanged();
 	}
 	

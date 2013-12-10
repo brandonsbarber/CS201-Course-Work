@@ -463,6 +463,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 			AlertLog.getInstance().logError(AlertTag.RESTAURANT,""+this,"Problem with customer leaving restaurant");
 		}
 		gui.didLeaveRestaurant();
+		h.msgLeft(this);
 		
 		this.isActive = false;
 		this.gui.setPresent(false);
