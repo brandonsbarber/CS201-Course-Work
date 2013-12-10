@@ -408,7 +408,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
 					if(crosswalkPermissions.get(y).get(x).size() != 0)
 					{
-						g2.setColor(Color.BLUE);
+						g2.setColor(Color.WHITE);
 						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 					}
 				}

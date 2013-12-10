@@ -105,12 +105,7 @@ public class PassengerGui implements Gui
 			List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
 			synchronized(list)
 			{
-				if(list.remove(this)){System.out.println("Removing "+current.x+","+current.y);}
-			}
-			list = city.crosswalkPermissions.get(next.y).get(next.x);
-			synchronized(list)
-			{
-				if(list.remove(this)){System.out.println("Removing "+next.x+","+next.y);}
+				list.remove(this);
 			}
 		}
 	}
@@ -128,18 +123,6 @@ public class PassengerGui implements Gui
 		fired = false;
 		present = true;
 		
-		List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-		synchronized(list)
-		{
-			if(list.remove(this)){System.out.println("Removing "+current.x+","+current.y);}
-		}
-		list = city.crosswalkPermissions.get(next.y).get(next.x);
-		synchronized(list)
-		{
-			
-			if(list.remove(this)){System.out.println("Removing "+next.x+","+next.y);}
-		}
-		
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
 		
@@ -149,23 +132,11 @@ public class PassengerGui implements Gui
 	}
 	
 	public void doGoToLocation(int x, int y)
-	{	
+	{
 		destX = x;
 		destY = y;
 		fired = false;
 		present = true;
-		
-		List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-		synchronized(list)
-		{
-			if(list.remove(this)){System.out.println("Removing "+current.x+","+current.y);}
-		}
-		list = city.crosswalkPermissions.get(next.y).get(next.x);
-		synchronized(list)
-		{
-			
-			if(list.remove(this)){System.out.println("Removing "+next.x+","+next.y);}
-		}
 		
 		current = new Point(this.x/CityPanel.GRID_SIZE,this.y/CityPanel.GRID_SIZE);
 		next = current;
@@ -175,21 +146,6 @@ public class PassengerGui implements Gui
 	
 	public void doRoam()
 	{
-		if(current != null && next != null)
-		{
-			List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-			synchronized(list)
-			{
-				if(list.remove(this)){System.out.println("Removing "+current.x+","+current.y);}
-			}
-			list = city.crosswalkPermissions.get(next.y).get(next.x);
-			synchronized(list)
-			{
-				
-				if(list.remove(this)){System.out.println("Removing "+next.x+","+next.y);}
-			}
-		}
-		
 		roaming = true;
 		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
 		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
@@ -226,7 +182,7 @@ public class PassengerGui implements Gui
 			
 			g.setColor(Color.BLACK);
 			g.drawString(""+destination, x,y);
-			g.drawString(""+pass.getPerson().getName(), x,y+CityPanel.GRID_SIZE);
+			g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
 		}
 		else
 		{
@@ -267,13 +223,12 @@ public class PassengerGui implements Gui
 				List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
 				synchronized(list)
 				{
-					if(list.remove(this)){System.out.println("Removing "+current.x+","+current.y);}
+					list.remove(this);
 				}
 				list = city.crosswalkPermissions.get(next.y).get(next.x);
 				synchronized(list)
 				{
-					
-					if(list.remove(this)){System.out.println("Removing "+next.x+","+next.y);}
+					list.remove(this);
 				}
 				currentDirection = MovementDirection.None;
 				fired = true;
@@ -318,7 +273,7 @@ public class PassengerGui implements Gui
 						List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
 						synchronized(list)
 						{
-							if(list.remove(this)){System.out.println("Removing "+current.x+","+current.y);}
+							list.remove(this);
 						}
 					}
 					
@@ -349,7 +304,6 @@ public class PassengerGui implements Gui
 							return;
 						}
 					}
-					System.out.println("Adding "+next.x+","+next.y);
 					list.add(this);
 					allowedToMove = true;
 				}
@@ -408,8 +362,8 @@ public class PassengerGui implements Gui
 	public void stopRoam()
 	{
 		roaming = false;
-		destX = x = x/CityPanel.GRID_SIZE*CityPanel.GRID_SIZE;
-		destY = y = y/CityPanel.GRID_SIZE*CityPanel.GRID_SIZE;
+		destX = x;
+		destY = y;
 	}
 	
 	boolean roaming;
