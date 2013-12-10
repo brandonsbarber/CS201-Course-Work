@@ -438,7 +438,7 @@ public class SimCity201 extends JFrame {
 		 * goes inside the structure there and performs structure actions.
 		 * He begins his walk at 7:00 AM.
 		 */
-		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);

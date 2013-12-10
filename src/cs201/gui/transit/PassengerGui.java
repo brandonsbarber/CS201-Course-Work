@@ -101,7 +101,11 @@ public class PassengerGui implements Gui
 		this.present = present;
 		if(!present)
 		{
-			//city.permissions[next.y][next.x].release();
+			List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+			synchronized(list)
+			{
+				list.remove(this);
+			}
 		}
 	}
 	
@@ -214,15 +218,19 @@ public class PassengerGui implements Gui
 		{
 			if(x == destX && y == destY)
 			{
-				fired = true;
-				pass.msgAnimationFinished ();
-				currentDirection = MovementDirection.None;
-				
 				List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
 				synchronized(list)
 				{
 					list.remove(this);
 				}
+				list = city.crosswalkPermissions.get(next.y).get(next.x);
+				synchronized(list)
+				{
+					list.remove(this);
+				}
+				currentDirection = MovementDirection.None;
+				fired = true;
+				pass.msgAnimationFinished ();
 				
 				return;
 			}
@@ -279,12 +287,16 @@ public class PassengerGui implements Gui
 					List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
 					synchronized(list)
 					{
+						/*for(Gui g : list)
+						{
+							if(g instanceof VehicleGui)
+							{
+								return;
+							}
+						}*/
 						list.add(this);
 					}
-				
-				return;
 			}
-			
 		}
 	}
 	
