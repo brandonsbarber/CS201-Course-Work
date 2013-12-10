@@ -74,9 +74,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public static class InventoryEntry {
-		String item;
-		int amount;
-		float price;
+		public String item;
+		public int amount;
+		public float price;
 		
 		public InventoryEntry(String i, int a, float p) {
 			item = i;
@@ -514,7 +514,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 		for (ItemRequest item : o.items) {
 			int amountWeHave = AmountInStock(item);
 			if (amountWeHave > 0) {
-				item.amount = amountWeHave;
+				if (item.amount > amountWeHave) {
+					item.amount = amountWeHave;
+				}
+				subtractInventory(item.item, item.amount);
 				itemList.add(item);
 			}
 		}
@@ -689,12 +692,26 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 	}
 	
-	public void AddInventoryEntry(InventoryEntry entry) {
+	public void addInventoryEntry(InventoryEntry entry) {
 		// Ensure that we store the item as lowercase
 		entry.item = entry.item.toLowerCase();
 		
 		// Add the inventory entry
 		inventory.put(entry.item, entry);
+		
+		// Update the structure config panel
+		structure.updateConfigPanel();
+	}
+	
+	private void subtractInventory(String item, int amountToDecrease) {
+		// Update our inventory database
+		InventoryEntry entry = inventory.get(item.toLowerCase());
+		if (entry != null) {
+			entry.amount -= amountToDecrease;
+		}
+		
+		// Update the structure config panel
+		structure.updateConfigPanel();
 	}
 	
 	public void setGui(MarketManagerGui g) {
@@ -724,6 +741,17 @@ public class MarketManagerRole extends Role implements MarketManager {
 			employeeList.add(employee.employee);
 		}
 		return employeeList;
+	}
+	
+	/**
+	 * Returns the MarketManager's current inventory.
+	 */
+	public List<InventoryEntry> getInventory() {
+		List<InventoryEntry> inventoryList = new ArrayList<InventoryEntry>();
+		for (Map.Entry<String, InventoryEntry> entry : inventory.entrySet()) {
+			inventoryList.add(entry.getValue());
+		}
+		return inventoryList;
 	}
 	
 	/**

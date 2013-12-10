@@ -397,7 +397,6 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		customer.customer.msgFollowMeToTable(table, this, new Menu());
 		
 		DoSeatCustomer(customer.customer, table);
-		pauseForAnimation();
 		customer.state = CustomerState.seated;
 		
 		// HACK - if the waiter is named "tired" he'll go on break
@@ -515,6 +514,8 @@ public abstract class RestaurantWaiterRoleBen extends RestaurantWaiterRole imple
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Waiter " + name, "Seating " + customer + " at " + table);
 
 		waiterGui.DoWalkToTable(table); 
+		pauseForAnimation();
+		System.out.println("Finished pausing for animation...");
 
 	}
 	

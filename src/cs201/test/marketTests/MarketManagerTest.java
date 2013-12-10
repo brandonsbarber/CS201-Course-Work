@@ -61,7 +61,7 @@ public class MarketManagerTest {
 	@Test
 	public void simpleTest() {
 		// Give the market a starting amount of chicken for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
 		
 		// Create our order by creating some item requests and adding them to a list
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("chicken", 4);
@@ -99,9 +99,9 @@ public class MarketManagerTest {
 	@Test
 	public void multipleItems() {
 		// Give the market a starting amount of chicken for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 11.99f));
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("butter", 20, 5.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 6.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 11.99f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("butter", 20, 5.99f));
 		
 		// Create our order by creating some item requests and adding them to a list
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("chicken", 4);
@@ -141,7 +141,7 @@ public class MarketManagerTest {
 	@Test
 	public void structureTest() {
 		// Give the market a starting amount of steak for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 10.0f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 10.0f));
 		
 		// Create our order by creating an item request
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("steak", 10);
@@ -174,7 +174,7 @@ public class MarketManagerTest {
 	@Test
 	public void structureTestRestaurantClosed() {
 		// Give the market a starting amount of steak for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("waffles", 100, 4.0f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("waffles", 100, 4.0f));
 				
 		// Create our order by creating an item request
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("waffles", 10);
@@ -203,9 +203,9 @@ public class MarketManagerTest {
 	@Test
 	public void multipleOrders() {
 		// Give the market a starting amount of chicken and steak for inventory
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 7.00f));
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 11.00f));
-		manager.AddInventoryEntry(new MarketManagerRole.InventoryEntry("pizza", 100, 5.00f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("chicken", 100, 7.00f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("steak", 100, 11.00f));
+		manager.addInventoryEntry(new MarketManagerRole.InventoryEntry("pizza", 100, 5.00f));
 		
 		// Create our order by creating some item requests and adding them to a list
 		MarketManagerRole.ItemRequest item1 = new MarketManagerRole.ItemRequest("chicken", 4);
