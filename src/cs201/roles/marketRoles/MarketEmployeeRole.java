@@ -91,7 +91,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		// If there's nothing else to do, go home
 		if (gui != null) {
 			gui.doGoHome();
-			pauseForAnimation();
+			pauseForAnimationWithTimeDelay();
 		}
 		
 		return false;
@@ -164,7 +164,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			// Walk to the manager
 			if (gui != null) {
 				gui.doGoToManager();
-				pauseForAnimation();
+				pauseForAnimationWithTimeDelay();
 			}
 			
 			// Give the items to the manager
@@ -181,7 +181,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			// Walk to the manager
 			if (gui != null) {
 				gui.doGoToManager();
-				pauseForAnimation();
+				pauseForAnimationWithTimeDelay();
 			}
 			
 			// Let the manager know we got the car
@@ -204,17 +204,17 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			 */
 			Random generator = new Random();
 			gui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
-			pauseForAnimation();
+			pauseForAnimationWithTimeDelay();
 		}
 	}
 	
 	private void doGetCar() {
 		gui.doWalkToCarLot();
-		pauseForAnimation();
+		pauseForAnimationWithTimeDelay();
 		gui.setHasCar(true);
 		gui.setMovingCarIn(true);
 		gui.doBringCarOut();
-		pauseForAnimation();
+		pauseForAnimationWithTimeDelay();
 		gui.setMovingCarIn(false);
 		gui.setMovingCarOut(true);
 	}
@@ -223,10 +223,19 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		animation.release();
 	}
 	
-	private void pauseForAnimation () {
+	private void pauseForAnimationWithTimeDelay () {
 		try {
 			animation.acquire();
 			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void pauseForAnimation () {
+		try {
+			animation.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

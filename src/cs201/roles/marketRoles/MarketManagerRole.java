@@ -9,7 +9,10 @@ import java.util.Map;
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
+import cs201.gui.CityPanel;
 import cs201.gui.roles.market.MarketManagerGui;
+import cs201.gui.transit.CarGui;
+import cs201.gui.transit.TruckGui;
 import cs201.helper.CityDirectory;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.interfaces.roles.market.MarketConsumer;
@@ -649,8 +652,14 @@ public class MarketManagerRole extends Role implements MarketManager {
 		co.consumer.msgHereIsYourTotal(this, CARPRICE);
 		
 		// Create a new vehicle
-		// TODO ask Brandon what the params need to be
-		Vehicle newCar = new CarAgent();
+		CarAgent newCar = new CarAgent();
+		if(CityPanel.INSTANCE != null)
+		{
+			CarGui gui = new CarGui(newCar, CityPanel.INSTANCE);
+			newCar.setGui(gui);
+			CityPanel.INSTANCE.addGui(gui);
+		}
+		newCar.startThread();
 		
 		// Give him his BRAND NEW CAR!
 		co.consumer.msgHereIsYourCar(newCar);
