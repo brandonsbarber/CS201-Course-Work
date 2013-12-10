@@ -70,6 +70,18 @@ public class CityTime {
 	}
 	
 	/**
+	 * Whether or not this CityTime is a weekend day
+	 * @return True if Saturday or Sunday, false if any other weekday or the day is null
+	 */
+	public boolean isWeekend() {
+		if (this.day == null) {
+			return false;
+		}
+		
+		return this.day == WeekDay.Saturday || this.day == WeekDay.Sunday;
+	}
+	
+	/**
 	 * Adds minutesToAdd to this CityTime and returns a new CityTime (Does not change this CityTime)
 	 * @param minutesToAdd How many minutes to add (can be negative)
 	 * @return A new CityTime object

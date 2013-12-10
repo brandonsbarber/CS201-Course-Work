@@ -34,7 +34,7 @@ public class PersonAgent extends Agent implements Person {
 	public static final int FULL = 0;
 	public static final int HUNGRY = 480;
 	public static final int STARVING = 840;
-	private static final int INITIALMONEY = 40;
+	private static final int INITIALMONEY = 200;
 	private static final int MONEYTHRESHOLD = 10;
 	private static final int INITIALWAKEUPHOUR = 7;
 	private static final int INITIALWAKEUPMINUTE = 0;
@@ -200,8 +200,8 @@ public class PersonAgent extends Agent implements Person {
 		// If you're here in the scheduler, you've completed any current actions, so make current action null
 		this.currentAction = null;
 		
-		// If it's time to wake up in the morning
-		if (state == PersonState.Sleeping && time.equalsIgnoreDay(wakeupTime)) {
+		// If it's time to wake up in the morning (during the week)
+		if (state == PersonState.Sleeping && !time.isWeekend() && time.equalsIgnoreDay(wakeupTime)) {
 			this.state = PersonState.Awake;
 			
 			// If you need to pay rent
@@ -213,8 +213,17 @@ public class PersonAgent extends Agent implements Person {
 			return true;
 		}
 		
+		// If it's time to wake up in the morning (on the weekend)
+		if (state == PersonState.Sleeping && time.isWeekend() && time.equalsIgnoreDay(wakeupTime.add(90))) {
+			this.state = PersonState.Awake;
+
+			// Eat at home
+			this.addActionToPlanner(Intention.ResidenceEat, home, false);
+			return true;
+		}
+		
 		// If it's time to go to work
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90 && !time.isWeekend()) {
 			if (this.addActionToPlanner(job, workplace, true)) {
 				this.state = PersonState.AtWork;
 				return true;
@@ -274,7 +283,7 @@ public class PersonAgent extends Agent implements Person {
 				return true;
 			}
 		}
-		
+
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
 			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {

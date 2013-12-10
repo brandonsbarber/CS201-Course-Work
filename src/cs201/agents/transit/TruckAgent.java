@@ -31,13 +31,15 @@ public class TruckAgent extends VehicleAgent implements Truck
 		Structure destination;
 		DeliveryState s;
 		double price;
+		int id;
 		
-		public Delivery(List<ItemRequest> items, Structure dest,double price)
+		public Delivery(List<ItemRequest> items, Structure dest,double price, int id)
 		{
 			inventory = items;
 			destination = dest;
 			s = DeliveryState.NotDone;
 			this.price = price;
+			this.id = id;
 		}
 	};
 	
@@ -75,10 +77,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 	 * @param price the price of the goods
 	 */
 	@Override
-	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
+	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price, int id)
 	{
 		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Told to make delivery run to: "+destination+" with "+inventory+" and price of $"+price);
-		deliveries.add(new Delivery(inventory,destination,price));
+		deliveries.add(new Delivery(inventory,destination,price,id));
 		stateChanged();
 	}
 	
@@ -183,7 +185,7 @@ public class TruckAgent extends VehicleAgent implements Truck
 		{
 			MarketStructure m = (MarketStructure)homeStructure;
 			//FIX THIS AFTER TALKING WITH BEN
-			m.getManager().msgDeliveryFailed();
+			m.getManager().msgDeliveryFailed(d.id);
 		}
 		
 		d.s = DeliveryState.Done;

@@ -161,7 +161,8 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Brandon Restaurant Market Order");
 		scenarioList.add("Beaucoup Buses");
 		scenarioList.add("Killer Buses");
-		
+		scenarioList.add("Weekend Behavior Change");
+		scenarioList.add("Joust");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -206,7 +207,37 @@ public class SimCity201 extends JFrame {
 			case 21: brandonRestaurantMarketOrder(); break;
 			case 22: beaucoupBuses();break;
 			case 23: hundredPeopleBus();break;
+			case 24: weekendDifference(); break;
+			case 25: joust();break;
 			default: return;
+		}
+	}
+
+	private void joust()
+	{
+CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		ArrayList<BusStop> stops = new ArrayList<BusStop>();
+
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(4*25,11*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
+		
+		cityPanel.addStructure(stops.get(0),new Point(3*25,11*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
+		
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(25*25,6*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
+		
+		cityPanel.addStructure(stops.get(1),new Point(26*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		
+		for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
 		}
 	}
 
@@ -229,6 +260,41 @@ public class SimCity201 extends JFrame {
 		System.gc();
 	}
 	
+	private void weekendDifference() {
+		/* Employees work at a Restaurant during the week, but workplaces are closed on the weekends 
+		 * so people must eat at home or find other things to do. In this scenario, the time begins on 
+		 * Friday and a Host wakes up at 7:00AM goes to work at the Restaurant normally at 8:00AM, but 
+		 * on Saturday people sleep in instead so the Host wakes up at 8:30AM and doesn't go to work 
+		 * at the Restaurant.
+		 */
+		CityTime time = new CityTime();
+		time.day = CityTime.WeekDay.Friday;
+		CityDirectory.getInstance().setStartTime(time);
+		
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
+		RestaurantMatt r = new RestaurantMatt(125, 125, 50, 50, Structure.getNextInstance(), g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
+		r.setStructurePanel(g);
+		buildingPanels.add(g, "" + r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
+		CityDirectory.getInstance().addResidence(res);
+		timePanel.addAnimationPanel(resPanel);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), res, r, Intention.RestaurantHost, res, null);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+	}
+	
 	private void normativeRestaurant() {
 		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
 		 * when all of them have arrived at the Restaurant. At 8:00AM a single Customer wakes up 
@@ -241,7 +307,7 @@ public class SimCity201 extends JFrame {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
 		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g,""+r.getId());
@@ -439,7 +505,7 @@ public class SimCity201 extends JFrame {
 		 * goes inside the structure there and performs structure actions.
 		 * He begins his walk at 7:00 AM.
 		 */
-		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
@@ -546,7 +612,7 @@ public class SimCity201 extends JFrame {
 		
 		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
 		
-		for(int i = 0; i < stops.size(); i++)
+		for(int i = 0; i < 1/*stops.size()*/; i++)
 		{
 			BusAgent bus = new BusAgent(new BusRoute(stops),i);
 			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
@@ -573,11 +639,11 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 
-		PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
+		/*PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		p1.getPassengerRole().setBusStops(stops);
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();
+		p1.startThread();*/
 	}
 	
 	private void normativeMarketRestaurantDelivery()
@@ -1360,11 +1426,10 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
-		createPerson(0 + "", null, null, null, null, null);
-		
-		/*for (int i = 1; i <= 100; i++) {
-			createPerson(i + "", r, null, null, null, null);
-		}*/
+		for (int i = 1; i <= 100; i++)
+		{
+			createPerson(i + "", null, null, null, null, null);
+		}
 	}
 	
 	private void hundredPeopleBus()

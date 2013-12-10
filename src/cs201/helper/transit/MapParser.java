@@ -13,8 +13,6 @@ public class MapParser
 		Scanner in = new Scanner(new File(Constants.MAP_PATH),"UTF-16");
 		System.out.println(in.hasNext());
 		
-		File f = new File(Constants.MAP_PATH);
-		
 		int xDimen = in.nextInt();
 		int yDimen = in.nextInt();
 		//clear buffer
