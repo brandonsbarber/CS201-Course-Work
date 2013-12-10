@@ -16,6 +16,7 @@ import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
+import cs201.roles.transit.PassengerRole.PassengerState;
 import cs201.structures.Structure;
 import cs201.structures.residence.Residence;
 import cs201.trace.AlertLog;
@@ -293,7 +294,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you don't even have a home to return to
-		if (state == PersonState.Awake /*&& passengerRole.state != PassengerState.Roaming*/) {
+		if (state == PersonState.Awake && passengerRole.state != PassengerState.Roaming) {
 			this.currentAction = null;
 			passengerRole.setActive(true);
 			passengerRole.msgStartRoaming();

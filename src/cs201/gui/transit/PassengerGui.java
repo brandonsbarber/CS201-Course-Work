@@ -79,6 +79,7 @@ public class PassengerGui implements Gui
 		present = false;
 		currentDirection = MovementDirection.None;
 		moves = new Stack<MovementDirection>();
+		roaming = false;
 	}
 	
 	/**
@@ -145,6 +146,7 @@ public class PassengerGui implements Gui
 	
 	public void doRoam()
 	{
+		roaming = true;
 		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
 		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
 	}
@@ -154,6 +156,7 @@ public class PassengerGui implements Gui
 	 */
 	private void findPath()
 	{
+		moves.clear();
 		pathfinding = true;
 		try
 		{
@@ -229,8 +232,14 @@ public class PassengerGui implements Gui
 				}
 				currentDirection = MovementDirection.None;
 				fired = true;
-				pass.msgAnimationFinished ();
-				
+				if(!roaming)
+				{
+					pass.msgAnimationFinished ();
+				}
+				else
+				{
+					doRoam();
+				}
 				return;
 			}
 			if(allowedToMove)
@@ -349,5 +358,12 @@ public class PassengerGui implements Gui
 	{
 		return y;
 	}
+
+	public void stopRoam()
+	{
+		roaming = false;
+	}
+	
+	boolean roaming;
 
 }

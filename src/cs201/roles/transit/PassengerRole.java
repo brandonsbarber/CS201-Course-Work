@@ -202,6 +202,7 @@ public class PassengerRole extends Role implements Passenger
 	public void msgGoTo(Structure s)
 	{
 		destination = s;
+		gui.stopRoam();
 		state = PassengerState.None;
 		waypoints.clear();
 		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,""+getName(),"Received message to go to: "+s);
@@ -295,25 +296,6 @@ public class PassengerRole extends Role implements Passenger
 	private void roam()
 	{
 		gui.doRoam();
-		//gui.startRoaming(); DO NOT ACQUIRE anymore; setActive(false);
-		try
-		{
-			animationPause.acquire();
-		}
-		catch (InterruptedException e1)
-		{
-			e1.printStackTrace();
-		}
-		/*gui.doGoToLocation(currentLocation);
-		try
-		{
-			animationPause.acquire();
-		}
-		catch (InterruptedException e1)
-		{
-			e1.printStackTrace();
-		}*/
-		//gui.setPresent(false);
 		setActive(false);
 	}
 
