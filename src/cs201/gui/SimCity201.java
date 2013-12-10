@@ -21,6 +21,7 @@ import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.configPanels.MarketConfigPanel;
 import cs201.gui.configPanels.PersonConfigPanel;
+import cs201.gui.configPanels.TransitConfigPanel;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
@@ -60,6 +61,7 @@ public class SimCity201 extends JFrame {
 	JPanel buildingPanels;
 	CardLayout cardLayout;
 	PersonConfigPanel personPanel;
+	TransitConfigPanel transitPanel;
 	ScenarioPanel scenarioPanel;
 	TimePanel timePanel;
 	
@@ -131,7 +133,8 @@ public class SimCity201 extends JFrame {
 		
 		personPanel = new PersonConfigPanel();
 		settingsPanel.addPanel("PersonAgentPanel", personPanel);
-		settingsPanel.addPanel("Transit",new TransitConfigPanel());
+		transitPanel = new TransitConfigPanel();
+		settingsPanel.addPanel("Transit",transitPanel);
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
