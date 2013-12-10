@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TimerTask;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -101,6 +102,7 @@ public abstract class VehicleGui implements Gui
 		if(!present)
 		{
 			city.permissions[next.y][next.x].release();
+			revertCrosswalk();
 		}
 	}
 	
@@ -204,24 +206,9 @@ public abstract class VehicleGui implements Gui
 				
 					if(current != next)
 					{
-						if(!Pathfinder.isCrossWalk(current, city.getWalkingMap(), city.getDrivingMap()) || !Pathfinder.isInIntersection(next, city.getWalkingMap()).contains(current))
-						{
-							city.permissions[current.y][current.x].release();
-							revertCrosswalk();
-							acquiredPoints.remove(current);
-						}
-						
-						if(Pathfinder.isInIntersection(city, current) && !Pathfinder.isInIntersection(city,next))
-						{
-							Set<Point> intersectionPoints = Pathfinder.tryIntersectionAcquire(city, current.x,current.y);
-							for(Point p : intersectionPoints)
-							{
-								if(acquiredPoints.remove(p))
-								{
-									city.permissions[p.y][p.x].release();
-								}
-							}
-						}
+						city.permissions[current.y][current.x].release();
+						revertCrosswalk();
+						acquiredPoints.remove(current);
 					}
 					
 					current = next;
@@ -242,18 +229,9 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()) || acquiredPoints.contains(next))
+				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()))
 				{
 					allowedToMove = true;
-					if(Pathfinder.isInIntersection(city,next))
-					{
-						Set<Point> intersectionPoints = Pathfinder.tryIntersectionAcquire(city, next.x,next.y);
-						for(Point p : intersectionPoints)
-						{
-							city.permissions[p.y][p.x].tryAcquire();
-						}	
-						acquiredPoints.addAll(intersectionPoints);
-					}
 				}
 				else
 				{
@@ -266,6 +244,9 @@ public abstract class VehicleGui implements Gui
 		}
 	}
 
+	private boolean timerStarted = false;
+	private boolean cancelled = true;
+	
 	private boolean canMoveCrosswalk()
 	{
 		if(city.getWalkingMap()[next.y][next.x].isValid())
@@ -347,5 +328,10 @@ public abstract class VehicleGui implements Gui
 	 */
 	public void setVehicle(VehicleAgent vehicle) {
 		this.vehicle = vehicle;
+	}
+	
+	public void destroy()
+	{
+		setPresent(false);
 	}
 }

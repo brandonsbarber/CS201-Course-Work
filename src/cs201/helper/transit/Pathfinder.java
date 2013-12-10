@@ -359,7 +359,6 @@ public class Pathfinder
 		while(!toCheck.isEmpty())
 		{
 			Point check = toCheck.remove(0);
-			System.out.println(check);
 			if(checked.contains(check))
 			{
 				continue;
