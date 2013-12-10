@@ -23,7 +23,6 @@ public abstract class Restaurant extends Structure {
 	protected List<RestaurantWaiterRole> waiters;
 	protected double moneyOnHand;
 	protected int bankAccountNumber;
-	protected boolean isOpen;
 	
 	public Restaurant(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
@@ -34,31 +33,30 @@ public abstract class Restaurant extends Structure {
 		this.waiters = null;
 		this.moneyOnHand = INITIALMONEY;
 		this.bankAccountNumber = -1;
-		this.isOpen = false;
 	}
 	
 	/**
-	 * Returns this Restaurant's Cashier if someone is currently acting as a Cashier, null otherwise
-	 * @return This Restaurant's active Cashier
+	 * Returns this Restaurant's CashierRole
+	 * @return This Restaurant's Cashier
 	 */
 	public RestaurantCashierRole getCashier() {
-		return (cashier.getPerson() != null) ? cashier : null;
+		return cashier;
 	}
 	
 	/**
-	 * Returns this Restaurant's Cook if someone is currently acting as a Cook, null otherwise
-	 * @return This Restaurant's active Cook
+	 * Returns this Restaurant's CookRole
+	 * @return This Restaurant's Cook
 	 */
 	public RestaurantCookRole getCook() {
-		return (cook.getPerson() != null) ? cook : null;
+		return cook;
 	}
 	
 	/**
-	 * Returns this Restaurant's Host if someone is currently acting as a Host, null otherwise
-	 * @return This Restaurant's active Host
+	 * Returns this Restaurant's HostRole
+	 * @return This Restaurant's Host
 	 */
 	public RestaurantHostRole getHost() {
-		return (host.getPerson() != null) ? host : null;
+		return host;
 	}
 	
 	/**
@@ -107,22 +105,6 @@ public abstract class Restaurant extends Structure {
 	 */
 	public int getBankAccountNumber() {
 		return bankAccountNumber;
-	}
-	
-	/**
-	 * Sets whether this Restaurant is open or closed
-	 * @param open True to set this Restaurant to open, closed to close it down
-	 */
-	public void setOpen(boolean open) {
-		isOpen = open;
-	}
-	
-	/** 
-	 * Returns whether or not this Restaurant is open
-	 * @return True for an open Restaurant, false otherwise
-	 */
-	public boolean getOpen() {
-		return isOpen;
 	}
 	
 	/**

@@ -10,22 +10,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import cs201.helper.CityDirectory;
+import cs201.helper.Constants;
+import cs201.helper.transit.MapParser;
+import cs201.helper.transit.MovementDirection;
 import cs201.structures.Structure;
 
+@SuppressWarnings("serial")
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
 	
-	public DrivingDirection[][] drivingMap;
-	public WalkingDirection[][] walkingMap;
+	public MovementDirection[][] drivingMap;
+	public MovementDirection[][] walkingMap;
 	
 	public static final int GRID_SIZE = 25;
 
@@ -35,131 +40,40 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	List<Gui> guis;
 	
-	public enum DrivingDirection
-	{
-		None,North,South,East,West,Turn;
-		
-		public DrivingDirection turnRight()
-		{
-			if(this == North)
-			{
-				return East;
-			}
-			else if(this == East)
-			{
-				return South;
-			}
-			else if(this == South)
-			{
-				return West;
-			}
-			else if(this == West)
-			{
-				return North;
-			}
-			
-			return this;
-		}
-		
-		public boolean isValid()
-		{
-			return ordinal() > 0;
-		}
-		
-		public boolean isVertical()
-		{
-			return this == North || this == South;
-		}
-		
-		public boolean isHorizontal()
-		{
-			return this == West || this == East;
-		}
-
-		public static boolean opposites(DrivingDirection drivingDirection, DrivingDirection drivingDirection2)
-		{
-			return (drivingDirection == West && drivingDirection2 == East) || (drivingDirection == East && drivingDirection2 == West) || (drivingDirection == South && drivingDirection2 == North) || (drivingDirection == North && drivingDirection2 == South);
-		}
-	};
+	private String[][] cityGrid;
+	public Semaphore[][] permissions;
+	public List<List<List<Gui>>> crosswalkPermissions;
 	
-	public enum WalkingDirection
-	{
-		None,North,South,East,West,Turn, Invalid;
-		
-		public WalkingDirection turnRight()
-		{
-			if(this == North)
-			{
-				return East;
-			}
-			else if(this == East)
-			{
-				return South;
-			}
-			else if(this == South)
-			{
-				return West;
-			}
-			else if(this == West)
-			{
-				return North;
-			}
-			
-			return this;
-		}
-		
-		public boolean isValid()
-		{
-			return this == North || this == South || this == East || this == West || this == Turn;
-		}
-		
-		public boolean isVertical()
-		{
-			return this == North || this == South;
-		}
-		
-		public boolean isHorizontal()
-		{
-			return this == West || this == East;
-		}
-
-		public static boolean opposites(WalkingDirection drivingDirection, WalkingDirection drivingDirection2)
-		{
-			return (drivingDirection == West && drivingDirection2 == East) || (drivingDirection == East && drivingDirection2 == West) || (drivingDirection == South && drivingDirection2 == North) || (drivingDirection == North && drivingDirection2 == South);
-		}
-	};
+	private SimCity201 city;
 	
-	private String[][] cityGrid = 
-	{
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"},
-			{"G","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","8","8","ST","8","ST","G"},
-			{"G","7","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","5","G"},
-			{"G","ST","38","ST","8","8","ST","38","ST","8","8","ST","18","ST","8","8","ST","38","ST","8","8","ST","18","ST","G"},
-			{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},
-			{"G","7","3","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","5","G"},
-			{"G","ST","36","ST","6","6","ST","36","ST","6","6","ST","16","ST","6","6","ST","36","6","6","6","ST","16","ST","G"},
-			{"G","7","T","27","2","2","25","T","27","2","2","25","T","27","2","2","25","T","27","2","2","25","T","5","G"},
-			{"G","ST","18","ST","8","8","ST","18","ST","8","8","ST","38","ST","8","8","ST","18","ST","8","8","ST","38","ST","G"},
-			{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},
-			{"G","7","1","7","G","G","5","1","7","G","G","5","3","7","G","G","5","1","7","G","G","5","3","5","G"},
-			{"G","ST","16","ST","6","6","ST","16","ST","6","6","ST","36","ST","6","6","ST","16","ST","6","6","ST","36","ST","G"},
-			{"G","7","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","47","4","4","45","T","5","G"},
-			{"G","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","6","6","ST","6","ST","G"},
-			{"G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G"}
-	};
-
-	public static boolean SHOW_DEBUG = false;
+	private Timer timer;
 	
+	private final double TIME_FACTOR = 2;
+
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
 	 * Sets up initial data too
 	 */
-	public CityPanel()
+	public CityPanel(SimCity201 city)
 	{
-		Timer timer = new Timer(1000/240,this);
+		timer = new Timer((int) (Constants.ANIMATION_SPEED / TIME_FACTOR), this);
+		this.city = city;
+		
+		try
+		{
+			cityGrid = MapParser.parseMap();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		buildings = Collections.synchronizedList(new ArrayList<Structure>());
 		guis = Collections.synchronizedList(new ArrayList<Gui>());
+		
+		setPreferredSize(new Dimension(cityGrid[0].length*GRID_SIZE, cityGrid.length*GRID_SIZE+100));
+		setMaximumSize(new Dimension(cityGrid[0].length*GRID_SIZE, cityGrid.length*GRID_SIZE+100));
+		setMinimumSize(new Dimension(cityGrid[0].length*GRID_SIZE, cityGrid.length*GRID_SIZE+100));
 		
 		if(INSTANCE == null)
 		{
@@ -171,6 +85,54 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		populateDrivingMap();
 
 		timer.start();
+		
+		permissions = new Semaphore[cityGrid.length][cityGrid[0].length];
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				permissions[y][x] = new Semaphore(1,true);
+			}
+		}
+		crosswalkPermissions = new ArrayList<List<List<Gui>>>();
+		for(int y = 0; y < permissions.length;y++)
+		{
+			crosswalkPermissions.add(new ArrayList<List<Gui>>());
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
+			}
+		}
+	}
+	
+	/**
+	 * Called when resetting the city for a new scenario
+	 */
+	public void resetCity() {
+		timer.stop();
+		
+		guis.clear();
+		buildings.clear();
+		
+		timer.start();
+		
+		permissions = new Semaphore[cityGrid.length][cityGrid[0].length];
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				permissions[y][x] = new Semaphore(1,true);
+			}
+		}
+		crosswalkPermissions = new ArrayList<List<List<Gui>>>();
+		for(int y = 0; y < permissions.length;y++)
+		{
+			crosswalkPermissions.add(new ArrayList<List<Gui>>());
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
+			}
+		}
 	}
 	
 	/**
@@ -183,65 +145,74 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	}
 	
 	/**
+	 * Speeds up or slows down the animation for the CityPanel.
+	 * @param speedFactor The factor to increase / decrease the animation speed. This is INVERSE, because it changes the timer delay. 2.0 would half the
+	 * animation speed.
+	 */
+	public void setTimerOut(double speedFactor) {
+		timer.setDelay((int)(Constants.ANIMATION_SPEED / TIME_FACTOR * speedFactor));
+		timer.setInitialDelay((int)(Constants.ANIMATION_SPEED / TIME_FACTOR * speedFactor));
+		timer.restart();
+	}
+	
+	/**
 	 * Makes driving and walking maps from map data
 	 */
 	private void populateDrivingMap()
 	{
-		drivingMap = new DrivingDirection[cityGrid.length][cityGrid[0].length];
-		walkingMap = new WalkingDirection[cityGrid.length][cityGrid[0].length];
+		drivingMap = new MovementDirection[cityGrid.length][cityGrid[0].length];
+		walkingMap = new MovementDirection[cityGrid.length][cityGrid[0].length];
 		
 		for(int y = 0; y < cityGrid.length; y++)
 		{
 			for(int x = 0; x < cityGrid[y].length; x++)
 			{
-				DrivingDirection dir = DrivingDirection.None;
-				WalkingDirection wDir = WalkingDirection.None;
+				MovementDirection dir = MovementDirection.None;
+				MovementDirection wDir = MovementDirection.None;
 				
 				if(Character.isDigit(cityGrid[y][x].charAt(0)))
 				{
 					int val = Integer.parseInt(cityGrid[y][x].substring(0,1));
 					switch(val)
 					{
-						case 1:dir = DrivingDirection.North;break;
-						case 2:dir = DrivingDirection.East;break;
-						case 3:dir = DrivingDirection.South;break;
-						case 4:dir = DrivingDirection.West;break;
-						default:dir = DrivingDirection.None;break;
+						case 1:dir = MovementDirection.Up;break;
+						case 2:dir = MovementDirection.Right;break;
+						case 3:dir = MovementDirection.Down;break;
+						case 4:dir = MovementDirection.Left;break;
+						default:dir = MovementDirection.None;break;
 					}
+					
 					if(cityGrid[y][x].length() == 2)
 					{
-						if(Character.isDigit(cityGrid[y][x].charAt(1)))
+						char second = cityGrid[y][x].charAt(1);
+						switch(second)
 						{
-							val = Integer.parseInt(cityGrid[y][x].substring(1));
+							case 'H': wDir = MovementDirection.Horizontal;break;
+							case 'V': wDir = MovementDirection.Vertical;break;
+							default : wDir = MovementDirection.None;break;
 						}
-					}
-					switch(val)
-					{
-					case 5:wDir = WalkingDirection.North;break;
-					case 6:wDir = WalkingDirection.East;break;
-					case 7:wDir = WalkingDirection.South;break;
-					case 8:wDir = WalkingDirection.West;break;
-					default:wDir = WalkingDirection.None;break;
 					}
 				}
 				else
 				{
+					if(cityGrid[y][x].equals("H"))
+					{
+						wDir = MovementDirection.Horizontal;
+					}
+					if(cityGrid[y][x].equals("V"))
+					{
+						wDir = MovementDirection.Vertical;
+					}
 					if(cityGrid[y][x].equals("T"))
 					{
-						dir = DrivingDirection.Turn;
-						wDir = WalkingDirection.None;
+						dir = MovementDirection.Turn;
 					}
-					else if(cityGrid[y][x].equals("ST"))
+					if(cityGrid[y][x].equals("ST"))
 					{
-						dir = DrivingDirection.None;
-						wDir = WalkingDirection.Turn;
-					}
-					else
-					{
-						dir = DrivingDirection.None;
-						wDir = WalkingDirection.None;
+						wDir = MovementDirection.Turn;
 					}
 				}
+				
 				drivingMap[y][x] = dir;
 				walkingMap[y][x] = wDir;
 			}
@@ -256,33 +227,52 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		Graphics2D g2 = (Graphics2D) g;
 		Dimension bounds = getPreferredSize();
 		
-		g2.setColor(Color.LIGHT_GRAY.brighter().brighter());
+		g2.setColor(getBackground());
 		g2.fillRect(0,0,(int)bounds.getWidth(),(int)bounds.getHeight());
 		
 		for(int y = 0; y < cityGrid.length; y++)
 		{
 			for(int x = 0; x < cityGrid[y].length; x++)
 			{
-				if(cityGrid[y][x].equals("G"))
+				if(!Constants.DEBUG_MODE)
 				{
-					g2.setColor(Color.GREEN);
+					BufferedImage img = null;
+					if(cityGrid[y][x].equals("G"))
+					{
+						img = ArtManager.getImage("Grass_Tile");
+					}
+					else if(cityGrid[y][x].equals("ST") || cityGrid[y][x].equals("V") ||  cityGrid[y][x].equals("H"))
+					{
+						img = ArtManager.getImage("Sidewalk_Tile");
+					}
+					else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
+					{
+						img = ArtManager.getImage("Road_Tile");
+					}
+					
+					if(img != null)
+					{
+						g2.drawImage(img, x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE, this);
+					}
 				}
-				else if(cityGrid[y][x].equals("R"))
+				else
 				{
-					g2.setColor(Color.GRAY.darker());
-				}
-				else if(cityGrid[y][x].equals("ST") || Character.isDigit(cityGrid[y][x].charAt(0)) && Integer.parseInt(cityGrid[y][x].substring(0,1)) > 4)
-				{
-					g2.setColor(Color.GRAY.brighter().brighter().brighter().brighter());
-				}
-				else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
-				{
-					g2.setColor(Color.GRAY.darker());
+					if(cityGrid[y][x].equals("G"))
+					{
+						g2.setColor(Color.GREEN);
+					}
+					else if(cityGrid[y][x].equals("ST") || cityGrid[y][x].equals("V") ||  cityGrid[y][x].equals("H"))
+					{
+						g2.setColor(Color.GRAY.brighter());
+					}
+					else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
+					{
+						g2.setColor(Color.GRAY.darker());
+					}
+					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 				}
 				
-				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-				
-				if(cityGrid[y][x].length() == 2 && Character.isDigit(cityGrid[y][x].charAt(1)))
+				if(cityGrid[y][x].length() == 2 && (cityGrid[y][x].charAt(1) == 'H' || cityGrid[y][x].charAt(1) == 'V'))
 				{
 					g2.setColor(Color.GRAY.brighter());
 					for(int i = 0; i < 5 ; i++)
@@ -301,79 +291,55 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					}
 				}
 				
-				if(SHOW_DEBUG)
+				if(Constants.DEBUG_MODE)
 				{
+					g2.setColor(Color.BLACK);
+					
 					if(drivingMap[y][x].isValid())
 					{
-						if(drivingMap[y][x] == DrivingDirection.North)
+						if(drivingMap[y][x] == MovementDirection.Up)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+							drawUpArrow(g2,x,y);
 	
 						}
-						else if(drivingMap[y][x] == DrivingDirection.South)
+						else if(drivingMap[y][x] == MovementDirection.Down)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
-							
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+							drawDownArrow(g2,x,y);
 						}
-						else if(drivingMap[y][x] == DrivingDirection.West)
+						else if(drivingMap[y][x] == MovementDirection.Left)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+							drawLeftArrow(g2,x,y);
 						}
-						else if(drivingMap[y][x] == DrivingDirection.East)
+						else if(drivingMap[y][x] == MovementDirection.Right)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+							drawRightArrow(g2,x,y);
 						}
 					}
 					if(walkingMap[y][x].isValid())
 					{
-						if(walkingMap[y][x] == WalkingDirection.North)
+						if(walkingMap[y][x] == MovementDirection.Up)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+							drawUpArrow(g2,x,y);
 	
 						}
-						else if(walkingMap[y][x] == WalkingDirection.South)
+						else if(walkingMap[y][x] == MovementDirection.Down)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
-							
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+							drawDownArrow(g2,x,y);
 						}
-						else if(walkingMap[y][x] == WalkingDirection.West)
+						else if(walkingMap[y][x] == MovementDirection.Left)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+							drawLeftArrow(g2,x,y);
 						}
-						else if(walkingMap[y][x] == WalkingDirection.East)
+						else if(walkingMap[y][x] == MovementDirection.Right)
 						{
-							g2.setColor(Color.BLACK);
-							g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
-							g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+							drawRightArrow(g2,x,y);
 						}
 					}
 				}
 			}
 		}
 		
-		if(SHOW_DEBUG)
+		if(Constants.DEBUG_MODE)
 		{
 			g2.setColor(Color.BLACK);
 			
@@ -396,24 +362,56 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		
 		for (int i = 0; i < buildings.size(); i++)
-		{
-			g2.setColor(Color.BLACK);
-			Structure s = buildings.get(i);
-			g2.fill(s);
-			
-			g2.setColor(Color.WHITE);
-			g2.drawString(""+s.getId(),(int)s.x,(int)(s.y + s.height));
-			
-			if(SHOW_DEBUG)
+		{			
+			if(Constants.DEBUG_MODE)
 			{
-				g2.setColor(Color.BLUE);
-				g2.fill(new Rectangle(s.getParkingLocation().x,s.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
-				g2.fill(new Rectangle(s.getEntranceLocation().x,s.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
+				g2.setColor(Color.BLACK);
+				Structure r = buildings.get(i);
+				Rectangle s = r.getRect();
+				g2.fill(s);
 				
 				g2.setColor(Color.WHITE);
-				g2.drawString("P",s.getParkingLocation().x,s.getParkingLocation().y+25);
-				g2.drawString("E",s.getEntranceLocation().x,s.getEntranceLocation().y+25);
+				g2.drawString("" + r.getId(), (int) s.x, (int) (s.y + s.height));
 				
+				g2.setColor(Color.BLUE);
+				g2.fill(new Rectangle(r.getParkingLocation().x,r.getParkingLocation().y,GRID_SIZE,GRID_SIZE));
+				g2.fill(new Rectangle(r.getEntranceLocation().x,r.getEntranceLocation().y,GRID_SIZE,GRID_SIZE));
+				
+				g2.setColor(Color.WHITE);
+				g2.drawString("P",r.getParkingLocation().x,r.getParkingLocation().y+25);
+				g2.drawString("E",r.getEntranceLocation().x,r.getEntranceLocation().y+25);
+				
+				g2.setColor(Color.WHITE);
+				g2.drawString(r.getOpen() ? "Open" : "Closed", s.x, s.y + s.height / 2);
+			}
+			else
+			{
+				Structure s = buildings.get(i);
+				Rectangle r = s.getRect();
+				g2.drawImage(s.getSprite(), r.x, r.y, r.width, r.height, null);
+			}
+		}
+		
+		if(Constants.DEBUG_MODE)
+		{
+			for(int y = 0; y < permissions.length;y++)
+			{
+				for(int x = 0; x < permissions[y].length; x++)
+				{
+					if(permissions[y][x].availablePermits() == 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+					g2.setColor(Color.BLACK);
+					g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
+					if(crosswalkPermissions.get(y).get(x).size() != 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+				}
 			}
 		}
 		
@@ -430,13 +428,42 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		catch(ConcurrentModificationException e)
 		{
-			
+			e.printStackTrace();
 		}
-		
-		
-		g2.setColor(Color.BLACK);
-		g2.drawString(CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
 	}
+	
+	public void drawLeftArrow(Graphics2D g2, int x, int y)
+	{
+		g2.setColor(Color.BLACK);
+		g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+	}
+	
+	public void drawRightArrow(Graphics2D g2, int x, int y)
+	{
+		g2.setColor(Color.BLACK);
+		g2.drawLine((int)((1.0*x+.25)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.75)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+1)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.75)*GRID_SIZE),(int)((1.0*y+.5)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y)*GRID_SIZE));
+	}
+	
+	public void drawUpArrow(Graphics2D g2, int x, int y)
+	{
+		g2.setColor(Color.BLACK);
+		g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+	}
+	
+	public void drawDownArrow(Graphics2D g2, int x, int y)
+	{
+		g2.setColor(Color.BLACK);
+		g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.25)*GRID_SIZE), (int)((1.0*x+.5)*GRID_SIZE), (int)((1.0*y+.75)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+		g2.drawLine((int)((1.0*x+.5)*GRID_SIZE),(int)((1.0*y+.75)*GRID_SIZE), (int)((1.0*x+1)*GRID_SIZE), (int)((1.0*y+.5)*GRID_SIZE));
+	}
+	
 	
 	/**
 	 * Adds a structure and attempts to place parking and entrances around it
@@ -446,14 +473,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		//testing hacks
 		buildings.add(s);
 		Point location = new Point();
-		location.x = (int)s.getX();
-		location.y = (int)s.getY();
+		location.x = (int)s.getRect().x;
+		location.y = (int)s.getRect().y;
 		
 		//Calculating street entrance
 		int leftX = location.x/GRID_SIZE - 2;
-		int rightX = (int)((1.0*location.x+s.width)/GRID_SIZE) + 1;
+		int rightX = (int)((1.0*location.x+s.getRect().width)/GRID_SIZE) + 1;
 		int upY = location.y/GRID_SIZE - 2;
-		int downY = (int)((1.0*location.y+s.height)/GRID_SIZE) + 1;
+		int downY = (int)((1.0*location.y+s.getRect().height)/GRID_SIZE) + 1;
 		
 		if(downY < drivingMap.length && drivingMap[downY][location.x/GRID_SIZE].isValid())
 		{
@@ -477,14 +504,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		
 		location = new Point();
-		location.x = (int)s.getX();
-		location.y = (int)s.getY();
+		location.x = (int)s.getRect().x;
+		location.y = (int)s.getRect().y;
 		
 		//Calculating sidewalk entrance
 		leftX = location.x/GRID_SIZE - 1;
-		rightX = (int)((1.0*location.x+s.width)/GRID_SIZE);
+		rightX = (int)((1.0*location.x+s.getRect().width)/GRID_SIZE);
 		upY = location.y/GRID_SIZE - 1;
-		downY = (int)((1.0*location.y+s.height)/GRID_SIZE);
+		downY = (int)((1.0*location.y+s.getRect().height)/GRID_SIZE);
 		
 		if(downY < walkingMap.length && walkingMap[downY][location.x/GRID_SIZE].isValid())
 		{
@@ -537,10 +564,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	public void mouseClicked(MouseEvent arg0) {
 		for (int i = 0; i < buildings.size(); i++) {
 			Structure s = buildings.get(i);
-			if (s.contains(arg0.getX(), arg0.getY())) {
+			if (s.getRect().contains(arg0.getX(), arg0.getY())) {
 				s.displayStructure();
+				return;
 			}
 		}
+		city.displayBlankPanel();
 	}
 	
 	/**
@@ -583,7 +612,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	 * Gets the map of driving permissions
 	 * @return 2D array representing driving permissions of the city with direction
 	 */
-	public DrivingDirection[][] getDrivingMap()
+	public MovementDirection[][] getDrivingMap()
 	{
 		return drivingMap;
 	}
@@ -592,7 +621,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	 * Gets the map of walking permissions
 	 * @return 2D array representing walking permissions of the city with direction
 	 */
-	public WalkingDirection[][] getWalkingMap()
+	public MovementDirection[][] getWalkingMap()
 	{
 		return walkingMap;
 	}
@@ -606,4 +635,9 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		repaint();
 	}
 	
+	
+	public void release()
+	{
+		permissions[7][13].release();
+	}
 }

@@ -59,6 +59,7 @@ public abstract class Agent {
     /**
      * The simulated action code
      */
+    @Deprecated
     protected void Do(String msg) {
         print(msg, null);
     }
@@ -108,6 +109,10 @@ public abstract class Agent {
             agentThread = null;
         }
     }
+    
+    public void stopGoOn() {
+    	this.agentThread.setGoOn(false);
+    }
 
     /**
      * Agent scheduler thread, calls respondToStateChange() whenever a state
@@ -127,6 +132,10 @@ public abstract class Agent {
         public void Resume() {
         	pause.release();
         	paused = false;
+        }
+        
+        public void setGoOn(boolean goOn) {
+        	this.goOn = goOn;
         }
 
         public void run() {

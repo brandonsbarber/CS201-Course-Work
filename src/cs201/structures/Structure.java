@@ -1,9 +1,11 @@
 package cs201.structures;
 
 import java.awt.Point;
-import java.awt.geom.Rectangle2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import cs201.agents.PersonAgent;
+import cs201.gui.ArtManager;
 import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
@@ -13,7 +15,7 @@ import cs201.roles.Role;
  * @author Matthew Pohlmann
  *
  */
-public abstract class Structure extends Rectangle2D.Double {
+public abstract class Structure {
 	protected int id;
 	protected StructurePanel panel;
 	protected Point guiLocation;
@@ -21,12 +23,22 @@ public abstract class Structure extends Rectangle2D.Double {
 	protected Point deliveryLocation;
 	protected Point parkingLocation;
 	protected CityTime closingTime;
+	protected CityTime morningShiftStart;
+	protected CityTime morningShiftEnd;
+	protected CityTime afternoonShiftStart;
+	protected boolean isOpen;
+	
+	protected BufferedImage openSprite;
+	protected BufferedImage closedSprite;
+	protected Rectangle rect;
 	
 	private static int INSTANCES = 0;
 	
 	public Structure(int x, int y, int width, int height, int id, StructurePanel p) {
-		super(x, y, width, height);
-		
+		this(new Rectangle(x, y, width, height), p);
+	}
+	
+	public Structure(Rectangle r, StructurePanel p) {
 		this.id = ++INSTANCES;
 		this.panel = p;
 		this.guiLocation = null;
@@ -34,6 +46,13 @@ public abstract class Structure extends Rectangle2D.Double {
 		this.deliveryLocation = null;
 		this.parkingLocation = null;
 		this.closingTime = null;
+		this.isOpen = false;
+		this.morningShiftStart = null;
+		this.morningShiftEnd = null;
+		this.afternoonShiftStart = null;
+		this.rect = new Rectangle(r);
+		this.closedSprite = ArtManager.getImage("Restaurant_Matt_Closed");
+		this.openSprite = ArtManager.getImage("Restaurant_Matt_Open");
 	}
 	
 	/**
@@ -132,9 +151,28 @@ public abstract class Structure extends Rectangle2D.Double {
 	}
 	
 	/**
+	 * Sets whether this Structure is open or closed
+	 * @param open True to set this Structure to open, False to close it down
+	 */
+	public void setOpen(boolean open) {
+		isOpen = open;
+	}
+	
+	/** 
+	 * Returns whether or not this Structure is open
+	 * @return True for an open Structure, false otherwise
+	 */
+	public boolean getOpen() {
+		return isOpen;
+	}
+	
+	/**
+	 * This function is now deprecated after the addition of the Trace Panel. Please use that instead.
+	 * 
 	 * General-purpose function for printing to the terminal. Format: "Restaurant 2: Gained $100"
 	 * @param msg The message that should be printed (i.e. Gained $100)
 	 */
+	@Deprecated
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
 		output.append("[");
@@ -169,4 +207,61 @@ public abstract class Structure extends Rectangle2D.Double {
 	{
 		entranceLocation = point;
 	}
+
+	/**
+	 * @return the morningShiftStart
+	 */
+	public CityTime getMorningShiftStart() {
+		return morningShiftStart;
+	}
+
+	/**
+	 * @param morningShiftStart the morningShiftStart to set
+	 */
+	public void setMorningShiftStart(CityTime morningShiftStart) {
+		this.morningShiftStart = morningShiftStart;
+	}
+
+	/**
+	 * @return the afternoonShiftStart
+	 */
+	public CityTime getAfternoonShiftStart() {
+		return afternoonShiftStart;
+	}
+
+	/**
+	 * @param afternoonShiftStart the afternoonShiftStart to set
+	 */
+	public void setAfternoonShiftStart(CityTime afternoonShiftStart) {
+		this.afternoonShiftStart = afternoonShiftStart;
+	}
+
+	/**
+	 * @return the morningShiftEnd
+	 */
+	public CityTime getMorningShiftEnd() {
+		return morningShiftEnd;
+	}
+
+	/**
+	 * @param morningShiftEnd the morningShiftEnd to set
+	 */
+	public void setMorningShiftEnd(CityTime morningShiftEnd) {
+		this.morningShiftEnd = morningShiftEnd;
+	}
+
+	/**
+	 * @return the sprite
+	 */
+	public BufferedImage getSprite() {
+		return isOpen ? openSprite : closedSprite;
+	}
+
+	/**
+	 * @return the rect
+	 */
+	public Rectangle getRect() {
+		return rect;
+	}
+	
 }

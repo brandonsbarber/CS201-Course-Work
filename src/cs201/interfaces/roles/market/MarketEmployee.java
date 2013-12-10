@@ -6,7 +6,11 @@ import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 
 public interface MarketEmployee {
 	
+	/*
+	 * Retrieval messages
+	 */
 	public void msgRetrieveItems(MarketManager manager, List<ItemRequest> items, int id);
+	public void msgRetrieveCar(MarketManager manager, int id);
 	
 	/**
 	 * Should return whether or not this MarketEmployee has a backing PersonAgent.

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import cs201.agents.transit.TruckAgent;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
-import cs201.structures.market.MarketStructure;
 import cs201.structures.transit.BusStop;
 import junit.framework.TestCase;
 
@@ -31,7 +30,7 @@ public class TruckAgentTest extends TestCase
 		assertEquals("Truck should have no destination.",null,truck.destination);
 		assertEquals("Truck should have no orders",0,truck.deliveries.size());
 		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0,0);
 		
 		assertEquals("Truck should be at market.",market,truck.currentLocation);
 		assertEquals("Truck should have no destination.",null,truck.destination);
@@ -62,7 +61,7 @@ public class TruckAgentTest extends TestCase
 		assertEquals("Truck should have no destination.",null,truck.destination);
 		assertEquals("Truck should have no orders",0,truck.deliveries.size());
 		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0,0);
 		
 		assertEquals("Truck should be at market.",market,truck.currentLocation);
 		assertEquals("Truck should have no destination.",null,truck.destination);
@@ -86,7 +85,7 @@ public class TruckAgentTest extends TestCase
 		assertEquals("Truck should have destination as market.",market,truck.destination);
 		assertEquals("Truck should have no orders",0,truck.deliveries.size());
 		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0,0);
 		
 		assertEquals("Truck should be at market.",market,truck.currentLocation);
 		assertEquals("Truck should have destination.",market,truck.destination);
@@ -117,8 +116,8 @@ public class TruckAgentTest extends TestCase
 		assertEquals("Truck should have no destination.",null,truck.destination);
 		assertEquals("Truck should have no orders",0,truck.deliveries.size());
 		
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0);
-		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination2, 0);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination, 0,0);
+		truck.msgMakeDeliveryRun(new ArrayList<ItemRequest>(), destination2, 0,0);
 		
 		assertEquals("Truck should be at market.",market,truck.currentLocation);
 		assertEquals("Truck should have no destination.",null,truck.destination);

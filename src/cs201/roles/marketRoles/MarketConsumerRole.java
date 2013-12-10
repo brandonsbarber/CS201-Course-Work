@@ -8,11 +8,14 @@ import java.util.concurrent.Semaphore;
 import cs201.agents.PersonAgent;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.market.MarketConsumerGui;
+import cs201.interfaces.agents.transit.Vehicle;
 import cs201.interfaces.roles.market.MarketConsumer;
 import cs201.interfaces.roles.market.MarketManager;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.market.MarketStructure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 public class MarketConsumerRole extends Role implements MarketConsumer {
 	
@@ -82,6 +85,8 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	 */
 	
 	public void msgHereIsYourTotal(MarketManager manager, float amount) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market consumer " + name, String.format("Just got my total of $.2f for my market purchase.", amount));
+		
 		// Add the bill to our list
 		marketBills.add(new MarketBill(manager, amount, MarketBillState.OUTSTANDING));
 		
@@ -89,6 +94,8 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 	
 	public void msgHereAreYourItems(List<ItemRequest> items) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market consumer " + name, "Just receieved my items from the market.");
+		
 		// We bought everything on our list
 		myPerson.getMarketChecklist().clear();
 		
@@ -96,6 +103,16 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		for (ItemRequest item : items) {
 			myPerson.getInventory().add(item);
 		}
+		
+		stateChanged();
+	}
+	
+	public void msgHereIsYourCar(Vehicle car) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market consumer " + name, "Just got my new car from the market.");
+		
+		// We now have a car!
+		// TODO Ask Brandon how to do this...
+		this.getPerson().setVehicle(car);
 		
 		stateChanged();
 	}
@@ -112,7 +129,19 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		}
 		
 		if (this.structure.isOpen()) {
-			structure.getManager().msgHereIsMyOrder(this,  myPerson.getMarketChecklist());
+			
+			if (intent == Intention.MarketConsumerGoods) {
+				
+				// The consumer would like to buy some goods
+				structure.getManager().msgHereIsMyOrder(this,  myPerson.getMarketChecklist());
+				
+			} else if (intent == Intention.MarketConsumerCar) {
+				
+				// The consumer would like to buy a car
+				structure.getManager().msgIWouldLikeACar(this);
+			}
+			
+			
 		} else {
 			leaveMarket = true;
 		}
@@ -120,7 +149,7 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 	}
 
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
+		// Nothing to do here
 	}
 	
 	/*

@@ -17,7 +17,7 @@ public interface HostMatt {
 	/**
 	 * The WaiterRole tells this HostRole that he is bringing the CustomerRole to his table.
 	 */
-	public abstract void msgCustomerRetrievedFromWaitingArea();
+	public abstract void msgCustomerRetrievedFromWaitingArea(CustomerMatt c);
 
 	/**
 	 * A WaiterRole tells this HostRole that a table has been freed

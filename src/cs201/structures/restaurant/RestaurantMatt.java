@@ -1,6 +1,7 @@
 package cs201.structures.restaurant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
@@ -21,6 +22,8 @@ import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattNormal;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * Matthew Pohlmann's Restaurant Structure for SimCity201
@@ -36,6 +39,12 @@ public class RestaurantMatt extends Restaurant {
 		super(x, y, width, height, id, p);
 		this.panel.addGui(stand);
 		stand.setPresent(true);
+		
+		// Setup times
+		this.morningShiftStart = new CityTime(8, 00);
+		this.morningShiftEnd = new CityTime(14, 00);
+		this.afternoonShiftStart = new CityTime(15, 30);
+		this.closingTime = new CityTime(20, 00);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
@@ -62,7 +71,7 @@ public class RestaurantMatt extends Restaurant {
 		this.panel.addGui(cashierGui);
 		cashier.setRestaurant(this);
 		
-		this.waiters = new ArrayList<RestaurantWaiterRole>();
+		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 		for (int i = 0; i < INITIALWAITERS; i++) {
 			RestaurantWaiterRoleMatt newWaiter;
 			if (i % 2 == 0) {
@@ -97,32 +106,34 @@ public class RestaurantMatt extends Restaurant {
 			return null;
 		}
 		case RestaurantWaiter: {
-			for (RestaurantWaiterRole r : waiters) {
-				if (r.getPerson() == null) {
-					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
+			synchronized(waiters) {
+				for (RestaurantWaiterRole r : waiters) {
+					if (r.getPerson() == null) {
+						((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
+						UpdateWaiterHomePositions();
+						((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
+						return r;
+					}
+				}
+				
+				if (waiters.size() < MAXWAITERS) {
+					RestaurantWaiterRole newWaiter;
+					if (waiters.size() % 2 == 0) {
+						newWaiter = new RestaurantWaiterRoleMattNormal();
+					} else {
+						newWaiter = new RestaurantWaiterRoleMattStand();
+					}
+					WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
+					((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
+					waiters.add(newWaiter);
+					((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
 					UpdateWaiterHomePositions();
-					((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
-					return r;
+					((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
+					this.panel.addGui(waiterGui);
+					newWaiter.setRestaurant(this);
+					((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
+					return newWaiter;
 				}
-			}
-			
-			if (waiters.size() < MAXWAITERS) {
-				RestaurantWaiterRole newWaiter;
-				if (waiters.size() % 2 == 0) {
-					newWaiter = new RestaurantWaiterRoleMattNormal();
-				} else {
-					newWaiter = new RestaurantWaiterRoleMattStand();
-				}
-				WaiterGuiMatt waiterGui = new WaiterGuiMatt((RestaurantWaiterRoleMatt) newWaiter, null);
-				((RestaurantWaiterRoleMatt) newWaiter).setGui(waiterGui);
-				waiters.add(newWaiter);
-				((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) newWaiter);
-				UpdateWaiterHomePositions();
-				((RestaurantWaiterRoleMatt) newWaiter).setRotatingStand(stand);
-				this.panel.addGui(waiterGui);
-				newWaiter.setRestaurant(this);
-				((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
-				return newWaiter;
 			}
 			
 			return null;
@@ -145,17 +156,23 @@ public class RestaurantMatt extends Restaurant {
 			return newCustomer;
 		}
 		default: {
-			Do("Wrong Intention provided in getRole(Intention)");
+			AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Wrong Intention provided in getRole(Intention)");
 			return null;
 		}
 		}
 	}
 	
-	private void checkIfRestaurantShouldOpen() {
+	private void checkIfRestaurantShouldOpen(CityTime time) {
+		// If it's not during shift hours, there's no way the restaurant would be open
+		if (!(CityTime.timeDifference(time, morningShiftStart) >= 0 && CityTime.timeDifference(time, morningShiftEnd) < 0) &&
+				!(CityTime.timeDifference(time, afternoonShiftStart) >= 0 && CityTime.timeDifference(time, closingTime) < 0)) {
+			return;
+		}
+		
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
 			for (RestaurantWaiterRole w : waiters) {
 				if (w.getPerson() != null) {
-					Do("Open for business!");
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
 					this.isOpen = true;
 					return;
 				}
@@ -181,18 +198,25 @@ public class RestaurantMatt extends Restaurant {
     }
 
 	@Override
-	public void updateTime(CityTime time) {
-		if (!isOpen) {
-			checkIfRestaurantShouldOpen();
-		}
-		
-		if (time.equalsIgnoreDay(this.closingTime)) {
-			Do("It's closing time!");
+	public void updateTime(CityTime time) {		
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			this.isOpen = false;
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
 				closingTime();
 			}
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
+			this.isOpen = false;
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+		} else if (!isOpen) {
+			checkIfRestaurantShouldOpen(time);
 		}
 	}
 	

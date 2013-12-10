@@ -3,9 +3,11 @@ package cs201.roles.restaurantRoles.Matt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.Matt.MenuMatt;
 import cs201.interfaces.roles.restaurant.Matt.CashierMatt;
 import cs201.interfaces.roles.restaurant.Matt.CustomerMatt;
@@ -14,6 +16,8 @@ import cs201.interfaces.roles.restaurant.Matt.WaiterMatt;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.structures.market.MarketStructure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 
 /**
@@ -22,7 +26,7 @@ import cs201.structures.market.MarketStructure;
  * @author Matt Pohlmann
  */
 public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements CashierMatt {
-
+	private Semaphore atTargetPosition = new Semaphore(0); // used for animation
 	private MenuMatt menu;
 	public List<Check> checks; // TEMPORARILY PUBLIC FOR TESTING
 	private List<MarketInvoice> invoices;
@@ -100,7 +104,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	
 	@Override
 	public void msgOrderInvoiceFromCook(MarketStructure market, String order, double quantity) {
-		Do("Received invoice for a market order from " + market + " for " + quantity + " " + order + "s.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Received invoice for a market order from " + market + " for " + quantity + " " + order + "s.");
 		MarketInvoice temp = new MarketInvoice(market, order, quantity);
 		invoices.add(temp);
 		stateChanged();
@@ -154,8 +158,8 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		this.isActive = false;
 		this.myPerson.removeRole(this);
 		this.myPerson.goOffWork();
-		this.myPerson = null;
 		DoLeaveRestaurant();
+		this.myPerson = null;
 		this.gui.setPresent(false);
 	}
 	
@@ -191,30 +195,35 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		}
 		
 		// If no matching invoice
-		Do("No matching invoice found.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "No matching invoice found.");
 		checks.remove(c);
 	}
 
 	// Utilities -------------------------------------------------------------
 	private void DoLeaveRestaurant() {
-		// TODO leave restaurant animation
-		Do("Leaving work.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Leaving work.");
+		gui.goToLocation(RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_X, RestaurantAnimationPanelMatt.RESTAURANT_ENTRANCE_Y);
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void DoGiveCheckToWaiter(Check c) {
-		Do("Giving check back to " + c.waiter.toString() + " for " + c.customer.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Giving check back to " + c.waiter.toString() + " for " + c.customer.toString() + ".");
 	}
 	
 	private void DoGiveCustomerChange(Check c) {
-		Do("Giving change to " + c.customer.toString() + ".");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Giving change to " + c.customer.toString() + ".");
 		if (c.customerPaid < c.amount) {
-			Do("Says that " + c.customer.toString() + " didn't have enough to pay his check!");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Says that " + c.customer.toString() + " didn't have enough to pay his check!");
 		}
-		Do(this.restaurant.toString() + " now has " + String.format("$%.2f.", this.restaurant.getCurrentRestaurantMoney()));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), this.restaurant.toString() + " now has " + String.format("$%.2f.", this.restaurant.getCurrentRestaurantMoney()));
 	}
 	
 	private void DoPayMarket(Check c) {
-		Do("Paying bill to " + c.market.toString() + String.format(" for $%.2f.\n\t%s now has $%.2f.\n", c.amount, this.restaurant.toString(), this.restaurant.getCurrentRestaurantMoney()));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, getName(), "Paying bill to " + c.market.toString() + String.format(" for $%.2f.\n\t%s now has $%.2f.", c.amount, this.restaurant.toString(), this.restaurant.getCurrentRestaurantMoney()));
 	}
 	
 	public class Check { // TEMPORARILY PUBLIC FOR TESTING
@@ -254,6 +263,14 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	}
 	
 	/**
+	 * The CashierGui tells this CashierAgent that it has reached its destination, freeing up this CashierAgent
+	 * to continue working
+	 */
+	public void DoneAnimating() {
+		atTargetPosition.release();
+	}
+	
+	/**
 	 * Sets this CashierAgent's gui to gui
 	 * @param gui The CashierGui being set
 	 */
@@ -267,9 +284,14 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO maybe animate into restaurant?
-		this.gui.setPresent(true);
 		closingTime = false;
+		this.gui.setPresent(true);
+		gui.goToRegister();
+		try {
+			atTargetPosition.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

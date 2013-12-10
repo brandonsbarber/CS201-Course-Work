@@ -43,6 +43,13 @@ public class MockMarketManager extends Mock implements MarketManager {
 		System.out.println(msg);
 		log.add(new LoggedEvent(msg));
 	}
+	
+	public void msgHereIsCar(MarketEmployee employee, int id) {
+		// Log the message
+		String msg = "MarketManager: " + this.name + ": Received msgHereIsCar with";
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
+	}
 
 	public void startInteraction(Intention intent) {
 		

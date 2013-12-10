@@ -26,6 +26,16 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 		// Immediately return the items to the manager
 		manager.msgHereAreItems(this, items, id);
 	}
+	
+	public void msgRetrieveCar(MarketManager manager, int id) {
+		// Log the message
+		String msg = "MarketEmployee: " + this.name + ": Received msgRetrieveCar";
+		System.out.println(msg);
+		log.add(new LoggedEvent(msg));
+		
+		// Immediately give the manager the car
+		manager.msgHereIsCar(this, id);
+	}
 
 	/**
 	 * Always returns false, since a MockMarketEmployee will never have a backing PersonAgent

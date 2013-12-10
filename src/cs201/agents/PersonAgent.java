@@ -16,8 +16,11 @@ import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
+import cs201.roles.transit.PassengerRole.PassengerState;
 import cs201.structures.Structure;
 import cs201.structures.residence.Residence;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * The PersonAgent that represents all people in SimCity201
@@ -29,10 +32,10 @@ public class PersonAgent extends Agent implements Person {
 	 *                              Constants                                 *
 	 **************************************************************************/
 	private static final int HUNGERPERMINUTE = 2;
-	private static final int FULL = 0;
-	private static final int HUNGRY = 480;
-	private static final int STARVING = 840;
-	private static final int INITIALMONEY = 40;
+	public static final int FULL = 0;
+	public static final int HUNGRY = 480;
+	public static final int STARVING = 840;
+	private static final int INITIALMONEY = 200;
 	private static final int MONEYTHRESHOLD = 10;
 	private static final int INITIALWAKEUPHOUR = 7;
 	private static final int INITIALWAKEUPMINUTE = 0;
@@ -60,7 +63,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile int hungerLevel;
 	private volatile boolean hungerEnabled;
 	private volatile Vehicle vehicle;
-	private volatile Structure home;
+	private volatile Residence home;
 	private volatile Structure workplace;
 	private volatile Intention job;
 	private volatile CityTime workTime;
@@ -108,15 +111,19 @@ public class PersonAgent extends Agent implements Person {
 	}
 	
 	@Override
-	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
+	public void setupPerson(CityTime curTime, Residence home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
 		
-		this.home = home;		
+		this.home = home;
+		if (this.home != null) {
+			this.home.setOccupied(true);
+		}
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
+		passengerRole.setCurrentLocation(this.currentLocation);
 		this.vehicle = vehicle;
 		if (vehicle != null) {
 			passengerRole.addCar((CarAgent) vehicle);
@@ -125,7 +132,7 @@ public class PersonAgent extends Agent implements Person {
 		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
 			this.state = PersonState.Awake;
 		}
-		if (CityTime.timeDifference(curTime,  sleepTime) > 0) {
+		if (CityTime.timeDifference(curTime,  sleepTime) > 0 || CityTime.timeDifference(curTime, wakeupTime) < 0) {
 			this.state = PersonState.Sleeping;
 		}
 	}
@@ -191,8 +198,11 @@ public class PersonAgent extends Agent implements Person {
 			}
 		}
 		
-		// If it's time to wake up in the morning
-		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
+		// If you're here in the scheduler, you've completed any current actions, so make current action null
+		this.currentAction = null;
+		
+		// If it's time to wake up in the morning (during the week)
+		if (state == PersonState.Sleeping && !time.isWeekend() && time.equalsIgnoreDay(wakeupTime)) {
 			this.state = PersonState.Awake;
 			
 			// If you need to pay rent
@@ -204,8 +214,17 @@ public class PersonAgent extends Agent implements Person {
 			return true;
 		}
 		
+		// If it's time to wake up in the morning (on the weekend)
+		if (state == PersonState.Sleeping && time.isWeekend() && time.equalsIgnoreDay(wakeupTime.add(90))) {
+			this.state = PersonState.Awake;
+
+			// Eat at home
+			this.addActionToPlanner(Intention.ResidenceEat, home, false);
+			return true;
+		}
+		
 		// If it's time to go to work
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90 && !time.isWeekend()) {
 			if (this.addActionToPlanner(job, workplace, true)) {
 				this.state = PersonState.AtWork;
 				return true;
@@ -213,7 +232,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If it's time to go to sleep
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, sleepTime) >= 0) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && (CityTime.timeDifference(time, sleepTime) >= 0 || CityTime.timeDifference(time, wakeupTime) < 0)) {
 			this.planner.clear();
 			this.state = PersonState.Sleeping;
 			this.addActionToPlanner(Intention.ResidenceSleep, home, false);
@@ -222,45 +241,30 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you need to get money from the bank
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && moneyOnHand <= MONEYTHRESHOLD) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.BankWithdrawMoneyCustomer) {
-					performAction = false;
-					break;
-				}
-			}
-			if (performAction && CityDirectory.getInstance().getBanks().size() > 0) {
-				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomBank(), false);
+			boolean performAction = checkForExistingAction(Intention.BankWithdrawMoneyCustomer);
+			
+			if (performAction && CityDirectory.getInstance().getOpenBanks().size() > 0) {
+				this.addActionToPlanner(Intention.BankWithdrawMoneyCustomer, CityDirectory.getInstance().getRandomOpenBank(), false);
 				this.state = PersonState.Awake;
 				return true;
 			}
 		}
 		
 		// If you're hungry, but not at home
-		if (state == PersonState.Awake && currentLocation != home && hungerLevel >= HUNGRY) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.RestaurantCustomer) {
-					performAction = false;
-					break;
-				}
-			}
-			if (performAction && CityDirectory.getInstance().getRestaurants().size() > 0) {
+		if (state == PersonState.Awake && (currentLocation != home || currentLocation == null) && hungerLevel >= HUNGRY) {
+			boolean performAction = checkForExistingAction(Intention.RestaurantCustomer);
+			
+			if (performAction && CityDirectory.getInstance().getOpenRestaurants().size() > 0) {
 				boolean starving = hungerLevel >= STARVING;
-				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomRestaurant(), starving);
+				this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomOpenRestaurant(), starving);
 				return true;
 			}
 		}
 		
-		// If you're hungry and at home
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && currentLocation == home && hungerLevel >= HUNGRY) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.ResidenceEat) {
-					performAction = false;
-					break;
-				}
-			}
+		// If you're hungry and at home (or there are no open restaurants)
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && (currentLocation == home || CityDirectory.getInstance().getOpenRestaurants().size() == 0) && hungerLevel >= HUNGRY) {
+			boolean performAction = checkForExistingAction(Intention.ResidenceEat);
+			
 			if (performAction) {
 				boolean starving = hungerLevel >= STARVING;
 				if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
@@ -272,26 +276,29 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you you need to buy something at the market
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
-			boolean performAction = true;
-			for (Action a : planner) {
-				if (a.intent == Intention.MarketConsumerGoods) {
-					performAction = false;
-					break;
-				}
-			}
-			if (performAction && CityDirectory.getInstance().getMarkets().size() > 0) {
-				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomMarket(), false);
+			boolean performAction = checkForExistingAction(Intention.MarketConsumerGoods);
+			
+			if (performAction && CityDirectory.getInstance().getOpenMarkets().size() > 0) {
+				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomOpenMarket(), false);
 				this.state = PersonState.Awake;
 				return true;
 			}
 		}
-		
+
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
 			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {
 				state = PersonState.Relaxing;
 				return true;
 			}
+		}
+		
+		// If you don't even have a home to return to
+		if (state == PersonState.Awake && passengerRole.state != PassengerState.Roaming) {
+			this.currentAction = null;
+			passengerRole.setActive(true);
+			passengerRole.msgStartRoaming();
+			return true;
 		}
 		
 		return false;
@@ -307,9 +314,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void goToLocation(Action a) {
 		a.active = true;
-		if (currentLocation != a.location) {
-			Do("Going to " + a.location);
-			passengerRole.setCurrentLocation(currentLocation);
+		// if roaming, passengerRole.stopRoaming()
+		if (!passengerRole.isAtLocation(a.location)) {
+			AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Going to " + a.location);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);
@@ -321,12 +328,12 @@ public class PersonAgent extends Agent implements Person {
 	 * @param a The Action to be performed
 	 */
 	private void performAction(Action a) {		
-		Do("Performing Action: " + a);
+		AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Performing Action: " + a);
 		
 		Role newRole = a.location.getRole(a.intent);
 		if (newRole == null) {
 			planner.remove(a);
-			Do("Failed to perform Action: " + a);
+			AlertLog.getInstance().logWarning(AlertTag.PERSON_AGENT, name, "Failed to perform Action: " + a);
 			return;
 		}
 		
@@ -417,7 +424,7 @@ public class PersonAgent extends Agent implements Person {
 			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
 			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
 			default: {
-				Do("addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
+				AlertLog.getInstance().logWarning(AlertTag.PERSON_AGENT, name, "addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
 				return;
 			}
 			}
@@ -535,6 +542,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void setVehicle(Vehicle newVehicle) {
 		this.vehicle = newVehicle;
+		if (vehicle != null) {
+			passengerRole.addCar((CarAgent) vehicle);
+		}
 	}
 	
 	/**
@@ -625,7 +635,7 @@ public class PersonAgent extends Agent implements Person {
 	 * Sets a new home for this PersonAgent
 	 * @param home The new Structure where this PersonAgent lives
 	 */
-	public void setHome(Structure home)
+	public void setHome(Residence home)
 	{
 		this.home = home;
 	}
@@ -672,10 +682,43 @@ public class PersonAgent extends Agent implements Person {
 		return passengerRole;
 	}
 	
+	/**
+	 * Gets this PersonAgent's state
+	 * @return PersonState
+	 */
+	public PersonState getState() {
+		return this.state;
+	}
+	
+	/**
+	 * Sets this PersonAgent's current location. SHOULD ONLY BE CALLED WHEN THE THREAD IS NOT RUNNING.
+	 * @param location The new location.
+	 */
+	public void setCurrentLocation(Structure location) {
+		this.currentLocation = location;
+		this.passengerRole.setCurrentLocation(location);
+	}
+	
 	
 	/**************************************************************************
 	 *                                Utility                                 *
 	 **************************************************************************/
+	/**
+	 * Checks if an Action with a given intent already exists in the planner
+	 * @param intent Intention
+	 * @return boolean
+	 */
+	private boolean checkForExistingAction(Intention intent) {
+		synchronized(planner) {
+			for (Action a : planner) {
+				if (a.intent == intent) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Gets the name of this PersonAgent
 	 * @return This PersonAgent's name
@@ -713,6 +756,7 @@ public class PersonAgent extends Agent implements Person {
 	 * General-purpose function for printing to the terminal. Format: "PersonAgent Matt: Going to work"
 	 * @param msg The message that should be printed (i.e. Going to work)
 	 */
+	@Deprecated
 	protected void Do(String msg) {
 		StringBuffer output = new StringBuffer();
 		output.append("[");
@@ -724,7 +768,15 @@ public class PersonAgent extends Agent implements Person {
 		
 		System.out.println(output.toString());
 	}
-
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 	/**
 	 * Represents anything a PersonAgent might want to do in SimCity201
 	 * @author Matt Pohlmann
@@ -760,10 +812,10 @@ public class PersonAgent extends Agent implements Person {
 	 * @author Matt Pohlmann
 	 *
 	 */
-	private class Action {
-		Structure location;
-		Intention intent;
-		boolean active;
+	public class Action {
+		public Structure location;
+		public Intention intent;
+		public boolean active;
 		
 		public Action() {
 			this.location = null;
@@ -781,7 +833,7 @@ public class PersonAgent extends Agent implements Person {
 	 * @author Matthew Pohlmann
 	 *
 	 */
-	private enum PersonState {
+	public enum PersonState {
 		Sleeping,
 		Awake,
 		AtWork,

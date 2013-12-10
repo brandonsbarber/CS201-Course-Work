@@ -3,10 +3,16 @@ package cs201.gui.structures.market;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import cs201.gui.ArtManager;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
+import cs201.gui.roles.market.MarketConsumerGui;
+import cs201.helper.Constants;
 
 public class MarketAnimationPanel extends StructurePanel {
 
@@ -15,7 +21,7 @@ public class MarketAnimationPanel extends StructurePanel {
 	 */
     private final static int DEFAULT_WINDOW_WIDTH = 500;
     private final static int DEFAULT_WINDOW_HEIGHT = 500;
-        
+    
     public final static int FIRST_SHELF_X = 50;
     public final static int FIRST_SHELF_Y = 50;
     public final static int SHELF_WIDTH = 50;
@@ -38,6 +44,41 @@ public class MarketAnimationPanel extends StructurePanel {
     
     public Semaphore[][] getAStarGrid() {
     	return grid;
+    }
+    
+    /* **************
+     * CUSTOMER QUEUE
+     * **************
+     */
+    private int queue = 0;
+    List<MarketConsumerGui> waitQueue = Collections.synchronizedList( new ArrayList<MarketConsumerGui>() );
+    public int whatNumberAmI(MarketConsumerGui gui) {
+    	synchronized (waitQueue) {
+    		// Go through the queue and see if there are any free spots (null spots)
+    		int num = 0;
+    		for (MarketConsumerGui thisGui : waitQueue) {
+    			if (thisGui == null) {
+    				thisGui = gui;
+    				return num; 
+    			}
+    			num++;
+    		}
+    		
+    		// If there aren't any, add a spot at the end
+    		waitQueue.add(gui);
+    		return num;
+    	}
+    }
+    
+    public void leaving(MarketConsumerGui gui) {
+    	synchronized(waitQueue) {
+    		// Go through and make his spot available
+    		for (MarketConsumerGui thisGui : waitQueue) {
+    			if (thisGui == gui) {
+    				thisGui = null;
+    			}
+    		}
+    	}
     }
   	
     /*
@@ -69,10 +110,12 @@ public class MarketAnimationPanel extends StructurePanel {
       	for (int i = 3; i <= 18; i += 3) {
         	acquireRectangleGrid(i, 5, i, 9);
         }
-      	acquireRectangleGrid(3, 3, 18, 3);
+      	acquireRectangleGrid(3, 2, 18, 2);  
+      	acquireRectangleGrid(3, 3, 18, 3);  
       	acquireRectangleGrid(3, 11, 12, 11);
+      	acquireRectangleGrid(3, 12, 12, 12);
       	acquireRectangleGrid(15, 11, 18, 11);
-        acquireRectangleGrid(10, 15, 15, 15);
+        acquireRectangleGrid(15, 12, 18, 12);
     }                                                                                                                         
          
     @Override
@@ -82,6 +125,8 @@ public class MarketAnimationPanel extends StructurePanel {
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT );
+        
+        if (Constants.DEBUG_MODE) {
     	
     	// Draw the front desk bottom right of the screen
         g2.setColor(Color.black);
@@ -95,9 +140,34 @@ public class MarketAnimationPanel extends StructurePanel {
         
         // Draw the walls
         g2.setColor(Color.gray);
+        drawRectangleGrid(3, 2, 18, 2, g2);
         drawRectangleGrid(3, 3, 18, 3, g2);
         drawRectangleGrid(3, 11, 12, 11, g2);
+        drawRectangleGrid(3, 12, 12, 12, g2);
         drawRectangleGrid(15, 11, 18, 11, g2);
+        drawRectangleGrid(15, 12, 18, 12, g2);
+        
+        } else {
+        	
+        	// Draw the floor
+        	g2.drawImage(ArtManager.getImage("Market_Floor"), 0, 0, 500, 506, null);
+        	
+        	// Draw the front desk
+        	g2.drawImage(ArtManager.getImage("Market_Front_Desk"), 240, 350, null);
+        	
+        	// Draw the shelves
+        	for (int i = 0; i < 6; i++) {
+        		g2.drawImage(ArtManager.getImage("Market_Shelf"), 50 + (i * 75), 100, null);
+        	}
+        	
+        	// Draw the top shelf
+        	g2.drawImage(ArtManager.getImage("Market_Shelf_Top"), 50, 25, null);
+        	
+        	// Draw the bottom left shelf
+        	g2.drawImage(ArtManager.getImage("Market_Shelf_Bottom_Left"), 50, 250, null);
+        	g2.drawImage(ArtManager.getImage("Market_Shelf_Bottom_Right"), 350, 250, null);
+
+        }
     	
         super.paintComponent(g);
     }

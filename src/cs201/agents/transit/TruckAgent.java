@@ -11,6 +11,8 @@ import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.Structure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.restaurant.Restaurant;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -29,17 +31,19 @@ public class TruckAgent extends VehicleAgent implements Truck
 		Structure destination;
 		DeliveryState s;
 		double price;
+		int id;
 		
-		public Delivery(List<ItemRequest> items, Structure dest,double price)
+		public Delivery(List<ItemRequest> items, Structure dest,double price, int id)
 		{
 			inventory = items;
 			destination = dest;
 			s = DeliveryState.NotDone;
 			this.price = price;
+			this.id = id;
 		}
 	};
 	
-	enum DeliveryState {NotDone,InProgress,Done};
+	enum DeliveryState {NotDone,InProgress,Done, Failed};
 	
 	/**
 	 * Creates a truck agent with the given home structure
@@ -73,10 +77,10 @@ public class TruckAgent extends VehicleAgent implements Truck
 	 * @param price the price of the goods
 	 */
 	@Override
-	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price)
+	public void msgMakeDeliveryRun(List<ItemRequest> inventory, Structure destination,double price, int id)
 	{
-		Do("Told to make delivery run to: "+destination+" with "+inventory+" and price of $"+price);
-		deliveries.add(new Delivery(inventory,destination,price));
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Told to make delivery run to: "+destination+" with "+inventory+" and price of $"+price);
+		deliveries.add(new Delivery(inventory,destination,price,id));
 		stateChanged();
 	}
 	
@@ -90,11 +94,18 @@ public class TruckAgent extends VehicleAgent implements Truck
 		}
 		else
 		{
+			for(Delivery d : deliveries)
+			{
+				if(d.s == DeliveryState.Failed)
+				{
+					processFailed(d);
+					return true;
+				}
+			}
 			for(int i = 0; i < deliveries.size(); i++)
 			{
 				if(deliveries.get(i).s == DeliveryState.Done)
 				{
-					Do("removing");
 					deliveries.remove(i);
 					return true;
 				}
@@ -141,14 +152,42 @@ public class TruckAgent extends VehicleAgent implements Truck
 		
 		animate();
 		
+		msgSetLocation(d.destination);
 		
-		for(ItemRequest item : d.inventory)
+		if(!((Restaurant)d.destination).getOpen())
 		{
-			((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT, "Truck: "+getInstance(), "Delivery to restaurant failed");
+			d.s = DeliveryState.Failed;
+		}
+		else
+		{
+			AlertLog.getInstance().logMessage(AlertTag.TRANSIT, "Truck: "+getInstance(), "Delivery to restaurant succeeded");
+			for(ItemRequest item : d.inventory)
+			{
+				((Restaurant)d.destination).getCashier().msgHereIsDeliveryFromMarket ((MarketStructure)homeStructure,d.price,item);
+			}
+			
+			d.s = DeliveryState.Done;
+		}
+	}
+	
+
+	private void processFailed(Delivery d)
+	{
+		if(gui != null)
+		{
+			gui.setPresent(true);
 		}
 		
-		msgSetLocation(d.destination);
+		returnHome();
+		
+		if(homeStructure instanceof MarketStructure)
+		{
+			MarketStructure m = (MarketStructure)homeStructure;
+			//FIX THIS AFTER TALKING WITH BEN
+			m.getManager().msgDeliveryFailed(d.id);
+		}
+		
 		d.s = DeliveryState.Done;
-
 	}
 }

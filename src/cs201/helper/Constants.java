@@ -31,7 +31,7 @@ package cs201.helper;
 /**
  * Constants of general use
  */
-public interface Constants {
+public class Constants {
     /**
      * The number of milliseconds in a second
      */
@@ -62,5 +62,25 @@ public interface Constants {
      * The default encoding used when none is detected
      */
     public static String DEFAULT_ENCODING = "ISO-8859-1";
+    
+    /**
+     * Whether or not SimCity201 is in debug mode
+     */
+    public static boolean DEBUG_MODE = false;
+    
+    /**
+     * Scalar describing how fast time passes in SimCity201
+     */
+    public static double ANIMATION_SPEED_FACTOR = 1.0f;
+    
+    /**
+     * Time (in milliseconds) between animation timer timeouts
+     */
+    public static final int ANIMATION_SPEED = 5;
 
+    /**
+     * Default path from which to load the map of the city
+     */
+    public static final String MAP_PATH = "data/Map.txt";
+    
 }

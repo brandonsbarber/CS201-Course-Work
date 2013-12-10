@@ -15,12 +15,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import cs201.helper.Constants;
+
+@SuppressWarnings("serial")
 public abstract class StructurePanel extends JPanel implements ActionListener {
 	private String name;
 	SimCity201 city;
 	
     private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
-    private final int ANIMATIONLENGTH = 10;
     private Timer timer;
 
 	public StructurePanel(int i, SimCity201 sc) {
@@ -36,7 +38,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 		JLabel j = new JLabel(this.getClass().getSimpleName() + " " + name);
 		add(j);
 		
-        timer = new Timer(ANIMATIONLENGTH, this);
+        timer = new Timer(Constants.ANIMATION_SPEED, this);
         timer.setRepeats(true);
     	timer.start();
 	}
@@ -51,6 +53,17 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 		} else {
 			timer.start();
 		}
+	}
+	
+	/**
+	 * Speeds up or slows down the animation for this structure panel by a given factor.
+	 * @param speedFactor The factor to increase / decrease the animation speed. This is INVERSE, because it changes the timer delay. 2.0 would half the
+	 * animation speed.
+	 */
+	public void setTimerOut(double speedFactor) {
+		timer.setDelay((int)(Constants.ANIMATION_SPEED * speedFactor));
+		timer.setInitialDelay((int)(Constants.ANIMATION_SPEED * speedFactor));
+		timer.restart();
 	}
 	
 	public void displayStructurePanel() {
@@ -88,7 +101,7 @@ public abstract class StructurePanel extends JPanel implements ActionListener {
 	            }
 	        }
 		} catch (ConcurrentModificationException e) {
-    		return;
+			
     	}
 		
 		repaint();  //Will have paintComponent called

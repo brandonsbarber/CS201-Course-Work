@@ -1,55 +1,40 @@
 package cs201.gui;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 /**
  * 
  * @author Brandon
  *
  */
+@SuppressWarnings("serial")
 public class SettingsPanel extends JPanel implements ActionListener
 {
-	private JComboBox<String> categories;
+	//private JComboBox<String> categories;
 	
-	private JComboBox<ConfigPanel> specifics;
+	private JTabbedPane categories;
 	
 	private Map<String,ArrayList<ConfigPanel>> panelMap;
-	
-	private JScrollPane contentsScrollPane;
 	
 	/**
 	 * Creates a SettingsPanel for holding ConfigPanel subclasses
 	 */
 	public SettingsPanel()
 	{
-		panelMap = new HashMap<String,ArrayList<ConfigPanel>>();
-		contentsScrollPane = new JScrollPane();
-		
-		JPanel topPanels = new JPanel();
-		topPanels.setLayout(new GridLayout(2,1,0,0));
-		
-		categories = new JComboBox<String>();
-		categories.addActionListener(this);
-		specifics = new JComboBox<ConfigPanel>();
-		specifics.addActionListener(this);
-
 		setLayout(new BorderLayout());
-		topPanels.add(categories);
-		topPanels.add(specifics);
+		panelMap = new HashMap<String,ArrayList<ConfigPanel>>();
 		
-		add(topPanels,BorderLayout.NORTH);
+		categories = new JTabbedPane();
 		
-		add(contentsScrollPane);
+		add(categories);
 	}
 	
 	/**
@@ -62,7 +47,7 @@ public class SettingsPanel extends JPanel implements ActionListener
 		if(!panelMap.containsKey(tabTitle))
 		{
 			panelMap.put(tabTitle, new ArrayList<ConfigPanel>());
-			categories.addItem(tabTitle);
+			categories.add(tabTitle,panel);
 		}
 		panelMap.get(tabTitle).add(panel);
 	}
@@ -75,20 +60,6 @@ public class SettingsPanel extends JPanel implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		
-		if(e.getSource() == categories)
-		{
-			specifics.removeAllItems();
-			for(ConfigPanel panel : panelMap.get((String)categories.getSelectedItem()))
-			{
-				specifics.addItem(panel);
-			}
-		}
-		else if(e.getSource() == specifics)
-		{
-			contentsScrollPane.setViewportView((ConfigPanel)specifics.getSelectedItem());
-		}
-		revalidate();
-		repaint();
 	}
 	
 	
