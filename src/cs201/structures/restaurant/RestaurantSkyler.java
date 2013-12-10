@@ -160,13 +160,14 @@ public class RestaurantSkyler extends Restaurant {
 			}
 		}
 		
-		if (time.equalsIgnoreDay(this.closingTime)) {
+		if (time.equalsIgnoreDay(closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
 				closingTime();
 			}
+			this.isOpen = false;
 		}
 	}
 

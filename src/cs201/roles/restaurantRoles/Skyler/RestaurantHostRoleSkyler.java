@@ -93,6 +93,9 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		if (closingTime) {
+			closeRestaurant();
+		}
 		synchronized(waiters) {
 			for (RestaurantWaiterRoleSkyler w1: waiters) {
 				if (w1.breakRequest == RestaurantWaiterRoleSkyler.BreakState.requested) {
@@ -194,6 +197,17 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 	public void addWaiter(WaiterSkyler w) {
 		waiters.add((RestaurantWaiterRoleSkyler)w);
 		stateChanged();
+	}
+	
+	private void closeRestaurant() {
+		restaurant.closingTime();
+		restaurant.setOpen(false);
+		waiters.clear();
+		myPerson.goOffWork();
+		myPerson.removeRole(this);
+		myPerson = null;
+		isActive = false;
+		gui.setPresent(false);
 	}
 
 }

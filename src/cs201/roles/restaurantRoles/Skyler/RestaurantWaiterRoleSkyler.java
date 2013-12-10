@@ -84,6 +84,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 
 	public void msgDoneEating(CustomerSkyler cust) {
+		Do("Received msgDoneEating from customer "+cust.getName());
 		synchronized(myCustomers) {
 			for (myCustomer myC : myCustomers) {
 				if (myC.customer == cust) {
@@ -115,29 +116,31 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 	
 	public void msgAtFront() {
-		//print("Back at the front of the restaurant.");
+		Do("Back at the front of the restaurant.");
 		currentTable = -1;
 		goingSomewhere.release();
 		state = AgentState.Free;
 	}
 	
 	public void msgAtCook() {
-		//print("At Cook");
+		Do("At Cook");
 		currentTable = -2;
 		goingSomewhere.release();
 		state = AgentState.Busy;
 	}
 	
 	public void msgAtCashier() {
+		Do("At cashier");
 		currentTable = -3;
 		goingSomewhere.release();
 		state = AgentState.Busy;
 	}
 	
 	public void msgAtWaitingArea() {
+		Do("At waiting area");
 		currentTable = -3;
 		goingSomewhere.release();
-		state = AgentState.Free;
+		state = AgentState.Busy;
 	}
 	
 	public void msgSeatAtTable(CustomerSkyler customer, int tableNumber) {
@@ -161,7 +164,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				myCust.state = CustomerState.waitingToOrder;
 				//DoReturnForOrder(myCust.tableNumber); //gui action.
 				Do("I'll be right there, "+myCust.customer.getName());
-				if (state == AgentState.Free) { goingSomewhere.release();}
+				if (state == AgentState.Free && waiterGui.inMotion()) { goingSomewhere.release();}
 				stateChanged();
 			}
 		 }
@@ -179,7 +182,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				}
 			}
 		}
-		//print("waitingforresponse released. hereismychoice.");
+		Do("waitingforresponse released. hereismychoice.");
 		waitingForResponse.release();
 	}
 	public void msgOutOf(String choice, int tableNum) {
@@ -187,7 +190,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			for(myCustomer myCust : myCustomers) {
 				if (myCust.tableNumber == tableNum) {
 					myCust.order.state = OrderState.rejected;
-					if (state == AgentState.Free) {
+					if (state == AgentState.Free && waiterGui.inMotion()) {
 						goingSomewhere.release(); 
 					}
 					stateChanged();
@@ -201,7 +204,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 		for(myCustomer myCust : myCustomers) {
 			if (myCust.tableNumber == tableNum) {
 				myCust.order.state = OrderState.ready;
-				if (state == AgentState.Free) {
+				if (state == AgentState.Free && waiterGui.inMotion()) {
 					goingSomewhere.release(); 
 				}
 				stateChanged();
@@ -218,7 +221,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			}
 		}
 		}
-		//print("waitingforresponse released. hereisfood.");
+		Do("waitingforresponse released. hereisfood.");
 		waitingForResponse.release();
 	}
 	
@@ -230,6 +233,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				myC.amtOwed=amt;
 		}
 		}
+		Do("waitingforresponse released. CheckReady.");
 		waitingForResponse.release();
 	}
 	
@@ -463,6 +467,8 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
+		this.myCustomers.clear();
+		this.waiterGui.setPresent(false);
 	}
 	
 	

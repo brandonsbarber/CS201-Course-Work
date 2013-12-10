@@ -31,6 +31,7 @@ public class WaiterGuiSkyler implements Gui {
     private boolean goingOnBreak = false;
     private boolean atHomePos = true;
     private boolean isPresent = false;
+    private boolean arrived = false;
 
     public static final int xTable = 150;
     public static final int yTable = 250;
@@ -47,48 +48,36 @@ public class WaiterGuiSkyler implements Gui {
     }
 
     public void updatePosition() {
-    	/*if (xPos == -19 && yPos == -19 && xDestination == -19 && yDestination == -19) //&& !agent.getWaitingCustomers().isEmpty())
-    		{
-    		agent.msgAtFront();
-    		xDestination = -20;//prevents msgAtFront() from being called repeatedly.
-    		yDestination = -20;
-    		}
-    	if (xPos == cookX && yPos == cookY && xDestination == cookX && yDestination == cookY)
-    		{
-    			agent.msgAtCook();
-    		}
-    	if (xPos == 200 && yPos == -19 && xDestination == 200 && yDestination == -19)
-    		agent.msgAtCashier();*/ //CONSOLIDATED INTO IF BLOCK BELOW
     	
     	if (xPos == xDestination && yPos == yDestination) {
-    		if (xPos == homeX && yPos == homeY) {
-    			if (!atHomePos) {
-    				agent.msgAtFront();
-    				atHomePos = true;
+    		if (!arrived) {
+    			arrived = true;
+    			if (xPos == homeX && yPos == homeY) {
+    				if (!atHomePos) {
+    					agent.msgAtFront();
+    					atHomePos = true;
+    				}
+    			}
+    			else atHomePos = false;
+    				
+    			if (xPos == waitingX && yPos == waitingY) {
+    				agent.msgAtWaitingArea();
+    			}
+    			if (xPos == cookX && yPos == cookY) {
+    				agent.msgAtCook();
+    			}
+    			if (xPos == 200 && yPos == -19) {
+    				agent.msgAtCashier();
+    			}
+    			if (xPos == xTable + 20 + (100*(currentTableNum-1)) && yPos == yTable - 20) {
+    				agent.msgAtTable(currentTableNum);
     			}
     		}
-    		else atHomePos = false;
-    		/*if (xPos == -19 && yPos == -19) {
-    			agent.msgAtFront();
-        		xDestination = -20;//prevents msgAtFront() from being called repeatedly.
-        		yDestination = -20;
-    		}*/
-    		
-    		if (xPos == waitingX && yPos == waitingY) {
-    			agent.msgAtWaitingArea();
-    		}
-    		if (xPos == cookX && yPos == cookY) {
-    			agent.msgAtCook();
-    		}
-    		if (xPos == 200 && yPos == -19) {
-    			agent.msgAtCashier();
-    		}
-    		if (xPos == xTable + 20 + (100*(currentTableNum-1)) && yPos == yTable - 20) {
-    			agent.msgAtTable(currentTableNum);
-    		}
     	}
-    	else 
+    	else {
     		atHomePos = false; //if position and destination don't match, must not be at home position.
+    		arrived = false;
+    	}
     	
         if (xPos < xDestination)
             xPos++;
@@ -99,11 +88,6 @@ public class WaiterGuiSkyler implements Gui {
             yPos++;
         else if (yPos > yDestination)
             yPos--;
-        /*
-        if (xPos == xDestination && yPos == yDestination
-        		&& (xDestination == xTable + 20 + (100*(currentTableNum-1))) && (yDestination == yTable - 20)) {
-           agent.msgAtTable(currentTableNum);
-        }*/  //CONSOLIDATED INTO IF BLOCK
         
     }
 
@@ -143,6 +127,7 @@ public class WaiterGuiSkyler implements Gui {
     }
 
     public void DoBringToTable(CustomerSkyler customer, int tableNumber) {
+    	arrived = false;
     	customer.getGui().setTable(tableNumber); //CustomerGui knows which table to go to without the customer agent knowing the tablenumber.
     	currentTableNum = tableNumber;
         xDestination = xTable + 20 + (100*(currentTableNum-1));
@@ -150,6 +135,7 @@ public class WaiterGuiSkyler implements Gui {
     }
     
     public void DoGoToTable(int tableNumber) {
+    	arrived = false;
     	displayString = "";
     	currentTableNum = tableNumber;
     	xDestination = xTable + 20 + (100*(currentTableNum-1));
@@ -157,6 +143,7 @@ public class WaiterGuiSkyler implements Gui {
     }
 
     public void DoLeaveCustomer() {
+    	arrived = false;
     	displayString = "";
         //xDestination = -19;
         //yDestination = -19;
@@ -165,30 +152,35 @@ public class WaiterGuiSkyler implements Gui {
     }
     
     public void DoGoToWaitingArea() {
+    	arrived = false;
     	displayString = "";
     	xDestination = waitingX;
     	yDestination = waitingY;
     }
     
     public void DoBringOrderToCook(String choice) { //NEED TO ADD IN CHOICE GRAPHIC
+    	arrived = false;
     	displayString = choice.substring(0, 2) + "?";
     	xDestination = cookX;
     	yDestination = cookY;
     }
     
     public void DoGoToCashier() {
+    	arrived = false;
     	displayString = "";
     	xDestination = 200;
     	yDestination = -19;
     }
     
     public void DoGetFood() {
+    	arrived = false;
     	displayString = "";
     	xDestination = cookX;
     	yDestination = cookY;
     }
     
     public void DoDeliverFood (String choice, int tableNumber) {
+    	arrived = false;
     	displayString = choice.substring(0, 2);
     	currentTableNum = tableNumber;
     	xDestination = xTable + 20 + (100*(currentTableNum-1));
@@ -201,6 +193,10 @@ public class WaiterGuiSkyler implements Gui {
 
     public int getYPos() {
         return yPos;
+    }
+    
+    public boolean inMotion() {
+    	return !arrived;
     }
     
     public boolean atFront() {

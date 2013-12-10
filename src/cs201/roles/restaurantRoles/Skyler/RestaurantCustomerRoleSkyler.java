@@ -127,6 +127,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
+		state = AgentState.DoingNothing;
 		Do("Interaction started.");
 		this.customerGui.setHungry();
 	}
