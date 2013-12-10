@@ -1,5 +1,7 @@
 package cs201.test.mock.Brandon.transit;
 
+import java.awt.Point;
+
 import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
@@ -47,6 +49,12 @@ public class MockCar extends Mock implements Car
 	@Override
 	public void msgDoneBoarding(Passenger p) {
 		log.add(new LoggedEvent("Passenger "+p+" is done boarding."));
+	}
+
+	@Override
+	public void msgCallCar(Passenger p, Point point, Structure destination) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

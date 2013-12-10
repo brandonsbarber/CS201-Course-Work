@@ -8,8 +8,10 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.CityPanel;
 import cs201.gui.transit.PassengerGui;
 import cs201.helper.transit.BusRoute;
+import cs201.helper.transit.Pathfinder;
 import cs201.interfaces.agents.transit.Bus;
 import cs201.interfaces.agents.transit.Car;
 import cs201.interfaces.agents.transit.Vehicle;
@@ -489,8 +491,16 @@ public class PassengerRole extends Role implements Passenger
 				state = PassengerState.Arrived;
 				break;
 			case Car :
-				car.msgCallCar(this, currentLocation, destination);
-				
+				if(gui.locationEquals(currentLocation))
+				{
+					car.msgCallCar(this, currentLocation, destination);
+				}
+				else
+				{
+					Point p = gui.findRoad(gui.getX()/CityPanel.GRID_SIZE,gui.getY()/CityPanel.GRID_SIZE);
+					gui.stopRoam();
+					car.msgCallCar(this,new Point(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE),destination);
+				}
 				if(!testing)
 				{
 					try

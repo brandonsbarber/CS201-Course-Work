@@ -1,5 +1,6 @@
 package cs201.agents.transit;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,14 +27,22 @@ public class CarAgent extends VehicleAgent implements Car
 	class PickupRequest
 	{
 		Passenger p;
-		Structure start;
+		Point start;
 		Structure destination;
+		Structure startStructure;
 		
-		public PickupRequest(Passenger p, Structure s, Structure d)
+		public PickupRequest(Passenger p, Point s, Structure d)
 		{
 			this.p = p;
 			start = s;
 			destination = d;
+			startStructure = null;
+		}
+		
+		public PickupRequest(Passenger p, Point s, Structure d, Structure startStructure)
+		{
+			this(p,s,d);
+			this.startStructure = startStructure;
 		}
 	};
 	
@@ -59,7 +68,21 @@ public class CarAgent extends VehicleAgent implements Car
 	public void msgCallCar(Passenger p, Structure s, Structure d)
 	{
 		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Called by "+p+" to pickup at "+s+" and go to "+d);
-		pickups.add(new PickupRequest(p,s,d));
+		pickups.add(new PickupRequest(p,s.getParkingLocation(),d));
+		stateChanged();
+	}
+	
+	/**
+	 * Message for calling a car for pickup by a passenger
+	 * @param p the passenger calling for the car
+	 * @param p the location of the passenger
+	 * @param d the desired location for the passenger
+	 */
+	@Override
+	public void msgCallCar(Passenger p, Point point, Structure d)
+	{
+		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Called by "+p+" to pickup at "+point+" and go to "+d);
+		pickups.add(new PickupRequest(p,point,d));
 		stateChanged();
 	}
 
@@ -149,9 +172,10 @@ public class CarAgent extends VehicleAgent implements Car
 	{
 		if(currentLocation == null)
 		{
-			msgSetLocation(removed.start);
+			msgSetLocation(removed.startStructure);
 		}
 		
+		//msgSetDestination(removed.start);
 		msgSetDestination(removed.start);
 				
 		animate();
