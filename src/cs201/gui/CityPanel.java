@@ -104,11 +104,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
 		}
-		
-		System.out.println(crosswalkPermissions.size());
-		for(int i = 0; i < crosswalkPermissions.size(); i++)
-		System.out.println(crosswalkPermissions.get(i).size());
-		
 	}
 	
 	/**
@@ -121,6 +116,24 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		buildings.clear();
 		
 		timer.start();
+		
+		permissions = new Semaphore[cityGrid.length][cityGrid[0].length];
+		for(int y = 0; y < permissions.length;y++)
+		{
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				permissions[y][x] = new Semaphore(1,true);
+			}
+		}
+		crosswalkPermissions = new ArrayList<List<List<Gui>>>();
+		for(int y = 0; y < permissions.length;y++)
+		{
+			crosswalkPermissions.add(new ArrayList<List<Gui>>());
+			for(int x = 0; x < permissions[y].length; x++)
+			{
+				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
+			}
+		}
 	}
 	
 	/**

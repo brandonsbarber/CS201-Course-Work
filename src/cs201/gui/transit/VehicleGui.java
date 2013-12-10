@@ -164,6 +164,7 @@ public abstract class VehicleGui implements Gui
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
 
+				revertCrosswalk();
 				city.permissions[current.y][current.x].release();
 				
 				return;
@@ -197,6 +198,7 @@ public abstract class VehicleGui implements Gui
 					if(current != next)
 					{
 						city.permissions[current.y][current.x].release();
+						revertCrosswalk();
 					}
 					
 					current = next;
@@ -234,15 +236,28 @@ public abstract class VehicleGui implements Gui
 
 	private boolean canMoveCrosswalk()
 	{
-		List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
-		synchronized(list)
+		if(city.getWalkingMap()[next.y][next.x].isValid())
 		{
-			if(list.size() != 0)
+			List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+			synchronized(list)
 			{
-				return false;
+				if(list.size() != 0)
+				{
+					return false;
+				}
+				list.add(this);
 			}
 		}
 		return true;
+	}
+	
+	private void revertCrosswalk()
+	{
+		List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+		synchronized(list)
+		{
+			list.remove(this);
+		}
 	}
 
 	/**

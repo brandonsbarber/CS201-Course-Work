@@ -283,8 +283,7 @@ public class PassengerGui implements Gui
 						break;
 					default:next = current;
 						break;
-					}
-					
+					}	
 				}
 				List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
 				synchronized(list)
