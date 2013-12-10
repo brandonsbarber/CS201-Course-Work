@@ -2,6 +2,7 @@ TODO:
 
 All:
     [ ] Update design docs
+    [ ] Close Structure Button in structure panel
 
 Brandon:
     [-] Transit config panel
