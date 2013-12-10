@@ -113,16 +113,6 @@ public class RestaurantBrandon extends Restaurant {
 	HashMap<String,java.lang.Double> savedPrices;
 
 	@Override
-	public void closingTime() {
-		cashier.msgClosingTime();
-		cook.msgClosingTime();
-		for(RestaurantWaiterRole w : waiters)
-		{
-			w.msgClosingTime();
-		}
-	}
-
-	@Override
 	public Role getRole(Intention role) {
 		switch (role) {
 		case RestaurantCook: {
@@ -209,7 +199,13 @@ public class RestaurantBrandon extends Restaurant {
 		}
 	}
 	
-	private void checkIfRestaurantShouldOpen() {
+	private void checkIfRestaurantShouldOpen(CityTime time) {
+		// If it's not during shift hours, there's no way the restaurant would be open
+		if (!(CityTime.timeDifference(time, morningShiftStart) >= 0 && CityTime.timeDifference(time, morningShiftEnd) < 0) &&
+				!(CityTime.timeDifference(time, afternoonShiftStart) >= 0 && CityTime.timeDifference(time, closingTime) < 0)) {
+			return;
+		}
+		
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
 			for (RestaurantWaiterRole w : waiters) {
 				if (w.getPerson() != null) {
@@ -222,28 +218,34 @@ public class RestaurantBrandon extends Restaurant {
 	}
 
 	@Override
-	public void updateTime(CityTime time) {
-		if(!isOpen)
-		{
-			checkIfRestaurantShouldOpen();
-		}
-		
+	public void updateTime(CityTime time) {		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			this.isOpen = false;
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
 				closingTime();
 			}
-		}
-		
-		if (time.equalsIgnoreDay(this.closingTime)) {
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
+			this.isOpen = false;
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
 				closingTime();
 			}
+		} else if (!isOpen) {
+			checkIfRestaurantShouldOpen(time);
+		}
+	}
+	
+	@Override
+	public void closingTime() {
+		cashier.msgClosingTime();
+		cook.msgClosingTime();
+		for (RestaurantWaiterRole r : waiters) {
+			r.msgClosingTime();
 		}
 	}
 
