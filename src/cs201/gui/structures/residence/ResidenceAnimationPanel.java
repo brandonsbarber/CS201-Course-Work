@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.residence.ResidentGui;
@@ -52,6 +53,19 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		
 		g2.setColor(getBackground());
 		g2.fillRect(0, 0, WINDOWX, WINDOWY); //clear the screen
+		
+		/*for (int i=0; i<WINDOWX; i=i+64) {
+        	for (int j=0; j<WINDOWY; j=j+32) {
+        		g.drawImage(ArtManager.getImage("Residence_Floor"), i, j, 32, 32, null);
+        		g.drawImage(ArtManager.getImage("Residence_Floor2"), i+32, j, 32, 32, null);
+        	}
+        }*/
+		for (int i=0; i<WINDOWX; i=i+32) {
+        	for (int j=0; j<WINDOWY; j=j+32) {
+        		g.drawImage(ArtManager.getImage("Residence_Floor3"), i, j, 32, 32, null);
+        	}
+        }
+		
 		
 		g2.setColor(Color.GRAY);
 		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);

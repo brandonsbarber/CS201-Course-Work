@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.roles.housingRoles.ResidentRole;
 
@@ -28,6 +29,7 @@ public class ResidentGui implements Gui {
 	
 	private int waitTime=0;
 	private String holding="";
+	private String dir = new String();
 	
 	boolean animating;
 	
@@ -43,6 +45,8 @@ public class ResidentGui implements Gui {
 		yPos = startY;
 		xDestination = xPos;
 		yDestination = yPos;
+		dir = "Default_Walker_Down";
+		
 		
 		role = newRole;
 		isPresent = false;
@@ -55,6 +59,7 @@ public class ResidentGui implements Gui {
 		// TODO Auto-generated method stub
 		if (xPos<xDestination) {
 			xPos++;
+			dir = "Default_Walker_Right";
 		}
 		else if (xPos>xDestination) {
 			if(xPos==0 && yPos>exitY || xPos==0 && yPos<exitY) {
@@ -62,15 +67,18 @@ public class ResidentGui implements Gui {
 			}
 			else {
 				xPos--;
+				dir = "Default_Walker_Left";
 			}
 			
 		}
 		
 		if (yPos<yDestination) {
 			yPos++;
+			dir = "Default_Walker_Down";
 		}
 		else if (yPos>yDestination) {
 			yPos--;
+			dir = "Default_Walker_Up";
 		}
 		
 		if (xPos==xDestination && yPos==yDestination && animating == true) {
@@ -89,8 +97,10 @@ public class ResidentGui implements Gui {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.ORANGE);
-		g.fillRect(xPos, yPos, WIDTH, HEIGHT);
+		/*g.setColor(Color.ORANGE);
+		g.fillRect(xPos, yPos, WIDTH, HEIGHT);*/
+		
+		g.drawImage(ArtManager.getImage(dir), xPos, yPos, 17, 22, null);
 		
 		g.setColor(Color.WHITE);
 		g.drawString("Resident", xPos, yPos);

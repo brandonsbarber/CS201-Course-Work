@@ -107,6 +107,11 @@ public class ArtManager
 		atlas.put("Skyler_Waiter_Right",ImageIO.read(new File("data/Restaurant/Skyler/waiter-right.png")));
 		atlas.put("Skyler_Waiter_Up",ImageIO.read(new File("data/Restaurant/Skyler/waiter-up.png")));
 		atlas.put("Skyler_Waiter_Down",ImageIO.read(new File("data/Restaurant/Skyler/waiter-down.png")));
+		atlas.put("Residence_Floor",ImageIO.read(new File("data/Housing/Residence-floor.png")));
+		atlas.put("Residence_Floor2",ImageIO.read(new File("data/Housing/Residence-floor2.png")));
+		atlas.put("Residence_Floor3",ImageIO.read(new File("data/Housing/Residence-floor3.png")));
+		atlas.put("Apartment_Complex_Floor",ImageIO.read(new File("data/Housing/Apartment-floor.png")));
+		atlas.put("Apartment_Complex_Floor2",ImageIO.read(new File("data/Housing/Apartment-floor2.png")));
 	}
 	
 	public static BufferedImage getImage(String key)
