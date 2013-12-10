@@ -490,6 +490,7 @@ public class PassengerRole extends Role implements Passenger
 				state = PassengerState.Arrived;
 				break;
 			case Car :
+				System.out.println("Calling car");
 				if(gui.locationEquals(currentLocation))
 				{
 					car.msgCallCar(this, currentLocation, destination);

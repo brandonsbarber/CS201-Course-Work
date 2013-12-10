@@ -376,6 +376,8 @@ public class PassengerGui implements Gui
 	public void stopRoam()
 	{
 		roaming = false;
+		destX = x;
+		destY = y;
 	}
 	
 	public Point findRoad(int i, int j)
