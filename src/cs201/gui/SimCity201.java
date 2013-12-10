@@ -245,6 +245,7 @@ public class SimCity201 extends JFrame {
 			bus.setGui(busG);
 			cityPanel.addGui(busG);
 			bus.startThread();
+			transitPanel.addVehicle(bus);
 		}
 	}
 

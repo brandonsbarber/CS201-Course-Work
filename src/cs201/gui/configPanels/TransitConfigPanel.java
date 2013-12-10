@@ -91,8 +91,11 @@ public class TransitConfigPanel extends ConfigPanel
 				{
 					if (list.getSelectedIndex() == -1)
 					{
-					    //No selection, reset info panel.
 						infoPanel.resetInfo();
+					}
+					else
+					{
+						showInfo();
 					}
 				}	
 			});
@@ -116,6 +119,7 @@ public class TransitConfigPanel extends ConfigPanel
 			model.add(index, p);
 			list.setSelectedIndex(index);
 			list.ensureIndexIsVisible(index);
+			showInfo();
 		}
 		
 		public void deselect() {
