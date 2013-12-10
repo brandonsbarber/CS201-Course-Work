@@ -110,11 +110,12 @@ public class MarketAnimationPanel extends StructurePanel {
       	for (int i = 3; i <= 18; i += 3) {
         	acquireRectangleGrid(i, 5, i, 9);
         }
-      	acquireRectangleGrid(3, 2, 18, 2);
-      	acquireRectangleGrid(3, 3, 18, 3);
+      	acquireRectangleGrid(3, 2, 18, 2);  
+      	acquireRectangleGrid(3, 3, 18, 3);  
       	acquireRectangleGrid(3, 11, 12, 11);
+      	acquireRectangleGrid(3, 12, 12, 12);
       	acquireRectangleGrid(15, 11, 18, 11);
-        acquireRectangleGrid(10, 15, 15, 15);
+        acquireRectangleGrid(15, 12, 18, 12);
     }                                                                                                                         
          
     @Override
