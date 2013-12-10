@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import restaurant.CookAgent.Food;
-import restaurant.CookAgent.Order;
-import restaurant.CookAgent.OrderState;
 import cs201.agents.PersonAgent.Intention;
 import cs201.helper.CityDirectory;
 import cs201.interfaces.roles.restaurant.Skyler.CookSkyler;
@@ -31,6 +28,8 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	private String name;
 	private static int orderQuantity = 5; // number of food items to be ordered at one time when an order is placed.
 	private static int defaultAmt = 100; //100 of each food to begin with
+	
+	private int NMARKETS;
 	
 	private boolean closingTime = false;
 
@@ -116,6 +115,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	
 	private void checkInventory() {
 		Food tempFood = inventory.get("Steak");
+		NMARKETS = CityDirectory.getInstance().getMarkets().size();
 		if(tempFood.amount < 3){
 			if(tempFood.amtOrdered==0 && tempFood.failCounter<NMARKETS) {
 				newRestockOrder(tempFood, orderQuantity);

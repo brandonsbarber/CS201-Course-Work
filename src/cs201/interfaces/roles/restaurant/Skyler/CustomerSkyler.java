@@ -1,5 +1,7 @@
 package cs201.interfaces.roles.restaurant.Skyler;
 
+import java.util.Map;
+
 /**
  * A sample Customer interface built to unit test a CashierAgent.
  *
@@ -8,25 +10,15 @@ package cs201.interfaces.roles.restaurant.Skyler;
  */
 public interface CustomerSkyler {
 		public abstract String getName();
-        /**
-         * @param total The cost according to the cashier
-         *
-         * Sent by the cashier prompting the customer's money after the customer has approached the cashier.
-         */
-        public abstract void msgHereIsYourTotal(double total);
-
-        /**
-         * @param total change (if any) due to the customer
-         *
-         * Sent by the cashier to end the transaction between him and the customer. total will be >= 0 .
-         */
-        public abstract void msgHereIsYourChange(double total);
-
-
-        /**
-         * @param remaining_cost how much money is owed
-         * Sent by the cashier if the customer does not pay enough for the bill (in lieu of sending {@link #HereIsYourChange(double)}
-         */
-        public abstract void msgYouOweUs(double remaining_cost);
+        public abstract void msgHereIsYourChange(double change);
+        public abstract void msgSitAtTable(Map<String, Double> newMenu);
+        public abstract void msgWaiterBack();
+        public abstract void msgReOrder(Map<String, Double> newMenu);
+        public abstract void msgHereIsYourFood(String choice);
+        public abstract void msgHereIsYourCheck(CashierSkyler c, double amt);
+        
+        public abstract void setWaiter(WaiterSkyler waiter);
+        public abstract void setHost(HostSkyler host);
+        
 
 }

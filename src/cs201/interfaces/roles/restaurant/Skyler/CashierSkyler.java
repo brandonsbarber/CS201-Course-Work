@@ -6,6 +6,8 @@ public interface CashierSkyler {
 	public abstract void msgRequestCheck(CustomerSkyler c, WaiterSkyler w, double amount);
 	public abstract void msgHereIsCash(CustomerSkyler cust, double cash);
 	
+	public abstract String getName();
+	
 }
 
 

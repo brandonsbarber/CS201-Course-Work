@@ -1,6 +1,7 @@
 package cs201.roles.restaurantRoles.Skyler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	
 	static final int NTABLES = 3;//a global for the number of tables.
 
-	public List<myCustomer> myCustomers = new ArrayList<myCustomer>();
+	public List<myCustomer> myCustomers = Collections.synchronizedList(new ArrayList<myCustomer>());
 
 	
 	private Map<String, Double> menu = new HashMap<String, Double>();
@@ -79,12 +80,14 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 
 	public void msgDoneEating(CustomerSkyler cust) {
-		for (myCustomer myC : myCustomers) {
-			if (myC.customer == cust) {
-				if (myC.amtOwed==-1)
-					myC.state = CustomerState.done;
-				else
-					myC.state = CustomerState.doneNoCheck;
+		synchronized(myCustomers) {
+			for (myCustomer myC : myCustomers) {
+				if (myC.customer == cust) {
+					if (myC.amtOwed==-1)
+						myC.state = CustomerState.done;
+					else
+						myC.state = CustomerState.doneNoCheck;
+				}
 			}
 		}
 		stateChanged();
@@ -147,7 +150,9 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 	
 	public void msgReadyToOrder(CustomerSkyler cust) {
-		for(myCustomer myCust : myCustomers) {
+		synchronized(myCustomers) {
+			for(myCustomer myCust : myCustomers) {
+		
 			if (myCust.customer==cust){
 				myCust.state = CustomerState.waitingToOrder;
 				//DoReturnForOrder(myCust.tableNumber); //gui action.
@@ -155,35 +160,40 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				if (state == AgentState.Free) { goingSomewhere.release();}
 				stateChanged();
 			}
+		 }
 		}
 	}
 	
 	public void msgHereIsMyChoice(CustomerSkyler cust, String choice) {
-		for(myCustomer myCust : myCustomers) {
-			if (myCust.customer==cust){
-				myCust.setOrder(choice);
-				myCust.order.state = OrderState.justOrdered;
-				myCust.state = CustomerState.waitingForFood;
-				// //function will give cook necessary info after gui action.
+		synchronized(myCustomers) {
+			for(myCustomer myCust : myCustomers) {
+				if (myCust.customer==cust){
+					myCust.setOrder(choice);
+					myCust.order.state = OrderState.justOrdered;
+					myCust.state = CustomerState.waitingForFood;
+					//function will give cook necessary info after gui action.
+				}
 			}
-			
 		}
 		//print("waitingforresponse released. hereismychoice.");
 		waitingForResponse.release();
 	}
 	public void msgOutOf(String choice, int tableNum) {
-		for(myCustomer myCust : myCustomers) {
-			if (myCust.tableNumber == tableNum) {
-				myCust.order.state = OrderState.rejected;
-				if (state == AgentState.Free) {
-					goingSomewhere.release(); 
+		synchronized(myCustomers) {
+			for(myCustomer myCust : myCustomers) {
+				if (myCust.tableNumber == tableNum) {
+					myCust.order.state = OrderState.rejected;
+					if (state == AgentState.Free) {
+						goingSomewhere.release(); 
+					}
+					stateChanged();
 				}
-				stateChanged();
 			}
 		}
 	}
 	
 	public void msgOrderReady(String choice, int tableNum) {
+		synchronized(myCustomers) {
 		for(myCustomer myCust : myCustomers) {
 			if (myCust.tableNumber == tableNum) {
 				myCust.order.state = OrderState.ready;
@@ -193,13 +203,16 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				stateChanged();
 			}
 		}
+		}
 	}
 	
 	public void msgHereIsFood(String choice, int tableNum) {
+		synchronized(myCustomers) {
 		for(myCustomer myCust : myCustomers) {
 			if (myCust.tableNumber == tableNum) {
 				myCust.order.state = OrderState.beingDelivered;
 			}
+		}
 		}
 		//print("waitingforresponse released. hereisfood.");
 		waitingForResponse.release();
@@ -207,9 +220,11 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	
 	@Override
 	public void msgCheckReady(CustomerSkyler c, double amt) {
+		synchronized(myCustomers) {
 		for (myCustomer myC : myCustomers) {
 			if (myC.customer==c) 
 				myC.amtOwed=amt;
+		}
 		}
 		waitingForResponse.release();
 	}
@@ -250,16 +265,15 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				break;
 			}
 			
+			
+			synchronized(myCustomers) {
 			for (myCustomer cust : myCustomers) {
 				if (cust.state == CustomerState.done) {
 					cust.state = CustomerState.gone;
 					host.msgTableFree(cust.tableNumber);
 					return true;
 				}
-			}
-			
-			for (myCustomer cust : myCustomers) {
-				if (cust.state==CustomerState.unseated) {
+				else if (cust.state==CustomerState.unseated) {
 					state = AgentState.Busy;
 					//if (currentTable!=-1) {
 						
@@ -287,6 +301,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 					return true;
 				}
 			}
+			}//end synchronized
 			
 			for (myCustomer cust : myCustomers) {
 				if (cust.order!=null && cust.state == CustomerState.waitingForFood && cust.order.state == OrderState.rejected) {
@@ -479,7 +494,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		print(cashier.getName()+", can you make a bill for "+c.customer.getName()+"?");
+		Do(cashier.getName()+", can you make a bill for "+c.customer.getName()+"?");
 		cashier.msgRequestCheck(c.customer, this, menu.get(c.order.orderChoice));
 		try {
 			waitingForResponse.acquire();
@@ -506,8 +521,8 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		
-				Do("Seating " + customer + " at table " + tableNumber+". Follow me!");
-				waiterGui.DoBringToTable(customer, tableNumber);
+		Do("Seating " + customer + " at table " + tableNumber+". Follow me!");
+		waiterGui.DoBringToTable(customer, tableNumber);
 	}
 	
 	private void DoGoBackToFront() {
