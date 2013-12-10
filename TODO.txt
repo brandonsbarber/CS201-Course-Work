@@ -2,9 +2,10 @@ TODO:
 
 All:
     [ ] Update design docs
+    [ ] Close Structure Button in structure panel
 
 Brandon:
-    [ ] Transit config panel
+    [-] Transit config panel
     [ ] Updated graphics
     [X] Change restaurant closing behavior
     [ ] Fix boat jam behavior
