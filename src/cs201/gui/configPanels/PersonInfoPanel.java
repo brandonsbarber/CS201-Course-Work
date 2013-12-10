@@ -49,7 +49,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private JTextField actionTextField;
 	private JTextField jobTextField;
 	private JTextField workTimeTextField;
-	private JTextField homeTextField;
 	private JCheckBox carCheckBox;
 	private JTextField buyTextField;
 	private JTextField inventoryTextField;
@@ -59,6 +58,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private JLabel lblMode;
 	private JComboBox<String> hungerComboBox;
 	private JComboBox<Structure> locationComboBox;
+	private JComboBox<Structure> homeComboBox;
 
 	/**
 	 * Create the panel.
@@ -370,18 +370,19 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		gbc_lblHasHome.gridy = 4;
 		centerPanel.add(lblHasHome, gbc_lblHasHome);
 		
-		homeTextField = new JTextField();
-		homeTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		homeTextField.setFocusable(false);
-		homeTextField.setEditable(false);
-		lblHasHome.setLabelFor(homeTextField);
-		GridBagConstraints gbc_homeTextField = new GridBagConstraints();
-		gbc_homeTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_homeTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_homeTextField.gridx = 1;
-		gbc_homeTextField.gridy = 4;
-		centerPanel.add(homeTextField, gbc_homeTextField);
-		homeTextField.setColumns(10);
+		homeComboBox = new JComboBox<Structure>();
+		lblHasHome.setLabelFor(homeComboBox);
+		homeComboBox.setEnabled(false);
+		homeComboBox.setFocusable(false);
+		homeComboBox.setMaximumSize(new Dimension(32767, 28));
+		homeComboBox.setMinimumSize(new Dimension(34, 28));
+		homeComboBox.setPreferredSize(new Dimension(34, 28));
+		GridBagConstraints gbc_homeComboBox = new GridBagConstraints();
+		gbc_homeComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_homeComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_homeComboBox.gridx = 1;
+		gbc_homeComboBox.gridy = 4;
+		centerPanel.add(homeComboBox, gbc_homeComboBox);
 		
 		JLabel lblToBuy = new JLabel("To Buy:");
 		lblToBuy.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -489,7 +490,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.carCheckBox.setSelected(false);
 		this.jobTextField.setText("");
 		this.workTimeTextField.setText("");
-		this.homeTextField.setText("");
+		this.homeComboBox.removeAllItems();
 		this.buyTextField.setText("");
 		this.inventoryTextField.setText("");
 	}
@@ -504,7 +505,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.carCheckBox.setEnabled(editMode);
 		this.jobTextField.setEditable(editMode);
 		this.workTimeTextField.setEditable(editMode);
-		this.homeTextField.setEditable(editMode);
+		this.homeComboBox.setEnabled(editMode);
 		
 		this.nameTextField.setFocusable(editMode);
 		this.moneyTextField.setFocusable(editMode);
@@ -515,7 +516,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.carCheckBox.setFocusable(editMode);
 		this.jobTextField.setFocusable(editMode);
 		this.workTimeTextField.setFocusable(editMode);
-		this.homeTextField.setFocusable(editMode);
+		this.homeComboBox.setFocusable(editMode);
 	}
 	
 	private void setupDefaults() {
@@ -523,6 +524,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.moneyTextField.setText("$40.00");
 		this.hungerComboBox.setSelectedIndex(1);
 		List<Structure> buildings = CityDirectory.getInstance().getAllBuildings();
+		this.locationComboBox.addItem(null);
 		for (Structure s : buildings) {
 			this.locationComboBox.addItem(s);
 		}
@@ -533,7 +535,11 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.carCheckBox.setSelected(false);
 		this.jobTextField.setText("None");
 		this.workTimeTextField.setText("N/A");
-		this.homeTextField.setText("None");
+		List<Residence> homes = CityDirectory.getInstance().getUnoccupiedResidences();
+		this.homeComboBox.addItem(null);
+		for (Residence r : homes) {
+			this.homeComboBox.addItem(r);
+		}
 		this.buyTextField.setText("Cannot Edit");
 		this.inventoryTextField.setText("Cannot Edit");
 	}
@@ -584,7 +590,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		p.setHungerLevel(hunger);
 		
 		Structure location = null;
-		if (this.locationComboBox.getSelectedIndex() == -1) {
+		if (this.locationComboBox.getSelectedIndex() == -1 || this.locationComboBox.getSelectedIndex() == 0) {
 			location = null;
 		} else {
 			location = (Structure) this.locationComboBox.getSelectedItem();
@@ -611,7 +617,14 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		
 		CityTime worktime;
 		
-		Residence home;
+		Residence home = null;
+		if (this.homeComboBox.getSelectedIndex() == -1 || this.homeComboBox.getSelectedIndex() == 0) {
+			home = null;
+		} else {
+			home = (Residence) this.homeComboBox.getSelectedItem();
+		}
+		output.append("\n\tHome: " + (home == null ? "None" : home.toString()));
+		p.setHome(home);
 		
 		// If we got here, all tests succeeded
 		// add the person to the CityDirectory, etc. and start its thread
@@ -640,7 +653,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.carCheckBox.setSelected(p.getVehicle() != null);
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
 		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString().trim());
-		this.homeTextField.setText(p.getHome() == null ? "None" : p.getHome().toString());
+		this.homeComboBox.removeAllItems();
+		this.homeComboBox.addItem(p.getHome() == null ? null : p.getHome());
+		this.homeComboBox.setSelectedIndex(0);
 		this.buyTextField.setText(p.getMarketChecklist().toString().substring(1, p.getMarketChecklist().toString().length()-1));
 		this.inventoryTextField.setText(p.getInventory().toString().substring(1, p.getInventory().toString().length()-1));
 	}

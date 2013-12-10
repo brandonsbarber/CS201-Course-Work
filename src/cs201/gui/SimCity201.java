@@ -425,6 +425,7 @@ public class SimCity201 extends JFrame {
 		
 		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		personPanel.addPerson(p1);
 		CityDirectory.getInstance().addPerson(p1);
 		
 		p1.startThread();
@@ -1624,7 +1625,7 @@ public class SimCity201 extends JFrame {
 		}
 	}
 	
-	public PersonAgent createPerson(String name, Structure location, Structure home, Intention job, Structure workplace, CarAgent car) {
+	public PersonAgent createPerson(String name, Structure location, Residence home, Intention job, Structure workplace, CarAgent car) {
 		PersonAgent p = new PersonAgent(name, cityPanel);
 		
 		p.setupPerson(CityDirectory.getInstance().getTime(), home, workplace, job, location, car);

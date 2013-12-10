@@ -329,6 +329,19 @@ public class CityDirectory implements ActionListener {
 		return residences;
 	}
 	
+	public List<Residence> getUnoccupiedResidences() {
+		List<Residence> _residences = new LinkedList<Residence>();
+		synchronized(residences) {
+			for (Residence r : residences) {
+				if (!r.isOccupied()) {
+					_residences.add(r);
+				}
+			}
+		}
+		
+		return _residences;
+	}
+	
 	public Residence getResidenceWithID(int id) {
 		for (Residence r : residences) {
 			if (r.getId() == id) {
