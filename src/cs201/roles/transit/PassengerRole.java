@@ -153,7 +153,6 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void msgAnimationFinished()
 	{
-		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,getName(),"Animation has finished");
 		animationPause.release();
 	}
 
@@ -295,7 +294,6 @@ public class PassengerRole extends Role implements Passenger
 
 	private void roam()
 	{
-		System.out.println("ROAMING");
 		gui.doRoam();
 		//gui.startRoaming(); DO NOT ACQUIRE anymore; setActive(false);
 		try
