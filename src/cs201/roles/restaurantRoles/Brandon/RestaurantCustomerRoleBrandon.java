@@ -447,6 +447,8 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 		billAmount = 0;
 		this.getPerson().setHungerLevel(0);
 		
+		this.getPerson().setMoney(startingMoney);
+		
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"I am leaving the restaurant");
 		hungry = false;
 		s = CustomerState.NoState;

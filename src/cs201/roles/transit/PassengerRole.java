@@ -388,7 +388,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public boolean shouldWalk()
 	{
-		double distance = Math.sqrt(Math.pow(destination.getRect().x - currentLocation.getRect().x,2) + Math.pow(destination.getRect().y - currentLocation.getRect().y,2));
+		double distance = Math.sqrt(Math.pow(destination.getRect().x - gui.getX(),2) + Math.pow(destination.getRect().y - gui.getY(),2));
 		return distance < walkDistance;
 	}
 	
