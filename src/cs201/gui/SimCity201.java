@@ -535,7 +535,7 @@ public class SimCity201 extends JFrame {
 		Residence res2 = new Residence(18*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel2, false);
 		res2.setStructurePanel(resPanel2);
 		buildingPanels.add(resPanel2, ""+res2.getId());
-		cityPanel.addStructure(res2, new Point(20*25, 11*25), new Point(19*25, 11*25));
+		cityPanel.addStructure(res2, new Point(18*25, 9*25), new Point(19*25, 11*25));
 		CityDirectory.getInstance().addResidence(res2);
 		
 		PersonAgent p1 = new PersonAgent("Renter",cityPanel);
@@ -600,7 +600,7 @@ public class SimCity201 extends JFrame {
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(21*25,11*25), new Point(22*25,11*25));
+		cityPanel.addStructure(r,new Point(23*25,14*25), new Point(22*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
