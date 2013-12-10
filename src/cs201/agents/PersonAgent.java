@@ -128,7 +128,7 @@ public class PersonAgent extends Agent implements Person {
 		if (CityTime.timeDifference(curTime, wakeupTime) > 0) {
 			this.state = PersonState.Awake;
 		}
-		if (CityTime.timeDifference(curTime,  sleepTime) > 0) {
+		if (CityTime.timeDifference(curTime,  sleepTime) > 0 || CityTime.timeDifference(curTime, wakeupTime) < 0) {
 			this.state = PersonState.Sleeping;
 		}
 	}
@@ -198,7 +198,7 @@ public class PersonAgent extends Agent implements Person {
 		this.currentAction = null;
 		
 		// If it's time to wake up in the morning
-		if (state == PersonState.Sleeping && time.equalsIgnoreDay(this.wakeupTime)) {
+		if (state == PersonState.Sleeping && time.equalsIgnoreDay(wakeupTime)) {
 			this.state = PersonState.Awake;
 			
 			// If you need to pay rent
@@ -281,7 +281,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you don't even have a home to return to
-		if (state == PersonState.Awake) {
+		if (state == PersonState.Awake /*&& passengerRole.state != PassengerState.Roaming*/) {
 			this.currentAction = null;
 			passengerRole.setActive(true);
 			passengerRole.msgStartRoaming();
@@ -301,9 +301,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void goToLocation(Action a) {
 		a.active = true;
-		if (currentLocation != a.location) {
+		// if roaming, passengerRole.stopRoaming()
+		if (!passengerRole.isAtLocation(a.location)) {
 			AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Going to " + a.location);
-			passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);

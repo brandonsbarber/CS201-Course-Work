@@ -1,6 +1,7 @@
 package cs201.roles.restaurantRoles.Brandon;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Brandon.CashierGuiBrandon;
@@ -282,6 +283,8 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	}
 
 	CashierGuiBrandon gui;
+
+	private Semaphore animationPause = new Semaphore(0,true);
 	
 	public void setGui(CashierGuiBrandon cashierGui) {
 		gui = cashierGui;
@@ -289,6 +292,11 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 
 	public CashierGuiBrandon getGui() {
 		return gui;
+	}
+
+	public void msgReachedDestination()
+	{
+		animationPause.release();
 	}
 }
 

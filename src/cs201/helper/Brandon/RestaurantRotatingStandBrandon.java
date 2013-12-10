@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Brandon.RestaurantWaiterRoleBrandon;
 
 public class RestaurantRotatingStandBrandon implements Gui{
@@ -58,10 +60,17 @@ public class RestaurantRotatingStandBrandon implements Gui{
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.gray.darker());
-		g.fillRect(STAND_X, STAND_Y, 20, 20);
-		g.setColor(Color.black);
-		g.drawString(""+getNumOrders(), STAND_X, STAND_Y+20);
+		if(Constants.DEBUG_MODE)
+		{
+			g.setColor(Color.gray.darker());
+			g.fillRect(STAND_X, STAND_Y, 20, 20);
+			g.setColor(Color.black);
+			g.drawString(""+getNumOrders(), STAND_X, STAND_Y+20);
+		}
+		else
+		{
+			g.drawImage(ArtManager.getImage("Stand_"+getNumOrders()), STAND_X,STAND_Y,20,20,null);
+		}
 	}
 
 	boolean present;

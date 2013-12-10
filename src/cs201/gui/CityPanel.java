@@ -2,7 +2,6 @@ package cs201.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -19,7 +19,6 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import cs201.helper.CityDirectory;
 import cs201.helper.Constants;
 import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
@@ -191,20 +190,30 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		{
 			for(int x = 0; x < cityGrid[y].length; x++)
 			{
+				BufferedImage img = null;
 				if(cityGrid[y][x].equals("G"))
 				{
-					g2.setColor(Color.GREEN);
+					img = ArtManager.getImage("Grass_Tile");
+					//g2.setColor(Color.GREEN);
 				}
 				else if(cityGrid[y][x].equals("ST") || cityGrid[y][x].equals("V") ||  cityGrid[y][x].equals("H"))
 				{
-					g2.setColor(Color.GRAY.brighter().brighter());
+					img = ArtManager.getImage("Sidewalk_Tile");
+					//g2.setColor(Color.GRAY.brighter().brighter());
 				}
 				else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
 				{
 					g2.setColor(Color.GRAY.darker());
 				}
 				
-				g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				if(img != null)
+				{
+					g2.drawImage(img, x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE, this);
+				}
+				else
+				{
+					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				}
 				
 				if(cityGrid[y][x].length() == 2 && (cityGrid[y][x].charAt(1) == 'H' || cityGrid[y][x].charAt(1) == 'V'))
 				{
@@ -366,12 +375,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		{
 			
 		}
-		
-		
-		g2.setColor(Color.BLACK);
-		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 17);
-		g2.setFont(font);
-		g2.drawString("Current Time: " + CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
 	}
 	
 	/**

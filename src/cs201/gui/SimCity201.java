@@ -76,7 +76,7 @@ public class SimCity201 extends JFrame {
 		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+		setVisible(false);
 		setSize(SIZEX, SIZEY);
 		setTitle("SimCity201 - Team 21");
 		
@@ -85,6 +85,7 @@ public class SimCity201 extends JFrame {
 		JPanel guiPanel = new JPanel();
 		
 		bottomSettingsPanel = new BaseSettingsPanel();
+		CityDirectory.getInstance().addTimerActionListener(bottomSettingsPanel);
 		
 		timePanel = new TimePanel();
 		bottomSettingsPanel.setTimePanel(timePanel);
@@ -211,7 +212,6 @@ public class SimCity201 extends JFrame {
 	 * Clears SimCity201 to run a new scenario. This method is called by the scenario panel when the user wants to run a new scenario.
 	 */
 	public void clearScenario() {
-		// TODO figure out what to do to clear the stage for a new scenario.
 		this.personPanel.resetCity();
 		bottomSettingsPanel.resetCity();
 		CityDirectory.getInstance().resetCity();
@@ -413,10 +413,10 @@ public class SimCity201 extends JFrame {
 
 	private void normativeRestaurant() {
 		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
-		 * when all of them have arrived at the Restaurant. At 8:30AM a single Customer comes
-		 * and a normative Restaurant scenario starts where he orders food and leaves when done.
-		 * The Restaurant closes at 1:15PM (should be right after the Customer leaves), and all
-		 * the employees go home.
+		 * when all of them have arrived at the Restaurant. At 8:00AM a single Customer wakes up 
+		 * and a normative Restaurant scenario starts where he orders food and leaves when done when
+		 * he sees that the Restaurant is open.
+		 * The morning shift ends at 12:30PM and all the employees go home.
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
@@ -472,10 +472,10 @@ public class SimCity201 extends JFrame {
 	
 	private void normativeRestaurantTwoCustomersTwoWaiters() {
 		/* A normal Waiter and rotating stand Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
-		 * when the Host, Cashier, Cook, and at least one Waiter have arrived at the Restaurant. At 8:30AM two Customers come
-		 * and a normative Restaurant scenario starts where they both order food and leave when done.
-		 * The Restaurant closes at 1:15PM (should be right after the Customers leave), and all the
-		 * employees go home.
+		 * when the Host, Cashier, Cook, and at least one Waiter have arrived at the Restaurant. Two Customers wake up at 8:00AM
+		 * and a normative Restaurant scenario starts where they both order food and leave when done when they see that the 
+		 * Restaurant is open.
+		 * The morning shift ends at 12:30PM (should be right after the Customers leave), and all the employees go home.
 		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
@@ -530,14 +530,14 @@ public class SimCity201 extends JFrame {
 		p4b.startThread();
 		
 		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
-		p5.setWakeupTime(new CityTime(8, 30));
+		p5.setWakeupTime(new CityTime(8, 00));
 		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p5);
 		personPanel.addPerson(p5);
 		p5.startThread();
 		
 		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
-		p6.setWakeupTime(new CityTime(8, 30));
+		p6.setWakeupTime(new CityTime(8, 00));
 		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
 		CityDirectory.getInstance().addPerson(p6);
 		personPanel.addPerson(p6);

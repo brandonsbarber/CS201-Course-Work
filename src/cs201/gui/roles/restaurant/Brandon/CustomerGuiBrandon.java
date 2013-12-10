@@ -3,8 +3,10 @@ package cs201.gui.roles.restaurant.Brandon;
 import java.awt.*;
 import java.util.concurrent.Semaphore;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBrandon;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Brandon.RestaurantCustomerRoleBrandon;
 
 public class CustomerGuiBrandon implements Gui{
@@ -66,17 +68,43 @@ public class CustomerGuiBrandon implements Gui{
 	}
 
 	public void draw(Graphics2D g) {
-		//System.out.println("HELLO?");
-		g.setColor(Color.GREEN);
-		g.fillRect(xPos, yPos, CUSTOMER_SIZE_X, CUSTOMER_SIZE_Y);
-		
-		g.setColor(Color.BLACK);
-		g.drawString(agent.getName(),xPos,yPos);
+		if(Constants.DEBUG_MODE)
+		{
+			g.setColor(Color.GREEN);
+			g.fillRect(xPos, yPos, CUSTOMER_SIZE_X, CUSTOMER_SIZE_Y);
+			
+			g.setColor(Color.BLACK);
+			g.drawString(agent.getName(),xPos,yPos);
+		}
+		else
+    	{
+    		if(yDestination < yPos)
+			{
+				g.drawImage(ArtManager.getImage("Default_Walker_Up"), xPos,yPos,CUSTOMER_SIZE_X,CUSTOMER_SIZE_Y,null);
+			}
+			else if(yDestination > yPos)
+			{
+				g.drawImage(ArtManager.getImage("Default_Walker_Down"), xPos,yPos,CUSTOMER_SIZE_X,CUSTOMER_SIZE_Y,null);
+			}
+			else if(xDestination > xPos)
+			{
+				g.drawImage(ArtManager.getImage("Default_Walker_Right"), xPos,yPos,CUSTOMER_SIZE_X,CUSTOMER_SIZE_Y,null);
+			}
+			else if(xDestination < xPos)
+			{
+				g.drawImage(ArtManager.getImage("Default_Walker_Left"), xPos,yPos,CUSTOMER_SIZE_X,CUSTOMER_SIZE_Y,null);
+			}
+    		else
+    		{
+    			g.drawImage(ArtManager.getImage("Default_Walker_Down"), xPos,yPos,CUSTOMER_SIZE_X,CUSTOMER_SIZE_Y,null);
+    		}
+    	}
 		
 		if(!orderChoice.equals(""))
         {
         	String s = isOrder?"?":"";
         	s += orderChoice;
+        	g.setColor(Color.BLACK);
         	g.drawString(s,xPos,yPos+CUSTOMER_SIZE_Y);
         }
 	}
@@ -121,7 +149,7 @@ public class CustomerGuiBrandon implements Gui{
 			System.out.println("Error in waiting for table information.");
 		}
 		xDestination = tableDestination.width;
-		yDestination = tableDestination.height;
+		yDestination = tableDestination.height-CUSTOMER_SIZE_Y;
 		eventFired = false;
 	}
 	

@@ -33,6 +33,23 @@ public class ArtManager
 		atlas.put("Bus_Left", ImageIO.read(new File("data/TransitSprites/Bus_West.png")));
 		atlas.put("Bus_Right", ImageIO.read(new File("data/TransitSprites/Bus_East.png")));
 		
+		atlas.put("Restaurant_Brandon_Open",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonOpen.png")));
+		atlas.put("Restaurant_Brandon_Closed",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonClosed.png")));
+		atlas.put("Restaurant_Brandon_Floor",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonFloor.png")));
+		atlas.put("Restaurant_Brandon_Table",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonTable.png")));
+		
+		atlas.put("Restaurant_Brandon_Grill_Open",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonGrillEmpty.png")));
+		atlas.put("Restaurant_Brandon_Grill_Filled",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonGrillFilled.png")));
+		atlas.put("Restaurant_Brandon_Pokeball",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonPokeball.png")));
+		atlas.put("Restaurant_Brandon_Kitchen_Counter",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonKitchenCounter.png")));
+		atlas.put("Restaurant_Brandon_Kitchen_Counter_Top",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonKitchenCounterTop.png")));
+		atlas.put("Restaurant_Brandon_Kitchen_Counter_Bottom",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonKitchenCounterBottom.png")));
+		atlas.put("Restaurant_Brandon_Cash_Register",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonCashRegister.png")));
+		atlas.put("Restaurant_Brandon_Rug",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonRug.png")));
+		
+		atlas.put("Grass_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/GrassTile.png")));
+		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
+		
 		//Ben's Sprites
 		atlas.put("Market_Floor", ImageIO.read(new File("data/Market/Floor.png")));
 		atlas.put("Market_Front_Desk", ImageIO.read(new File("data/Market/Front_Desk.png")));

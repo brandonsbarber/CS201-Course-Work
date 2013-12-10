@@ -86,6 +86,24 @@ public class CityDirectory implements ActionListener {
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
 	}
 	
+	/**
+	 * Adds an ActionListener to the CityTimer in such a way that the ActionListener in this object
+	 * (CityDirectory) will ALWAYS be fired first, so everything else gets the correct time.
+	 * @param a The ActionListener to add
+	 */
+	public void addTimerActionListener(ActionListener a) {
+		ActionListener[] al = cityTimer.getActionListeners();		
+		for(int i = 0; i < al.length; i++) {
+			cityTimer.removeActionListener(al[i]);
+		}
+		
+		cityTimer.addActionListener(a);
+		
+		for (int i = 0; i < al.length; i++) {
+			cityTimer.addActionListener(al[i]);
+		}
+	}
+	
 	public void setStartTime(CityTime newTime) {
 		time = newTime;
 	}
@@ -100,10 +118,16 @@ public class CityDirectory implements ActionListener {
 		return time;
 	}
 	
+	public Timer getCityTimer() {
+		return cityTimer;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		time.increment(TIMESTEP);
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
+		
+		
 		
 		synchronized(people) {
 			for (PersonAgent p : people) {
