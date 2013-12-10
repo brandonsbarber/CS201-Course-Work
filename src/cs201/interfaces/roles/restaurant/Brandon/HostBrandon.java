@@ -38,4 +38,6 @@ public interface HostBrandon
 	 * @param customerAgent the customer who is no longer waiting
 	 */
 	public void msgNotWaiting(CustomerBrandon customerAgent);
+	
+	public void msgLeft(CustomerBrandon cust);
 }
