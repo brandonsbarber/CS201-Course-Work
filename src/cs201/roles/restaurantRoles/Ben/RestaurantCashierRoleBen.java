@@ -29,6 +29,7 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	private String name;
 	public List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	public List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
+	public List<MarketInvoice> marketInvoices = Collections.synchronizedList(new ArrayList<MarketInvoice>());
 	private Timer timer;
 	private Map<String, Food> inventory = new HashMap<String, Food>();
 	public EventLog log = new EventLog();
@@ -126,6 +127,17 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 		stateChanged();
 	}
 	
+	/**
+	 * Sent by the cook to let us know he ordered from the market. We'll make sure we get what we
+	 * ordered, and we aren't being swindled.
+	 */
+	public void msgIOrderedFromMarket(ItemRequest request) {
+		// We'll add the request to our list of market invoices to keep track of his order
+		marketInvoices.add(new MarketInvoice(request));
+		
+		// We don't need a stateChanged() here, because this doesn't affect any scheduler rule
+	}
+	
 	@Override
 	public void msgHereIsDeliveryFromMarket(MarketStructure market, double amount, ItemRequest request) {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, "Just got a delivery from market " + market.getId());
@@ -193,7 +205,16 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cashier " + name, "Paying the bill from market " + bill.market.getId());
 		
 		// We need to check to see if we got what we ordered
-		// TODO this
+		boolean gotIt = false;
+		for (MarketInvoice invoice : marketInvoices) {
+			if (invoice.request.equals(bill.request)) {
+				gotIt = true;
+				break;
+			}
+		}
+		
+		// If we didn't get what we wanted, don't pay the market!
+		if (!gotIt) return;
 		
 		// Pay the market
 		bill.market.getManager().msgHereIsMyPayment(restaurant, (float)bill.totalCost);
@@ -250,6 +271,14 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 			totalCost = t;
 			request = r;
 			state = s;
+		}
+	}
+	
+	public class MarketInvoice {
+		ItemRequest request;
+		
+		public MarketInvoice(ItemRequest r) {
+			request = r;
 		}
 	}
 	

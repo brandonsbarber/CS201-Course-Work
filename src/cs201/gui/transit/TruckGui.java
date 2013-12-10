@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import cs201.agents.transit.BusAgent;
 import cs201.agents.transit.VehicleAgent;
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
+import cs201.helper.Constants;
 
 /**
  * 
@@ -38,21 +40,32 @@ public class TruckGui extends VehicleGui {
 	@Override
 	public void drawBody(Graphics2D g)
 	{
-		String imgName = "Truck_";
-		switch(currentDirection)
+		if(Constants.DEBUG_MODE)
 		{
-		case Right:imgName+="Right";
-			break;
-		case Up:imgName+="Up";
-			break;
-		case Down:imgName+="Down";
-			break;
-		case Left:imgName+="Left";
-			break;
-		default:imgName+="Down";
-			break;
+			g.setColor(Color.YELLOW);
+			g.fillRect(getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
+			
+			g.setColor(Color.BLACK);
+			g.drawString("Truck",getX(),getY()+CityPanel.GRID_SIZE);	
 		}
-		g.drawImage(ArtManager.getImage(imgName), getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE, null);
+		else
+		{
+			String imgName = "Truck_";
+			switch(currentDirection)
+			{
+			case Right:imgName+="Right";
+				break;
+			case Up:imgName+="Up";
+				break;
+			case Down:imgName+="Down";
+				break;
+			case Left:imgName+="Left";
+				break;
+			default:imgName+="Down";
+				break;
+			}
+			g.drawImage(ArtManager.getImage(imgName), getX(),getY(),CityPanel.GRID_SIZE,CityPanel.GRID_SIZE, null);
+		}
 		
 	}
 

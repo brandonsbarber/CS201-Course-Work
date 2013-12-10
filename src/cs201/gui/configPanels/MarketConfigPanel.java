@@ -2,37 +2,68 @@ package cs201.gui.configPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import cs201.gui.ConfigPanel;
 import cs201.roles.Role;
+import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.structures.market.MarketStructure;
 
 public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	
 	// The reference to the MarketStructure this config panel will be controlling
-	MarketStructure structure;
+	//MarketStructure structure;
 
+	JComboBox marketsComboBox;
+	JScrollPane listScroller;
+	DefaultListModel listModel;
+	JList inventoryList;
 	JButton addInventoryButton;
+	MarketStructure currentStructure;
 	
 	public MarketConfigPanel() {
 		super();
+		
+		// Add a market select combo box
+		marketsComboBox = new JComboBox();
+		this.add(marketsComboBox);
+		marketsComboBox.addActionListener(this);
+		
+		// Add an inventory list box
+		listModel = new DefaultListModel();
+		inventoryList = new JList(listModel);
+		listScroller = new JScrollPane(inventoryList);
+		this.add(listScroller);
+		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+		this.setLayout(layout);
 		
 		// GUI Elements
 		addInventoryButton = new JButton("Add inventory");
 		addInventoryButton.addActionListener(this);
 		addInventoryButton.setEnabled(true);
-		super.add(addInventoryButton);
+		this.add(addInventoryButton);
+		
+		//loadInventoryFromStructure();
 	}
 	
+	/**
+	 * The market config panel no longer configures only one market.
+	 * @deprecated Use addMarketStructure instead
+	 */
 	public void setStructure(MarketStructure s) {
 		// Hook up this config panel to a certain structure
-		structure = s;
+		//structure = s;
 	}
 
 	public void setPersonEnabled(Role role) {
@@ -45,6 +76,40 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		// The "Add inventory" button was clicked
 		if (e.getSource() == addInventoryButton) {
 			processAddInventory();
+		}
+				
+		if (e.getSource() == marketsComboBox) {
+			MarketStructure selectedStructure = (MarketStructure)marketsComboBox.getSelectedItem();
+			loadInventoryFromStructure(selectedStructure);
+			currentStructure = selectedStructure;
+		}
+	}
+	
+	/**
+	 * Call this method to update the config panel's list of inventory.
+	 */
+	public void updateInventoryList(MarketStructure requestingStructure) {
+		if (currentStructure == requestingStructure) {
+			loadInventoryFromStructure(requestingStructure);
+		} 
+	}
+	
+	/**
+	 * Add a market structure to the drop-down list of market structures.
+	 */
+	public void addMarketStructure(MarketStructure structure) {
+		marketsComboBox.addItem(structure);
+	}
+	
+	private void loadInventoryFromStructure(MarketStructure structure) {
+		listModel.clear();
+		
+		if (structure != null) {
+			List<InventoryEntry> inventoryList = structure.getInventory();
+			for (InventoryEntry thisEntry : inventoryList) {
+				String inventoryString = String.format(thisEntry.amount + " " + thisEntry.item + "(s) at $%.2f each", thisEntry.price);
+				listModel.addElement(inventoryString);
+			}
 		}
 	}
 	
@@ -95,7 +160,7 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		}
 		
 		// Add the new inventory item to the structure
-		structure.addInventory(item, quantityValue, priceValue);
+		currentStructure.addInventory(item, quantityValue, priceValue);
 		
 		// Confirm the add
 		String confirmation = "Successfully added " + quantityValue + " " + item + "(s) at $" + String.format("%.2f", priceValue) + " each to the market's inventory!";

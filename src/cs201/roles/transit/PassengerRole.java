@@ -153,7 +153,6 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void msgAnimationFinished()
 	{
-		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,getName(),"Animation has finished");
 		animationPause.release();
 	}
 
@@ -165,7 +164,17 @@ public class PassengerRole extends Role implements Passenger
 	{
 		AlertLog.getInstance().logDebug(AlertTag.TRANSIT,""+getName(),"Current location set to  "+s2);
 		currentLocation = s2;
-		if(gui != null){gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);}
+		if(gui != null)
+		{
+			if(currentLocation != null)
+			{
+				gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);
+			}
+			else
+			{
+				gui.setLocation();
+			}
+		}
 	}
 
 	/**
@@ -193,6 +202,7 @@ public class PassengerRole extends Role implements Passenger
 	public void msgGoTo(Structure s)
 	{
 		destination = s;
+		gui.stopRoam();
 		state = PassengerState.None;
 		waypoints.clear();
 		AlertLog.getInstance().logMessage(AlertTag.TRANSIT,""+getName(),"Received message to go to: "+s);
@@ -241,7 +251,7 @@ public class PassengerRole extends Role implements Passenger
 			roam();
 			return false;
 		}
-		if(currentLocation == destination && !gui.locationEquals(currentLocation))
+		if(currentLocation == destination && state != PassengerState.Arrived &&!gui.locationEquals(currentLocation))
 		{
 			gui.doGoToLocation(currentLocation.getEntranceLocation().x, currentLocation.getEntranceLocation().y);
 			try
@@ -285,27 +295,7 @@ public class PassengerRole extends Role implements Passenger
 
 	private void roam()
 	{
-		System.out.println("ROAMING");
 		gui.doRoam();
-		//gui.startRoaming(); DO NOT ACQUIRE anymore; setActive(false);
-		try
-		{
-			animationPause.acquire();
-		}
-		catch (InterruptedException e1)
-		{
-			e1.printStackTrace();
-		}
-		/*gui.doGoToLocation(currentLocation);
-		try
-		{
-			animationPause.acquire();
-		}
-		catch (InterruptedException e1)
-		{
-			e1.printStackTrace();
-		}*/
-		//gui.setPresent(false);
 		setActive(false);
 	}
 
@@ -381,7 +371,7 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public boolean shouldWalk()
 	{
-		double distance = Math.sqrt(Math.pow(destination.getRect().x - currentLocation.getRect().x,2) + Math.pow(destination.getRect().y - currentLocation.getRect().y,2));
+		double distance = Math.sqrt(Math.pow(destination.getRect().x - gui.getX(),2) + Math.pow(destination.getRect().y - gui.getY(),2));
 		return distance < walkDistance;
 	}
 	
@@ -457,13 +447,14 @@ public class PassengerRole extends Role implements Passenger
 				}
 				else
 				{
-					gui.setLocation((int)currentLocation.getRect().x, (int)currentLocation.getRect().y);
+					gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);
 				}
 			}
 			else
 			{
-				gui.setLocation((int)currentLocation.getRect().x,(int)currentLocation.getRect().y);
+				gui.setLocation((int)currentLocation.getEntranceLocation().x,(int)currentLocation.getEntranceLocation().y);
 			}
+			System.out.println("CURRENTLY AT: "+gui.getX()+" "+gui.getY());
 			gui.setPresent(true);
 			state = PassengerState.None;
 		}
@@ -511,7 +502,6 @@ public class PassengerRole extends Role implements Passenger
 						e.printStackTrace();
 					}
 				}
-				
 				break;
 			case Bus : 
 				((BusStop)currentLocation).addPassenger(this);

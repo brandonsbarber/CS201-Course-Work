@@ -4,19 +4,27 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TimerTask;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
 import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.Gui;
+import cs201.helper.Constants;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 /**
  * 
@@ -44,6 +52,13 @@ public abstract class VehicleGui implements Gui
 	private Stack<MovementDirection> moves;
 
 	private boolean pathfinding;
+	
+	private Point next;
+	private Point current;
+
+	private boolean allowedToMove = true;
+	
+	private Set<Point> acquiredPoints;
 	
 	/**
 	 * Creates a vehicle gui
@@ -74,6 +89,7 @@ public abstract class VehicleGui implements Gui
 		present = false;
 		currentDirection = MovementDirection.None;
 		moves = new Stack<MovementDirection>();
+		acquiredPoints = new HashSet<Point>();
 	}
 	
 	/**
@@ -83,6 +99,11 @@ public abstract class VehicleGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
+		if(!present)
+		{
+			city.permissions[next.y][next.x].release();
+			revertCrosswalk();
+		}
 	}
 	
 	/**
@@ -98,6 +119,11 @@ public abstract class VehicleGui implements Gui
 		destY = (int)destination.getParkingLocation().getY();
 		fired = false;
 		present = true;
+
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
+		city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
 	}
@@ -120,8 +146,11 @@ public abstract class VehicleGui implements Gui
 	{
 		drawBody(g);
 		
-		g.setColor(Color.BLACK);
-		g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+		if(Constants.DEBUG_MODE)
+		{
+			g.setColor(Color.BLACK);
+			g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+		}
 	}
 	
 	/**
@@ -143,31 +172,104 @@ public abstract class VehicleGui implements Gui
 				fired = true;
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
+
+				revertCrosswalk();
+				city.permissions[current.y][current.x].release();
+				
 				return;
 			}
-			switch(currentDirection)
+			if(allowedToMove)
 			{
-				case Right:
-					x++;
-					break;
-				case Up:
-					y--;
-					break;
-				case Down:
-					y++;
-					break;
-				case Left:
-					x--;
-					break;
-				default:
-					break;
+				switch(currentDirection)
+				{
+					case Right:
+						x++;
+						break;
+					case Up:
+						y--;
+						break;
+					case Down:
+						y++;
+						break;
+					case Left:
+						x--;
+						break;
+					default:
+						break;
+				}
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
-			{
-				currentDirection = moves.pop();
+			{	
+				if(allowedToMove)
+				{
+					currentDirection = moves.pop();
+				
+					if(current != next)
+					{
+						city.permissions[current.y][current.x].release();
+						revertCrosswalk();
+						acquiredPoints.remove(current);
+					}
+					
+					current = next;
+					
+					switch(currentDirection)
+					{
+					case Down:next = new Point(current.x,current.y + 1);
+						break;
+					case Left:next = new Point(current.x - 1,current.y);
+						break;
+					case Right:next = new Point(current.x + 1,current.y);
+						break;
+					case Up:next = new Point(current.x,current.y - 1);
+						break;
+					default:next = current;
+						break;
+					
+					}
+				}
+				
+				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()))
+				{
+					allowedToMove = true;
+				}
+				else
+				{
+					allowedToMove = false;
+				}
+				
 				return;
 			}
 			
+		}
+	}
+
+	private boolean timerStarted = false;
+	private boolean cancelled = true;
+	
+	private boolean canMoveCrosswalk()
+	{
+		if(city.getWalkingMap()[next.y][next.x].isValid())
+		{
+			List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+			synchronized(list)
+			{
+				if(list.size() != 0)
+				{
+					return false;
+				}
+				list.add(this);
+			}
+		}
+		return true;
+	}
+	
+	private void revertCrosswalk()
+	{
+		List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+		synchronized(list)
+		{
+			list.remove(this);
 		}
 	}
 
@@ -226,5 +328,10 @@ public abstract class VehicleGui implements Gui
 	 */
 	public void setVehicle(VehicleAgent vehicle) {
 		this.vehicle = vehicle;
+	}
+	
+	public void destroy()
+	{
+		setPresent(false);
 	}
 }

@@ -8,6 +8,7 @@ import cs201.helper.CityTime;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
 
 public interface Person {
 	/**************************************************************************
@@ -23,7 +24,7 @@ public interface Person {
 	 * @param location This PersonAgent's starting location (probably his home)
 	 * @param vehicle This PersonAgent's vehicle (can be null if he/she doesn't have a vehicle initially)
 	 */
-	public abstract void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle);
+	public abstract void setupPerson(CityTime curTime, Residence home, Structure workplace, Intention job, Structure location, Vehicle vehicle);
 	
 	/**************************************************************************
 	 *                                Messages                                *

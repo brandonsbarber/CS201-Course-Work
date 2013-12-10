@@ -87,6 +87,7 @@ public class SimCity201 extends JFrame {
 		JPanel guiPanel = new JPanel();
 		
 		bottomSettingsPanel = new BaseSettingsPanel();
+		CityDirectory.getInstance().addTimerActionListener(bottomSettingsPanel);
 		
 		timePanel = new TimePanel();
 		bottomSettingsPanel.setTimePanel(timePanel);
@@ -97,9 +98,6 @@ public class SimCity201 extends JFrame {
 		guiPanel.setLayout(new BorderLayout());
 		
 		cityPanel = new CityPanel(this);
-		cityPanel.setPreferredSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
-		cityPanel.setMaximumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
-		cityPanel.setMinimumSize(new Dimension(SIZEX * 3/5, SIZEY * 3 / 5));
 		
 		cardLayout = new CardLayout();
 		
@@ -163,6 +161,11 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Market Shift Change");
 		scenarioList.add("Ben's Restaurant Shift Change");
 		scenarioList.add("Brandon Restaurant Market Order");
+		scenarioList.add("Beaucoup Buses");
+		scenarioList.add("Killer Buses");
+		scenarioList.add("Weekend Behavior Change");
+		scenarioList.add("Joust");
+		scenarioList.add("Skyler Restaurant");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -205,11 +208,43 @@ public class SimCity201 extends JFrame {
 			case 19: marketShiftChange(); break;
 			case 20: benRestaurantShiftChange(); break;
 			case 21: brandonRestaurantMarketOrder(); break;
-
+			case 22: beaucoupBuses();break;
+			case 23: hundredPeopleBus();break;
+			case 24: weekendDifference(); break;
+			case 25: joust();break;
+			case 26: skylerRestaurant();break;
 			default: return;
 		}
 	}
-	
+
+	private void joust()
+	{
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		ArrayList<BusStop> stops = new ArrayList<BusStop>();
+
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(4*25,11*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
+		
+		cityPanel.addStructure(stops.get(0),new Point(3*25,11*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
+		
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(25*25,6*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
+		
+		cityPanel.addStructure(stops.get(1),new Point(26*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		
+		for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
+		}
+	}
+
 	/**
 	 * Clears SimCity201 to run a new scenario. This method is called by the scenario panel when the user wants to run a new scenario.
 	 */
@@ -233,7 +268,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelSkyler g = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
-		RestaurantSkyler r = new RestaurantSkyler(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantSkyler r = new RestaurantSkyler(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -303,191 +338,42 @@ public class SimCity201 extends JFrame {
 		personPanel.addPerson(p8);
 		p8.startThread();
 	}
-	
-	private void brandonRestaurantMarketOrder()
-	{
-		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
-		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		mcp.setStructure(m);
-		settingsPanel.addPanel("Markets",mcp);
-		m.setStructurePanel(mG);
-		m.setClosingTime(new CityTime(18, 0));
-		buildingPanels.add(mG,""+m.getId());
-		cityPanel.addStructure(m);
-		timePanel.addAnimationPanel(mG);
-		
-		TruckAgent truck = new TruckAgent(m);
-		truck.startThread();
-		m.addTruck(truck);
-		CityDirectory.getInstance().addMarket(m);
-			
-		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(475,225,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
-		r.setStructurePanel(g);
-		r.setClosingTime(new CityTime(14, 0));
-		r.setOpen(true);
-		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
-		CityDirectory.getInstance().addRestaurant(r);
+	private void weekendDifference() {
+		/* Employees work at a Restaurant during the week, but workplaces are closed on the weekends 
+		 * so people must eat at home or find other things to do. In this scenario, the time begins on 
+		 * Friday and a Host wakes up at 7:00AM goes to work at the Restaurant normally at 8:00AM, but 
+		 * on Saturday people sleep in instead so the Host wakes up at 8:30AM and doesn't go to work 
+		 * at the Restaurant.
+		 */
+		CityTime time = new CityTime();
+		time.day = CityTime.WeekDay.Friday;
+		CityDirectory.getInstance().setStartTime(time);
+
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		
-		((RestaurantCookRoleBrandon)r.getCook()).emptySomeFood();
-		
-		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
-		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
-		p1.setHungerEnabled(false);
-		p1.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();
-		
-		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
-		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
-		p1b.setHungerEnabled(false);
-		p1b.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p1b);
-		p1b.startThread();
-		
-		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
-		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
-		p2.setHungerEnabled(false);
-		p2.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p2);
-		p2.startThread();
-		
-		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
-		p3.setHungerEnabled(false);
-		p3.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p3);
-		p3.startThread();
-	}
-	
-	private void brandonRestaurantTwoCustomersTwoWaiters()
-	{
-		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
-		
-		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		RestaurantMatt r = new RestaurantMatt(125, 125, 50, 50, Structure.getNextInstance(), g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
-		r.setClosingTime(new CityTime(13, 15));
-		buildingPanels.add(g,""+r.getId());
+		buildingPanels.add(g, "" + r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
-		timePanel.addAnimationPanel(g);
+		
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
+		CityDirectory.getInstance().addResidence(res);
+		timePanel.addAnimationPanel(resPanel);
 		
 		PersonAgent p1 = new PersonAgent("Host", cityPanel);
-		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
-		p1.setHungerEnabled(false);
-		p1.setHungerLevel(0);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), res, r, Intention.RestaurantHost, res, null);
 		CityDirectory.getInstance().addPerson(p1);
 		personPanel.addPerson(p1);
 		p1.startThread();
-		
-		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
-		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
-		p2.setHungerEnabled(false);
-		p2.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p2);
-		personPanel.addPerson(p2);
-		p2.startThread();
-		
-		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
-		p3.setHungerEnabled(false);
-		p3.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p3);
-		personPanel.addPerson(p3);
-		p3.startThread();
-		
-		PersonAgent p4 = new PersonAgent("Waiter 1", cityPanel);
-		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
-		p4.setHungerEnabled(false);
-		p4.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p4);
-		personPanel.addPerson(p4);
-		p4.startThread();
-		
-		PersonAgent p4b = new PersonAgent("Waiter 2", cityPanel);
-		p4b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
-		p4b.setHungerEnabled(false);
-		p4b.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p4b);
-		personPanel.addPerson(p4b);
-		p4b.startThread();
-		
-		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
-		p5.setWakeupTime(new CityTime(8, 30));
-		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
-		CityDirectory.getInstance().addPerson(p5);
-		personPanel.addPerson(p5);
-		p5.startThread();
-		
-		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
-		p6.setWakeupTime(new CityTime(8, 30));
-		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
-		CityDirectory.getInstance().addPerson(p6);
-		personPanel.addPerson(p6);
-		p6.startThread();
 	}
-
-	private void brandonRestaurant() {
-		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
-		
-		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
-		r.setStructurePanel(g);
-		r.setClosingTime(new CityTime(13, 15));
-		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r);
-		CityDirectory.getInstance().addRestaurant(r);
-		timePanel.addAnimationPanel(g);
-		
-		PersonAgent p1 = new PersonAgent("Host", cityPanel);
-		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
-		p1.setHungerEnabled(false);
-		p1.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p1);
-		personPanel.addPerson(p1);
-		p1.startThread();
-		
-		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
-		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
-		p2.setHungerEnabled(false);
-		p2.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p2);
-		personPanel.addPerson(p2);
-		p2.startThread();
-		
-		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
-		p3.setHungerEnabled(false);
-		p3.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p3);
-		personPanel.addPerson(p3);
-		p3.startThread();
-		
-		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
-		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
-		p4.setHungerEnabled(false);
-		p4.setHungerLevel(0);
-		CityDirectory.getInstance().addPerson(p4);
-		personPanel.addPerson(p4);
-		p4.startThread();
-		
-		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
-		p5.setWakeupTime(new CityTime(8, 00));
-		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
-		CityDirectory.getInstance().addPerson(p5);
-		personPanel.addPerson(p5);
-		p5.startThread();
-	}
-
+	
 	private void normativeRestaurant() {
 		/* A normal Waiter, Host, Cashier, and Cook all come to work at 8:00AM. The Restaurant opens
 		 * when all of them have arrived at the Restaurant. At 8:00AM a single Customer wakes up 
@@ -499,8 +385,8 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g,""+r.getId());
@@ -558,7 +444,7 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -630,26 +516,26 @@ public class SimCity201 extends JFrame {
 		 * on Monday. Otherwise, both will act as regular residents in their homes.
 		 */
 		ApartmentComplexAnimationPanel acap = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
-		ApartmentComplex ac = new ApartmentComplex(14*25, 9*25, 25, 25, Structure.getNextInstance(), acap);
+		ApartmentComplex ac = new ApartmentComplex(17*25, 11*25, 25, 25, Structure.getNextInstance(), acap);
 		ac.setStructurePanel(acap);
 		ac.setClosingTime(new CityTime(12, 0));
 		buildingPanels.add(acap,""+ac.getId());
-		cityPanel.addStructure(ac, new Point(14*25,7*25), new Point(14*25, 8*25));
+		cityPanel.addStructure(ac, new Point(17*25,9*25), new Point(17*25, 10*25));
 		CityDirectory.getInstance().addApartment(ac);
 		timePanel.addAnimationPanel(acap);
 		
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
-		Residence res = new Residence(14*25, 10*25, 25, 25, Structure.getNextInstance(), resPanel, true);
+		Residence res = new Residence(17*25, 12*25, 25, 25, Structure.getNextInstance(), resPanel, true);
 		res.setStructurePanel(resPanel);
 		buildingPanels.add(resPanel,""+res.getId());
-		cityPanel.addStructure(res, new Point(12*25, 10*25), new Point(13*25, 10*25));
+		cityPanel.addStructure(res, new Point(15*25, 12*25), new Point(16*25, 12*25));
 		CityDirectory.getInstance().addResidence(res);
 		
 		ResidenceAnimationPanel resPanel2 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
-		Residence res2 = new Residence(15*25, 9*25, 25, 25, Structure.getNextInstance(), resPanel2, false);
+		Residence res2 = new Residence(18*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel2, false);
 		res2.setStructurePanel(resPanel2);
 		buildingPanels.add(resPanel2, ""+res2.getId());
-		cityPanel.addStructure(res2, new Point(17*25, 9*25), new Point(16*25, 9*25));
+		cityPanel.addStructure(res2, new Point(20*25, 11*25), new Point(19*25, 11*25));
 		CityDirectory.getInstance().addResidence(res2);
 		
 		PersonAgent p1 = new PersonAgent("Renter",cityPanel);
@@ -675,15 +561,16 @@ public class SimCity201 extends JFrame {
 		 * gets hungry or has something else to do. At 10pm he will go to sleep in his bed.
 		 */
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
-		Residence res = new Residence(14*25, 10*25, 25, 25, Structure.getNextInstance(), resPanel, false);
+		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
 		res.setStructurePanel(resPanel);
 		buildingPanels.add(resPanel,""+res.getId());
-		cityPanel.addStructure(res, new Point(12*25, 10*25), new Point(13*25, 10*25));
+		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
 		CityDirectory.getInstance().addResidence(res);
 		timePanel.addAnimationPanel(resPanel);
 		
 		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		personPanel.addPerson(p1);
 		CityDirectory.getInstance().addPerson(p1);
 		
 		p1.startThread();
@@ -692,15 +579,15 @@ public class SimCity201 extends JFrame {
 	private void normativeWalking()
 	{
 		/*
-		 * Creates a Person who will walk from the market at 100,100 to the restaurant at 475,225 by way of crosswalks and sidewalks.
+		 * Creates a Person who will walk from the market at 125,125 to the restaurant at 23*25,11*25 by way of crosswalks and sidewalks.
 		 * The route that is taken is defined by arrows shown in Debug mode (viewed by typing zero). When the Person reaches his destination, he
 		 * goes inside the structure there and performs structure actions.
 		 * He begins his walk at 7:00 AM.
 		 */
-		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
@@ -709,11 +596,11 @@ public class SimCity201 extends JFrame {
 		timePanel.addAnimationPanel(mG);
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(21*25,11*25), new Point(22*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
@@ -727,7 +614,7 @@ public class SimCity201 extends JFrame {
 	private void normativeDriving()
 	{
 		/*
-		 * Creates a Person who will drive from the market at 100,100 to the restaurant at 475,225 by way of roads.
+		 * Creates a Person who will drive from the market at 125,125 to the restaurant at 23*25,11*25 by way of roads.
 		 * The person does this by calling a car, who comes to pick up the person. The person gets into the car, which then drives
 		 * on a path determined by BFS on a movement map (visible in Debug mode), which takes him or her to the parking location
 		 * of the building. The person then walks to the sidewalk location and is brought inside the building.
@@ -737,7 +624,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
@@ -746,11 +633,11 @@ public class SimCity201 extends JFrame {
 		timePanel.addAnimationPanel(mG);
 			
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(18*25,9*25));
+		cityPanel.addStructure(r,new Point(21*25,11*25), new Point(22*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 	
@@ -776,54 +663,45 @@ public class SimCity201 extends JFrame {
 		 * The bus moves from the very beginning.
 		 * The person moves at 7:00 AM
 		 */
-		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
 
 		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(22*25,13*25,25,25,1, panel));
+		stops.add(new BusStop(23*25,13*25,25,25,1, panel));
 		timePanel.addAnimationPanel(panel);
 		
+		cityPanel.addStructure(stops.get(0),new Point(23*25,14*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
+		
 		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(12*25,13*25,25,25,2, panel2));
+		stops.add(new BusStop(1*25,6*25,25,25,2, panel2));
 		timePanel.addAnimationPanel(panel2);
 		
+		cityPanel.addStructure(stops.get(1),new Point(2*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		
 		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(2*25,13*25,25,25,3, panel3));
+		stops.add(new BusStop(24*25,4*25,25,25,2, panel3));
 		timePanel.addAnimationPanel(panel3);
 		
+		cityPanel.addStructure(stops.get(2),new Point(24*25,3*25),new Point((int)stops.get(2).getRect().x,(int)stops.get(2).getRect().y));
+		
 		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(22*25,1*25,25,25,4, panel4));
+		stops.add(new BusStop(1*25,12*25,25,25,2, panel4));
 		timePanel.addAnimationPanel(panel4);
 		
-		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(12*25,1*25,25,25,5, panel5));
-		timePanel.addAnimationPanel(panel5);
+		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
 		
-		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(2*25,1*25,25,25,6, panel6));
-		timePanel.addAnimationPanel(panel6);
-		
-		buildingPanels.add(panel,""+stops.get(0).getId());
-		buildingPanels.add(panel2,""+stops.get(1).getId());
-		buildingPanels.add(panel3,""+stops.get(2).getId());
-		buildingPanels.add(panel4,""+stops.get(3).getId());
-		buildingPanels.add(panel5,""+stops.get(4).getId());
-		buildingPanels.add(panel6,""+stops.get(5).getId());
-		
-		for(BusStop stop : stops)
+		for(int i = 0; i < 1/*stops.size()*/; i++)
 		{
-			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:12*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
 		}
 		
-		BusAgent bus = new BusAgent(new BusRoute(stops),0);
-		BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
-		bus.setGui(busG);
-		cityPanel.addGui(busG);
-		bus.startThread();
-		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
@@ -831,20 +709,20 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addMarket(m);
 		timePanel.addAnimationPanel(mG);
 		
-		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 
-		PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
+		/*PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		p1.getPassengerRole().setBusStops(stops);
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();
+		p1.startThread();*/
 	}
 	
 	private void normativeMarketRestaurantDelivery()
@@ -862,14 +740,15 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		timePanel.addAnimationPanel(mG);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
-		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -882,13 +761,13 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		r.setOpen(true);
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
@@ -937,19 +816,30 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
-		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
 		
-		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		MarketAnimationPanel mG2 = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m2 = new MarketStructure(23*25,11*25,50,50,Structure.getNextInstance(),mG2);
+		m2.setStructurePanel(mG2);
+		m2.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG2,""+m2.getId());
+		cityPanel.addStructure(m2);
+		timePanel.addAnimationPanel(mG2);
+		m2.setConfigPanel(mcp);
+		mcp.addMarketStructure(m2);
+		
+		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().addInventoryEntry(new InventoryEntry("Fritos",15,200));
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -994,7 +884,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
-		RestaurantBen r = new RestaurantBen(100, 100, 50, 50, Structure.getNextInstance(), g);
+		RestaurantBen r = new RestaurantBen(125, 125, 50, 50, Structure.getNextInstance(), g);
 		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -1048,7 +938,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
-		RestaurantBen r = new RestaurantBen(100, 100, 50, 50, Structure.getNextInstance(), g);
+		RestaurantBen r = new RestaurantBen(125, 125, 50, 50, Structure.getNextInstance(), g);
 		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
@@ -1116,19 +1006,20 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
-		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
 		
-		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().addInventoryEntry(new InventoryEntry("Fritos",15,200));
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1141,6 +1032,7 @@ public class SimCity201 extends JFrame {
 		p.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p);
 		p.startThread();
+		personPanel.addPerson(p);
 		
 		PersonAgent employee2 = new PersonAgent("Market Employee",cityPanel);
 		employee2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
@@ -1148,6 +1040,7 @@ public class SimCity201 extends JFrame {
 		employee2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(employee2);
 		employee2.startThread();
+		personPanel.addPerson(employee2);
 		
 		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
@@ -1155,22 +1048,25 @@ public class SimCity201 extends JFrame {
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
 		p2.startThread();
+		personPanel.addPerson(p2);
 		
 		PersonAgent p3 = new PersonAgent("Market Customer Car",cityPanel);
-		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerCar, m, null);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, null, m, null);
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
 		p3.startThread();
+		personPanel.addPerson(p3);
 		
 		PersonAgent p4 = new PersonAgent("Market Customer Goods",cityPanel);
-		p4.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketConsumerGoods, m, null);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, m, null, m, null);
 		p4.setHungerEnabled(false);
 		p4.getMarketChecklist().add(new ItemRequest("Burgers",2));
 		p4.getMarketChecklist().add(new ItemRequest("Pizza",1));
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();
+		personPanel.addPerson(p4);
 	}
 	
 	private void normativeMarketRestaurantBenDelivery()
@@ -1186,15 +1082,16 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
-		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1202,12 +1099,12 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addMarket(m);
 		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
-		RestaurantBen r = new RestaurantBen(475, 225, 50, 50, Structure.getNextInstance(), g);
+		RestaurantBen r = new RestaurantBen(23*25, 11*25, 50, 50, Structure.getNextInstance(), g);
 		settingsPanel.addPanel("Restaurants", new ConfigPanel());
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 00));
 		buildingPanels.add(g, ""+r.getId());
-		cityPanel.addStructure(r,new Point(17*25,9*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
@@ -1266,7 +1163,7 @@ public class SimCity201 extends JFrame {
 		
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1359,7 +1256,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(),this, 0, 0);
-		RestaurantBen r = new RestaurantBen(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantBen r = new RestaurantBen(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1447,7 +1344,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
 		
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r = new RestaurantBrandon(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantBrandon r = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1531,19 +1428,20 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		MarketConfigPanel mcp = new MarketConfigPanel();
-		mcp.setStructure(m);
 		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
 		
-		m.getManager().AddInventoryEntry(new InventoryEntry("Pizza",10,20));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Burgers",5,10));
-		m.getManager().AddInventoryEntry(new InventoryEntry("Fritos",15,200));
+		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
+		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
+		m.getManager().addInventoryEntry(new InventoryEntry("Fritos",15,200));
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1599,7 +1497,7 @@ public class SimCity201 extends JFrame {
 	
 	private void hundredPeople() {
 		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(100,100,50,50,Structure.getNextInstance(),g);
+		RestaurantMatt r = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g);
 		settingsPanel.addPanel("Restaurants",new ConfigPanel());
 		r.setStructurePanel(g);
 		buildingPanels.add(g,""+r.getId());
@@ -1607,12 +1505,292 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
-		for (int i = 1; i <= 100; i++) {
-			createPerson(i + "", r, null, null, null, null);
+		for (int i = 1; i <= 100; i++)
+		{
+			createPerson(i + "", null, null, null, null, null);
 		}
 	}
 	
-	public PersonAgent createPerson(String name, Structure location, Structure home, Intention job, Structure workplace, CarAgent car) {
+	private void hundredPeopleBus()
+	{
+		for (int i = 1; i <= 100; i++) {
+			createPerson(i + "", null, null, null, null, null);
+		}
+		
+		ArrayList<BusStop> stops = new ArrayList<BusStop>();
+
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(23*25,13*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
+		
+		cityPanel.addStructure(stops.get(0),new Point(23*25,14*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
+		
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(1*25,6*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
+		
+		cityPanel.addStructure(stops.get(1),new Point(2*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		
+		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,4*25,25,25,2, panel3));
+		timePanel.addAnimationPanel(panel3);
+		
+		cityPanel.addStructure(stops.get(2),new Point(24*25,3*25),new Point((int)stops.get(2).getRect().x,(int)stops.get(2).getRect().y));
+		
+		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(1*25,12*25,25,25,2, panel4));
+		timePanel.addAnimationPanel(panel4);
+		
+		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
+		
+		for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
+		}
+	}
+
+	private void brandonRestaurant() {
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 00));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, null, null);
+		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
+		p5.startThread();
+	}
+
+	private void brandonRestaurantTwoCustomersTwoWaiters()
+	{
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter 1", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p4b = new PersonAgent("Waiter 2", cityPanel);
+		p4b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4b.setHungerEnabled(false);
+		p4b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4b);
+		personPanel.addPerson(p4b);
+		p4b.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer 1", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 30));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
+		p5.startThread();
+		
+		PersonAgent p6 = new PersonAgent("Customer 2", cityPanel);
+		p6.setWakeupTime(new CityTime(8, 30));
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p6);
+		personPanel.addPerson(p6);
+		p6.startThread();
+	}
+	
+	private void brandonRestaurantMarketOrder()
+	{
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+			
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(23*25,11*25,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 0));
+		r.setOpen(true);
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
+		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
+		
+		((RestaurantCookRoleBrandon)r.getCook()).emptySomeFood();
+		
+		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
+		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p1b.setHungerEnabled(false);
+		p1b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1b);
+		p1b.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+	}
+	
+	private void beaucoupBuses()
+	{
+			CityDirectory.getInstance().setStartTime(new CityTime(7, 0));
+			
+			ArrayList<BusStop> stops = new ArrayList<BusStop>();
+
+			BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+			stops.add(new BusStop(5*25,1*25,25,25,1, panel));
+			timePanel.addAnimationPanel(panel);
+			
+			BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+			stops.add(new BusStop(12*25,1*25,25,25,2, panel2));
+			timePanel.addAnimationPanel(panel2);
+			
+			BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+			stops.add(new BusStop(24*25,1*25,25,25,3, panel3));
+			timePanel.addAnimationPanel(panel3);
+			
+			BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+			stops.add(new BusStop(5*25,13*25,25,25,4, panel4));
+			timePanel.addAnimationPanel(panel4);
+			
+			BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+			stops.add(new BusStop(12*25,13*25,25,25,5, panel5));
+			timePanel.addAnimationPanel(panel5);
+			
+			BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+			stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
+			timePanel.addAnimationPanel(panel6);
+			
+		buildingPanels.add(panel,""+stops.get(0).getId());
+		buildingPanels.add(panel2,""+stops.get(1).getId());
+		buildingPanels.add(panel3,""+stops.get(2).getId());
+		buildingPanels.add(panel4,""+stops.get(3).getId());
+		buildingPanels.add(panel5,""+stops.get(4).getId());
+		buildingPanels.add(panel6,""+stops.get(5).getId());
+	
+		for(BusStop stop : stops)
+		{
+			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:14*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
+		}
+		
+		for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
+		}
+	}
+	
+	public PersonAgent createPerson(String name, Structure location, Residence home, Intention job, Structure workplace, CarAgent car) {
 		PersonAgent p = new PersonAgent(name, cityPanel);
 		
 		p.setupPerson(CityDirectory.getInstance().getTime(), home, workplace, job, location, car);

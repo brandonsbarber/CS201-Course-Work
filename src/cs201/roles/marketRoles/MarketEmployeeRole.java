@@ -198,7 +198,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private void doGetItem(ItemRequest item) {
 		if (gui != null) {
 			/* 
-			 * Just to a random shelf location
+			 * Just go to a random shelf location
 			 * This works, for now. Remember it's a simulation, not an emulation ;)
 			 * In v2 I might store the locations in a map
 			 */

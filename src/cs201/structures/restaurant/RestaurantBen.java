@@ -63,13 +63,15 @@ public class RestaurantBen extends Restaurant {
 		this.host = new RestaurantHostRoleBen();
 		host.setRestaurant(this);
 		
+		this.cashier = new RestaurantCashierRoleBen();
+		cashier.setRestaurant(this);
+		
 		this.cook = new RestaurantCookRoleBen();
 		((RestaurantCookRoleBen) cook).setRotatingStand(stand);
 		cook.setRestaurant(this);
 		((RestaurantCookRoleBen) cook).setAnimPanel((RestaurantAnimationPanelBen) this.panel);
+		((RestaurantCookRoleBen) cook).setCashier((RestaurantCashierRoleBen) cashier);
 		
-		this.cashier = new RestaurantCashierRoleBen();
-		cashier.setRestaurant(this);
 		
 		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 		for (int i = 0; i < INITIALWAITERS; i++) {

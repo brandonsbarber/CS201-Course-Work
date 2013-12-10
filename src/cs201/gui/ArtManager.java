@@ -49,11 +49,30 @@ public class ArtManager
 		
 		atlas.put("Grass_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/GrassTile.png")));
 		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
+		atlas.put("Road_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/RoadTile.png")));
 		
 		
 		
 		//Ben's Sprites
+		atlas.put("Market_Floor", ImageIO.read(new File("data/Market/Floor.png")));
+		atlas.put("Market_Front_Desk", ImageIO.read(new File("data/Market/Front_Desk.png")));
+		atlas.put("Market_Shelf", ImageIO.read(new File("data/Market/Shelf.png")));
+		atlas.put("Market_Shelf_Top", ImageIO.read(new File("data/Market/Shelf_Top.png")));
+		atlas.put("Market_Shelf_Bottom_Left", ImageIO.read(new File("data/Market/Shelf_Bottom_Left.png")));
+		atlas.put("Market_Shelf_Bottom_Right", ImageIO.read(new File("data/Market/Shelf_Bottom_Right.png")));
 		
+		atlas.put("Market_Employee_Up", ImageIO.read(new File("data/Market/Employee_North.png")));
+		atlas.put("Market_Employee_Down", ImageIO.read(new File("data/Market/Employee_South.png")));
+		atlas.put("Market_Employee_Left", ImageIO.read(new File("data/Market/Employee_West.png")));
+		atlas.put("Market_Employee_Right", ImageIO.read(new File("data/Market/Employee_East.png")));
+		atlas.put("Market_Manager_Down", ImageIO.read(new File("data/Market/Manager_South.png")));
+		
+		atlas.put("Restaurant_Ben_Floor", ImageIO.read(new File("data/Restaurant/Ben/Floor.png")));
+		atlas.put("Restaurant_Ben_Table", ImageIO.read(new File("data/Restaurant/Ben/Table.png")));
+		atlas.put("Restaurant_Ben_Waiter_Up", ImageIO.read(new File("data/Restaurant/Ben/Waiter_North.png")));
+		atlas.put("Restaurant_Ben_Waiter_Down", ImageIO.read(new File("data/Restaurant/Ben/Waiter_South.png")));
+		atlas.put("Restaurant_Ben_Waiter_Left", ImageIO.read(new File("data/Restaurant/Ben/Waiter_West.png")));
+		atlas.put("Restaurant_Ben_Waiter_Right", ImageIO.read(new File("data/Restaurant/Ben/Waiter_East.png")));
 		
 		//Matt's Sprites
 		atlas.put("Default_Walker_Up", ImageIO.read(new File("data/DefaultSprites/Up.png")));

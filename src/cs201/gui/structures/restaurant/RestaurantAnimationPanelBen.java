@@ -12,9 +12,11 @@ import java.util.List;
 
 import javax.swing.Timer;
 
+import cs201.gui.ArtManager;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Ben.CustomerGuiBen;
+import cs201.helper.Constants;
 import cs201.roles.restaurantRoles.Ben.RestaurantHostRoleBen;
 
 public class RestaurantAnimationPanelBen extends StructurePanel {
@@ -67,22 +69,34 @@ public class RestaurantAnimationPanelBen extends StructurePanel {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
+        
+        if (Constants.DEBUG_MODE) {
+            //Clear the screen by painting a rectangle the size of the frame
+            g2.setColor(getBackground());
+            g2.fillRect(0, 0, WINDOWX, WINDOWY );
 
-        //Clear the screen by painting a rectangle the size of the frame
-        g2.setColor(getBackground());
-        g2.fillRect(0, 0, WINDOWX, WINDOWY );
-
-        //Here is the table
-        g2.setColor(Color.ORANGE);
-        for (int i = 0; i < numTables; i++) {
-            g2.fillRect(TABLEXPOS + (TABLEWIDTH + TABLEPAD) * i, TABLEYPOS, TABLEWIDTH, TABLEHEIGHT);
+	        //Here is the table
+	        g2.setColor(Color.ORANGE);
+	        for (int i = 0; i < numTables; i++) {
+	            g2.fillRect(TABLEXPOS + (TABLEWIDTH + TABLEPAD) * i, TABLEYPOS, TABLEWIDTH, TABLEHEIGHT);
+	        }
+	        
+	        // Here is the plating area
+	        platingArea.draw(g2);
+	        
+	        // Here is the cooking area
+	        cookingArea.draw(g2);
+        
+        } else {
+        	// Draw the floor
+        	g.drawImage(ArtManager.getImage("Restaurant_Ben_Floor"), 0, 0, null);
+        	
+        	// Draw the table
+        	for (int i = 0; i < numTables; i++) {
+            	g.drawImage(ArtManager.getImage("Restaurant_Ben_Table"), TABLEXPOS + (TABLEWIDTH + TABLEPAD) * i, TABLEYPOS, null);
+            }
+        	
         }
-        
-        // Here is the plating area
-        platingArea.draw(g2);
-        
-        // Here is the cooking area
-        cookingArea.draw(g2);
 
         super.paintComponent(g);
     }

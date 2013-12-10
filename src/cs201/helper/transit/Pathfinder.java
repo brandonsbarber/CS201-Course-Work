@@ -2,9 +2,11 @@ package cs201.helper.transit;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -13,6 +15,7 @@ import cs201.gui.CityPanel;
 
 public class Pathfinder
 {
+	@SuppressWarnings("serial")
 	static class MyPoint extends Point
 	{
 		MyPoint prev;
@@ -75,7 +78,6 @@ public class Pathfinder
 			}
 			else if(currentDirection == MovementDirection.None)
 			{
-				//Find an adjacent sidewalk piece
 				MyPoint point = getPointFromDirection(p,MovementDirection.Down);
 				if(!visitedPoints.contains(point) && isValidPoint(map,new MyPoint(point.x,point.y,null,null)) && map[point.y][point.x].isValid())
 				{
@@ -201,17 +203,17 @@ public class Pathfinder
 		return moves;
 	}
 	
-	public static Point findRandomWalkingLocation(MovementDirection[][] map)
+	public static Point findRandomWalkingLocation(MovementDirection[][] walking, MovementDirection[][] driving)
 	{
 		Point p = new Point();
 		
 		ArrayList<Point> tiles = new ArrayList<Point>();
 		
-		for(int y = 0; y < map.length; y++)
+		for(int y = 0; y < walking.length; y++)
 		{
-			for(int x = 0; x < map[y].length; x++)
+			for(int x = 0; x < walking[y].length; x++)
 			{
-				if(map[y][x].isValid())
+				if(walking[y][x].isValid() && !driving[y][x].isValid())
 				{
 					tiles.add(new Point(x,y));
 				}
@@ -238,19 +240,19 @@ public class Pathfinder
 		int upY = y2 - 1;
 		int downY = y2 + 1;
 		
-		if(inBounds(map,leftX,y2) && getDirection(map,leftX,y2) == MovementDirection.Left)
+		if(inBounds(map,leftX,y2) && (getDirection(map,leftX,y2) == MovementDirection.Left || getDirection(map,leftX,y2) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Left);
 		}
-		if(inBounds(map,rightX,y2) && getDirection(map,rightX,y2) == MovementDirection.Right)
+		if(inBounds(map,rightX,y2) && (getDirection(map,rightX,y2) == MovementDirection.Right || getDirection(map,rightX,y2) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Right);
 		}
-		if(inBounds(map,x2,upY) && getDirection(map,x2,upY) == MovementDirection.Up)
+		if(inBounds(map,x2,upY) && (getDirection(map,x2,upY) == MovementDirection.Up || getDirection(map,x2,upY) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Up);
 		}
-		if(inBounds(map,x2,downY) && getDirection(map,x2,downY) == MovementDirection.Down)
+		if(inBounds(map,x2,downY) && (getDirection(map,x2,downY) == MovementDirection.Down || getDirection(map,x2,downY) == MovementDirection.Turn))
 		{
 			validDirections.add(MovementDirection.Down);
 		}
@@ -307,7 +309,7 @@ public class Pathfinder
 	/*
 	 * Helper method for validity
 	 */
-	private static boolean isValidPoint(MovementDirection[][] map, MyPoint nextPoint)
+	private static boolean isValidPoint(MovementDirection[][] map, Point nextPoint)
 	{
 		return nextPoint.x >= 0 && nextPoint.x < map[0].length && nextPoint.y >= 0 && nextPoint.y < map.length;
 	}
@@ -329,7 +331,54 @@ public class Pathfinder
 			return new MyPoint(p.x-1,p.y,p,dir);
 		default:
 			return new MyPoint(p.x,p.y-1,p,MovementDirection.Up);
-		
 		}
+	}
+	
+	public static boolean isCrossWalk(Point p, MovementDirection[][] walking, MovementDirection[][] driving)
+	{
+		return walking[p.y][p.x].isValid() && driving[p.y][p.x].isValid();
+	}
+	
+	public static Set<Point> tryIntersectionAcquire(CityPanel city, int x, int y)
+	{
+		Point p = new Point(x,y);
+		
+		Set<Point> intersection = new HashSet<Point>();
+		
+		if(isValidPoint(city.getDrivingMap(),p) && city.getDrivingMap()[p.y][p.x] != MovementDirection.Turn && !isCrossWalk(p,city.getWalkingMap(),city.getDrivingMap()))
+		{
+			return intersection;
+		}
+		
+		intersection.add(p);
+		
+		ArrayList<Point> toCheck = new ArrayList<Point>();
+		ArrayList<Point> checked = new ArrayList<Point>();
+		toCheck.add(p);
+		
+		while(!toCheck.isEmpty())
+		{
+			Point check = toCheck.remove(0);
+			if(checked.contains(check))
+			{
+				continue;
+			}
+			checked.add(check);
+			if(isValidPoint(city.getDrivingMap(),check) && (city.getDrivingMap()[check.y][check.x] == MovementDirection.Turn || isCrossWalk(check,city.getWalkingMap(),city.getDrivingMap())))
+			{
+				intersection.add(check);
+				toCheck.add(new Point(check.x,check.y+1));
+				toCheck.add(new Point(check.x,check.y-1));
+				toCheck.add(new Point(check.x+1,check.y));
+				toCheck.add(new Point(check.x-1,check.y));
+			}
+		}
+		
+		return intersection;
+	}
+	
+	public static boolean isInIntersection(CityPanel city, Point p)
+	{
+		return city.getDrivingMap()[p.y][p.x] == MovementDirection.Turn;
 	}
 }

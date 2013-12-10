@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
+import cs201.structures.Structure;
 import cs201.structures.bank.BankStructure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
@@ -52,6 +53,26 @@ public class CityDirectory implements ActionListener {
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
 	private List<ApartmentComplex> apartments = Collections.synchronizedList(new ArrayList<ApartmentComplex>());
 	
+	public List<Structure> getAllBuildings() {
+		List<Structure> buildings = new LinkedList<Structure>();
+		buildings.addAll(restaurants);
+		buildings.addAll(banks);
+		buildings.addAll(markets);
+		buildings.addAll(residences);
+		buildings.addAll(apartments);
+		
+		return buildings;
+	}
+	
+	public List<Structure> getAllWorkplaces() {
+		List<Structure> workplaces = new LinkedList<Structure>();
+		workplaces.addAll(restaurants);
+		workplaces.addAll(banks);
+		workplaces.addAll(markets);
+		
+		return workplaces;
+	}
+	
 	public void resetCity() {
 		this.cityTimer.stop();
 		this.time = new CityTime();
@@ -86,6 +107,24 @@ public class CityDirectory implements ActionListener {
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
 	}
 	
+	/**
+	 * Adds an ActionListener to the CityTimer in such a way that the ActionListener in this object
+	 * (CityDirectory) will ALWAYS be fired first, so everything else gets the correct time.
+	 * @param a The ActionListener to add
+	 */
+	public void addTimerActionListener(ActionListener a) {
+		ActionListener[] al = cityTimer.getActionListeners();		
+		for(int i = 0; i < al.length; i++) {
+			cityTimer.removeActionListener(al[i]);
+		}
+		
+		cityTimer.addActionListener(a);
+		
+		for (int i = 0; i < al.length; i++) {
+			cityTimer.addActionListener(al[i]);
+		}
+	}
+	
 	public void setStartTime(CityTime newTime) {
 		time = newTime;
 	}
@@ -100,10 +139,16 @@ public class CityDirectory implements ActionListener {
 		return time;
 	}
 	
+	public Timer getCityTimer() {
+		return cityTimer;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		time.increment(TIMESTEP);
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "SimCity201", time.toString());
+		
+		
 		
 		synchronized(people) {
 			for (PersonAgent p : people) {
@@ -291,6 +336,19 @@ public class CityDirectory implements ActionListener {
 	
 	public List<Residence> getResidences() {
 		return residences;
+	}
+	
+	public List<Residence> getUnoccupiedResidences() {
+		List<Residence> _residences = new LinkedList<Residence>();
+		synchronized(residences) {
+			for (Residence r : residences) {
+				if (!r.isOccupied()) {
+					_residences.add(r);
+				}
+			}
+		}
+		
+		return _residences;
 	}
 	
 	public Residence getResidenceWithID(int id) {

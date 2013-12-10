@@ -42,9 +42,9 @@ public class RestaurantMatt extends Restaurant {
 		
 		// Setup times
 		this.morningShiftStart = new CityTime(8, 00);
-		this.morningShiftEnd = new CityTime(12, 30);
-		this.afternoonShiftStart = new CityTime(13, 00);
-		this.closingTime = new CityTime(18, 00);
+		this.morningShiftEnd = new CityTime(14, 00);
+		this.afternoonShiftStart = new CityTime(15, 30);
+		this.closingTime = new CityTime(20, 00);
 		
 		// Setup all roles that are persistent in this Restaurant
 		this.host = new RestaurantHostRoleMatt();
@@ -199,7 +199,7 @@ public class RestaurantMatt extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {		
-		if (isOpen && time.equalsIgnoreDay(morningShiftEnd)) {
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
 			if (host.getPerson() != null) {
@@ -207,7 +207,7 @@ public class RestaurantMatt extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (isOpen && time.equalsIgnoreDay(this.closingTime)) {
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
 			if (host.getPerson() != null) {

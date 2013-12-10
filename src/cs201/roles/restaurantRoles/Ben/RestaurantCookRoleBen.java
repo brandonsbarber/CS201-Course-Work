@@ -66,7 +66,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 			steakAmount = Integer.parseInt(steakString);
 			*/
 		int chickenAmount = 0;
-		int steakAmount = 0;
+		int steakAmount = 10;
 
 		inventory.put("Chicken", new MyFood("Chicken", 10000, chickenAmount, 1, 10));
 		inventory.put("Steak", new MyFood("Steak", 12000, steakAmount, 1, 10));
@@ -246,10 +246,14 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 				int amountNeeded = thisFood.normalAmount - thisFood.quantity;
 				
 				// Give the manager our order
-				market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(thisFood.type, amountNeeded));
+				ItemRequest order = new ItemRequest(thisFood.type, amountNeeded);
+				market.getManager().msgHereIsMyOrderForDelivery(restaurant, order);
 				
 				// Mark down that we've ordered
 				thisFood.orderedMore = true;
+				
+				// Let the cashier know what to expect
+				cashier.msgIOrderedFromMarket(order);
 			}
 		}
 	}

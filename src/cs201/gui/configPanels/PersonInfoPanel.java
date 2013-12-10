@@ -6,39 +6,66 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
+import cs201.agents.transit.CarAgent;
+import cs201.gui.CityPanel;
+import cs201.helper.CityDirectory;
+import cs201.helper.CityTime;
+import cs201.interfaces.agents.transit.Vehicle;
+import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 @SuppressWarnings("serial")
-public class PersonInfoPanel extends JPanel {
+public class PersonInfoPanel extends JPanel implements ActionListener {
+	private PersonConfigPanel personPanel;
+	private boolean editMode = false;
+	
 	private JTextField nameTextField;
 	private JTextField moneyTextField;
-	private JTextField hungerTextField;
-	private JTextField locationTextField;
-	private JTextField stateTextField;
-	private JTextField wakeupTextField;
-	private JTextField sleepTextField;
 	private JTextField actionTextField;
 	private JTextField jobTextField;
 	private JTextField workTimeTextField;
-	private JTextField homeTextField;
 	private JCheckBox carCheckBox;
 	private JTextField buyTextField;
 	private JTextField inventoryTextField;
+	private JButton btnNewPerson;
+	private JButton btnConfirm;
+	private JButton btnCancel;
+	private JLabel lblMode;
+	private JComboBox<String> hungerComboBox;
+	private JComboBox<Structure> locationComboBox;
+	private JComboBox<Structure> homeComboBox;
+	private JComboBox<CityTime> wakeupComboBox;
+	private JComboBox<CityTime> sleepComboBox;
+	private JTextField workplaceTextField;
 
 	/**
 	 * Create the panel.
 	 */
-	public PersonInfoPanel() {
+	public PersonInfoPanel(PersonConfigPanel personPanel) {
+		this.personPanel = personPanel;
+		
 		setBorder(null);
 		setForeground(UIManager.getColor("window"));
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -49,7 +76,7 @@ public class PersonInfoPanel extends JPanel {
 		setLayout(gridBagLayout);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Selected Person:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));
+		panel.setBorder(BorderFactory.createTitledBorder("Person:"));
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -78,6 +105,9 @@ public class PersonInfoPanel extends JPanel {
 		lblName.setLabelFor(nameTextField);
 		
 		nameTextField = new JTextField();
+		nameTextField.setPreferredSize(new Dimension(12, 28));
+		nameTextField.setMaximumSize(new Dimension(2147483647, 28));
+		nameTextField.setMinimumSize(new Dimension(12, 28));
 		nameTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		nameTextField.setName("");
 		nameTextField.setFocusable(false);
@@ -101,6 +131,9 @@ public class PersonInfoPanel extends JPanel {
 		lblMoney.setLabelFor(moneyTextField);
 		
 		moneyTextField = new JTextField();
+		moneyTextField.setPreferredSize(new Dimension(12, 28));
+		moneyTextField.setMaximumSize(new Dimension(2147483647, 28));
+		moneyTextField.setMinimumSize(new Dimension(12, 28));
 		moneyTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		moneyTextField.setEditable(false);
 		moneyTextField.setFocusable(false);
@@ -120,19 +153,25 @@ public class PersonInfoPanel extends JPanel {
 		gbc_lblHunger.gridx = 0;
 		gbc_lblHunger.gridy = 2;
 		leftPanel.add(lblHunger, gbc_lblHunger);
-		lblHunger.setLabelFor(hungerTextField);
 		
-		hungerTextField = new JTextField();
-		hungerTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		hungerTextField.setFocusable(false);
-		hungerTextField.setEditable(false);
-		GridBagConstraints gbc_hungerTextField = new GridBagConstraints();
-		gbc_hungerTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_hungerTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_hungerTextField.gridx = 1;
-		gbc_hungerTextField.gridy = 2;
-		leftPanel.add(hungerTextField, gbc_hungerTextField);
-		hungerTextField.setColumns(10);
+		hungerComboBox = new JComboBox<String>();
+		hungerComboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		hungerComboBox.setEnabled(false);
+		hungerComboBox.addItem("Full");
+		hungerComboBox.addItem("Hungry");
+		hungerComboBox.addItem("Starving");
+		hungerComboBox.setSelectedIndex(-1);
+		hungerComboBox.setFocusable(false);
+		lblHunger.setLabelFor(hungerComboBox);
+		hungerComboBox.setMaximumSize(new Dimension(32767, 28));
+		hungerComboBox.setMinimumSize(new Dimension(52, 28));
+		hungerComboBox.setPreferredSize(new Dimension(52, 28));
+		GridBagConstraints gbc_hungerComboBox = new GridBagConstraints();
+		gbc_hungerComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_hungerComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_hungerComboBox.gridx = 1;
+		gbc_hungerComboBox.gridy = 2;
+		leftPanel.add(hungerComboBox, gbc_hungerComboBox);
 		
 		JLabel lblLocation = new JLabel("Location:");
 		lblLocation.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -142,41 +181,45 @@ public class PersonInfoPanel extends JPanel {
 		gbc_lblLocation.gridx = 0;
 		gbc_lblLocation.gridy = 3;
 		leftPanel.add(lblLocation, gbc_lblLocation);
-		lblLocation.setLabelFor(locationTextField);
 		
-		locationTextField = new JTextField();
-		locationTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		locationTextField.setEditable(false);
-		locationTextField.setFocusable(false);
-		GridBagConstraints gbc_locationTextField = new GridBagConstraints();
-		gbc_locationTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_locationTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_locationTextField.gridx = 1;
-		gbc_locationTextField.gridy = 3;
-		leftPanel.add(locationTextField, gbc_locationTextField);
-		locationTextField.setColumns(10);
+		locationComboBox = new JComboBox<Structure>();
+		locationComboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		lblLocation.setLabelFor(locationComboBox);
+		locationComboBox.setMaximumSize(new Dimension(32767, 28));
+		locationComboBox.setPreferredSize(new Dimension(34, 28));
+		locationComboBox.setMinimumSize(new Dimension(34, 28));
+		locationComboBox.setFocusable(false);
+		locationComboBox.setEnabled(false);
+		GridBagConstraints gbc_locationComboBox = new GridBagConstraints();
+		gbc_locationComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_locationComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_locationComboBox.gridx = 1;
+		gbc_locationComboBox.gridy = 3;
+		leftPanel.add(locationComboBox, gbc_locationComboBox);
 		
-		JLabel lblState = new JLabel("State:");
-		lblState.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		lblState.setLabelFor(lblState);
-		GridBagConstraints gbc_lblState = new GridBagConstraints();
-		gbc_lblState.anchor = GridBagConstraints.EAST;
-		gbc_lblState.insets = new Insets(0, 0, 5, 5);
-		gbc_lblState.gridx = 0;
-		gbc_lblState.gridy = 4;
-		leftPanel.add(lblState, gbc_lblState);
+		JLabel lblAction = new JLabel("Action:");
+		GridBagConstraints gbc_lblAction = new GridBagConstraints();
+		gbc_lblAction.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAction.gridx = 0;
+		gbc_lblAction.gridy = 4;
+		leftPanel.add(lblAction, gbc_lblAction);
+		lblAction.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		
-		stateTextField = new JTextField();
-		stateTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		stateTextField.setEditable(false);
-		stateTextField.setFocusable(false);
-		GridBagConstraints gbc_stateTextField = new GridBagConstraints();
-		gbc_stateTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_stateTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_stateTextField.gridx = 1;
-		gbc_stateTextField.gridy = 4;
-		leftPanel.add(stateTextField, gbc_stateTextField);
-		stateTextField.setColumns(10);
+		actionTextField = new JTextField();
+		actionTextField.setPreferredSize(new Dimension(12, 28));
+		actionTextField.setMaximumSize(new Dimension(2147483647, 28));
+		actionTextField.setMinimumSize(new Dimension(12, 28));
+		lblAction.setLabelFor(actionTextField);
+		GridBagConstraints gbc_actionTextField = new GridBagConstraints();
+		gbc_actionTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_actionTextField.insets = new Insets(0, 0, 5, 0);
+		gbc_actionTextField.gridx = 1;
+		gbc_actionTextField.gridy = 4;
+		leftPanel.add(actionTextField, gbc_actionTextField);
+		actionTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		actionTextField.setFocusable(false);
+		actionTextField.setEditable(false);
+		actionTextField.setColumns(10);
 		
 		JLabel lblWakeup = new JLabel("Wakeup:");
 		lblWakeup.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -186,19 +229,21 @@ public class PersonInfoPanel extends JPanel {
 		gbc_lblWakeup.gridx = 0;
 		gbc_lblWakeup.gridy = 5;
 		leftPanel.add(lblWakeup, gbc_lblWakeup);
-		lblWakeup.setLabelFor(wakeupTextField);
 		
-		wakeupTextField = new JTextField();
-		wakeupTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		wakeupTextField.setEditable(false);
-		wakeupTextField.setFocusable(false);
-		GridBagConstraints gbc_wakeupTextField = new GridBagConstraints();
-		gbc_wakeupTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_wakeupTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_wakeupTextField.gridx = 1;
-		gbc_wakeupTextField.gridy = 5;
-		leftPanel.add(wakeupTextField, gbc_wakeupTextField);
-		wakeupTextField.setColumns(10);
+		wakeupComboBox = new JComboBox<CityTime>();
+		wakeupComboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		wakeupComboBox.setMaximumSize(new Dimension(32767, 28));
+		lblWakeup.setLabelFor(wakeupComboBox);
+		wakeupComboBox.setFocusable(false);
+		wakeupComboBox.setEnabled(false);
+		wakeupComboBox.setPreferredSize(new Dimension(34, 28));
+		wakeupComboBox.setMinimumSize(new Dimension(34, 28));
+		GridBagConstraints gbc_wakeupComboBox = new GridBagConstraints();
+		gbc_wakeupComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_wakeupComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_wakeupComboBox.gridx = 1;
+		gbc_wakeupComboBox.gridy = 5;
+		leftPanel.add(wakeupComboBox, gbc_wakeupComboBox);
 		
 		JLabel lblSleep = new JLabel("Sleep:");
 		lblSleep.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -208,24 +253,26 @@ public class PersonInfoPanel extends JPanel {
 		gbc_lblSleep.gridx = 0;
 		gbc_lblSleep.gridy = 6;
 		leftPanel.add(lblSleep, gbc_lblSleep);
-		lblSleep.setLabelFor(sleepTextField);
 		
-		sleepTextField = new JTextField();
-		sleepTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		sleepTextField.setFocusable(false);
-		sleepTextField.setEditable(false);
-		GridBagConstraints gbc_sleepTextField = new GridBagConstraints();
-		gbc_sleepTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sleepTextField.gridx = 1;
-		gbc_sleepTextField.gridy = 6;
-		leftPanel.add(sleepTextField, gbc_sleepTextField);
-		sleepTextField.setColumns(10);
+		sleepComboBox = new JComboBox<CityTime>();
+		sleepComboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		lblSleep.setLabelFor(sleepComboBox);
+		sleepComboBox.setMaximumSize(new Dimension(32767, 28));
+		sleepComboBox.setMinimumSize(new Dimension(34, 28));
+		sleepComboBox.setPreferredSize(new Dimension(34, 28));
+		sleepComboBox.setFocusable(false);
+		sleepComboBox.setEnabled(false);
+		GridBagConstraints gbc_sleepComboBox = new GridBagConstraints();
+		gbc_sleepComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_sleepComboBox.gridx = 1;
+		gbc_sleepComboBox.gridy = 6;
+		leftPanel.add(sleepComboBox, gbc_sleepComboBox);
 		
-		JPanel panel_1 = new JPanel();
-		panel.add(panel_1);
+		JPanel dividerPanel = new JPanel();
+		panel.add(dividerPanel);
 		
 		Component horizontalStrut = Box.createHorizontalStrut(20);
-		panel_1.add(horizontalStrut);
+		dividerPanel.add(horizontalStrut);
 		
 		JPanel centerPanel = new JPanel();
 		panel.add(centerPanel);
@@ -236,52 +283,55 @@ public class PersonInfoPanel extends JPanel {
 		gbl_centerPanel.columnWeights = new double[]{0.0, 1.0};
 		centerPanel.setLayout(gbl_centerPanel);
 		
-		JLabel lblAction = new JLabel("Action:");
-		GridBagConstraints gbc_lblAction = new GridBagConstraints();
-		gbc_lblAction.anchor = GridBagConstraints.EAST;
-		gbc_lblAction.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAction.gridx = 0;
-		gbc_lblAction.gridy = 0;
-		centerPanel.add(lblAction, gbc_lblAction);
-		lblAction.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		
-		actionTextField = new JTextField();
-		GridBagConstraints gbc_actionTextField = new GridBagConstraints();
-		gbc_actionTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_actionTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_actionTextField.gridx = 1;
-		gbc_actionTextField.gridy = 0;
-		centerPanel.add(actionTextField, gbc_actionTextField);
-		actionTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		actionTextField.setFocusable(false);
-		actionTextField.setEditable(false);
-		actionTextField.setColumns(10);
-		lblAction.setLabelFor(actionTextField);
-		
 		JLabel lblHasCar = new JLabel("Has Car:");
 		lblHasCar.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		GridBagConstraints gbc_lblHasCar = new GridBagConstraints();
 		gbc_lblHasCar.insets = new Insets(0, 0, 5, 5);
 		gbc_lblHasCar.anchor = GridBagConstraints.EAST;
 		gbc_lblHasCar.gridx = 0;
-		gbc_lblHasCar.gridy = 1;
+		gbc_lblHasCar.gridy = 0;
 		centerPanel.add(lblHasCar, gbc_lblHasCar);
+		lblHasCar.setLabelFor(carCheckBox);
 		
 		carCheckBox = new JCheckBox("");
-		carCheckBox.setMargin(new Insets(1, 1, 1, 1));
+		carCheckBox.setIconTextGap(0);
 		carCheckBox.setPreferredSize(new Dimension(28, 28));
 		carCheckBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		carCheckBox.setMinimumSize(new Dimension(28, 28));
 		carCheckBox.setMaximumSize(new Dimension(28, 28));
 		carCheckBox.setFocusable(false);
 		carCheckBox.setEnabled(false);
-		lblHasCar.setLabelFor(carCheckBox);
 		GridBagConstraints gbc_carCheckBox = new GridBagConstraints();
 		gbc_carCheckBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_carCheckBox.insets = new Insets(0, 0, 5, 0);
 		gbc_carCheckBox.gridx = 1;
-		gbc_carCheckBox.gridy = 1;
+		gbc_carCheckBox.gridy = 0;
 		centerPanel.add(carCheckBox, gbc_carCheckBox);
+		
+		JLabel lblWorkplace = new JLabel("Workplace:");
+		lblWorkplace.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		GridBagConstraints gbc_lblWorkplace = new GridBagConstraints();
+		gbc_lblWorkplace.anchor = GridBagConstraints.EAST;
+		gbc_lblWorkplace.insets = new Insets(0, 0, 5, 5);
+		gbc_lblWorkplace.gridx = 0;
+		gbc_lblWorkplace.gridy = 1;
+		centerPanel.add(lblWorkplace, gbc_lblWorkplace);
+		
+		workplaceTextField = new JTextField();
+		workplaceTextField.setPreferredSize(new Dimension(12, 28));
+		workplaceTextField.setMaximumSize(new Dimension(2147483647, 28));
+		workplaceTextField.setMinimumSize(new Dimension(12, 28));
+		lblWorkplace.setLabelFor(workplaceTextField);
+		workplaceTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		workplaceTextField.setFocusable(false);
+		workplaceTextField.setEditable(false);
+		GridBagConstraints gbc_workplaceTextField = new GridBagConstraints();
+		gbc_workplaceTextField.insets = new Insets(0, 0, 5, 0);
+		gbc_workplaceTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_workplaceTextField.gridx = 1;
+		gbc_workplaceTextField.gridy = 1;
+		centerPanel.add(workplaceTextField, gbc_workplaceTextField);
+		workplaceTextField.setColumns(10);
 		
 		JLabel lblJob = new JLabel("Job:");
 		lblJob.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -293,6 +343,9 @@ public class PersonInfoPanel extends JPanel {
 		centerPanel.add(lblJob, gbc_lblJob);
 		
 		jobTextField = new JTextField();
+		jobTextField.setPreferredSize(new Dimension(12, 28));
+		jobTextField.setMaximumSize(new Dimension(2147483647, 28));
+		jobTextField.setMinimumSize(new Dimension(12, 28));
 		lblJob.setLabelFor(jobTextField);
 		jobTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		jobTextField.setFocusable(false);
@@ -315,6 +368,9 @@ public class PersonInfoPanel extends JPanel {
 		centerPanel.add(lblWorkTime, gbc_lblWorkTime);
 		
 		workTimeTextField = new JTextField();
+		workTimeTextField.setPreferredSize(new Dimension(12, 28));
+		workTimeTextField.setMaximumSize(new Dimension(2147483647, 28));
+		workTimeTextField.setMinimumSize(new Dimension(12, 28));
 		lblWorkTime.setLabelFor(workTimeTextField);
 		workTimeTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		workTimeTextField.setFocusable(false);
@@ -337,18 +393,20 @@ public class PersonInfoPanel extends JPanel {
 		gbc_lblHasHome.gridy = 4;
 		centerPanel.add(lblHasHome, gbc_lblHasHome);
 		
-		homeTextField = new JTextField();
-		homeTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		homeTextField.setFocusable(false);
-		homeTextField.setEditable(false);
-		lblHasHome.setLabelFor(homeTextField);
-		GridBagConstraints gbc_homeTextField = new GridBagConstraints();
-		gbc_homeTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_homeTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_homeTextField.gridx = 1;
-		gbc_homeTextField.gridy = 4;
-		centerPanel.add(homeTextField, gbc_homeTextField);
-		homeTextField.setColumns(10);
+		homeComboBox = new JComboBox<Structure>();
+		homeComboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		lblHasHome.setLabelFor(homeComboBox);
+		homeComboBox.setEnabled(false);
+		homeComboBox.setFocusable(false);
+		homeComboBox.setMaximumSize(new Dimension(32767, 28));
+		homeComboBox.setMinimumSize(new Dimension(34, 28));
+		homeComboBox.setPreferredSize(new Dimension(34, 28));
+		GridBagConstraints gbc_homeComboBox = new GridBagConstraints();
+		gbc_homeComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_homeComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_homeComboBox.gridx = 1;
+		gbc_homeComboBox.gridy = 4;
+		centerPanel.add(homeComboBox, gbc_homeComboBox);
 		
 		JLabel lblToBuy = new JLabel("To Buy:");
 		lblToBuy.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -360,6 +418,10 @@ public class PersonInfoPanel extends JPanel {
 		centerPanel.add(lblToBuy, gbc_lblToBuy);
 		
 		buyTextField = new JTextField();
+		buyTextField.setPreferredSize(new Dimension(12, 28));
+		buyTextField.setMaximumSize(new Dimension(2147483647, 28));
+		buyTextField.setMinimumSize(new Dimension(12, 28));
+		buyTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		lblToBuy.setLabelFor(buyTextField);
 		buyTextField.setEditable(false);
 		buyTextField.setFocusable(false);
@@ -381,6 +443,10 @@ public class PersonInfoPanel extends JPanel {
 		centerPanel.add(lblInventory, gbc_lblInventory);
 		
 		inventoryTextField = new JTextField();
+		inventoryTextField.setPreferredSize(new Dimension(12, 28));
+		inventoryTextField.setMaximumSize(new Dimension(2147483647, 28));
+		inventoryTextField.setMinimumSize(new Dimension(12, 28));
+		inventoryTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		lblInventory.setLabelFor(inventoryTextField);
 		inventoryTextField.setFocusable(false);
 		inventoryTextField.setEditable(false);
@@ -399,24 +465,236 @@ public class PersonInfoPanel extends JPanel {
 		gbc_rightPanel.gridx = 1;
 		gbc_rightPanel.gridy = 0;
 		add(rightPanel, gbc_rightPanel);
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+		
+		btnNewPerson = new JButton("New Person");
+		btnNewPerson.addActionListener(this);
+		
+		lblMode = new JLabel("Mode: View");
+		lblMode.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+		lblMode.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(lblMode);
+		btnNewPerson.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(btnNewPerson);
+		
+		btnConfirm = new JButton("Confirm");
+		btnConfirm.addActionListener(this);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		rightPanel.add(verticalStrut);
+		btnConfirm.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(btnConfirm);
+		
+		btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(this);
+		btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(btnCancel);
+		
+		JScrollPane scrollPaneInstructions = new JScrollPane();
+		scrollPaneInstructions.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPaneInstructions.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		rightPanel.add(scrollPaneInstructions);
+		
+		JTextArea textAreaInstructions = new JTextArea();
+		textAreaInstructions.setAutoscrolls(false);
+		textAreaInstructions.setLineWrap(true);
+		textAreaInstructions.setWrapStyleWord(true);
+		textAreaInstructions.setText("Instructions: The panel to the left displays information about the currently selected person to the right when in VIEW mode. Click \"New Person\" to enter EDIT mode to create a new Person.");
+		textAreaInstructions.setFont(new Font("SansSerif", Font.ITALIC, 12));
+		textAreaInstructions.setTabSize(4);
+		textAreaInstructions.setFocusable(false);
+		textAreaInstructions.setEditable(false);
+		scrollPaneInstructions.setViewportView(textAreaInstructions);
 
 	}
 	
 	public void resetInfo() {
 		this.nameTextField.setText("");
 		this.moneyTextField.setText("");
-		this.hungerTextField.setText("");
-		this.locationTextField.setText("");
-		this.stateTextField.setText("");
-		this.wakeupTextField.setText("");
-		this.sleepTextField.setText("");
+		this.hungerComboBox.setSelectedIndex(-1);
+		this.locationComboBox.removeAllItems();
+		this.wakeupComboBox.removeAllItems();
+		this.sleepComboBox.removeAllItems();
 		this.actionTextField.setText("");
 		this.carCheckBox.setSelected(false);
+		this.workplaceTextField.setText("");
 		this.jobTextField.setText("");
 		this.workTimeTextField.setText("");
-		this.homeTextField.setText("");
+		this.homeComboBox.removeAllItems();
 		this.buyTextField.setText("");
 		this.inventoryTextField.setText("");
+	}
+	
+	private void setupEditing(boolean editMode) {
+		this.nameTextField.setEditable(editMode);
+		this.moneyTextField.setEditable(editMode);
+		this.hungerComboBox.setEnabled(editMode);
+		this.locationComboBox.setEnabled(editMode);
+		this.wakeupComboBox.setEnabled(editMode);
+		this.sleepComboBox.setEnabled(editMode);
+		this.carCheckBox.setEnabled(editMode);
+		this.homeComboBox.setEnabled(editMode);
+		
+		this.nameTextField.setFocusable(editMode);
+		this.moneyTextField.setFocusable(editMode);
+		this.hungerComboBox.setFocusable(editMode);
+		this.locationComboBox.setFocusable(editMode);
+		this.wakeupComboBox.setFocusable(editMode);
+		this.sleepComboBox.setFocusable(editMode);
+		this.carCheckBox.setFocusable(editMode);
+		this.homeComboBox.setFocusable(editMode);
+	}
+	
+	private void setupDefaults() {
+		this.nameTextField.setText("Person");
+		
+		this.moneyTextField.setText("$200.00");
+		
+		this.hungerComboBox.setSelectedIndex(1);
+		
+		List<Structure> buildings = CityDirectory.getInstance().getAllBuildings();
+		this.locationComboBox.addItem(null);
+		for (Structure s : buildings) {
+			this.locationComboBox.addItem(s);
+		}
+		
+		this.wakeupComboBox.addItem(new CityTime(5, 00));
+		this.wakeupComboBox.addItem(new CityTime(5, 30));
+		this.wakeupComboBox.addItem(new CityTime(6, 00));
+		this.wakeupComboBox.addItem(new CityTime(6, 30));
+		this.wakeupComboBox.addItem(new CityTime(7, 00));
+		this.wakeupComboBox.addItem(new CityTime(7, 30));
+		this.wakeupComboBox.addItem(new CityTime(8, 00));
+		this.wakeupComboBox.setSelectedIndex(4);
+		
+		this.sleepComboBox.addItem(new CityTime( 9 + 12, 00));
+		this.sleepComboBox.addItem(new CityTime( 9 + 12, 30));
+		this.sleepComboBox.addItem(new CityTime(10 + 12, 00));
+		this.sleepComboBox.addItem(new CityTime(10 + 12, 30));
+		this.sleepComboBox.addItem(new CityTime(11 + 12, 00));
+		this.sleepComboBox.addItem(new CityTime(11 + 12, 30));
+		this.sleepComboBox.setSelectedIndex(2);
+		
+		this.actionTextField.setText("None - Cannot Edit");
+		
+		this.carCheckBox.setSelected(false);
+		
+		this.workplaceTextField.setText("None - Cannot Edit");
+		
+		this.jobTextField.setText("None - Cannot Edit");
+		
+		this.workTimeTextField.setText("N/A - Cannot Edit");
+		
+		List<Residence> homes = CityDirectory.getInstance().getUnoccupiedResidences();
+		this.homeComboBox.addItem(null);
+		for (Residence r : homes) {
+			this.homeComboBox.addItem(r);
+		}
+		
+		this.buyTextField.setText("Cannot Edit");
+		
+		this.inventoryTextField.setText("Cannot Edit");
+	}
+	
+	/**
+	 * Creates a new PersonAgent with the values in the Person panel
+	 * @return True if Person created successfully, false if something failed
+	 */
+	private boolean createPerson() {
+		StringBuffer output = new StringBuffer();
+		output.append("\nCreated a new PersonAgent:");
+		
+		String name = this.nameTextField.getText().trim();
+		if (name.equals("")) {
+			// FAILED
+			AlertLog.getInstance().logError(AlertTag.GENERAL_CITY, "PersonCreationPanel", "Failed to create Person. Provide input for 'Name' field.");
+			return false;
+		}
+		output.append("\n\tName: " + name);
+		PersonAgent p = new PersonAgent(name, CityPanel.INSTANCE);
+		
+		double money;
+		try {
+			String sMoney = this.moneyTextField.getText();
+			sMoney = sMoney.replace('$', ' ');
+			money = Double.parseDouble(sMoney);
+		} catch(NumberFormatException e) {
+			// FAILED
+			AlertLog.getInstance().logError(AlertTag.GENERAL_CITY, "PersonCreationPanel", "Failed to create Person. Provide correct input for 'Money' field.");
+			return false;
+		}
+		output.append("\n\tMoney: " + money);
+		p.setMoney(money);
+		
+		int hunger;
+		switch(this.hungerComboBox.getSelectedIndex()) {
+		case -1: System.out.println("FAILED IN HUNGER"); return false; // FAILED
+		case  0: hunger = PersonAgent.FULL; break;
+		case  1: hunger = PersonAgent.HUNGRY; break;
+		case  2: hunger = PersonAgent.STARVING; break;
+		default: System.out.println("FAILED IN HUNGER"); return false; // FAILED
+		}
+		output.append("\n\tHunger: " + hunger);
+		p.setHungerLevel(hunger);
+		
+		Structure location = null;
+		if (this.locationComboBox.getSelectedIndex() == -1 || this.locationComboBox.getSelectedIndex() == 0) {
+			location = null;
+		} else {
+			location = (Structure) this.locationComboBox.getSelectedItem();
+		}
+		output.append("\n\tLocation: " + (location == null ? "None" : location.toString()));
+		p.setCurrentLocation(location);
+		
+		CityTime wakeup = null;
+		if (this.wakeupComboBox.getSelectedIndex() == -1) {
+			wakeup = new CityTime(7, 00);
+		} else {
+			wakeup = (CityTime) this.wakeupComboBox.getSelectedItem();
+		}
+		output.append("\n\tWakeup Time: " + wakeup);
+		p.setWakeupTime(wakeup);
+		
+		CityTime sleep = null;
+		if (this.sleepComboBox.getSelectedIndex() == -1) {
+			sleep = new CityTime(10, 00);
+		} else {
+			sleep = (CityTime) this.sleepComboBox.getSelectedItem();
+		}
+		output.append("\n\tSleep Time: " + sleep);
+		p.setSleepTime(sleep);
+		
+		Vehicle car = null;
+		if (this.carCheckBox.isSelected()) {
+			car = new CarAgent();
+		} else {
+			car = null;
+		}
+		output.append("\n\tCar: " + (car == null ? "None" : car.toString()));
+		p.setVehicle(car);
+		
+		Residence home = null;
+		if (this.homeComboBox.getSelectedIndex() == -1 || this.homeComboBox.getSelectedIndex() == 0) {
+			home = null;
+		} else {
+			home = (Residence) this.homeComboBox.getSelectedItem();
+			home.setOccupied(true);
+		}
+		output.append("\n\tHome: " + (home == null ? "None" : home.toString()));
+		p.setHome(home);
+		
+		// If we got here, all tests succeeded
+		// add the person to the CityDirectory, etc. and start its thread
+		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "PersonCreationPanel", output.toString());
+		p.setWakeupTime(wakeup);
+		p.setMoney(money);
+		p.setHungerLevel(hunger);
+		p.setSleepTime(sleep);
+		p.setupPerson(CityDirectory.getInstance().getTime(), home, null, null, location, car);
+		personPanel.addPerson(p);
+		CityDirectory.getInstance().addPerson(p);
+		p.startThread();
+		return true;
 	}
 	
 	public void updateInfo(PersonAgent p) {
@@ -424,20 +702,59 @@ public class PersonInfoPanel extends JPanel {
 			return;
 		}
 		
-		this.nameTextField.setText(p.getName());
+		this.nameTextField.setText(p.getName() + "  [" + p.getState() + "]");
 		this.moneyTextField.setText(String.format("$%.2f", p.getMoney()));
-		this.hungerTextField.setText(p.getHungerLevel() > PersonAgent.STARVING ? "Starving" : p.getHungerLevel() > PersonAgent.HUNGRY ? "Hungry" : "Full");
-		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentAction() == null ? "In City" : p.getCurrentLocation().toString());
-		this.stateTextField.setText(p.getState().toString());
-		this.wakeupTextField.setText(p.getWakeupTime().toString().trim());
-		this.sleepTextField.setText(p.getSleepTime().toString().trim());
+		this.hungerComboBox.setSelectedIndex(p.getHungerLevel() > PersonAgent.STARVING ? 2 : p.getHungerLevel() > PersonAgent.HUNGRY ? 1 : 0);
+		this.locationComboBox.removeAllItems();
+		this.locationComboBox.addItem(p.getCurrentAction() == null ? null : p.getCurrentLocation());
+		this.locationComboBox.setSelectedIndex(0);
+		this.wakeupComboBox.removeAllItems();
+		this.wakeupComboBox.addItem(p.getWakeupTime());
+		this.wakeupComboBox.setSelectedIndex(0);
+		this.sleepComboBox.removeAllItems();
+		this.sleepComboBox.addItem(p.getSleepTime());
+		this.sleepComboBox.setSelectedIndex(0);
 		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
 		this.carCheckBox.setSelected(p.getVehicle() != null);
+		this.workplaceTextField.setText(p.getWorkplace() == null ? "None" : p.getWorkplace().toString());
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
 		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString().trim());
-		this.homeTextField.setText(p.getHome() == null ? "None" : p.getHome().toString());
+		this.homeComboBox.removeAllItems();
+		this.homeComboBox.addItem(p.getHome() == null ? null : p.getHome());
+		this.homeComboBox.setSelectedIndex(0);
 		this.buyTextField.setText(p.getMarketChecklist().toString().substring(1, p.getMarketChecklist().toString().length()-1));
 		this.inventoryTextField.setText(p.getInventory().toString().substring(1, p.getInventory().toString().length()-1));
 	}
+	
+	public boolean isInEditMode() {
+		return editMode;
+	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == this.btnConfirm) { // CONFIRM
+			if (editMode) {
+				if (createPerson()) {
+					this.editMode = false;
+					this.setupEditing(false);
+					this.lblMode.setText("Mode: View");
+					this.personPanel.showInfo();
+				}
+			}
+		} else if (e.getSource() == this.btnNewPerson) { // NEW PERSON
+			if (!editMode) {
+				this.editMode = true;
+				this.personPanel.deselectPersonList();
+				this.resetInfo();
+				this.setupEditing(true);
+				this.setupDefaults();
+				this.lblMode.setText("Mode: Edit");
+			}
+		} else if (e.getSource() == this.btnCancel) { // CANCEL
+			this.editMode = false;
+			this.lblMode.setText("Mode: View");
+			this.setupEditing(false);
+			this.resetInfo();
+		}
+	}
 }

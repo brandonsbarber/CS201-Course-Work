@@ -3,8 +3,10 @@ package cs201.gui.roles.restaurant.Ben;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
+import cs201.helper.Constants;
 import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
 
 public class CustomerGuiBen implements Gui{
@@ -32,6 +34,8 @@ public class CustomerGuiBen implements Gui{
 	
 	private boolean hasIcon = false;
 	private String iconText = "";
+	private boolean animating = false;
+	private String moveDir = "Default_Walker_Down";
 	
 	public CustomerGuiBen(CustomerBen c, RestaurantAnimationPanelBen ap){ //HostAgent m) {
 		agent = c;
@@ -78,19 +82,50 @@ public class CustomerGuiBen implements Gui{
 				//gui.setCustomerEnabled(agent);
 			}
 			command=Command.noCommand;
+			if (animating) {
+				animating = false;
+			}
 		}
 	}
 
 	public void draw(Graphics2D g) {
-		// Draw the green customer rectangle
-		g.setColor(Color.GREEN);
-		g.fillRect(xPos, yPos, customerWidth, customerHeight);
-		
-		// Draw his icon, if he has one
-		if (hasIcon) {
-			g.setColor(Color.BLACK);
-			g.drawString(iconText, xPos, yPos + 15);
+		if (Constants.DEBUG_MODE) {
+			// Draw the green customer rectangle
+			g.setColor(Color.GREEN);
+			g.fillRect(xPos, yPos, customerWidth, customerHeight);
+			
+			// Draw his icon, if he has one
+			if (hasIcon) {
+				g.setColor(Color.BLACK);
+				g.drawString(iconText, xPos, yPos + 15);
+			}
+			
+		} else {
+			if (animating) {
+				double theta = Math.atan2(yPos - yDestination, xDestination - xPos);
+				
+				if (theta >= -Math.PI/4 && theta <= Math.PI/4) {
+					moveDir = "Default_Walker_Right";
+				} else if (theta >= Math.PI/4 && theta <= 3*Math.PI/4) {
+					moveDir = "Default_Walker_Up";
+				} else if (theta <= -Math.PI/4 && theta >= -3*Math.PI/4) {
+					moveDir = "Default_Walker_Down";
+				} else {
+					moveDir = "Default_Walker_Left";
+				}
+			} else {
+				moveDir = "Default_Walker_Down";
+			}
+			
+			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, null);
+			
+			// Draw his icon, if he has one
+			if (hasIcon) {
+				g.setColor(Color.BLACK);
+				g.drawString(iconText, xPos + 15, yPos - 15);
+			}
 		}
+		
 	}
 
 	public boolean isPresent() {
@@ -121,8 +156,10 @@ public class CustomerGuiBen implements Gui{
 	}
 
 	public void DoGoToSeat(int seatnumber) {
-		xDestination = xTable + (tableWidth + tablePad) * (seatnumber - 1);
-		yDestination = yTable;
+		animating = true;
+		
+		xDestination = xTable + (tableWidth + tablePad) * (seatnumber - 1) + (tableWidth / 2 - 10);
+		yDestination = yTable - 20;
 		command = Command.GoToSeat;
 		
 		// Set our waiting position to null
@@ -133,6 +170,8 @@ public class CustomerGuiBen implements Gui{
 	}
 
 	public void DoExitRestaurant() {
+		animating = true;
+		
 		xDestination = -40;
 		yDestination = -40;
 		command = Command.LeaveRestaurant;

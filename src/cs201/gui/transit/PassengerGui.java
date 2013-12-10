@@ -3,6 +3,7 @@ package cs201.gui.transit;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.List;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -44,6 +45,10 @@ public class PassengerGui implements Gui
 
 	private boolean pathfinding = false;
 
+	private boolean allowedToMove;
+
+	private Point current, next;
+
 	/**
 	 * Creates a passenger gui
 	 * @param pass the passenger who holds the gui
@@ -52,6 +57,7 @@ public class PassengerGui implements Gui
 	public PassengerGui(PassengerRole pass,CityPanel city)
 	{
 		this(pass,city,pass.getCurrentLocation());
+		allowedToMove = true;
 	}
 	
 	/**
@@ -73,6 +79,7 @@ public class PassengerGui implements Gui
 		present = false;
 		currentDirection = MovementDirection.None;
 		moves = new Stack<MovementDirection>();
+		roaming = false;
 	}
 	
 	/**
@@ -93,6 +100,14 @@ public class PassengerGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
+		if(!present)
+		{
+			List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+			synchronized(list)
+			{
+				list.remove(this);
+			}
+		}
 	}
 	
 	/**
@@ -108,6 +123,11 @@ public class PassengerGui implements Gui
 		fired = false;
 		present = true;
 		
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
+		//city.permissions[current.y][current.x].tryAcquire();
+		
 		findPath();
 	}
 	
@@ -118,12 +138,16 @@ public class PassengerGui implements Gui
 		fired = false;
 		present = true;
 		
+		current = new Point(this.x/CityPanel.GRID_SIZE,this.y/CityPanel.GRID_SIZE);
+		next = current;
+		
 		findPath();
 	}
 	
 	public void doRoam()
 	{
-		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
+		roaming = true;
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
 		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
 	}
 	
@@ -132,7 +156,7 @@ public class PassengerGui implements Gui
 	 */
 	private void findPath()
 	{
-		System.out.println("FINDING PATH");
+		moves.clear();
 		pathfinding = true;
 		try
 		{
@@ -150,34 +174,38 @@ public class PassengerGui implements Gui
 	 * @param g the graphics object in which to draw
 	 */
 	public void draw(Graphics2D g)
-	{
-		g.setColor(Color.RED);
-		String moveDir = "Person_";
-		switch(currentDirection)
+	{	
+		if (Constants.DEBUG_MODE)
 		{
-		case Right:moveDir+="Right";
-			break;
-		case None:moveDir+="Down";
-			break;
-		case Up:moveDir+="Up";
-			break;
-		case Down:moveDir+="Down";
-			break;
-		case Turn:moveDir+="Down";
-			break;
-		case Left:moveDir+="Left";
-			break;
-		default:moveDir+="Down";
-			break;
-		
-		}
-		
-		g.drawImage (ArtManager.getImage(moveDir),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
-		
-		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.RED);
+			g.fillRect(x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE);
+			
 			g.setColor(Color.BLACK);
 			g.drawString(""+destination, x,y);
 			g.drawString(""+pass.getName(), x,y+CityPanel.GRID_SIZE);
+		}
+		else
+		{
+			String moveDir = "Person_";
+			switch(currentDirection)
+			{
+			case Right:moveDir+="Right";
+				break;
+			case None:moveDir+="Down";
+				break;
+			case Up:moveDir+="Up";
+				break;
+			case Down:moveDir+="Down";
+				break;
+			case Turn:moveDir+="Down";
+				break;
+			case Left:moveDir+="Left";
+				break;
+			default:moveDir+="Down";
+				break;
+			}
+			
+			g.drawImage (ArtManager.getImage(moveDir),x,y,CityPanel.GRID_SIZE,CityPanel.GRID_SIZE,null);
 		}
 	}
 
@@ -192,34 +220,95 @@ public class PassengerGui implements Gui
 		{
 			if(x == destX && y == destY)
 			{
-				fired = true;
-				pass.msgAnimationFinished ();
+				List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+				synchronized(list)
+				{
+					list.remove(this);
+				}
+				list = city.crosswalkPermissions.get(next.y).get(next.x);
+				synchronized(list)
+				{
+					list.remove(this);
+				}
 				currentDirection = MovementDirection.None;
+				fired = true;
+				if(!roaming)
+				{
+					pass.msgAnimationFinished ();
+				}
+				else
+				{
+					doRoam();
+				}
 				return;
 			}
-			switch(currentDirection)
+			if(allowedToMove)
 			{
-				case Right:
-					x++;
-					break;
-				case Up:
-					y--;
-					break;
-				case Down:
-					y++;
-					break;
-				case Left:
-					x--;
-					break;
-				default:
-					break;
+				switch(currentDirection)
+				{
+					case Right:
+						x++;
+						break;
+					case Up:
+						y--;
+						break;
+					case Down:
+						y++;
+						break;
+					case Left:
+						x--;
+						break;
+					default:
+						break;
+				}
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
-				currentDirection = moves.pop();
-				return;
+				if(allowedToMove)
+				{
+					currentDirection = moves.pop();
+				
+					if(current != next)
+					{
+						List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
+						synchronized(list)
+						{
+							list.remove(this);
+						}
+					}
+					
+					current = next;
+					
+					switch(currentDirection)
+					{
+					case Down:next = new Point(current.x,current.y + 1);
+						break;
+					case Left:next = new Point(current.x - 1,current.y);
+						break;
+					case Right:next = new Point(current.x + 1,current.y);
+						break;
+					case Up:next = new Point(current.x,current.y - 1);
+						break;
+					default:next = current;
+						break;
+					}	
+				}
+				List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
+				synchronized(list)
+				{
+					for(Gui g : list)
+					{
+						if(g instanceof VehicleGui)
+						{
+							allowedToMove = false;
+							return;
+						}
+					}
+					list.add(this);
+					allowedToMove = true;
+				}
+				
 			}
-			
 		}
 	}
 	
@@ -248,5 +337,33 @@ public class PassengerGui implements Gui
 	{
 		return currentLocation.getEntranceLocation().x == x && currentLocation.getEntranceLocation().y == y;
 	}
+
+	public void setLocation()
+	{
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
+		setLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
+		
+		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
+		next = current;
+		
+		setPresent(true);
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public void stopRoam()
+	{
+		roaming = false;
+	}
+	
+	boolean roaming;
 
 }

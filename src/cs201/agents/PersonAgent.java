@@ -16,6 +16,7 @@ import cs201.interfaces.agents.transit.Vehicle;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.transit.PassengerRole;
+import cs201.roles.transit.PassengerRole.PassengerState;
 import cs201.structures.Structure;
 import cs201.structures.residence.Residence;
 import cs201.trace.AlertLog;
@@ -34,7 +35,7 @@ public class PersonAgent extends Agent implements Person {
 	public static final int FULL = 0;
 	public static final int HUNGRY = 480;
 	public static final int STARVING = 840;
-	private static final int INITIALMONEY = 40;
+	private static final int INITIALMONEY = 200;
 	private static final int MONEYTHRESHOLD = 10;
 	private static final int INITIALWAKEUPHOUR = 7;
 	private static final int INITIALWAKEUPMINUTE = 0;
@@ -62,7 +63,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile int hungerLevel;
 	private volatile boolean hungerEnabled;
 	private volatile Vehicle vehicle;
-	private volatile Structure home;
+	private volatile Residence home;
 	private volatile Structure workplace;
 	private volatile Intention job;
 	private volatile CityTime workTime;
@@ -110,12 +111,15 @@ public class PersonAgent extends Agent implements Person {
 	}
 	
 	@Override
-	public void setupPerson(CityTime curTime, Structure home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
+	public void setupPerson(CityTime curTime, Residence home, Structure workplace, Intention job, Structure location, Vehicle vehicle) {
 		this.time.day = curTime.day;
 		this.time.hour = curTime.hour;
 		this.time.minute = curTime.minute;
 		
-		this.home = home;		
+		this.home = home;
+		if (this.home != null) {
+			this.home.setOccupied(true);
+		}
 		this.workplace = workplace;
 		this.job = job;
 		this.currentLocation = location;
@@ -197,8 +201,8 @@ public class PersonAgent extends Agent implements Person {
 		// If you're here in the scheduler, you've completed any current actions, so make current action null
 		this.currentAction = null;
 		
-		// If it's time to wake up in the morning
-		if (state == PersonState.Sleeping && time.equalsIgnoreDay(wakeupTime)) {
+		// If it's time to wake up in the morning (during the week)
+		if (state == PersonState.Sleeping && !time.isWeekend() && time.equalsIgnoreDay(wakeupTime)) {
 			this.state = PersonState.Awake;
 			
 			// If you need to pay rent
@@ -210,8 +214,17 @@ public class PersonAgent extends Agent implements Person {
 			return true;
 		}
 		
+		// If it's time to wake up in the morning (on the weekend)
+		if (state == PersonState.Sleeping && time.isWeekend() && time.equalsIgnoreDay(wakeupTime.add(90))) {
+			this.state = PersonState.Awake;
+
+			// Eat at home
+			this.addActionToPlanner(Intention.ResidenceEat, home, false);
+			return true;
+		}
+		
 		// If it's time to go to work
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90) {
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && CityTime.timeDifference(time, workTime) >= 0 && CityTime.timeDifference(time, workTime) <= 90 && !time.isWeekend()) {
 			if (this.addActionToPlanner(job, workplace, true)) {
 				this.state = PersonState.AtWork;
 				return true;
@@ -271,7 +284,7 @@ public class PersonAgent extends Agent implements Person {
 				return true;
 			}
 		}
-		
+
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
 			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {
@@ -281,7 +294,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you don't even have a home to return to
-		if (state == PersonState.Awake /*&& passengerRole.state != PassengerState.Roaming*/) {
+		if (state == PersonState.Awake && passengerRole.state != PassengerState.Roaming) {
 			this.currentAction = null;
 			passengerRole.setActive(true);
 			passengerRole.msgStartRoaming();
@@ -529,6 +542,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void setVehicle(Vehicle newVehicle) {
 		this.vehicle = newVehicle;
+		if (vehicle != null) {
+			passengerRole.addCar((CarAgent) vehicle);
+		}
 	}
 	
 	/**
@@ -619,7 +635,7 @@ public class PersonAgent extends Agent implements Person {
 	 * Sets a new home for this PersonAgent
 	 * @param home The new Structure where this PersonAgent lives
 	 */
-	public void setHome(Structure home)
+	public void setHome(Residence home)
 	{
 		this.home = home;
 	}
@@ -672,6 +688,15 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public PersonState getState() {
 		return this.state;
+	}
+	
+	/**
+	 * Sets this PersonAgent's current location. SHOULD ONLY BE CALLED WHEN THE THREAD IS NOT RUNNING.
+	 * @param location The new location.
+	 */
+	public void setCurrentLocation(Structure location) {
+		this.currentLocation = location;
+		this.passengerRole.setCurrentLocation(location);
 	}
 	
 	

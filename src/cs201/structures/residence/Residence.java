@@ -25,6 +25,7 @@ public class Residence extends Structure {
 	private List<Food> fridge = Collections.synchronizedList(new ArrayList<Food>());
 	private boolean hasFood;
 	private boolean isApartment;
+	private boolean isOccupied = false;
 	
 	private class Food {
 		private String type;
@@ -182,6 +183,14 @@ public class Residence extends Structure {
 		}
 		resident.getPerson().getInventory().clear();
 		return hasFood;
+	}
+	
+	public boolean isOccupied() {
+		return isOccupied;
+	}
+	
+	public void setOccupied(boolean occupied) {
+		this.isOccupied = occupied;
 	}
 	
 	

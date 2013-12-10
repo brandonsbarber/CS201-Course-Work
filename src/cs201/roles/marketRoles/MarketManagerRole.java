@@ -74,9 +74,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	public static class InventoryEntry {
-		String item;
-		int amount;
-		float price;
+		public String item;
+		public int amount;
+		public float price;
 		
 		public InventoryEntry(String i, int a, float p) {
 			item = i;
@@ -413,18 +413,26 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	/**
 	 * Sent by a DeliveryTruck when a restaurant is closed and cannot accept deliveries.
+	 * @param id 
 	 * 
 	 */
-	public void msgDeliveryFailed(/* discuss what parameters we need */) {
+	public void msgDeliveryFailed(int deliveryID) {
 		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that a delivery failed."));
 		
-		//Order o = null; // for now assume o points to the order
+		// Find the order in our list of orders
+		Order order = null;
+		for (Order o : orders) {
+			if (o.id == deliveryID) {
+				order = o;
+			}
+		}
+		if (order == null)
+			return;
 		
 		/* The delivery truck wasn't able to deliver the goods, probably because the restaurant was closed. Mark the
 		 * order as FAILED so we can try again when the restaurant is open.
 		 */
-		//o.state = OrderState.FAILED;
-		System.out.println("FAILED");
+		order.state = OrderState.FAILED;
 		stateChanged();
 	}
 	
@@ -514,7 +522,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 		for (ItemRequest item : o.items) {
 			int amountWeHave = AmountInStock(item);
 			if (amountWeHave > 0) {
-				item.amount = amountWeHave;
+				if (item.amount > amountWeHave) {
+					item.amount = amountWeHave;
+				}
+				subtractInventory(item.item, item.amount);
 				itemList.add(item);
 			}
 		}
@@ -611,7 +622,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 			TruckAgent deliveryTruck = structure.getNextDeliveryTruck();
 		
 			// Tell him to make a run
-			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure, o.totalPrice);
+			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure, o.totalPrice, o.id);
 			
 			// The order has now been "SENT"
 			o.state = OrderState.SENT;
@@ -689,12 +700,26 @@ public class MarketManagerRole extends Role implements MarketManager {
 		}
 	}
 	
-	public void AddInventoryEntry(InventoryEntry entry) {
+	public void addInventoryEntry(InventoryEntry entry) {
 		// Ensure that we store the item as lowercase
 		entry.item = entry.item.toLowerCase();
 		
 		// Add the inventory entry
 		inventory.put(entry.item, entry);
+		
+		// Update the structure config panel
+		structure.updateConfigPanel();
+	}
+	
+	private void subtractInventory(String item, int amountToDecrease) {
+		// Update our inventory database
+		InventoryEntry entry = inventory.get(item.toLowerCase());
+		if (entry != null) {
+			entry.amount -= amountToDecrease;
+		}
+		
+		// Update the structure config panel
+		structure.updateConfigPanel();
 	}
 	
 	public void setGui(MarketManagerGui g) {
@@ -724,6 +749,17 @@ public class MarketManagerRole extends Role implements MarketManager {
 			employeeList.add(employee.employee);
 		}
 		return employeeList;
+	}
+	
+	/**
+	 * Returns the MarketManager's current inventory.
+	 */
+	public List<InventoryEntry> getInventory() {
+		List<InventoryEntry> inventoryList = new ArrayList<InventoryEntry>();
+		for (Map.Entry<String, InventoryEntry> entry : inventory.entrySet()) {
+			inventoryList.add(entry.getValue());
+		}
+		return inventoryList;
 	}
 	
 	/**
