@@ -213,17 +213,14 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					if(cityGrid[y][x].equals("G"))
 					{
 						img = ArtManager.getImage("Grass_Tile");
-						//g2.setColor(Color.GREEN);
 					}
 					else if(cityGrid[y][x].equals("ST") || cityGrid[y][x].equals("V") ||  cityGrid[y][x].equals("H"))
 					{
 						img = ArtManager.getImage("Sidewalk_Tile");
-						//g2.setColor(Color.GRAY.brighter().brighter());
 					}
 					else if(cityGrid[y][x].equals("T") || Character.isDigit(cityGrid[y][x].charAt(0)))
 					{
 						img = ArtManager.getImage("Road_Tile");
-						//g2.setColor(Color.GRAY.darker());
 					}
 					
 					if(img != null)

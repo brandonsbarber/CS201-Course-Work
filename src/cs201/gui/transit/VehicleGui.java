@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.Gui;
+import cs201.helper.Constants;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
@@ -136,8 +137,11 @@ public abstract class VehicleGui implements Gui
 	{
 		drawBody(g);
 		
-		g.setColor(Color.BLACK);
-		g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+		if(Constants.DEBUG_MODE)
+		{
+			g.setColor(Color.BLACK);
+			g.drawString(""+getVehicle().getClass().getSimpleName()+":"+getVehicle().getInstance(),getX(),getY());
+		}
 	}
 	
 	/**
