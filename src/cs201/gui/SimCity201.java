@@ -21,6 +21,7 @@ import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.configPanels.MarketConfigPanel;
 import cs201.gui.configPanels.PersonConfigPanel;
+import cs201.gui.configPanels.RestaurantConfigPanel;
 import cs201.gui.configPanels.TransitConfigPanel;
 import cs201.gui.structures.market.MarketAnimationPanel;
 import cs201.gui.structures.residence.ApartmentComplexAnimationPanel;
@@ -60,12 +61,15 @@ public class SimCity201 extends JFrame {
 	CityPanel cityPanel;
 	JPanel buildingPanels;
 	CardLayout cardLayout;
-	PersonConfigPanel personPanel;
-	TransitConfigPanel transitPanel;
 	ScenarioPanel scenarioPanel;
 	TimePanel timePanel;
 	
 	SettingsPanel settingsPanel;
+	MarketConfigPanel marketPanel;
+	RestaurantConfigPanel restaurantPanel;
+	PersonConfigPanel personPanel;
+	TransitConfigPanel transitPanel;
+	
 	BaseSettingsPanel bottomSettingsPanel;
 	
 	/**
@@ -135,6 +139,10 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("PersonAgentPanel", personPanel);
 		transitPanel = new TransitConfigPanel();
 		settingsPanel.addPanel("Transit",transitPanel);
+		marketPanel = new MarketConfigPanel();
+		settingsPanel.addPanel("Markets", marketPanel);
+		restaurantPanel = new RestaurantConfigPanel();
+		settingsPanel.addPanel("Restaurants", restaurantPanel);
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
@@ -254,7 +262,10 @@ public class SimCity201 extends JFrame {
 	 */
 	public void clearScenario() {
 		this.personPanel.resetCity();
-		transitPanel.resetCity();
+		this.transitPanel.resetCity();
+		this.marketPanel.resetCity();
+		this.restaurantPanel.resetCity();
+		
 		bottomSettingsPanel.resetCity();
 		CityDirectory.getInstance().resetCity();
 		Constants.ANIMATION_SPEED_FACTOR = 1.0f;
@@ -751,14 +762,12 @@ public class SimCity201 extends JFrame {
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		timePanel.addAnimationPanel(mG);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
-		m.setConfigPanel(mcp);
-		mcp.addMarketStructure(m);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -829,15 +838,13 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
-		m.setConfigPanel(mcp);
-		mcp.addMarketStructure(m);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
 		
 		MarketAnimationPanel mG2 = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m2 = new MarketStructure(23*25,11*25,50,50,Structure.getNextInstance(),mG2);
@@ -846,8 +853,8 @@ public class SimCity201 extends JFrame {
 		buildingPanels.add(mG2,""+m2.getId());
 		cityPanel.addStructure(m2);
 		timePanel.addAnimationPanel(mG2);
-		m2.setConfigPanel(mcp);
-		mcp.addMarketStructure(m2);
+		m2.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m2);
 		
 		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
@@ -1020,15 +1027,13 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
-		m.setConfigPanel(mcp);
-		mcp.addMarketStructure(m);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
 		
 		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
@@ -1097,15 +1102,13 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
-		m.setConfigPanel(mcp);
-		mcp.addMarketStructure(m);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
@@ -1452,15 +1455,13 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
-		m.setConfigPanel(mcp);
-		mcp.addMarketStructure(m);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
 		
 		m.getManager().addInventoryEntry(new InventoryEntry("Pizza",10,20));
 		m.getManager().addInventoryEntry(new InventoryEntry("Burgers",5,10));
@@ -1706,15 +1707,13 @@ public class SimCity201 extends JFrame {
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
-		MarketConfigPanel mcp = new MarketConfigPanel();
-		settingsPanel.addPanel("Markets",mcp);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
 		timePanel.addAnimationPanel(mG);
-		m.setConfigPanel(mcp);
-		mcp.addMarketStructure(m);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
 		
 		TruckAgent truck = new TruckAgent(m);
 		truck.startThread();
