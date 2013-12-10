@@ -1,6 +1,39 @@
 TODO:
 
-[X] Different behavior for buildings on Weekends
+All:
+    Update design docs
+
+Brandon:
+    Transit config panel
+    Updated graphics
+    Change restaurant closing behavior
+    Fix boat jam behavior
+    Fix car warp
+    Fully implement collisions
+    Testing failed market delivery
+
+Skyler:
+    Animation upgrades
+    Finish restaurant integration/testing
+    Clean up housing scenarios
+    Potentially adding multiple residents to a single residence
+    Add random gui animation for 'relaxing'
+    Config panels for housing/apartments
+
+Matt:
+    Test car buying
+    Restaurant config panel
+    Finalize code integration
+
+Ben:
+    Testing failed market delivery
+    Entry/exit animations Market
+    Car artwork
+    Test car buying
+    Reset market config panel on scenario reset
+
+
+
 [ ] Configuration Panels for all buildings
 [X] PersonAgent creation/viewer panel
 [X] Speed up/slow down CityTime and animation timers (make sure to add your buildings to the timePanel)
