@@ -281,7 +281,7 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If you don't even have a home to return to
-		if (state == PersonState.Awake) {
+		if (state == PersonState.Awake /*&& passengerRole.state != PassengerState.Roaming*/) {
 			this.currentAction = null;
 			passengerRole.setActive(true);
 			passengerRole.msgStartRoaming();
@@ -301,9 +301,9 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void goToLocation(Action a) {
 		a.active = true;
+		// if roaming, passengerRole.stopRoaming()
 		if (!passengerRole.isAtLocation(a.location)) {
 			AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Going to " + a.location);
-			//passengerRole.setCurrentLocation(currentLocation);
 			passengerRole.msgGoTo(a.location);
 			currentLocation = null;
 			passengerRole.setActive(true);

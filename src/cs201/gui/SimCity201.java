@@ -85,6 +85,7 @@ public class SimCity201 extends JFrame {
 		JPanel guiPanel = new JPanel();
 		
 		bottomSettingsPanel = new BaseSettingsPanel();
+		CityDirectory.getInstance().addTimerActionListener(bottomSettingsPanel);
 		
 		timePanel = new TimePanel();
 		bottomSettingsPanel.setTimePanel(timePanel);

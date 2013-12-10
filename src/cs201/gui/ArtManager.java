@@ -51,7 +51,12 @@ public class ArtManager
 		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
 		
 		//Ben's Sprites
-		
+		atlas.put("Market_Floor", ImageIO.read(new File("data/Market/Floor.png")));
+		atlas.put("Market_Front_Desk", ImageIO.read(new File("data/Market/Front_Desk.png")));
+		atlas.put("Market_Shelf", ImageIO.read(new File("data/Market/Shelf.png")));
+		atlas.put("Market_Shelf_Top", ImageIO.read(new File("data/Market/Shelf_Top.png")));
+		atlas.put("Market_Shelf_Bottom_Left", ImageIO.read(new File("data/Market/Shelf_Bottom_Left.png")));
+		atlas.put("Market_Shelf_Bottom_Right", ImageIO.read(new File("data/Market/Shelf_Bottom_Right.png")));
 		
 		//Matt's Sprites
 		atlas.put("Default_Walker_Up", ImageIO.read(new File("data/DefaultSprites/Up.png")));

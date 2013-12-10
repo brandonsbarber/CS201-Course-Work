@@ -2,7 +2,6 @@ package cs201.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,7 +21,6 @@ import java.util.concurrent.Semaphore;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import cs201.helper.CityDirectory;
 import cs201.helper.Constants;
 import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
@@ -417,14 +415,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		{
 			
 		}
-		
-		
-		g2.setColor(Color.BLACK);
-		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 17);
-		g2.setFont(font);
-		g2.drawString("Current Time: " + CityDirectory.getInstance().getTime().toString(), bounds.width / 2, bounds.height - bounds.height / 10);
-	
-		
 	}
 	
 	/**
