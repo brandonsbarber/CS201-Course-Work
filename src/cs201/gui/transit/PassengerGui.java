@@ -260,4 +260,14 @@ public class PassengerGui implements Gui
 		setPresent(true);
 	}
 
+	public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
 }
