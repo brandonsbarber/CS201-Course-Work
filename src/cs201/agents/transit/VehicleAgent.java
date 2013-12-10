@@ -1,6 +1,5 @@
 package cs201.agents.transit;
 
-import java.awt.Point;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.Agent;
@@ -18,8 +17,7 @@ import cs201.trace.AlertTag;
 public abstract class VehicleAgent extends Agent implements Vehicle
 {
 	public Structure destination;
-	Point pointDestination;
-	
+
 	public Structure currentLocation;
 	
 	Semaphore animationSemaphore = new Semaphore(0);
@@ -61,14 +59,6 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public void msgSetDestination (Structure destination)
 	{
 		this.destination = destination;
-		this.pointDestination = destination.getParkingLocation();
-		stateChanged();
-	}
-	
-	public void msgSetDestination (Point p)
-	{
-		this.pointDestination = p;
-		this.destination = null;
 		stateChanged();
 	}
 	
@@ -100,14 +90,7 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 			return;
 		}
 		gui.setPresent(true);
-		if(destination != null)
-		{
-			gui.doGoToLocation(destination);
-		}
-		else
-		{
-			gui.doGoToLocation(pointDestination.x, pointDestination.y);
-		}
+		gui.doGoToLocation(destination);
 		try
 		{
 			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Animating to "+destination +" from "+currentLocation);

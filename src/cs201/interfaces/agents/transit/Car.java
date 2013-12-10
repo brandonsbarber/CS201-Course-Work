@@ -1,7 +1,5 @@
 package cs201.interfaces.agents.transit;
 
-import java.awt.Point;
-
 import cs201.interfaces.roles.transit.Passenger;
 import cs201.structures.Structure;
 
@@ -31,6 +29,4 @@ public interface Car extends Vehicle
 	 * @param p the passenger leaving
 	 */
 	public void msgLeaving (Passenger p);
-
-	public void msgCallCar(Passenger p, Point point, Structure destination);
 }
