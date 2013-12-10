@@ -548,7 +548,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private void setupDefaults() {
 		this.nameTextField.setText("Person");
 		
-		this.moneyTextField.setText("$40.00");
+		this.moneyTextField.setText("$200.00");
 		
 		this.hungerComboBox.setSelectedIndex(1);
 		

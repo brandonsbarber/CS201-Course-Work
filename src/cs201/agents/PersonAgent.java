@@ -34,7 +34,7 @@ public class PersonAgent extends Agent implements Person {
 	public static final int FULL = 0;
 	public static final int HUNGRY = 480;
 	public static final int STARVING = 840;
-	private static final int INITIALMONEY = 40;
+	private static final int INITIALMONEY = 200;
 	private static final int MONEYTHRESHOLD = 10;
 	private static final int INITIALWAKEUPHOUR = 7;
 	private static final int INITIALWAKEUPMINUTE = 0;
@@ -283,7 +283,7 @@ public class PersonAgent extends Agent implements Person {
 				return true;
 			}
 		}
-		
+
 		// If nothing to do, go home and relax
 		if (state == PersonState.Awake) {
 			if (this.addActionToPlanner(Intention.ResidenceRelax, home, false)) {
