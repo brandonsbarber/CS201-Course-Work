@@ -143,9 +143,16 @@ public class PassengerRole extends Role implements Passenger
 	{
 		if(state != PassengerState.Roaming)
 		{
-			setCurrentLocation(currentLocation);
+			//setCurrentLocation(currentLocation);
 			state = PassengerState.Roaming;
 		}
+		stateChanged();
+	}
+	
+	public void msgStopRoaming()
+	{
+		state = PassengerState.None;
+		gui.stopRoam();
 		stateChanged();
 	}
 
@@ -154,7 +161,10 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void msgAnimationFinished()
 	{
-		animationPause.release();
+		if(animationPause.availablePermits() == 0)
+		{
+			animationPause.release();
+		}
 	}
 
 	/**
