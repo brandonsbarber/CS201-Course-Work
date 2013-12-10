@@ -73,6 +73,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 		
 		marketBills.add(new MarketBill(market, amount));
 		
+		
 		stateChanged();
 	}
 	
