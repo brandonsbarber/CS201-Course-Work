@@ -44,7 +44,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private JTextField nameTextField;
 	private JTextField moneyTextField;
 	private JTextField stateTextField;
-	private JTextField wakeupTextField;
 	private JTextField sleepTextField;
 	private JTextField actionTextField;
 	private JTextField jobTextField;
@@ -59,6 +58,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private JComboBox<String> hungerComboBox;
 	private JComboBox<Structure> locationComboBox;
 	private JComboBox<Structure> homeComboBox;
+	private JComboBox<CityTime> wakeupComboBox;
 
 	/**
 	 * Create the panel.
@@ -219,19 +219,19 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		gbc_lblWakeup.gridx = 0;
 		gbc_lblWakeup.gridy = 5;
 		leftPanel.add(lblWakeup, gbc_lblWakeup);
-		lblWakeup.setLabelFor(wakeupTextField);
 		
-		wakeupTextField = new JTextField();
-		wakeupTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		wakeupTextField.setEditable(false);
-		wakeupTextField.setFocusable(false);
-		GridBagConstraints gbc_wakeupTextField = new GridBagConstraints();
-		gbc_wakeupTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_wakeupTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_wakeupTextField.gridx = 1;
-		gbc_wakeupTextField.gridy = 5;
-		leftPanel.add(wakeupTextField, gbc_wakeupTextField);
-		wakeupTextField.setColumns(10);
+		wakeupComboBox = new JComboBox<CityTime>();
+		lblWakeup.setLabelFor(wakeupComboBox);
+		wakeupComboBox.setFocusable(false);
+		wakeupComboBox.setEnabled(false);
+		wakeupComboBox.setPreferredSize(new Dimension(34, 28));
+		wakeupComboBox.setMinimumSize(new Dimension(34, 28));
+		GridBagConstraints gbc_wakeupComboBox = new GridBagConstraints();
+		gbc_wakeupComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_wakeupComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_wakeupComboBox.gridx = 1;
+		gbc_wakeupComboBox.gridy = 5;
+		leftPanel.add(wakeupComboBox, gbc_wakeupComboBox);
 		
 		JLabel lblSleep = new JLabel("Sleep:");
 		lblSleep.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -484,7 +484,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.hungerComboBox.setSelectedIndex(-1);
 		this.locationComboBox.removeAllItems();
 		this.stateTextField.setText("");
-		this.wakeupTextField.setText("");
+		this.wakeupComboBox.removeAllItems();
 		this.sleepTextField.setText("");
 		this.actionTextField.setText("");
 		this.carCheckBox.setSelected(false);
@@ -500,7 +500,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.moneyTextField.setEditable(editMode);
 		this.hungerComboBox.setEnabled(editMode);
 		this.locationComboBox.setEnabled(editMode);
-		this.wakeupTextField.setEditable(editMode);
+		this.wakeupComboBox.setEnabled(editMode);
 		this.sleepTextField.setEditable(editMode);
 		this.carCheckBox.setEnabled(editMode);
 		this.jobTextField.setEditable(editMode);
@@ -511,7 +511,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.moneyTextField.setFocusable(editMode);
 		this.hungerComboBox.setFocusable(editMode);
 		this.locationComboBox.setFocusable(editMode);
-		this.wakeupTextField.setFocusable(editMode);
+		this.wakeupComboBox.setFocusable(editMode);
 		this.sleepTextField.setFocusable(editMode);
 		this.carCheckBox.setFocusable(editMode);
 		this.jobTextField.setFocusable(editMode);
@@ -529,7 +529,14 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 			this.locationComboBox.addItem(s);
 		}
 		this.stateTextField.setText("Sleeping - Cannot Edit");
-		this.wakeupTextField.setText("7:00AM");
+		this.wakeupComboBox.addItem(new CityTime(5, 00));
+		this.wakeupComboBox.addItem(new CityTime(5, 30));
+		this.wakeupComboBox.addItem(new CityTime(6, 00));
+		this.wakeupComboBox.addItem(new CityTime(6, 30));
+		this.wakeupComboBox.addItem(new CityTime(7, 00));
+		this.wakeupComboBox.addItem(new CityTime(7, 30));
+		this.wakeupComboBox.addItem(new CityTime(8, 00));
+		this.wakeupComboBox.setSelectedIndex(4);
 		this.sleepTextField.setText("10:00PM");
 		this.actionTextField.setText("None - Cannot Edit");
 		this.carCheckBox.setSelected(false);
@@ -598,7 +605,14 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		output.append("\n\tLocation: " + (location == null ? "None" : location.toString()));
 		p.setCurrentLocation(location);
 		
-		CityTime wakeup;
+		CityTime wakeup = null;
+		if (this.wakeupComboBox.getSelectedIndex() == -1) {
+			wakeup = new CityTime(7, 00);
+		} else {
+			wakeup = (CityTime) this.wakeupComboBox.getSelectedItem();
+		}
+		output.append("\n\tWakeup Time: " + wakeup);
+		p.setWakeupTime(wakeup);
 		
 		CityTime sleep;
 		
@@ -622,6 +636,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 			home = null;
 		} else {
 			home = (Residence) this.homeComboBox.getSelectedItem();
+			home.setOccupied(true);
 		}
 		output.append("\n\tHome: " + (home == null ? "None" : home.toString()));
 		p.setHome(home);
@@ -647,7 +662,9 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.locationComboBox.addItem(p.getCurrentAction() == null ? null : p.getCurrentLocation());
 		this.locationComboBox.setSelectedIndex(0);
 		this.stateTextField.setText(p.getState().toString());
-		this.wakeupTextField.setText(p.getWakeupTime().toString().trim());
+		this.wakeupComboBox.removeAllItems();
+		this.wakeupComboBox.addItem(p.getWakeupTime());
+		this.wakeupComboBox.setSelectedIndex(0);
 		this.sleepTextField.setText(p.getSleepTime().toString().trim());
 		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
 		this.carCheckBox.setSelected(p.getVehicle() != null);
