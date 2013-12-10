@@ -50,6 +50,8 @@ public class ArtManager
 		atlas.put("Grass_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/GrassTile.png")));
 		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
 		
+		
+		
 		//Ben's Sprites
 		
 		
@@ -99,7 +101,12 @@ public class ArtManager
 		
 		//Skyler's Sprites
 		
-		
+		atlas.put("Skyler_Wood_Restaurant_Floor",ImageIO.read(new File("data/Restaurant/Skyler/floor1.png")));
+		atlas.put("Skyler_Restaurant_Table",ImageIO.read(new File("data/Restaurant/Skyler/table.png")));
+		atlas.put("Skyler_Waiter_Left",ImageIO.read(new File("data/Restaurant/Skyler/waiter-left.png")));
+		atlas.put("Skyler_Waiter_Right",ImageIO.read(new File("data/Restaurant/Skyler/waiter-right.png")));
+		atlas.put("Skyler_Waiter_Up",ImageIO.read(new File("data/Restaurant/Skyler/waiter-up.png")));
+		atlas.put("Skyler_Waiter_Down",ImageIO.read(new File("data/Restaurant/Skyler/waiter-down.png")));
 	}
 	
 	public static BufferedImage getImage(String key)

@@ -2,6 +2,7 @@ package cs201.gui.roles.restaurant.Skyler;
 
 import java.awt.*;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
@@ -26,7 +27,7 @@ public class WaiterGuiSkyler implements Gui {
     private int xPos = homeX, yPos = homeY;//default waiter position
     private int xDestination = xPos, yDestination = yPos;//default start position   
     
-    
+    private String dir = new String();
     private String displayString = "";
     private boolean goingOnBreak = false;
     private boolean atHomePos = true;
@@ -44,12 +45,13 @@ public class WaiterGuiSkyler implements Gui {
         homeY += (int)(Math.random()*80);
         yPos = homeY;
         yDestination = yPos;
-        
+        dir = "Skyler_Waiter_Down";
     }
 
     public void updatePosition() {
     	
     	if (xPos == xDestination && yPos == yDestination) {
+    		//dir = "Skyler_Waiter_Down";
     		if (!arrived) {
     			arrived = true;
     			if (xPos == homeX && yPos == homeY) {
@@ -79,23 +81,34 @@ public class WaiterGuiSkyler implements Gui {
     		arrived = false;
     	}
     	
-        if (xPos < xDestination)
+        if (xPos < xDestination){
             xPos++;
-        else if (xPos > xDestination)
+            dir = "Skyler_Waiter_Right";
+        }
+        else if (xPos > xDestination) {
             xPos--;
+            dir = "Skyler_Waiter_Left";
+        }
 
-        if (yPos < yDestination)
+        if (yPos < yDestination) {
             yPos++;
-        else if (yPos > yDestination)
+            dir = "Skyler_Waiter_Down";
+        }
+        else if (yPos > yDestination) {
             yPos--;
+            dir = "Skyler_Waiter_Up";
+        }
         
     }
 
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLACK);
+        /*g.setColor(Color.BLACK);
         g.fillRect(xPos, yPos, 20, 20);
         g.setColor(Color.BLUE);
-        g.fillRect(xPos+1, yPos+1, 18, 18);
+        g.fillRect(xPos+1, yPos+1, 18, 18);*/
+        
+        g.drawImage(ArtManager.getImage(dir), xPos, yPos, 16, 24, null);
+        
         g.setFont(font);
         g.setColor(Color.WHITE);
         g.drawString(displayString, xPos+3, yPos+14);

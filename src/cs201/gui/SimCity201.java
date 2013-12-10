@@ -290,6 +290,21 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p6);
 		personPanel.addPerson(p6);
 		p6.startThread();
+		
+		PersonAgent p7 = new PersonAgent("Customer-3", cityPanel);
+		p7.setWakeupTime(new CityTime(8, 00));
+		p7.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p7);
+		personPanel.addPerson(p7);
+		p7.startThread();
+		
+		PersonAgent p8 = new PersonAgent("Waiter", cityPanel);
+		p8.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p8.setHungerEnabled(false);
+		p8.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p8);
+		personPanel.addPerson(p8);
+		p8.startThread();
 	}
 	
 	/************/

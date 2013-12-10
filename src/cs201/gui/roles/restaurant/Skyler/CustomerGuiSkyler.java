@@ -2,6 +2,7 @@ package cs201.gui.roles.restaurant.Skyler;
 
 import java.awt.*;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
@@ -25,26 +26,37 @@ public class CustomerGuiSkyler implements Gui{
 
 	public static final int xTable = 150;
 	public static final int yTable = 250;
+	
+	String dir = new String();
 
 	public CustomerGuiSkyler(CustomerSkyler c, RestaurantAnimationPanelSkyler panel){ //HostAgent m) {
 		agent = c;
-		
+		dir = "Default_Walker_Down";
 		//maitreD = m;
 		this.animationPanel = panel;
 	}
 
 	public void updatePosition() {
-		if (xPos < xDestination)
+		if (xPos < xDestination) {
 			xPos++;
-		else if (xPos > xDestination)
+			dir = "Default_Walker_Right";
+		}
+		else if (xPos > xDestination) {
 			xPos--;
+			dir = "Default_Walker_Left";
+		}
 
-		if (yPos < yDestination)
+		if (yPos < yDestination) {
 			yPos++;
-		else if (yPos > yDestination)
+			dir = "Default_Walker_Down";
+		}
+		else if (yPos > yDestination) {
 			yPos--;
+			dir = "Default_Walker_Up";
+		}
 
 		if (xPos == xDestination && yPos == yDestination) {
+			dir = "Default_Walker_Down";
 			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
 			else if (command==Command.GoPay) {
 				agent.msgAnimationFinishedPay();
@@ -60,14 +72,17 @@ public class CustomerGuiSkyler implements Gui{
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.BLACK);
+		/*g.setColor(Color.BLACK);
 		g.fillRect(xPos, yPos, 20, 20);
 		g.setColor(Color.GREEN);
-		g.fillRect(xPos+1, yPos+1, 18, 18);
+		g.fillRect(xPos+1, yPos+1, 18, 18);*/
+		
+		g.drawImage(ArtManager.getImage(dir), xPos, yPos, 17, 22, null);
+		
 		if(agent.getState()==RestaurantCustomerRoleSkyler.AgentState.Eating) {
 			g.setFont(font);
 		g.setColor(Color.WHITE);
-		g.drawString(agent.getChoice().substring(0, 2), xPos+2, yPos+14);
+		g.drawString(agent.getChoice().substring(0, 2), xPos+2, yPos+40);
 		}
 		
 		}

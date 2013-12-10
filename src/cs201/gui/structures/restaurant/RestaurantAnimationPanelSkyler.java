@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.Timer;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
@@ -51,6 +52,13 @@ public class RestaurantAnimationPanelSkyler extends StructurePanel {
         g2.setColor(getBackground());
         g2.fillRect(0, 0, WINDOWX, WINDOWY );
         
+        for (int i=0; i<WINDOWX; i=i+32) {
+        	for (int j=0; j<WINDOWY; j=j+32) {
+        		g.drawImage(ArtManager.getImage("Skyler_Wood_Restaurant_Floor"), i, j, 32, 32, null);
+        	}
+        }
+        
+        
         g2.setColor(Color.WHITE);
         g2.fillRect(getWidth()-100, 0, 100, 100 ); //cook's area
         g2.setColor(Color.GRAY);
@@ -67,11 +75,13 @@ public class RestaurantAnimationPanelSkyler extends StructurePanel {
         g2.fillRect(0, 97, 26, 106 ); //waiter home area
         
         for (int i=0; i < nTables; i++) {
-            g.setColor(Color.ORANGE);
-            g.fillRect(xTable+(100*i), yTable, 50, 50);//200 and 250 need to be table params
+           // g.setColor(Color.ORANGE);
+           // g.fillRect(xTable+(100*i), yTable, 50, 50);//200 and 250 need to be table params
+            g.drawImage(ArtManager.getImage("Skyler_Restaurant_Table"), xTable+(100*i)-10, yTable+23, 44, 43, null);
         }
         
         super.paintComponent(g);
+        
     }
     
     public void pauseAnimation() {
