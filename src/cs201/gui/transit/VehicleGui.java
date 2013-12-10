@@ -4,10 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -53,6 +57,8 @@ public abstract class VehicleGui implements Gui
 
 	private boolean allowedToMove = true;
 	
+	private Set<Point> acquiredPoints;
+	
 	/**
 	 * Creates a vehicle gui
 	 * @param vehicle the vehicle who holds the gui
@@ -82,6 +88,7 @@ public abstract class VehicleGui implements Gui
 		present = false;
 		currentDirection = MovementDirection.None;
 		moves = new Stack<MovementDirection>();
+		acquiredPoints = new HashSet<Point>();
 	}
 	
 	/**
@@ -190,15 +197,31 @@ public abstract class VehicleGui implements Gui
 				}
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
-			{
+			{	
 				if(allowedToMove)
 				{
 					currentDirection = moves.pop();
 				
 					if(current != next)
 					{
-						city.permissions[current.y][current.x].release();
-						revertCrosswalk();
+						if(!Pathfinder.isCrossWalk(current, city.getWalkingMap(), city.getDrivingMap()) || !Pathfinder.isInIntersection(next, city.getWalkingMap()).contains(current))
+						{
+							city.permissions[current.y][current.x].release();
+							revertCrosswalk();
+							acquiredPoints.remove(current);
+						}
+						
+						if(Pathfinder.isInIntersection(city, current) && !Pathfinder.isInIntersection(city,next))
+						{
+							Set<Point> intersectionPoints = Pathfinder.tryIntersectionAcquire(city, current.x,current.y);
+							for(Point p : intersectionPoints)
+							{
+								if(acquiredPoints.remove(p))
+								{
+									city.permissions[p.y][p.x].release();
+								}
+							}
+						}
 					}
 					
 					current = next;
@@ -219,9 +242,18 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				if(canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire())
+				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()) || acquiredPoints.contains(next))
 				{
 					allowedToMove = true;
+					if(Pathfinder.isInIntersection(city,next))
+					{
+						Set<Point> intersectionPoints = Pathfinder.tryIntersectionAcquire(city, next.x,next.y);
+						for(Point p : intersectionPoints)
+						{
+							city.permissions[p.y][p.x].tryAcquire();
+						}	
+						acquiredPoints.addAll(intersectionPoints);
+					}
 				}
 				else
 				{

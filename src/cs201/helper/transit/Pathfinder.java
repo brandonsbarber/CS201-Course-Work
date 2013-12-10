@@ -2,9 +2,11 @@ package cs201.helper.transit;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -307,7 +309,7 @@ public class Pathfinder
 	/*
 	 * Helper method for validity
 	 */
-	private static boolean isValidPoint(MovementDirection[][] map, MyPoint nextPoint)
+	private static boolean isValidPoint(MovementDirection[][] map, Point nextPoint)
 	{
 		return nextPoint.x >= 0 && nextPoint.x < map[0].length && nextPoint.y >= 0 && nextPoint.y < map.length;
 	}
@@ -329,12 +331,55 @@ public class Pathfinder
 			return new MyPoint(p.x-1,p.y,p,dir);
 		default:
 			return new MyPoint(p.x,p.y-1,p,MovementDirection.Up);
-		
 		}
 	}
 	
 	public static boolean isCrossWalk(Point p, MovementDirection[][] walking, MovementDirection[][] driving)
 	{
 		return walking[p.y][p.x].isValid() && driving[p.y][p.x].isValid();
+	}
+	
+	public static Set<Point> tryIntersectionAcquire(CityPanel city, int x, int y)
+	{
+		Point p = new Point(x,y);
+		
+		Set<Point> intersection = new HashSet<Point>();
+		
+		if(isValidPoint(city.getDrivingMap(),p) && city.getDrivingMap()[p.y][p.x] != MovementDirection.Turn && !isCrossWalk(p,city.getWalkingMap(),city.getDrivingMap()))
+		{
+			return intersection;
+		}
+		
+		intersection.add(p);
+		
+		ArrayList<Point> toCheck = new ArrayList<Point>();
+		ArrayList<Point> checked = new ArrayList<Point>();
+		toCheck.add(p);
+		
+		while(!toCheck.isEmpty())
+		{
+			Point check = toCheck.remove(0);
+			System.out.println(check);
+			if(checked.contains(check))
+			{
+				continue;
+			}
+			checked.add(check);
+			if(isValidPoint(city.getDrivingMap(),check) && (city.getDrivingMap()[check.y][check.x] == MovementDirection.Turn || isCrossWalk(check,city.getWalkingMap(),city.getDrivingMap())))
+			{
+				intersection.add(check);
+				toCheck.add(new Point(check.x,check.y+1));
+				toCheck.add(new Point(check.x,check.y-1));
+				toCheck.add(new Point(check.x+1,check.y));
+				toCheck.add(new Point(check.x-1,check.y));
+			}
+		}
+		
+		return intersection;
+	}
+	
+	public static boolean isInIntersection(CityPanel city, Point p)
+	{
+		return city.getDrivingMap()[p.y][p.x] == MovementDirection.Turn;
 	}
 }

@@ -161,6 +161,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Brandon Restaurant Market Order");
 		scenarioList.add("Beaucoup Buses");
 		scenarioList.add("Killer Buses");
+		scenarioList.add("Joust");
 		
 		
 		scenarioList.add("Reset City"); // keep as last item
@@ -206,7 +207,36 @@ public class SimCity201 extends JFrame {
 			case 21: brandonRestaurantMarketOrder(); break;
 			case 22: beaucoupBuses();break;
 			case 23: hundredPeopleBus();break;
+			case 24: joust();break;
 			default: return;
+		}
+	}
+
+	private void joust()
+	{
+CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		ArrayList<BusStop> stops = new ArrayList<BusStop>();
+
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(4*25,11*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
+		
+		cityPanel.addStructure(stops.get(0),new Point(3*25,11*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
+		
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(25*25,6*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
+		
+		cityPanel.addStructure(stops.get(1),new Point(26*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		
+		for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
 		}
 	}
 
@@ -545,7 +575,7 @@ public class SimCity201 extends JFrame {
 		
 		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
 		
-		for(int i = 0; i < stops.size(); i++)
+		for(int i = 0; i < 1/*stops.size()*/; i++)
 		{
 			BusAgent bus = new BusAgent(new BusRoute(stops),i);
 			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
@@ -572,11 +602,11 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 
-		PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
+		/*PersonAgent p1 = new PersonAgent("Bus Rider",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, m, null);
 		p1.getPassengerRole().setBusStops(stops);
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();
+		p1.startThread();*/
 	}
 	
 	private void normativeMarketRestaurantDelivery()

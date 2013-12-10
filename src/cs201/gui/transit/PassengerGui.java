@@ -299,6 +299,7 @@ public class PassengerGui implements Gui
 					list.add(this);
 					allowedToMove = true;
 				}
+				
 			}
 		}
 	}
