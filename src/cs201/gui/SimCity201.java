@@ -163,7 +163,6 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Market Shift Change");
 		scenarioList.add("Ben's Restaurant Shift Change");
 		scenarioList.add("Brandon Restaurant Market Order");
-		scenarioList.add("Skyler's Restaurant");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -206,7 +205,7 @@ public class SimCity201 extends JFrame {
 			case 19: marketShiftChange(); break;
 			case 20: benRestaurantShiftChange(); break;
 			case 21: brandonRestaurantMarketOrder(); break;
-			case 22: skylerRestaurant(); break;
+
 			default: return;
 		}
 	}
@@ -229,8 +228,6 @@ public class SimCity201 extends JFrame {
 		
 		System.gc();
 	}
-	
-	/***Skyler Scenario. Based off of brandonRestaurant()****/
 	
 	private void skylerRestaurant() {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
@@ -306,8 +303,6 @@ public class SimCity201 extends JFrame {
 		personPanel.addPerson(p8);
 		p8.startThread();
 	}
-	
-	/************/
 	
 	private void brandonRestaurantMarketOrder()
 	{
