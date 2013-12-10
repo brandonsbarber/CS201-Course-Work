@@ -1339,11 +1339,10 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 		
-		createPerson(0 + "", null, null, null, null, null);
-		
-		/*for (int i = 1; i <= 100; i++) {
-			createPerson(i + "", r, null, null, null, null);
-		}*/
+		for (int i = 1; i <= 100; i++)
+		{
+			createPerson(i + "", null, null, null, null, null);
+		}
 	}
 	
 	private void hundredPeopleBus()

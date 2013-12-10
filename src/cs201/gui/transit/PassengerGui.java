@@ -122,7 +122,7 @@ public class PassengerGui implements Gui
 	
 	public void doRoam()
 	{
-		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
 		doGoToLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
 	}
 	
@@ -254,7 +254,7 @@ public class PassengerGui implements Gui
 
 	public void setLocation()
 	{
-		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
+		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap(),city.getDrivingMap());
 		setLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
 		setPresent(true);
 	}

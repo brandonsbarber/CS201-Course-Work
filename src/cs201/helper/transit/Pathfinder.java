@@ -201,17 +201,17 @@ public class Pathfinder
 		return moves;
 	}
 	
-	public static Point findRandomWalkingLocation(MovementDirection[][] map)
+	public static Point findRandomWalkingLocation(MovementDirection[][] walking, MovementDirection[][] driving)
 	{
 		Point p = new Point();
 		
 		ArrayList<Point> tiles = new ArrayList<Point>();
 		
-		for(int y = 0; y < map.length; y++)
+		for(int y = 0; y < walking.length; y++)
 		{
-			for(int x = 0; x < map[y].length; x++)
+			for(int x = 0; x < walking[y].length; x++)
 			{
-				if(map[y][x].isValid())
+				if(walking[y][x].isValid() && !driving[y][x].isValid())
 				{
 					tiles.add(new Point(x,y));
 				}
