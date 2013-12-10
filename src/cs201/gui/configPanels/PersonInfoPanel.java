@@ -685,9 +685,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		
 		// If we got here, all tests succeeded
 		// add the person to the CityDirectory, etc. and start its thread
-		// CityDirectory.getInstsance().addPerson(p);
-		// personPanel.addPerson(p);
-		// p.startThread();
 		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "PersonCreationPanel", output.toString());
 		p.setWakeupTime(wakeup);
 		p.setMoney(money);
