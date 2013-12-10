@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.astar.AStarNode;
 import cs201.gui.astar.AStarTraversal;
 import cs201.gui.astar.Position;
 import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.helper.Constants;
 import cs201.roles.marketRoles.MarketEmployeeRole;
 
 public class MarketEmployeeGui implements Gui {
@@ -44,8 +46,10 @@ public class MarketEmployeeGui implements Gui {
 	private boolean hasCar = false;
 	private boolean movingCarIn = false;
 	private boolean movingCarOut = false;
+	private boolean gettingShelfItem = false;
 	private int carX = 0;
 	private int carY = 0;
+	String moveDir = "Market_Employee_Down";
 	
 	MarketAnimationPanel animPanel;
 	
@@ -103,12 +107,17 @@ public class MarketEmployeeGui implements Gui {
 		}
 		return false;
 	}
+	
+	public void setIconDirection(String direction) {
+		moveDir = direction;
+	}
 
 	public void updatePosition() {
 		
 		if (movingCarIn) {
 			carX = xPos + 50;
 			carY = yPos;
+			moveDir = "Market_Employee_Left";
 		}
 		
 		if (movingCarOut) {
@@ -127,16 +136,22 @@ public class MarketEmployeeGui implements Gui {
 		}
 		
 		if (nextPosition != null) {
-			if (xPos < nextPosition.getXInPixels())
+			if (xPos < nextPosition.getXInPixels()) {
 				xPos++;
-			else if (xPos > nextPosition.getXInPixels())
+				moveDir = "Market_Employee_Right";
+			}
+			else if (xPos > nextPosition.getXInPixels()) {
 				xPos--;
-			
-			if (yPos < nextPosition.getYInPixels())
+				moveDir = "Market_Employee_Left";
+			}
+			if (yPos < nextPosition.getYInPixels()) {
 				yPos++;
-			else if (yPos > nextPosition.getYInPixels())
+				moveDir = "Market_Employee_Down";
+			}
+			else if (yPos > nextPosition.getYInPixels()) {
 				yPos--;
-			
+				moveDir = "Market_Employee_Up";
+			}
 			if (xPos == nextPosition.getXInPixels() && yPos == nextPosition.getYInPixels()) {
 				nextPosition = null;
 			}
@@ -173,18 +188,29 @@ public class MarketEmployeeGui implements Gui {
 			    	//currentPosition.release(aStar.getGrid());
 			    	currentPosition = nextPosition;
 			    //}
+			} else {
+				if (gettingShelfItem) {
+					moveDir = "Market_Employee_Left";
+				} else {
+					moveDir = "Market_Employee_Down";
+				}
 			}
 		}
 	}
 
 	public void draw(Graphics2D g) {
-		// Draw the employee icon
-		g.setColor(Color.orange);
-		g.fillRect(xPos, yPos, EMPLOYEE_SIZE, EMPLOYEE_SIZE);
-		
-		// Draw the employee text
-		g.setColor(Color.black);
-		g.drawString("Market Employee", xPos, yPos - 3);
+		if (Constants.DEBUG_MODE) {
+			// Draw the employee icon
+			g.setColor(Color.orange);
+			g.fillRect(xPos, yPos, EMPLOYEE_SIZE, EMPLOYEE_SIZE);
+			
+			// Draw the employee text
+			g.setColor(Color.black);
+			g.drawString("Market Employee", xPos, yPos - 3);
+		} else {
+			// Draw the employee
+			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, EMPLOYEE_SIZE, EMPLOYEE_SIZE, null);
+		}
 		
 		// Draw the car, if the employee is currently bringing one out
 		if (hasCar) {
@@ -211,10 +237,12 @@ public class MarketEmployeeGui implements Gui {
 	
 	public void doGoToItemOnShelf(int isleNumber, int itemNumber) {
 		guiMoveFromCurrentPositionTo(new Position(4 + 3 * isleNumber, 5 + itemNumber));
+		gettingShelfItem = true;
 	}
 	
 	public void doWalkToCarLot() {
 		guiMoveFromCurrentPositionTo(new Position(20, 13));
+		gettingShelfItem = false;
 	}
 	
 	public void setHasCar(boolean car) {
@@ -231,9 +259,11 @@ public class MarketEmployeeGui implements Gui {
 	
 	public void doBringCarOut() {
 		guiMoveFromCurrentPositionTo(new Position(11, 13));
+		gettingShelfItem = false;
 	}
 	
 	public void doGoToManager() {
+		gettingShelfItem = false;
 		for (int x = 10; x > 0; x--) {
 			if (guiMoveFromCurrentPositionTo(new Position(x, 14)))
 				return;
@@ -245,15 +275,18 @@ public class MarketEmployeeGui implements Gui {
 	}
 	
 	public void doEnterMarket() {
+		gettingShelfItem = false;
 		doGoHome();
 	}
 	
 	public void doGoHome() {
+		gettingShelfItem = false;
 		guiMoveFromCurrentPositionTo(homePosition);
 	}
 	
 	public void doLeaveMarket() {
 		animating = true;
+		gettingShelfItem = false;
 		guiMoveFromCurrentPositionTo(new Position(1, 1));
 		ultimateDestination = new Position(1, 1);
 		positionQueue.add(ultimateDestination);

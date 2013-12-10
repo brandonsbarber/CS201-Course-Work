@@ -3,8 +3,10 @@ package cs201.gui.roles.market;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.market.MarketAnimationPanel;
+import cs201.helper.Constants;
 import cs201.roles.marketRoles.MarketConsumerRole;
 
 public class MarketConsumerGui implements Gui {
@@ -21,6 +23,7 @@ public class MarketConsumerGui implements Gui {
 	
 	private int xDestination, yDestination;
 	boolean animating = false;
+	String moveDir = "Default_Walker_Down";
 	
 	public MarketConsumerGui() {
 		this(null);
@@ -56,11 +59,31 @@ public class MarketConsumerGui implements Gui {
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.cyan);
-		g.fillRect(xPos, yPos, CONSUMER_SIZE, CONSUMER_SIZE);
-		
-		g.setColor(Color.black);
-		g.drawString("Market Consumer", xPos, yPos - 3);
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.cyan);
+			g.fillRect(xPos, yPos, CONSUMER_SIZE, CONSUMER_SIZE);
+			
+			g.setColor(Color.black);
+			g.drawString("Market Consumer", xPos, yPos - 3);
+		} else {
+			if (animating) {
+				double theta = Math.atan2(yPos - yDestination, xDestination - xPos);
+				
+				if (theta >= -Math.PI/4 && theta <= Math.PI/4) {
+					moveDir = "Default_Walker_Right";
+				} else if (theta >= Math.PI/4 && theta <= 3*Math.PI/4) {
+					moveDir = "Default_Walker_Up";
+				} else if (theta <= -Math.PI/4 && theta >= -3*Math.PI/4) {
+					moveDir = "Default_Walker_Down";
+				} else {
+					moveDir = "Default_Walker_Left";
+				}
+			} else {
+				moveDir = "Default_Walker_Up";
+			}
+			
+			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, CONSUMER_SIZE, CONSUMER_SIZE, null);
+		}
 	}
 
 	public boolean isPresent() {
