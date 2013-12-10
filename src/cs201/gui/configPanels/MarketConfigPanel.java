@@ -20,6 +20,7 @@ import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.structures.market.MarketStructure;
 
+@SuppressWarnings("serial")
 public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	
 	// The reference to the MarketStructure this config panel will be controlling
@@ -55,15 +56,6 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		this.add(addInventoryButton);
 		
 		//loadInventoryFromStructure();
-	}
-	
-	/**
-	 * The market config panel no longer configures only one market.
-	 * @deprecated Use addMarketStructure instead
-	 */
-	public void setStructure(MarketStructure s) {
-		// Hook up this config panel to a certain structure
-		//structure = s;
 	}
 
 	public void setPersonEnabled(Role role) {
@@ -165,6 +157,11 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		// Confirm the add
 		String confirmation = "Successfully added " + quantityValue + " " + item + "(s) at $" + String.format("%.2f", priceValue) + " each to the market's inventory!";
 		JOptionPane.showMessageDialog(this, confirmation);	
+	}
+
+	public void resetCity() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
