@@ -416,18 +416,23 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @param id 
 	 * 
 	 */
-	public void msgDeliveryFailed(int id) {
+	public void msgDeliveryFailed(int deliveryID) {
 		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that a delivery failed."));
 		
-		
-		
-		//Order o = null; // for now assume o points to the order
+		// Find the order in our list of orders
+		Order order = null;
+		for (Order o : orders) {
+			if (o.id == deliveryID) {
+				order = o;
+			}
+		}
+		if (order == null)
+			return;
 		
 		/* The delivery truck wasn't able to deliver the goods, probably because the restaurant was closed. Mark the
 		 * order as FAILED so we can try again when the restaurant is open.
 		 */
-		//o.state = OrderState.FAILED;
-		System.out.println("FAILED");
+		order.state = OrderState.FAILED;
 		stateChanged();
 	}
 	
@@ -617,7 +622,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 			TruckAgent deliveryTruck = structure.getNextDeliveryTruck();
 		
 			// Tell him to make a run
-			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure, o.totalPrice);
+			deliveryTruck.msgMakeDeliveryRun(o.items, o.structure, o.totalPrice, o.id);
 			
 			// The order has now been "SENT"
 			o.state = OrderState.SENT;
