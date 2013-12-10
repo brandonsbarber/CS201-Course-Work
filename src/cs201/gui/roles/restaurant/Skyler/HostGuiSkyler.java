@@ -55,10 +55,10 @@ public class HostGuiSkyler implements Gui {
         g.setColor(Color.MAGENTA);
         g.fillRect(xPos, yPos, 20, 20);
         
-        for (int i=0; i < agent.getNTables(); i++) {
+        /*for (int i=0; i < agent.getNTables(); i++) {
         g.setColor(Color.ORANGE);
         g.fillRect(xTable+(100*i), yTable, 50, 50);//200 and 250 need to be table params
-        }
+        }*/
     }
 
     public boolean isPresent() {

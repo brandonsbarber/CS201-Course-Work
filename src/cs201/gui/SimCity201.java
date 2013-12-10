@@ -27,6 +27,7 @@ import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBrandon;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
+import cs201.gui.structures.restaurant.RestaurantAnimationPanelSkyler;
 import cs201.gui.structures.transit.BusStopAnimationPanel;
 import cs201.gui.transit.BusGui;
 import cs201.gui.transit.CarGui;
@@ -47,6 +48,7 @@ import cs201.structures.residence.Residence;
 import cs201.structures.restaurant.RestaurantBen;
 import cs201.structures.restaurant.RestaurantBrandon;
 import cs201.structures.restaurant.RestaurantMatt;
+import cs201.structures.restaurant.RestaurantSkyler;
 import cs201.structures.transit.BusStop;
 
 @SuppressWarnings("serial")
@@ -161,6 +163,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Market Shift Change");
 		scenarioList.add("Ben's Restaurant Shift Change");
 		scenarioList.add("Brandon Restaurant Market Order");
+		scenarioList.add("Skyler's Restaurant");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -203,6 +206,7 @@ public class SimCity201 extends JFrame {
 			case 19: marketShiftChange(); break;
 			case 20: benRestaurantShiftChange(); break;
 			case 21: brandonRestaurantMarketOrder(); break;
+			case 22: skylerRestaurant(); break;
 			default: return;
 		}
 	}
@@ -225,6 +229,63 @@ public class SimCity201 extends JFrame {
 		
 		System.gc();
 	}
+	
+	/***Skyler Scenario. Based off of brandonRestaurant()****/
+	
+	private void skylerRestaurant() {
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelSkyler g = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
+		RestaurantSkyler r = new RestaurantSkyler(100,100,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 00));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
+		p5.startThread();
+	}
+	
+	/************/
 	
 	private void brandonRestaurantMarketOrder()
 	{

@@ -132,10 +132,25 @@ public class RestaurantSkyler extends Restaurant {
 		}
 	}
 
+	private void checkIfItsTimeToOpen() {
+		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
+			for (RestaurantWaiterRole w : waiters) {
+				if (w.getPerson() != null) {
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
+					this.isOpen = true;
+					return;
+				}
+			}
+		}
+	}
 	
 
 	@Override
 	public void updateTime(CityTime time) {
+		if(!isOpen) {
+			checkIfItsTimeToOpen();
+		}
+		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			if (host.getPerson() != null) {

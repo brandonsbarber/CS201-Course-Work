@@ -19,7 +19,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	private String name;
 	private String choice="";
 	private int hungerLevel = 5;        // determines length of meal
-	private double money;
+	private double money = 0;
 	private int randomInt;
 	private double amtOwed=0;
 	
@@ -50,7 +50,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 		super();
 		this.name = name;
 		
-		money = myPerson.getMoney();
+		//money = myPerson.getMoney();
 		//if(name.equals("Broke")||name.equals("Flake")) money=0;
 	}
 
@@ -62,6 +62,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	}
 	
 	public void gotHungry() {//from animation
+		money = myPerson.getMoney();
 		Do("I'm hungry and I have $"+String.format("%.2f", money)+" to spend.");
 		event = AgentEvent.gotHungry;
 		stateChanged();
@@ -126,7 +127,8 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	@Override
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
-		this.gotHungry();
+		Do("Interaction started.");
+		this.customerGui.setHungry();
 	}
 
 	@Override
@@ -212,6 +214,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 		state = AgentState.Leaving;
 		cashier.msgHereIsCash(this, amtOwed);
 		money-=amtOwed;
+		myPerson.setMoney(money);
 		amtOwed = 0;
 		customerGui.DoExitRestaurant();
 	}
@@ -234,11 +237,12 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 			return;
 		}
 		
-		Object[] prices = (Object[]) menu.values().toArray();
-		int cheapest=(Integer)prices[0];
+		//Object[] prices = (Object[]) menu.values().toArray();
+		Object[] prices = (Object[])menu.values().toArray();
+		double cheapest=(Double)prices[0];
 		for (int i=1; i<prices.length; i++) {
-			if ((Integer)prices[i]<cheapest)
-				cheapest = (Integer)prices[i];
+			if ((Double)prices[i]<cheapest)
+				cheapest = (Double)prices[i];
 		}
 		
 		if(money<cheapest && !name.equals("Flake")) {
@@ -306,7 +310,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 			public void run() {
 				Do("Done eating, cookie=" + cookie);
 				event = AgentEvent.doneEating;
-				//isHungry = false;
+				myPerson.setHungerLevel(0);
 				stateChanged();
 			}
 		},

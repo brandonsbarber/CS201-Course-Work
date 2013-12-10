@@ -17,16 +17,20 @@ import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Skyler.CustomerGuiSkyler;
 import cs201.gui.roles.restaurant.Skyler.HostGuiSkyler;
 import cs201.gui.roles.restaurant.Skyler.WaiterGuiSkyler;
+import cs201.roles.restaurantRoles.Skyler.RestaurantHostRoleSkyler;
 
 public class RestaurantAnimationPanelSkyler extends StructurePanel {
 	
+	private final int nTables = RestaurantHostRoleSkyler.NTABLES;
 	private final int WINDOWX = 550;
     private final int WINDOWY = 350;
+    
+    public static final int xTable = 150;
+    public static final int yTable = 250;
+    
     private Image bufferImage;
     private Dimension bufferSize;
     private boolean pauseBool = false;
-
-    private List<Gui> guis = new ArrayList<Gui>();
 
     public RestaurantAnimationPanelSkyler(int i, SimCity201 sc) {
 		super(i, sc);
@@ -38,11 +42,6 @@ public class RestaurantAnimationPanelSkyler extends StructurePanel {
  
     	Timer timer = new Timer(15, this );
     	timer.start();
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		if(!pauseBool)
-		repaint();  //Will have paintComponent called
 	}
 
     public void paintComponent(Graphics g) {
@@ -67,30 +66,12 @@ public class RestaurantAnimationPanelSkyler extends StructurePanel {
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 97, 26, 106 ); //waiter home area
         
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
+        for (int i=0; i < nTables; i++) {
+            g.setColor(Color.ORANGE);
+            g.fillRect(xTable+(100*i), yTable, 50, 50);//200 and 250 need to be table params
         }
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.draw(g2);
-            }
-        }
-    }
-    
-    public void addGui(HostGuiSkyler gui) {
-        guis.add(gui);
-    }
-    
-    public void addGui(CustomerGuiSkyler gui) {
-        guis.add(gui);
-    }
-    
-    public void addGui(WaiterGuiSkyler gui) {
-    	guis.add(gui);
+        
+        super.paintComponent(g);
     }
     
     public void pauseAnimation() {

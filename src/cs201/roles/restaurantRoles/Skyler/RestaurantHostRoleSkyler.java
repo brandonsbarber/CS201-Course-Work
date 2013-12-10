@@ -16,7 +16,7 @@ import cs201.roles.restaurantRoles.Skyler.RestaurantWaiterRoleSkyler.BreakState;
 public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 		HostSkyler {
 	
-	static final int NTABLES = 3;
+	public static final int NTABLES = 3;
 	
 	public List<CustomerSkyler> waitingCustomers
 	= Collections.synchronizedList(new ArrayList<CustomerSkyler>());
