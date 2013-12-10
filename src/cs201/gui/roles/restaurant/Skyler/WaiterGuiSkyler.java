@@ -31,6 +31,7 @@ public class WaiterGuiSkyler implements Gui {
     private int xDestination = xPos, yDestination = yPos;//default start position   
     
     private String dir = new String();
+    private String destinationDir = new String();
     private String displayString = "";
     private boolean goingOnBreak = false;
     private boolean atHomePos = true;
@@ -49,12 +50,13 @@ public class WaiterGuiSkyler implements Gui {
         yPos = homeY;
         yDestination = yPos;
         dir = "Skyler_Waiter_Down";
+        destinationDir = dir;
     }
 
     public void updatePosition() {
     	
     	if (xPos == xDestination && yPos == yDestination) {
-    		//dir = "Skyler_Waiter_Down";
+    		dir = destinationDir;
     		if (!arrived) {
     			arrived = true;
     			if (xPos == homeX && yPos == homeY) {
@@ -148,6 +150,7 @@ public class WaiterGuiSkyler implements Gui {
     	currentTableNum = tableNumber;
         xDestination = xTable + 20 + (100*(currentTableNum-1));
         yDestination = yTable - 20;
+        destinationDir = "Skyler_Waiter_Down";
     }
     
     public void DoGoToTable(int tableNumber) {
@@ -156,6 +159,7 @@ public class WaiterGuiSkyler implements Gui {
     	currentTableNum = tableNumber;
     	xDestination = xTable + 20 + (100*(currentTableNum-1));
         yDestination = yTable - 20;
+        destinationDir = "Skyler_Waiter_Down";
     }
 
     public void DoLeaveCustomer() {
@@ -165,6 +169,7 @@ public class WaiterGuiSkyler implements Gui {
         //yDestination = -19;
         xDestination = homeX;
         yDestination = homeY;
+        destinationDir = "Skyler_Waiter_Left";
     }
     
     public void DoGoToWaitingArea() {
@@ -172,6 +177,7 @@ public class WaiterGuiSkyler implements Gui {
     	displayString = "";
     	xDestination = waitingX;
     	yDestination = waitingY;
+    	destinationDir = "Skyler_Waiter_Left";
     }
     
     public void DoBringOrderToCook(String choice) { //NEED TO ADD IN CHOICE GRAPHIC
@@ -179,6 +185,7 @@ public class WaiterGuiSkyler implements Gui {
     	displayString = choice.substring(0, 2) + "?";
     	xDestination = cookX;
     	yDestination = cookY;
+    	destinationDir = "Skyler_Waiter_Up";
     }
     
     public void DoGoToCashier() {
@@ -186,6 +193,7 @@ public class WaiterGuiSkyler implements Gui {
     	displayString = "";
     	xDestination = 200;
     	yDestination = -19;
+    	destinationDir = "Skyler_Waiter_Up";
     }
     
     public void DoGetFood() {
@@ -193,6 +201,7 @@ public class WaiterGuiSkyler implements Gui {
     	displayString = "";
     	xDestination = cookX2;
     	yDestination = cookY2;
+    	destinationDir = "Skyler_Waiter_Right";
     }
     
     public void DoDeliverFood (String choice, int tableNumber) {
@@ -201,6 +210,7 @@ public class WaiterGuiSkyler implements Gui {
     	currentTableNum = tableNumber;
     	xDestination = xTable + 20 + (100*(currentTableNum-1));
         yDestination = yTable - 20;
+        destinationDir = "Skyler_Waiter_Down";
     }
 
     public int getXPos() {

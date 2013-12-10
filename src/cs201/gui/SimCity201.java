@@ -575,6 +575,8 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p1);
 		
 		p1.startThread();
+		
+		//p1.setWakeupTime(new CityTime(13,0)); //Need to change wakeup Time after a delay.
 	}
 	
 	private void normativeWalking()

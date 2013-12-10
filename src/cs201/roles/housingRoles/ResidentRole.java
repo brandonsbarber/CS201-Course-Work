@@ -132,6 +132,9 @@ public class ResidentRole extends Role implements Resident {
 			this.gui.setPresent(true);
 			gui.enter();
 			this.acquireSemaphore();
+			if (intent == Intention.ResidenceRelax) {
+				goToCouch();
+			}
 		}
 		
 	}
@@ -172,6 +175,14 @@ public class ResidentRole extends Role implements Resident {
 	private void goToBed() {
 		if(!isTest) {
 			gui.goToBed();
+			this.acquireSemaphore();
+		}
+		
+	}
+	
+	private void goToCouch() {
+		if(!isTest) {
+			gui.goToCouch();
 			this.acquireSemaphore();
 		}
 		

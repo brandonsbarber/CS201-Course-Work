@@ -140,8 +140,10 @@ public class ArtManager
 		atlas.put("Residence_Dining_Table",ImageIO.read(new File("data/Housing/Dining-table.png")));
 		atlas.put("Residence_Dining_Table_Blank",ImageIO.read(new File("data/Housing/Dining-table-blank.png")));
 		atlas.put("Residence_Bed",ImageIO.read(new File("data/Housing/Bed.png")));
+		atlas.put("Residence_Couch",ImageIO.read(new File("data/Housing/Couch.png")));
 		atlas.put("Apartment_Complex_Desk",ImageIO.read(new File("data/Housing/Desk.png")));
 		atlas.put("Apartment_Complex_Chair",ImageIO.read(new File("data/Housing/Chair-up.png")));
+		atlas.put("Resident_Sleeping",ImageIO.read(new File("data/Housing/Resident-sleeping.png")));
 	}
 	
 	public static BufferedImage getImage(String key)

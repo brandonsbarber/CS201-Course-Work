@@ -17,8 +17,11 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	
 	private final int bedWidth = 70;
 	private final int bedHeight = 30;
-	private final int bedX = 250;
+	private final int bedX = 150;
 	private final int bedY = 330;
+	
+	private final int couchX = 300;
+	private final int couchY = 200;
 	
 	private final int entranceY = 250;
 	
@@ -69,7 +72,7 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		
 		/*g2.setColor(Color.GRAY);
 		g2.fillRect(fridgeX, fridgeY, fridgeWidth, fridgeWidth);*/
-		g.drawImage(ArtManager.getImage("Residence_Fridge"), fridgeX+15, fridgeY, 48, 59, null);
+		g.drawImage(ArtManager.getImage("Residence_Fridge"), fridgeX+5, fridgeY, 48, 59, null);
 		
 		/*g2.setColor(Color.WHITE);
 		g2.fillRect(fridgeDoor1X, fridgeDoorY, fridgeDoorWidth, fridgeDoorHeight);
@@ -87,6 +90,7 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		g2.fillRect(bedX, bedY, bedWidth, bedHeight);*/ // draws bed
 		
 		g.drawImage(ArtManager.getImage("Residence_Bed"), bedX-10, bedY, 63, 32, null);
+		g.drawImage(ArtManager.getImage("Residence_Couch"), couchX, couchY, 32, 90, null);
 		
 		g2.setColor(Color.WHITE);
 		g2.drawString("Fridge", fridgeX, fridgeY+13);
@@ -97,7 +101,8 @@ public class ResidenceAnimationPanel extends StructurePanel {
 	}
 	
 	public void informResident(ResidentGui gui) {
-		gui.setBed(bedX+2, bedY+2);
+		gui.setBed(bedX+7, bedY+2);
+		gui.setCouch(couchX, couchY+40);
 		gui.setFridge(fridgeX, fridgeY+fridgeWidth);
 		gui.setTable(tableX+tableWidth, tableY+(tableHeight/2));
 		gui.setExit(entranceY);

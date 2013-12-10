@@ -30,9 +30,7 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 	private final int chairWidth = 20;
 	private final int chairHeight = 20;
 	private final int chairX = deskX+(deskWidth/2)-(chairWidth/2);
-	private final int chairY = deskY+(deskHeight)+5;
-	
-	private List<Gui> guis = new ArrayList<Gui>();
+	private final int chairY = deskY+(deskHeight)-1;
 	
 	public ApartmentComplexAnimationPanel(int i, SimCity201 sc) {
 		super(i, sc);
@@ -68,7 +66,7 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 		
 	    super.paintComponent(g);
 	    
-	    g.drawImage(ArtManager.getImage("Apartment_Complex_Chair"), chairX-3, chairY+3, 30, 25, null);
+	    g.drawImage(ArtManager.getImage("Apartment_Complex_Chair"), chairX-3, chairY+10, 30, 25, null);
 	}
 	
 	public void informLandlord(LandlordGui lGui) {
