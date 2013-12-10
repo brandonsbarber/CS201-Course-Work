@@ -5,6 +5,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.Gui;
+import cs201.gui.roles.restaurant.Skyler.CustomerGuiSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CashierSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.HostSkyler;
@@ -22,7 +24,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	private double amtOwed=0;
 	
 	Timer timer = new Timer();
-	private CustomerGui customerGui;
+	private CustomerGuiSkyler customerGui;
 	//private List <String> menu = null;
 	private Map <String, Double> menu;
 
@@ -326,11 +328,31 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	public void msgClosingTime() {
 		// TODO Auto-generated method stub
 		
+		
+		//HANDLE THIS?
 	}
 	
 	private void leaveRestaurant() {
 		this.setActive(false);
 		customerGui.setPresent(false);
+	}
+	
+	public String getChoice() {
+		return choice;
+	}
+	
+	public boolean isWaitingToBeSeated() {
+		if (state==AgentState.WaitingInRestaurant)
+			return true;
+		else return false;
+	}
+	
+	public AgentState getState() {
+		return state;
+	}
+	
+	public CustomerGuiSkyler getGui() {
+		return customerGui;
 	}
 
 }

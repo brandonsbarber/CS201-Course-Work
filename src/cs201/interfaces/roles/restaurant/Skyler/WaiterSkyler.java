@@ -14,6 +14,14 @@ public interface WaiterSkyler {
 	public abstract void msgBreakApproved();
 	public abstract void msgBreakDenied();
 	
+	public abstract void msgWantBreak();
+	public abstract void msgEndBreak();
+	public abstract void msgAtTable(int atTableNum);
+	public abstract void msgAtFront();
+	public abstract void msgAtCook();
+	public abstract void msgAtCashier();
+	public abstract void msgAtWaitingArea();
+	public abstract void msgGoToWork();
 	
 	
 }

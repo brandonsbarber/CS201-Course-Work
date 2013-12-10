@@ -2,6 +2,9 @@ package cs201.interfaces.roles.restaurant.Skyler;
 
 import java.util.Map;
 
+import cs201.gui.roles.restaurant.Skyler.CustomerGuiSkyler;
+import cs201.roles.restaurantRoles.Skyler.RestaurantCustomerRoleSkyler.AgentState;
+
 /**
  * A sample Customer interface built to unit test a CashierAgent.
  *
@@ -20,5 +23,12 @@ public interface CustomerSkyler {
         public abstract void setWaiter(WaiterSkyler waiter);
         public abstract void setHost(HostSkyler host);
         
-
+        public abstract void gotHungry();
+        public abstract void msgAnimationFinishedGoToSeat();
+        public abstract void msgAnimationFinishedLeaveRestaurant();
+        public abstract void msgAnimationFinishedPay();
+        public abstract AgentState getState();
+        public abstract String getChoice();
+		public abstract CustomerGuiSkyler getGui();
+        
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Skyler.WaiterGuiSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CashierSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CookSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
@@ -46,7 +47,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	
 	public enum OrderState {justOrdered, givenToCook, rejected, ready, beingDelivered, delivered}; //Should state options be fewer for waiter? different options for cook perhaps?
 	
-	//public WaiterGui waiterGui = null;
+	public WaiterGuiSkyler waiterGui = null;
 
 	public RestaurantWaiterRoleSkyler() {
 		this("");
@@ -561,7 +562,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 		waiterGui.DoDeliverFood(cust.order.orderChoice, cust.tableNumber);
 	}
 	
-	public void setGui(WaiterGui gui) {
+	public void setGui(WaiterGuiSkyler gui) {
 		waiterGui = gui;
 	}
 

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.roles.restaurant.Skyler.HostGuiSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.HostSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.WaiterSkyler;
@@ -25,7 +26,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 
 	private String name;
 	//private Semaphore atTable = new Semaphore(0,true);
-	private HostGui gui;
+	private HostGuiSkyler gui;
 
 	public RestaurantHostRoleSkyler() {
 		this("");
@@ -42,7 +43,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 		}
 	}
 	
-	public void setGui(HostGui hgui) {
+	public void setGui(HostGuiSkyler hgui) {
 		gui = hgui;
 	}
 	
@@ -147,6 +148,14 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 		
 		RETHINK THIS
 		*/
+	}
+	
+	public List getWaitingCustomers() {
+		return waitingCustomers;
+	}
+	
+	public int getNTables() {
+		return NTABLES;
 	}
 	
 	private void assignCustomer(CustomerSkyler customer, WaiterSkyler waiter, Table table) {
