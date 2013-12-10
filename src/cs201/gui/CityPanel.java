@@ -73,6 +73,10 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		buildings = Collections.synchronizedList(new ArrayList<Structure>());
 		guis = Collections.synchronizedList(new ArrayList<Gui>());
 		
+		setPreferredSize(new Dimension(cityGrid[0].length*GRID_SIZE, cityGrid.length*GRID_SIZE+100));
+		setMaximumSize(new Dimension(cityGrid[0].length*GRID_SIZE, cityGrid.length*GRID_SIZE+100));
+		setMinimumSize(new Dimension(cityGrid[0].length*GRID_SIZE, cityGrid.length*GRID_SIZE+100));
+		
 		if(INSTANCE == null)
 		{
 			INSTANCE = this;
@@ -100,7 +104,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			@Override
 			public void run() {
 				release();
-				
 			}}, 10000);
 	}
 	
@@ -262,7 +265,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				if(Constants.DEBUG_MODE)
 				{
 					g2.setColor(Color.BLACK);
-					g2.drawString(cityGrid[y][x], x*GRID_SIZE, y*GRID_SIZE+GRID_SIZE);
+					//g2.drawString(cityGrid[y][x], x*GRID_SIZE, y*GRID_SIZE+GRID_SIZE);
 					
 					if(drivingMap[y][x].isValid())
 					{
@@ -395,7 +398,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 				}
 				g2.setColor(Color.BLACK);
-				g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+				//g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
 			}
 		}
 		
