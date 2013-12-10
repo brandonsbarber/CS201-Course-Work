@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
+import cs201.structures.Structure;
 import cs201.structures.bank.BankStructure;
 import cs201.structures.market.MarketStructure;
 import cs201.structures.residence.ApartmentComplex;
@@ -51,6 +52,17 @@ public class CityDirectory implements ActionListener {
 	private List<MarketStructure> markets = Collections.synchronizedList(new ArrayList<MarketStructure>());
 	private List<Residence> residences = Collections.synchronizedList(new ArrayList<Residence>());
 	private List<ApartmentComplex> apartments = Collections.synchronizedList(new ArrayList<ApartmentComplex>());
+	
+	public List<Structure> getAllBuildings() {
+		List<Structure> buildings = new LinkedList<Structure>();
+		buildings.addAll(restaurants);
+		buildings.addAll(banks);
+		buildings.addAll(markets);
+		buildings.addAll(residences);
+		buildings.addAll(apartments);
+		
+		return buildings;
+	}
 	
 	public void resetCity() {
 		this.cityTimer.stop();

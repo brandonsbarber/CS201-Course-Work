@@ -8,21 +8,33 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import cs201.agents.PersonAgent;
-
-import javax.swing.border.EtchedBorder;
+import cs201.agents.PersonAgent.Intention;
+import cs201.agents.transit.CarAgent;
+import cs201.helper.CityDirectory;
+import cs201.helper.CityTime;
+import cs201.interfaces.agents.transit.Vehicle;
+import cs201.structures.Structure;
+import cs201.structures.residence.Residence;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
 
 @SuppressWarnings("serial")
 public class PersonInfoPanel extends JPanel implements ActionListener {
@@ -31,8 +43,6 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	
 	private JTextField nameTextField;
 	private JTextField moneyTextField;
-	private JTextField hungerTextField;
-	private JTextField locationTextField;
 	private JTextField stateTextField;
 	private JTextField wakeupTextField;
 	private JTextField sleepTextField;
@@ -47,6 +57,8 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private JButton btnConfirm;
 	private JButton btnCancel;
 	private JLabel lblMode;
+	private JComboBox<String> hungerComboBox;
+	private JComboBox<Structure> locationComboBox;
 
 	/**
 	 * Create the panel.
@@ -64,7 +76,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		setLayout(gridBagLayout);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Person:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));
+		panel.setBorder(BorderFactory.createTitledBorder("Person:"));
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -135,19 +147,24 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		gbc_lblHunger.gridx = 0;
 		gbc_lblHunger.gridy = 2;
 		leftPanel.add(lblHunger, gbc_lblHunger);
-		lblHunger.setLabelFor(hungerTextField);
 		
-		hungerTextField = new JTextField();
-		hungerTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		hungerTextField.setFocusable(false);
-		hungerTextField.setEditable(false);
-		GridBagConstraints gbc_hungerTextField = new GridBagConstraints();
-		gbc_hungerTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_hungerTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_hungerTextField.gridx = 1;
-		gbc_hungerTextField.gridy = 2;
-		leftPanel.add(hungerTextField, gbc_hungerTextField);
-		hungerTextField.setColumns(10);
+		hungerComboBox = new JComboBox<String>();
+		hungerComboBox.setEnabled(false);
+		hungerComboBox.addItem("Full");
+		hungerComboBox.addItem("Hungry");
+		hungerComboBox.addItem("Starving");
+		hungerComboBox.setSelectedIndex(-1);
+		hungerComboBox.setFocusable(false);
+		lblHunger.setLabelFor(hungerComboBox);
+		hungerComboBox.setMaximumSize(new Dimension(32767, 28));
+		hungerComboBox.setMinimumSize(new Dimension(52, 28));
+		hungerComboBox.setPreferredSize(new Dimension(52, 28));
+		GridBagConstraints gbc_hungerComboBox = new GridBagConstraints();
+		gbc_hungerComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_hungerComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_hungerComboBox.gridx = 1;
+		gbc_hungerComboBox.gridy = 2;
+		leftPanel.add(hungerComboBox, gbc_hungerComboBox);
 		
 		JLabel lblLocation = new JLabel("Location:");
 		lblLocation.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -157,19 +174,20 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		gbc_lblLocation.gridx = 0;
 		gbc_lblLocation.gridy = 3;
 		leftPanel.add(lblLocation, gbc_lblLocation);
-		lblLocation.setLabelFor(locationTextField);
 		
-		locationTextField = new JTextField();
-		locationTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		locationTextField.setEditable(false);
-		locationTextField.setFocusable(false);
-		GridBagConstraints gbc_locationTextField = new GridBagConstraints();
-		gbc_locationTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_locationTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_locationTextField.gridx = 1;
-		gbc_locationTextField.gridy = 3;
-		leftPanel.add(locationTextField, gbc_locationTextField);
-		locationTextField.setColumns(10);
+		locationComboBox = new JComboBox<Structure>();
+		lblLocation.setLabelFor(locationComboBox);
+		locationComboBox.setMaximumSize(new Dimension(32767, 28));
+		locationComboBox.setPreferredSize(new Dimension(34, 28));
+		locationComboBox.setMinimumSize(new Dimension(34, 28));
+		locationComboBox.setFocusable(false);
+		locationComboBox.setEnabled(false);
+		GridBagConstraints gbc_locationComboBox = new GridBagConstraints();
+		gbc_locationComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_locationComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_locationComboBox.gridx = 1;
+		gbc_locationComboBox.gridy = 3;
+		leftPanel.add(locationComboBox, gbc_locationComboBox);
 		
 		JLabel lblState = new JLabel("State:");
 		lblState.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -375,6 +393,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		centerPanel.add(lblToBuy, gbc_lblToBuy);
 		
 		buyTextField = new JTextField();
+		buyTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		lblToBuy.setLabelFor(buyTextField);
 		buyTextField.setEditable(false);
 		buyTextField.setFocusable(false);
@@ -396,6 +415,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		centerPanel.add(lblInventory, gbc_lblInventory);
 		
 		inventoryTextField = new JTextField();
+		inventoryTextField.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		lblInventory.setLabelFor(inventoryTextField);
 		inventoryTextField.setFocusable(false);
 		inventoryTextField.setEditable(false);
@@ -438,14 +458,30 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		btnCancel.addActionListener(this);
 		btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		rightPanel.add(btnCancel);
+		
+		JScrollPane scrollPaneInstructions = new JScrollPane();
+		scrollPaneInstructions.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPaneInstructions.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		rightPanel.add(scrollPaneInstructions);
+		
+		JTextArea textAreaInstructions = new JTextArea();
+		textAreaInstructions.setAutoscrolls(false);
+		textAreaInstructions.setLineWrap(true);
+		textAreaInstructions.setWrapStyleWord(true);
+		textAreaInstructions.setText("Instructions: The panel to the left displays information about the currently selected person to the right when in VIEW mode. Click \"New Person\" to enter EDIT mode to create a new Person.");
+		textAreaInstructions.setFont(new Font("SansSerif", Font.ITALIC, 12));
+		textAreaInstructions.setTabSize(4);
+		textAreaInstructions.setFocusable(false);
+		textAreaInstructions.setEditable(false);
+		scrollPaneInstructions.setViewportView(textAreaInstructions);
 
 	}
 	
 	public void resetInfo() {
 		this.nameTextField.setText("");
 		this.moneyTextField.setText("");
-		this.hungerTextField.setText("");
-		this.locationTextField.setText("");
+		this.hungerComboBox.setSelectedIndex(-1);
+		this.locationComboBox.removeAllItems();
 		this.stateTextField.setText("");
 		this.wakeupTextField.setText("");
 		this.sleepTextField.setText("");
@@ -461,58 +497,129 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private void setupEditing(boolean editMode) {
 		this.nameTextField.setEditable(editMode);
 		this.moneyTextField.setEditable(editMode);
-		this.hungerTextField.setEditable(editMode);
-		this.locationTextField.setEditable(editMode);
-		this.stateTextField.setEditable(editMode);
+		this.hungerComboBox.setEnabled(editMode);
+		this.locationComboBox.setEnabled(editMode);
 		this.wakeupTextField.setEditable(editMode);
 		this.sleepTextField.setEditable(editMode);
-		this.actionTextField.setEditable(editMode);
 		this.carCheckBox.setEnabled(editMode);
 		this.jobTextField.setEditable(editMode);
 		this.workTimeTextField.setEditable(editMode);
 		this.homeTextField.setEditable(editMode);
-		this.buyTextField.setEditable(editMode);
-		this.inventoryTextField.setEditable(editMode);
 		
 		this.nameTextField.setFocusable(editMode);
 		this.moneyTextField.setFocusable(editMode);
-		this.hungerTextField.setFocusable(editMode);
-		this.locationTextField.setFocusable(editMode);
-		this.stateTextField.setFocusable(editMode);
+		this.hungerComboBox.setFocusable(editMode);
+		this.locationComboBox.setFocusable(editMode);
 		this.wakeupTextField.setFocusable(editMode);
 		this.sleepTextField.setFocusable(editMode);
-		this.actionTextField.setFocusable(editMode);
 		this.carCheckBox.setFocusable(editMode);
 		this.jobTextField.setFocusable(editMode);
 		this.workTimeTextField.setFocusable(editMode);
 		this.homeTextField.setFocusable(editMode);
-		//this.buyTextField.setFocusable(editMode);
-		//this.inventoryTextField.setFocusable(editMode);
 	}
 	
 	private void setupDefaults() {
 		this.nameTextField.setText("Person");
 		this.moneyTextField.setText("$40.00");
-		this.hungerTextField.setText("Hungry");
-		this.locationTextField.setText("In City");
-		this.stateTextField.setText("Sleeping");
+		this.hungerComboBox.setSelectedIndex(1);
+		List<Structure> buildings = CityDirectory.getInstance().getAllBuildings();
+		for (Structure s : buildings) {
+			this.locationComboBox.addItem(s);
+		}
+		this.stateTextField.setText("Sleeping - Cannot Edit");
 		this.wakeupTextField.setText("7:00AM");
 		this.sleepTextField.setText("10:00PM");
-		this.actionTextField.setText("None");
+		this.actionTextField.setText("None - Cannot Edit");
 		this.carCheckBox.setSelected(false);
 		this.jobTextField.setText("None");
 		this.workTimeTextField.setText("N/A");
 		this.homeTextField.setText("None");
-		this.buyTextField.setText("");
-		this.inventoryTextField.setText("");
+		this.buyTextField.setText("Cannot Edit");
+		this.inventoryTextField.setText("Cannot Edit");
 	}
 	
 	private boolean checkIfNewPersonValid() {
 		return true;
 	}
 	
-	private void createPerson() {
+	/**
+	 * Creates a new PersonAgent with the values in the Person panel
+	 * @return True if Person created successfully, false if something failed
+	 */
+	private boolean createPerson() {
+		StringBuffer output = new StringBuffer();
+		output.append("\nCreated a new PersonAgent:");
 		
+		String name = this.nameTextField.getText().trim();
+		if (name.equals("")) {
+			// FAILED
+			System.out.println("FAILED IN NAME");
+			return false;
+		}
+		output.append("\n\tName: " + name);
+		PersonAgent p = new PersonAgent(name, null);
+		
+		double money;
+		try {
+			String sMoney = this.moneyTextField.getText();
+			sMoney = sMoney.replace('$', ' ');
+			money = Double.parseDouble(sMoney);
+		} catch(NumberFormatException e) {
+			// FAILED
+			System.out.println("FAILED IN MONEY");
+			return false;
+		}
+		output.append("\n\tMoney: " + money);
+		p.setMoney(money);
+		
+		int hunger;
+		switch(this.hungerComboBox.getSelectedIndex()) {
+		case -1: System.out.println("FAILED IN HUNGER"); return false; // FAILED
+		case  0: hunger = PersonAgent.FULL; break;
+		case  1: hunger = PersonAgent.HUNGRY; break;
+		case  2: hunger = PersonAgent.STARVING; break;
+		default: System.out.println("FAILED IN HUNGER"); return false; // FAILED
+		}
+		output.append("\n\tHunger: " + hunger);
+		p.setHungerLevel(hunger);
+		
+		Structure location = null;
+		if (this.locationComboBox.getSelectedIndex() == -1) {
+			location = null;
+		} else {
+			location = (Structure) this.locationComboBox.getSelectedItem();
+		}
+		output.append("\n\tLocation: " + (location == null ? "None" : location.toString()));
+		p.setCurrentLocation(location);
+		
+		CityTime wakeup;
+		
+		CityTime sleep;
+		
+		Vehicle car = null;
+		if (this.carCheckBox.isSelected()) {
+			car = new CarAgent();
+		} else {
+			car = null;
+		}
+		output.append("\n\tCar: " + (car == null ? "None" : car.toString()));
+		p.setVehicle(car);
+		
+		Intention job;
+		
+		Structure workplace;
+		
+		CityTime worktime;
+		
+		Residence home;
+		
+		// If we got here, all tests succeeded
+		// add the person to the CityDirectory, etc. and start its thread
+		// CityDirectory.getInstsance().addPerson(p);
+		// personPanel.addPerson(p);
+		// p.startThread();
+		AlertLog.getInstance().logInfo(AlertTag.GENERAL_CITY, "PersonCreationPanel", output.toString());
+		return true;
 	}
 	
 	public void updateInfo(PersonAgent p) {
@@ -522,8 +629,10 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		
 		this.nameTextField.setText(p.getName());
 		this.moneyTextField.setText(String.format("$%.2f", p.getMoney()));
-		this.hungerTextField.setText(p.getHungerLevel() > PersonAgent.STARVING ? "Starving" : p.getHungerLevel() > PersonAgent.HUNGRY ? "Hungry" : "Full");
-		this.locationTextField.setText(p.getCurrentLocation() == null ? "None" : p.getCurrentAction() == null ? "In City" : p.getCurrentLocation().toString());
+		this.hungerComboBox.setSelectedIndex(p.getHungerLevel() > PersonAgent.STARVING ? 2 : p.getHungerLevel() > PersonAgent.HUNGRY ? 1 : 0);
+		this.locationComboBox.removeAllItems();
+		this.locationComboBox.addItem(p.getCurrentAction() == null ? null : p.getCurrentLocation());
+		this.locationComboBox.setSelectedIndex(0);
 		this.stateTextField.setText(p.getState().toString());
 		this.wakeupTextField.setText(p.getWakeupTime().toString().trim());
 		this.sleepTextField.setText(p.getSleepTime().toString().trim());
@@ -543,21 +652,22 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == this.btnConfirm) { // CONFIRM
-			if (checkIfNewPersonValid()) {
-				this.editMode = false;
-				this.setupEditing(false);
-				this.lblMode.setText("Mode: View");
-				this.createPerson();
-			} else {
-				JOptionPane.showMessageDialog(null, "Please provide valid input for the new PersonAgent.");
+			if (editMode && checkIfNewPersonValid()) {
+				if (createPerson()) {
+					this.editMode = false;
+					this.setupEditing(false);
+					this.lblMode.setText("Mode: View");
+				}
 			}
 		} else if (e.getSource() == this.btnNewPerson) { // NEW PERSON
-			this.editMode = true;
-			this.personPanel.deselectPersonList();
-			this.resetInfo();
-			this.setupEditing(true);
-			this.setupDefaults();
-			this.lblMode.setText("Mode: Edit");
+			if (!editMode) {
+				this.editMode = true;
+				this.personPanel.deselectPersonList();
+				this.resetInfo();
+				this.setupEditing(true);
+				this.setupDefaults();
+				this.lblMode.setText("Mode: Edit");
+			}
 		} else if (e.getSource() == this.btnCancel) { // CANCEL
 			this.editMode = false;
 			this.lblMode.setText("Mode: View");

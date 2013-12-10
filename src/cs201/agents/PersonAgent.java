@@ -674,6 +674,15 @@ public class PersonAgent extends Agent implements Person {
 		return this.state;
 	}
 	
+	/**
+	 * Sets this PersonAgent's current location. SHOULD ONLY BE CALLED WHEN THE THREAD IS NOT RUNNING.
+	 * @param location The new location.
+	 */
+	public void setCurrentLocation(Structure location) {
+		this.currentLocation = location;
+		this.passengerRole.setCurrentLocation(location);
+	}
+	
 	
 	/**************************************************************************
 	 *                                Utility                                 *
