@@ -755,16 +755,28 @@ public class SimCity201 extends JFrame {
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
 
 		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(4*25,7*25,25,25,1, panel));
+		stops.add(new BusStop(23*25,13*25,25,25,1, panel));
 		timePanel.addAnimationPanel(panel);
 		
-		cityPanel.addStructure(stops.get(0),new Point(3*25,7*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
+		cityPanel.addStructure(stops.get(0),new Point(23*25,14*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
 		
 		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(1*25,6*25,25,25,2, panel2));
 		timePanel.addAnimationPanel(panel2);
 		
 		cityPanel.addStructure(stops.get(1),new Point(2*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
+		
+		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,4*25,25,25,2, panel3));
+		timePanel.addAnimationPanel(panel3);
+		
+		cityPanel.addStructure(stops.get(2),new Point(24*25,3*25),new Point((int)stops.get(2).getRect().x,(int)stops.get(2).getRect().y));
+		
+		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(1*25,12*25,25,25,2, panel4));
+		timePanel.addAnimationPanel(panel4);
+		
+		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
 		
 		/*BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(2*25,13*25,25,25,3, panel3));
@@ -794,14 +806,17 @@ public class SimCity201 extends JFrame {
 			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:12*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
 		}*/
 		
-		BusAgent bus = new BusAgent(new BusRoute(stops),0);
-		BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
-		bus.setGui(busG);
-		cityPanel.addGui(busG);
-		bus.startThread();
+		for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			bus.startThread();
+		}
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m = new MarketStructure(100,100,50,50,Structure.getNextInstance(),mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
@@ -809,12 +824,12 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addMarket(m);
 		timePanel.addAnimationPanel(mG);
 		
-		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
-		RestaurantMatt r = new RestaurantMatt(475,225,50,50,Structure.getNextInstance(),g);
+		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r = new RestaurantBrandon(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
 		buildingPanels.add(g,""+r.getId());
-		cityPanel.addStructure(r,new Point(19*25,7*25), new Point(19*25,8*25));
+		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
 
