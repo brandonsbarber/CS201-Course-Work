@@ -3,7 +3,9 @@ package cs201.gui.roles.market;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
+import cs201.helper.Constants;
 import cs201.roles.marketRoles.MarketManagerRole;
 
 public class MarketManagerGui implements Gui {
@@ -33,11 +35,16 @@ public class MarketManagerGui implements Gui {
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.GREEN);
-		g.fillRect(xPos, yPos, MANAGER_SIZE, MANAGER_SIZE);
-		
-		g.setColor(Color.black);
-		g.drawString("Market Manager", xPos, yPos - 3);
+		if (Constants.DEBUG_MODE) {
+			g.setColor(Color.GREEN);
+			g.fillRect(xPos, yPos, MANAGER_SIZE, MANAGER_SIZE);
+			
+			g.setColor(Color.black);
+			g.drawString("Market Manager", xPos, yPos - 3);
+		} else {
+			// Draw the market manager
+			g.drawImage(ArtManager.getImage("Market_Manager_Down"), xPos, yPos, MANAGER_SIZE, MANAGER_SIZE, null);
+		}
 	}
 
 	public boolean isPresent() {
