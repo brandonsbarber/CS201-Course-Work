@@ -244,7 +244,7 @@ public class MarketStructure extends Structure {
 	
 	public void updateConfigPanel() {
 		if (configPanel != null) {
-			configPanel.updateInventoryList();
+			configPanel.updateInventoryList(this);
 		}
 	}
 	
