@@ -6,9 +6,10 @@ All:
 Brandon:
     [ ] Transit config panel
     [ ] Updated graphics
-    [ ] Change restaurant closing behavior
+    [X] Change restaurant closing behavior
     [ ] Fix boat jam behavior
-    [ ] Fix car warp
+    [X] Fix car warp
+    [ ] Crosswalks
     [ ] Fully implement collisions
     [ ] Testing failed market delivery
 
