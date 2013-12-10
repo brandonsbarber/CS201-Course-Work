@@ -413,7 +413,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		}
 		catch(ConcurrentModificationException e)
 		{
-			
+			e.printStackTrace();
 		}
 	}
 	
