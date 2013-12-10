@@ -171,7 +171,10 @@ public class PassengerRole extends Role implements Passenger
 			{
 				gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);
 			}
-			gui.setLocation();
+			else
+			{
+				gui.setLocation();
+			}
 		}
 	}
 
@@ -248,7 +251,7 @@ public class PassengerRole extends Role implements Passenger
 			roam();
 			return false;
 		}
-		if(currentLocation == destination && !gui.locationEquals(currentLocation))
+		if(currentLocation == destination && state != PassengerState.Arrived &&!gui.locationEquals(currentLocation))
 		{
 			gui.doGoToLocation(currentLocation.getEntranceLocation().x, currentLocation.getEntranceLocation().y);
 			try
@@ -464,13 +467,14 @@ public class PassengerRole extends Role implements Passenger
 				}
 				else
 				{
-					gui.setLocation((int)currentLocation.getRect().x, (int)currentLocation.getRect().y);
+					gui.setLocation((int)currentLocation.getEntranceLocation().x, (int)currentLocation.getEntranceLocation().y);
 				}
 			}
 			else
 			{
-				gui.setLocation((int)currentLocation.getRect().x,(int)currentLocation.getRect().y);
+				gui.setLocation((int)currentLocation.getEntranceLocation().x,(int)currentLocation.getEntranceLocation().y);
 			}
+			System.out.println("CURRENTLY AT: "+gui.getX()+" "+gui.getY());
 			gui.setPresent(true);
 			state = PassengerState.None;
 		}

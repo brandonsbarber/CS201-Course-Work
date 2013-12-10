@@ -107,7 +107,6 @@ public class PassengerGui implements Gui
 		destY = (int)structure.getEntranceLocation().y;
 		fired = false;
 		present = true;
-		
 		findPath();
 	}
 	
@@ -132,7 +131,7 @@ public class PassengerGui implements Gui
 	 */
 	private void findPath()
 	{
-		System.out.println("FINDING PATH");
+		System.out.println("pass FINDING PATH from "+x+" "+y);
 		pathfinding = true;
 		try
 		{
