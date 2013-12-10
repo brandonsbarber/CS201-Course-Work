@@ -257,6 +257,7 @@ public class PassengerGui implements Gui
 	{
 		Point p = Pathfinder.findRandomWalkingLocation(city.getWalkingMap());
 		setLocation(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE);
+		setPresent(true);
 	}
 
 }
