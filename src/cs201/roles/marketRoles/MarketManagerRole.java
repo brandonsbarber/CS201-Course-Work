@@ -413,10 +413,13 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	/**
 	 * Sent by a DeliveryTruck when a restaurant is closed and cannot accept deliveries.
+	 * @param id 
 	 * 
 	 */
-	public void msgDeliveryFailed(/* discuss what parameters we need */) {
+	public void msgDeliveryFailed(int id) {
 		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that a delivery failed."));
+		
+		
 		
 		//Order o = null; // for now assume o points to the order
 		
