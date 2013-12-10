@@ -140,15 +140,6 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 			}//end synch
 		return false;
 	}
-
-	public void addWaiter(String name) {
-		/*WaiterSkyler w = new WaiterSkyler(name);
-		w.startThread();
-		
-		
-		RETHINK THIS
-		*/
-	}
 	
 	public List getWaitingCustomers() {
 		return waitingCustomers;
@@ -198,6 +189,11 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 		public String toString() {
 			return "table " + tableNumber;
 		}
+	}
+
+	public void addWaiter(WaiterSkyler w) {
+		waiters.add((RestaurantWaiterRoleSkyler)w);
+		stateChanged();
 	}
 
 }

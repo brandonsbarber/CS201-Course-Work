@@ -355,4 +355,12 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 		return customerGui;
 	}
 
+	public void setCashier(RestaurantCashierRoleSkyler newCashier) {
+		cashier = newCashier;
+	}
+
+	public void setGui(CustomerGuiSkyler newGui) {
+		customerGui = newGui;
+	}
+
 }
