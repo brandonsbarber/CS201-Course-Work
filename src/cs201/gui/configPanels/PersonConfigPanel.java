@@ -52,6 +52,10 @@ public class PersonConfigPanel extends ConfigPanel {
 		this.right.deselect();
 	}
 	
+	public void showInfo() {
+		this.right.showInfo();
+	}
+	
 	public void resetCity() {
 		this.right.reset();
 		this.left.resetInfo();
@@ -79,7 +83,7 @@ public class PersonConfigPanel extends ConfigPanel {
 					} else {
 					    //Selection, update info panel.
 						if (!left.isInEditMode()) {
-							left.updateInfo(personList.getModel().getElementAt(personList.getSelectedIndex()));
+							showInfo();
 						}
 					}
 				}	
@@ -87,6 +91,10 @@ public class PersonConfigPanel extends ConfigPanel {
 			
 			scrollPane = new JScrollPane(personList);
 			this.add(scrollPane);
+		}
+		
+		public void showInfo() {
+			left.updateInfo(personList.getModel().getElementAt(personList.getSelectedIndex()));
 		}
 		
 		public void addPerson(PersonAgent p) {
