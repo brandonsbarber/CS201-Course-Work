@@ -524,5 +524,25 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	{
 		return stand;
 	}
+	
+	public void emptyInventory()
+	{
+		for(String s : cookTime.keySet())
+		{
+			FoodBrandon food = cookTime.get(s);
+			food.setAmount(0);
+		}
+	}
+	
+	public List<String> getInventory()
+	{
+		List<String> strings = new ArrayList<String>();
+		for(String s : cookTime.keySet())
+		{
+			FoodBrandon food = cookTime.get(s);
+			strings.add(food.getType()+" ["+food.getAmount()+"]");
+		}
+		return strings;
+	}
 }
 

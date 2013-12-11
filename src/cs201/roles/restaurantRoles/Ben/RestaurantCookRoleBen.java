@@ -127,6 +127,19 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		this.inventory.clear();
 	}
 	
+	/**
+	 * Returns the cook's inventory formated as hamburger [100], etc.
+	 * @return A List of Strings, each one with the given format.
+	 */
+	public List<String> getFormattedInventory() {
+		List<String> formattedInventory = new ArrayList<String>();
+		for (MyFood food : inventory.values()) {
+			String temp = food.type + " [" + food.quantity + "]";
+			formattedInventory.add(temp);
+		}
+		return formattedInventory;
+	}
+	
 	public void timerDone(Order order) {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "The " + order.choice + " is finished cooking!");
 		
