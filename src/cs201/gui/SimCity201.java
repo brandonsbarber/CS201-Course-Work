@@ -155,6 +155,7 @@ public class SimCity201 extends JFrame {
 		add(mainPanel);
 		
 		List<String> scenarioList = new ArrayList<String>();
+		
 		scenarioList.add("RestaurantMatt: Normative");
 		scenarioList.add("RestaurantMatt: Two Customers, Two Waiters");
 		scenarioList.add("RestaurantMat: Shift Change");
@@ -191,6 +192,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Apartment Complex: Normative");
 
 		scenarioList.add("Weekend Behavior Change");
+		scenarioList.add("All Workplaces");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -244,6 +246,7 @@ public class SimCity201 extends JFrame {
 			case 30: residenceOutOfFood(true); break;
 			case 31: normativeApartmentComplex(); break;
 			case 32: weekendDifference(); break;
+			case 33: allWorkplaces(); break;
 			default: return;
 		}
 	}
@@ -2125,6 +2128,203 @@ public class SimCity201 extends JFrame {
 		p3.startThread();
 		
 		((RestaurantCookRoleMatt) r.getCook()).emptySteakInventory();
+	}
+	
+	private void allWorkplaces() {
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		// Two Markets
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
+		
+		MarketAnimationPanel mG2 = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m2 = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG2);
+		m2.setStructurePanel(mG2);
+		m2.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG2,""+m.getId());
+		cityPanel.addStructure(m2);
+		timePanel.addAnimationPanel(mG2);
+		m2.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
+		
+		// Ben's Restaurant		
+		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
+		RestaurantBen r = new RestaurantBen(125, 125, 50, 50, Structure.getNextInstance(), g);
+		restaurantPanel.addRestaurant(r);
+		r.setConfigPanel(restaurantPanel);
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g, ""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		timePanel.addAnimationPanel(g);
+		
+		PersonAgent p1 = new PersonAgent("Host", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4);
+		p4.startThread();
+		
+		// Matt's Restaurant
+		RestaurantAnimationPanelMatt g_matt = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g_matt);
+		RestaurantMatt r_matt = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g_matt);
+		restaurantPanel.addRestaurant(r_matt);
+		r_matt.setConfigPanel(restaurantPanel);
+		r_matt.setStructurePanel(g);
+		r_matt.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g_matt,""+r.getId());
+		cityPanel.addStructure(r_matt);
+		CityDirectory.getInstance().addRestaurant(r_matt);
+		
+		PersonAgent p1_matt = new PersonAgent("Host", cityPanel);
+		p1_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantHost, r_matt, null);
+		p1_matt.setHungerEnabled(false);
+		p1_matt.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1_matt);
+		personPanel.addPerson(p1_matt);
+		p1.startThread();
+		
+		PersonAgent p2_matt = new PersonAgent("Cashier", cityPanel);
+		p2_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantCashier, r_matt, null);
+		p2_matt.setHungerEnabled(false);
+		p2_matt.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2_matt);
+		personPanel.addPerson(p2_matt);
+		p2_matt.startThread();
+		
+		PersonAgent p3_matt = new PersonAgent("Cook", cityPanel);
+		p3_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantCook, r_matt, null);
+		p3_matt.setHungerEnabled(false);
+		p3_matt.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3_matt);
+		personPanel.addPerson(p3_matt);
+		p3_matt.startThread();
+		
+		PersonAgent p4_matt = new PersonAgent("Waiter", cityPanel);
+		p4_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantWaiter, r_matt, null);
+		p4_matt.setHungerEnabled(false);
+		p4_matt.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4_matt);
+		personPanel.addPerson(p4_matt);
+		p4_matt.startThread();
+		
+		// Brandon's Restaurant
+		RestaurantAnimationPanelBrandon g_brandon = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		RestaurantBrandon r_brandon = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g_brandon);
+		restaurantPanel.addRestaurant(r_brandon);
+		r_brandon.setConfigPanel(restaurantPanel);
+		r_brandon.setStructurePanel(g);
+		r_brandon.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g_brandon,""+r_brandon.getId());
+		cityPanel.addStructure(r_brandon);
+		CityDirectory.getInstance().addRestaurant(r_brandon);
+		timePanel.addAnimationPanel(g_brandon);
+		
+		PersonAgent p1_brandon = new PersonAgent("Host", cityPanel);
+		p1_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantHost, r_brandon, null);
+		p1_brandon.setHungerEnabled(false);
+		p1_brandon.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1_brandon);
+		personPanel.addPerson(p1);
+		p1_brandon.startThread();
+		
+		PersonAgent p2_brandon = new PersonAgent("Cashier", cityPanel);
+		p2_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantCashier, r_brandon, null);
+		p2_brandon.setHungerEnabled(false);
+		p2_brandon.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2_brandon);
+		personPanel.addPerson(p2_brandon);
+		p2_brandon.startThread();
+		
+		PersonAgent p3_brandon = new PersonAgent("Cook", cityPanel);
+		p3_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantCook, r_brandon, null);
+		p3_brandon.setHungerEnabled(false);
+		p3_brandon.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3_brandon);
+		personPanel.addPerson(p3_brandon);
+		p3_brandon.startThread();
+		
+		PersonAgent p4_brandon = new PersonAgent("Waiter", cityPanel);
+		p4_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantWaiter, r_brandon, null);
+		p4_brandon.setHungerEnabled(false);
+		p4_brandon.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4_brandon);
+		personPanel.addPerson(p4_brandon);
+		p4_brandon.startThread();
+		
+		// Skyler's Restaurant
+		RestaurantAnimationPanelSkyler g_skyler = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g_skyler);
+		RestaurantSkyler r_skyler = new RestaurantSkyler(125,125,50,50,Structure.getNextInstance(),g_skyler);
+		restaurantPanel.addRestaurant(r_skyler);
+		r_skyler.setConfigPanel(restaurantPanel);
+		r_skyler.setStructurePanel(g);
+		r_skyler.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g_skyler,""+r_skyler.getId());
+		cityPanel.addStructure(r_skyler);
+		CityDirectory.getInstance().addRestaurant(r_skyler);
+		
+		PersonAgent p1_skyler = new PersonAgent("Host", cityPanel);
+		p1_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantHost, r_skyler, null);
+		p1_skyler.setHungerEnabled(false);
+		p1_skyler.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1_skyler);
+		personPanel.addPerson(p1_skyler);
+		p1_skyler.startThread();
+		
+		PersonAgent p2_skyler = new PersonAgent("Cashier", cityPanel);
+		p2_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantCashier, r_skyler, null);
+		p2_skyler.setHungerEnabled(false);
+		p2_skyler.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2_skyler);
+		personPanel.addPerson(p2_skyler);
+		p2_skyler.startThread();
+		
+		PersonAgent p3_skyler = new PersonAgent("Cook", cityPanel);
+		p3_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantCook, r_skyler, null);
+		p3_skyler.setHungerEnabled(false);
+		p3_skyler.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3_skyler);
+		personPanel.addPerson(p3_skyler);
+		p3_skyler.startThread();
+		
+		PersonAgent p4_skyler = new PersonAgent("Waiter", cityPanel);
+		p4_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantWaiter, r_skyler, null);
+		p4_skyler.setHungerEnabled(false);
+		p4_skyler.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p4_skyler);
+		personPanel.addPerson(p4_skyler);
+		p4_skyler.startThread();
 	}
 	
 	public PersonAgent createPerson(String name, Structure location, Residence home, Intention job, Structure workplace, CarAgent car) {
