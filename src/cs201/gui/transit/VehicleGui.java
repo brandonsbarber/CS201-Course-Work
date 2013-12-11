@@ -197,6 +197,15 @@ public abstract class VehicleGui implements Gui
 							city.permissions[current.y][current.x].release();
 						}
 					}
+					else
+					{
+						if(nextIntersection == null)
+						{
+							System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
+							cIntersection.releaseAll();
+							cIntersection.releaseIntersection();
+						}
+					}
 				}
 				return;
 			}
@@ -242,6 +251,7 @@ public abstract class VehicleGui implements Gui
 						{
 							if(nextIntersection == null)
 							{
+								System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
 								cIntersection.releaseAll();
 								cIntersection.releaseIntersection();
 							}
@@ -285,6 +295,7 @@ public abstract class VehicleGui implements Gui
 					{
 						if(nextIntersection.acquireIntersection())
 						{
+							System.out.println(this.getVehicle().getInstance()+" just got intersection "+nextIntersection.getInstance());
 							nextIntersection.acquireAll();
 							allowedToMove = true;
 							return;

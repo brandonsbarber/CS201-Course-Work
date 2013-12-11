@@ -18,8 +18,14 @@ public class Intersection implements Comparable
 	Semaphore intersectionSemaphore;
 	CityPanel city;
 	
+	int instance;
+	
+	private static int INSTANCE_COUNT = 0;
+	
 	public Intersection(CityPanel city, Set<Point> points)
 	{
+		instance = ++INSTANCE_COUNT;
+		
 		intersectionPoints = new HashSet<Point>();
 		for(Point p : points)
 		{
@@ -28,6 +34,11 @@ public class Intersection implements Comparable
 		
 		intersectionSemaphore = new Semaphore(1,true);
 		this.city = city;
+	}
+	
+	public int getInstance()
+	{
+		return instance;
 	}
 	
 	public boolean containsPoint(Point p)
