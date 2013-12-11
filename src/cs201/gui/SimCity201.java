@@ -1688,30 +1688,56 @@ public class SimCity201 extends JFrame {
 		}
 		
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
-
+		
 		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(23*25,13*25,25,25,1, panel));
+		stops.add(new BusStop(5*25,1*25,25,25,1, panel));
 		timePanel.addAnimationPanel(panel);
-		
-		cityPanel.addStructure(stops.get(0),new Point(23*25,14*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
-		
+			
 		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(1*25,6*25,25,25,2, panel2));
+		stops.add(new BusStop(12*25,1*25,25,25,2, panel2));
 		timePanel.addAnimationPanel(panel2);
-		
-		cityPanel.addStructure(stops.get(1),new Point(2*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
-		
+			
 		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(24*25,4*25,25,25,2, panel3));
+		stops.add(new BusStop(24*25,1*25,25,25,3, panel3));
 		timePanel.addAnimationPanel(panel3);
-		
-		cityPanel.addStructure(stops.get(2),new Point(24*25,3*25),new Point((int)stops.get(2).getRect().x,(int)stops.get(2).getRect().y));
-		
+			
 		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(1*25,12*25,25,25,2, panel4));
+		stops.add(new BusStop(5*25,13*25,25,25,4, panel4));
 		timePanel.addAnimationPanel(panel4);
+			
+		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,13*25,25,25,5, panel5));
+		timePanel.addAnimationPanel(panel5);
+			
+		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
+		timePanel.addAnimationPanel(panel6);
 		
-		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
+		panel.setStop(stops.get(0));
+		panel2.setStop(stops.get(1));
+		panel3.setStop(stops.get(2));
+		panel4.setStop(stops.get(3));
+		panel5.setStop(stops.get(4));
+		panel6.setStop(stops.get(5));
+		
+		stops.get(0).setStructurePanel(panel);
+		stops.get(1).setStructurePanel(panel2);
+		stops.get(2).setStructurePanel(panel3);
+		stops.get(3).setStructurePanel(panel4);
+		stops.get(4).setStructurePanel(panel5);
+		stops.get(5).setStructurePanel(panel6);
+		
+		buildingPanels.add(panel,""+stops.get(0).getId());
+		buildingPanels.add(panel2,""+stops.get(1).getId());
+		buildingPanels.add(panel3,""+stops.get(2).getId());
+		buildingPanels.add(panel4,""+stops.get(3).getId());
+		buildingPanels.add(panel5,""+stops.get(4).getId());
+		buildingPanels.add(panel6,""+stops.get(5).getId());
+		
+		for(BusStop stop : stops)
+		{
+			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:14*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
+		}
 		
 		for(int i = 0; i < stops.size(); i++)
 		{
@@ -1973,7 +1999,21 @@ public class SimCity201 extends JFrame {
 		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
 		timePanel.addAnimationPanel(panel6);
-			
+		
+		panel.setStop(stops.get(0));
+		panel2.setStop(stops.get(1));
+		panel3.setStop(stops.get(2));
+		panel4.setStop(stops.get(3));
+		panel5.setStop(stops.get(4));
+		panel6.setStop(stops.get(5));
+		
+		stops.get(0).setStructurePanel(panel);
+		stops.get(1).setStructurePanel(panel2);
+		stops.get(2).setStructurePanel(panel3);
+		stops.get(3).setStructurePanel(panel4);
+		stops.get(4).setStructurePanel(panel5);
+		stops.get(5).setStructurePanel(panel6);
+		
 		buildingPanels.add(panel,""+stops.get(0).getId());
 		buildingPanels.add(panel2,""+stops.get(1).getId());
 		buildingPanels.add(panel3,""+stops.get(2).getId());
