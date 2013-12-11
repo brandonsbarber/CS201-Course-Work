@@ -192,6 +192,8 @@ public class SimCity201 extends JFrame {
 
 		scenarioList.add("Weekend Behavior Change");
 		
+		scenarioList.add("TEST");
+		
 		scenarioList.add("Reset City"); // keep as last item
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
@@ -244,6 +246,7 @@ public class SimCity201 extends JFrame {
 			case 30: residenceOutOfFood(true); break;
 			case 31: normativeApartmentComplex(); break;
 			case 32: weekendDifference(); break;
+			case 33: this.FAKETHING(); break;
 			default: return;
 		}
 	}
@@ -2144,5 +2147,97 @@ public class SimCity201 extends JFrame {
 	
 	public void displayBlankPanel() {
 		cardLayout.show(buildingPanels, "blank");
+	}
+	
+	public void FAKETHING() {
+		// APARTMENT COMPLEX 1
+		ApartmentComplexAnimationPanel acap = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(acap);
+		ApartmentComplex ac = new ApartmentComplex(5*25, 11*25, 25, 25, Structure.getNextInstance(), acap);
+		ac.setStructurePanel(acap);
+		ac.setClosingTime(new CityTime(12, 0));
+		buildingPanels.add(acap,""+ac.getId());
+		cityPanel.addStructure(ac, new Point(3*25,11*25), new Point(4*25, 11*25));
+		CityDirectory.getInstance().addApartment(ac);
+		timePanel.addAnimationPanel(acap);
+		//BUILDING1
+		ResidenceAnimationPanel resPanel1 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel1);
+		Residence res1 = new Residence(6*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel1, true);
+		res1.setStructurePanel(resPanel1);
+		buildingPanels.add(resPanel1,""+res1.getId());
+		cityPanel.addStructure(res1, new Point(6*25, 9*25), new Point(6*25, 10*25));
+		CityDirectory.getInstance().addResidence(res1);
+		//BUILDING2
+		ResidenceAnimationPanel resPanel2 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel2);
+		Residence res2 = new Residence(5*25, 12*25, 25, 25, Structure.getNextInstance(), resPanel2, true);
+		res2.setStructurePanel(resPanel2);
+		buildingPanels.add(resPanel2, ""+res2.getId());
+		cityPanel.addStructure(res2, new Point(3*25, 12*25), new Point(4*25, 12*25));
+		CityDirectory.getInstance().addResidence(res2);
+		//BUILDING3
+		ResidenceAnimationPanel resPanel3 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel3);
+		Residence res3 = new Residence(6*25, 12*25, 25, 25, Structure.getNextInstance(), resPanel3, true);
+		res3.setStructurePanel(resPanel3);
+		buildingPanels.add(resPanel3,""+res3.getId());
+		cityPanel.addStructure(res3, new Point(6*25, 14*25), new Point(6*25, 13*25));
+		CityDirectory.getInstance().addResidence(res3);
+		//ADDBUILDINGS
+		ac.addApartment(res1);
+		ac.getLandlord().addProperty(res1, (Renter)res1.getResident(), 30, WeekDay.Wednesday);
+		res1.setApartmentComplex(ac);
+		ac.addApartment(res2);
+		ac.getLandlord().addProperty(res2, (Renter)res2.getResident(), 20, WeekDay.Monday);
+		res2.setApartmentComplex(ac);
+		ac.addApartment(res3);
+		ac.getLandlord().addProperty(res3, (Renter)res3.getResident(), 45, WeekDay.Friday);
+		res3.setApartmentComplex(ac);
+		
+		// APARTMENT COMPLEX 2
+		ApartmentComplexAnimationPanel acap2 = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(acap2);
+		ApartmentComplex ac2 = new ApartmentComplex(17*25, 11*25, 25, 25, Structure.getNextInstance(), acap2);
+		ac2.setStructurePanel(acap2);
+		ac2.setClosingTime(new CityTime(12, 0));
+		buildingPanels.add(acap2,""+ac2.getId());
+		cityPanel.addStructure(ac2, new Point(15*25,11*25), new Point(16*25, 11*25));
+		CityDirectory.getInstance().addApartment(ac2);
+		timePanel.addAnimationPanel(acap2);
+		//BUILDING1
+		ResidenceAnimationPanel resPanel1b = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel1b);
+		Residence res1b = new Residence(18*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel1b, true);
+		res1b.setStructurePanel(resPanel1b);
+		buildingPanels.add(resPanel1b,""+res1b.getId());
+		cityPanel.addStructure(res1b, new Point(18*25, 9*25), new Point(18*25, 10*25));
+		CityDirectory.getInstance().addResidence(res1b);
+		//BUILDING2
+		ResidenceAnimationPanel resPanel2c = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel2c);
+		Residence res2c = new Residence(17*25, 12*25, 25, 25, Structure.getNextInstance(), resPanel2c, true);
+		res2c.setStructurePanel(resPanel2c);
+		buildingPanels.add(resPanel2c, ""+res2c.getId());
+		cityPanel.addStructure(res2c, new Point(15*25, 12*25), new Point(16*25, 12*25));
+		CityDirectory.getInstance().addResidence(res2c);
+		//BUILDING3
+		ResidenceAnimationPanel resPanel3d = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel3d);
+		Residence res3d = new Residence(18*25, 12*25, 25, 25, Structure.getNextInstance(), resPanel3d, true);
+		res3d.setStructurePanel(resPanel3d);
+		buildingPanels.add(resPanel3d,""+res3d.getId());
+		cityPanel.addStructure(res3d, new Point(18*25, 14*25), new Point(18*25, 13*25));
+		CityDirectory.getInstance().addResidence(res3d);
+		//ADDBUILDINGS
+		ac2.addApartment(res1b);
+		ac2.getLandlord().addProperty(res1b, (Renter)res1b.getResident(), 30, WeekDay.Wednesday);
+		res1b.setApartmentComplex(ac2);
+		ac2.addApartment(res2c);
+		ac2.getLandlord().addProperty(res2c, (Renter)res2c.getResident(), 20, WeekDay.Monday);
+		res2c.setApartmentComplex(ac2);
+		ac2.addApartment(res3d);
+		ac2.getLandlord().addProperty(res3d, (Renter)res3d.getResident(), 45, WeekDay.Friday);
+		res3d.setApartmentComplex(ac2);
 	}
 }
