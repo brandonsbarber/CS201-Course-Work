@@ -35,7 +35,7 @@ public class PersonAgent extends Agent implements Person {
 	public static final int FULL = 0;
 	public static final int HUNGRY = 480;
 	public static final int STARVING = 840;
-	private static final int INITIALMONEY = 200;
+	private static final int INITIALMONEY = 2000;
 	private static final int MONEYTHRESHOLD = 10;
 	private static final int INITIALWAKEUPHOUR = 7;
 	private static final int INITIALWAKEUPMINUTE = 0;
@@ -71,6 +71,7 @@ public class PersonAgent extends Agent implements Person {
 	private volatile int bankAccountNumber;
 	private volatile List<ItemRequest> marketChecklist;
 	private volatile List<ItemRequest> inventory;
+	private volatile boolean tryToBuyCar;
 	
 	
 	/**************************************************************************
@@ -108,6 +109,7 @@ public class PersonAgent extends Agent implements Person {
 		this.bankAccountNumber = -1;
 		marketChecklist = new LinkedList<ItemRequest>();
 		inventory = new LinkedList<ItemRequest>();
+		this.tryToBuyCar = false;
 	}
 	
 	@Override
@@ -264,6 +266,17 @@ public class PersonAgent extends Agent implements Person {
 			}
 		}
 		
+		// If you need to buy something at the market
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
+			boolean performAction = checkForExistingAction(Intention.MarketConsumerGoods);
+			
+			if (performAction && CityDirectory.getInstance().getOpenMarkets().size() > 0) {
+				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomOpenMarket(), false);
+				this.state = PersonState.Awake;
+				return true;
+			}
+		}
+		
 		// If you're hungry and at home (or there are no open restaurants)
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && (currentLocation == home || CityDirectory.getInstance().getOpenRestaurants().size() == 0) && hungerLevel >= HUNGRY) {
 			boolean performAction = checkForExistingAction(Intention.ResidenceEat);
@@ -277,13 +290,14 @@ public class PersonAgent extends Agent implements Person {
 			}
 		}
 		
-		// If you you need to buy something at the market
-		if ((state == PersonState.Awake || state == PersonState.Relaxing) && marketChecklist.size() > 0) {
-			boolean performAction = checkForExistingAction(Intention.MarketConsumerGoods);
+		// If you want to buy a car
+		if ((state == PersonState.Awake || state == PersonState.Relaxing) && this.tryToBuyCar) {
+			boolean performAction = checkForExistingAction(Intention.MarketConsumerCar);
 			
 			if (performAction && CityDirectory.getInstance().getOpenMarkets().size() > 0) {
-				this.addActionToPlanner(Intention.MarketConsumerGoods, CityDirectory.getInstance().getRandomOpenMarket(), false);
+				this.addActionToPlanner(Intention.MarketConsumerCar, CityDirectory.getInstance().getRandomOpenMarket(), false);
 				this.state = PersonState.Awake;
+				this.tryToBuyCar = false;
 				return true;
 			}
 		}
@@ -699,6 +713,14 @@ public class PersonAgent extends Agent implements Person {
 	public void setCurrentLocation(Structure location) {
 		this.currentLocation = location;
 		this.passengerRole.setCurrentLocation(location);
+	}
+	
+	/**
+	 * Set whether or not this PersonAgent should try to buy a car at a Market
+	 * @param newCar shouldBuy
+	 */
+	public void setTryToBuyCar(boolean newCar) {
+		this.tryToBuyCar = newCar;
 	}
 	
 	

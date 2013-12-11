@@ -61,6 +61,10 @@ public class PersonConfigPanel extends ConfigPanel {
 		this.left.resetInfo();
 	}
 	
+	public PersonAgent getSelectedPerson() {
+		return right.getSelectedPerson();
+	}
+	
 	
 	private class RightPanel extends JPanel {
 		private JScrollPane scrollPane;
@@ -111,6 +115,10 @@ public class PersonConfigPanel extends ConfigPanel {
 		
 		public void reset() {
 			this.model.clear();
+		}
+		
+		public PersonAgent getSelectedPerson() {
+			return personList.getModel().getElementAt(personList.getSelectedIndex());
 		}
 	}
 }
