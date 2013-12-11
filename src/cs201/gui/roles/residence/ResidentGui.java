@@ -21,6 +21,7 @@ public class ResidentGui implements Gui {
 	private int exitX = -20, exitY = 0;
 	private int bedX = 0, bedY = 0;
 	private int tableX = 0, tableY = 0;
+	private int couchX = 0, couchY = 0;
 	
 	private int xPos;
 	private int yPos;
@@ -30,6 +31,7 @@ public class ResidentGui implements Gui {
 	private int waitTime=0;
 	private String holding="";
 	private String dir = new String();
+	private String destinationDir = new String();
 	
 	boolean animating;
 	
@@ -46,6 +48,7 @@ public class ResidentGui implements Gui {
 		xDestination = xPos;
 		yDestination = yPos;
 		dir = "Default_Walker_Down";
+		destinationDir = dir;
 		
 		
 		role = newRole;
@@ -82,7 +85,7 @@ public class ResidentGui implements Gui {
 		}
 		
 		if (xPos==xDestination && yPos==yDestination && animating == true) {
-			//role.msgAnimationDone();
+			dir = destinationDir;
 			timer.schedule(new TimerTask() {
 				public void run() {	
 					role.msgAnimationDone();
@@ -99,8 +102,12 @@ public class ResidentGui implements Gui {
 	public void draw(Graphics2D g) {
 		/*g.setColor(Color.ORANGE);
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);*/
-		
-		g.drawImage(ArtManager.getImage(dir), xPos, yPos, 17, 22, null);
+		if (dir=="Resident_Sleeping") {
+			g.drawImage(ArtManager.getImage(dir), xPos, yPos, 22, 17, null);
+		}
+		else {
+			g.drawImage(ArtManager.getImage(dir), xPos, yPos, 17, 22, null);
+		}
 		
 		g.setColor(Color.WHITE);
 		g.drawString("Resident", xPos, yPos);
@@ -115,6 +122,7 @@ public class ResidentGui implements Gui {
 		yDestination = fridgeY;
 		animating = true;
 		waitTime = 1000;
+		destinationDir = "Default_Walker_Up";
 	}
 	
 	public void walkToTable() {
@@ -122,6 +130,7 @@ public class ResidentGui implements Gui {
 		yDestination = tableY;
 		animating = true;
 		waitTime = 3000;
+		destinationDir = "Default_Walker_Left";
 	}
 	
 	public void goToBed() {
@@ -130,18 +139,30 @@ public class ResidentGui implements Gui {
 		yDestination = bedY;
 		animating = true;
 		//animation to get in bed
+		destinationDir = "Resident_Sleeping";
+	}
+	
+	public void goToCouch() {
+		//animation to walk to the couch
+		xDestination = couchX;
+		yDestination = couchY;
+		animating = true;
+		destinationDir = "Default_Walker_Left";
 	}
 	
 	public void exit() {
 		xDestination = exitX;
 		yDestination = exitY;
 		animating = true;
+		destinationDir = "Default_Walker_Left";
 	}
+	
 	
 	public void enter() {
 		xDestination = startX;
 		yDestination = startY;
 		animating = true;
+		destinationDir = "Default_Walker_Right";
 	}
 
 	@Override
@@ -159,6 +180,11 @@ public class ResidentGui implements Gui {
 		bedY = y;
 	}
 	
+	public void setCouch(int x, int y) {
+		couchX = x;
+		couchY = y;
+	}
+	
 	public void setFridge(int x, int y) {
 		fridgeX = x;
 		fridgeY = y;
@@ -174,7 +200,11 @@ public class ResidentGui implements Gui {
 	}
 	
 	public void setHolding(String item) {
-		holding=item.substring(0,3);
+		if (item.length()>2){
+			holding=item.substring(0,3);
+		}
+		else
+			holding=item;
 	}
 	
 	public void clearHolding() {

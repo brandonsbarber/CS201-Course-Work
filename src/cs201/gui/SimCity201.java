@@ -559,10 +559,12 @@ public class SimCity201 extends JFrame {
 		PersonAgent p1 = new PersonAgent("Renter",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		
 		PersonAgent p2 = new PersonAgent("Landlord",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), res2, ac, Intention.ResidenceLandLord, res2, null);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		
 		ac.addApartment(res);
 		ac.getLandlord().addProperty(res, (Renter)res.getResident(), 30, WeekDay.Tuesday);
@@ -588,10 +590,13 @@ public class SimCity201 extends JFrame {
 		
 		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		p1.setSleepTime(new CityTime(11, 0));
 		personPanel.addPerson(p1);
 		CityDirectory.getInstance().addPerson(p1);
 		
 		p1.startThread();
+		
+		//p1.setWakeupTime(new CityTime(13,0)); //Need to change wakeup Time after a delay.
 	}
 	
 	private void normativeWalking()
