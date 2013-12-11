@@ -45,7 +45,7 @@ public class PassengerGui implements Gui
 
 	private boolean pathfinding = false;
 
-	private boolean allowedToMove;
+	private boolean allowedToMove = true;
 
 	private Point current, next;
 
@@ -222,6 +222,8 @@ public class PassengerGui implements Gui
 				}
 				return;
 			}
+			if(allowedToMove)
+			{
 				switch(currentDirection)
 				{
 					case Right:
@@ -239,9 +241,11 @@ public class PassengerGui implements Gui
 					default:
 						break;
 				}
-			
+			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{
+				if(allowedToMove)
+				{
 					currentDirection = moves.pop();
 					current = next;
 					
@@ -258,6 +262,7 @@ public class PassengerGui implements Gui
 					default:next = current;
 						break;
 					}
+				}
 			}
 		}
 	}
