@@ -21,6 +21,7 @@ import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
 import cs201.gui.configPanels.MarketConfigPanel;
 import cs201.gui.configPanels.PersonConfigPanel;
+import cs201.gui.configPanels.ResidenceConfigPanel;
 import cs201.gui.configPanels.RestaurantConfigPanel;
 import cs201.gui.configPanels.TransitConfigPanel;
 import cs201.gui.structures.market.MarketAnimationPanel;
@@ -56,7 +57,7 @@ import cs201.structures.transit.BusStop;
 @SuppressWarnings("serial")
 public class SimCity201 extends JFrame {
 	public static final int SIZEX = 1200;
-	public static final int SIZEY = 800;
+	public static final int SIZEY = 700;
 	
 	CityPanel cityPanel;
 	JPanel buildingPanels;
@@ -69,6 +70,7 @@ public class SimCity201 extends JFrame {
 	RestaurantConfigPanel restaurantPanel;
 	PersonConfigPanel personPanel;
 	TransitConfigPanel transitPanel;
+	ResidenceConfigPanel residencePanel;
 	
 	BaseSettingsPanel bottomSettingsPanel;
 	
@@ -143,6 +145,8 @@ public class SimCity201 extends JFrame {
 		settingsPanel.addPanel("Markets", marketPanel);
 		restaurantPanel = new RestaurantConfigPanel();
 		settingsPanel.addPanel("Restaurants", restaurantPanel);
+		residencePanel = new ResidenceConfigPanel();
+		settingsPanel.addPanel("Residences", residencePanel);
 		
 		mainPanel.add(BorderLayout.SOUTH, settingsPanel);
 		mainPanel.add(BorderLayout.NORTH, guiPanel);
@@ -178,6 +182,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Joust");
 		scenarioList.add("Skyler Restaurant");
 		scenarioList.add("Failed Market Delivery Truck");
+		scenarioList.add("Residence running out of a Food");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -226,6 +231,8 @@ public class SimCity201 extends JFrame {
 			case 25: joust();break;
 			case 26: skylerRestaurant();break;
 			case 27: failedMarketDeliveryTruck(); break;
+			case 28: residenceOutOfFood(); break;
+			
 			default: return;
 		}
 	}
@@ -608,7 +615,6 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
 		CityDirectory.getInstance().addResidence(res);
 		timePanel.addAnimationPanel(resPanel);
-		
 		for (int i=0; i<9; i++) { //bring all food amounts down to 1 in the fridge.
 			res.removeFood("Steak");
 			res.removeFood("Pasta");
@@ -617,6 +623,8 @@ public class SimCity201 extends JFrame {
 			res.removeFood("Chicken");
 			res.removeFood("Salad");
 		}
+		res.setConfigPanel(residencePanel);
+		residencePanel.addResidenceStructure(res);
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
