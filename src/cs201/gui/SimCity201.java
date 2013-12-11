@@ -57,7 +57,7 @@ import cs201.structures.transit.BusStop;
 @SuppressWarnings("serial")
 public class SimCity201 extends JFrame {
 	public static final int SIZEX = 1200;
-	public static final int SIZEY = 700;
+	public static final int SIZEY = 800;
 	
 	CityPanel cityPanel;
 	JPanel buildingPanels;
