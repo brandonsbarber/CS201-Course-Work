@@ -18,6 +18,8 @@ public class MarketManagerGui implements Gui {
 	public static final int MANAGER_Y = 320;
 
 	private int xPos, yPos;
+	private int xDestination, yDestination;
+	boolean animating = false;
 	
 	public MarketManagerGui() {
 		this(null);
@@ -27,10 +29,29 @@ public class MarketManagerGui implements Gui {
 		role = c;
 		xPos = MANAGER_X;
 		yPos = MANAGER_Y;
+		xDestination = xPos;
+		yDestination = yPos;
+		animating = false;
 		isPresent = false;
 	}
 
 	public void updatePosition() {	
+		if (xPos < xDestination) {
+			xPos++;
+		} else if (xPos > xDestination) {
+			xPos--;
+		} else if (yPos < yDestination) {
+			yPos++;
+		} else if (yPos > yDestination) {
+			yPos--;
+		}
+		
+		if (xPos == xDestination && yPos == yDestination && animating) {
+			if (role != null)
+				role.animationFinished();
+			animating = false;
+		}
+		
 		return;
 	}
 
@@ -45,6 +66,12 @@ public class MarketManagerGui implements Gui {
 			// Draw the market manager
 			g.drawImage(ArtManager.getImage("Market_Manager_Down"), xPos, yPos, MANAGER_SIZE, MANAGER_SIZE, null);
 		}
+	}
+	
+	public void doLeaveMarket() {
+		animating = true;
+		xDestination = 530;
+		yDestination = yPos;
 	}
 
 	public boolean isPresent() {

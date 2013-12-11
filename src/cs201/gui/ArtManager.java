@@ -74,6 +74,8 @@ public class ArtManager
 		atlas.put("Restaurant_Ben_Waiter_Left", ImageIO.read(new File("data/Restaurant/Ben/Waiter_West.png")));
 		atlas.put("Restaurant_Ben_Waiter_Right", ImageIO.read(new File("data/Restaurant/Ben/Waiter_East.png")));
 		
+		atlas.put("Market_Car", ImageIO.read(new File("data/Market/Car.png")));
+		
 		//Matt's Sprites
 		atlas.put("Default_Walker_Up", ImageIO.read(new File("data/DefaultSprites/Up.png")));
 		atlas.put("Default_Walker_Down", ImageIO.read(new File("data/DefaultSprites/Down.png")));
@@ -126,11 +128,24 @@ public class ArtManager
 		atlas.put("Skyler_Waiter_Right",ImageIO.read(new File("data/Restaurant/Skyler/waiter-right.png")));
 		atlas.put("Skyler_Waiter_Up",ImageIO.read(new File("data/Restaurant/Skyler/waiter-up.png")));
 		atlas.put("Skyler_Waiter_Down",ImageIO.read(new File("data/Restaurant/Skyler/waiter-down.png")));
+		atlas.put("Skyler_Counter_Vert", ImageIO.read(new File("data/Restaurant/Skyler/counter-vert.png")));
+		atlas.put("Skyler_Counter_Horiz", ImageIO.read(new File("data/Restaurant/Skyler/counter-horiz.png")));
+		atlas.put("Skyler_Kitchen_Floor", ImageIO.read(new File("data/Restaurant/Skyler/kitchen-floor.png")));
+		
 		atlas.put("Residence_Floor",ImageIO.read(new File("data/Housing/Residence-floor.png")));
 		atlas.put("Residence_Floor2",ImageIO.read(new File("data/Housing/Residence-floor2.png")));
 		atlas.put("Residence_Floor3",ImageIO.read(new File("data/Housing/Residence-floor3.png")));
 		atlas.put("Apartment_Complex_Floor",ImageIO.read(new File("data/Housing/Apartment-floor.png")));
 		atlas.put("Apartment_Complex_Floor2",ImageIO.read(new File("data/Housing/Apartment-floor2.png")));
+		atlas.put("Apartment_Complex_Floor3",ImageIO.read(new File("data/Housing/Apartment-floor3.png")));
+		atlas.put("Residence_Fridge",ImageIO.read(new File("data/Housing/Fridge.png")));
+		atlas.put("Residence_Dining_Table",ImageIO.read(new File("data/Housing/Dining-table.png")));
+		atlas.put("Residence_Dining_Table_Blank",ImageIO.read(new File("data/Housing/Dining-table-blank.png")));
+		atlas.put("Residence_Bed",ImageIO.read(new File("data/Housing/Bed.png")));
+		atlas.put("Residence_Couch",ImageIO.read(new File("data/Housing/Couch.png")));
+		atlas.put("Apartment_Complex_Desk",ImageIO.read(new File("data/Housing/Desk.png")));
+		atlas.put("Apartment_Complex_Chair",ImageIO.read(new File("data/Housing/Chair-up.png")));
+		atlas.put("Resident_Sleeping",ImageIO.read(new File("data/Housing/Resident-sleeping.png")));
 	}
 	
 	public static BufferedImage getImage(String key)

@@ -34,6 +34,7 @@ public class MarketStructure extends Structure {
 	StructurePanel panel = null;
 	double totalFunds = 0.0;
 	private MarketConfigPanel configPanel;
+	private boolean forceClose = false;
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
@@ -259,14 +260,34 @@ public class MarketStructure extends Structure {
 	public List<InventoryEntry> getInventory() {
 		return manager.getInventory();
 	}
+	
+	/**
+	 * Closes the market by messaging the market manager. He, in turn, messages his employees.
+	 */
+	public synchronized void closeMarket() {
+		if (manager.getPerson() != null) {
+			isOpen = false;
+			forceClose = true;
+			manager.msgClosingTime();
+		}
+	}
+	
+	public void setForceClose(boolean close) {
+		forceClose = close;
+	}
 
 	@Override
 	public void updateTime(CityTime time) {
-		if (!isOpen) {
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			forceClose = false;
+		}
+		
+		if (!isOpen && !forceClose) {
+			System.out.println("Checking to see if the market shoudl open.");
 			checkIfOpen();
 		}
 		
-		if (time.equalsIgnoreDay(morningShiftEnd)) {
+		if (time.equalsIgnoreDay(morningShiftEnd) && isOpen) {
 			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "Morning shift over!");
 			if (manager.getPerson() != null) {
 				manager.msgClosingTime();
@@ -274,7 +295,7 @@ public class MarketStructure extends Structure {
 			}
 		}
 		
-		if (time.equalsIgnoreDay(this.closingTime)) {
+		if (time.equalsIgnoreDay(this.closingTime) && isOpen) {
 			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "It's closing time!");
 			if (manager.getPerson() != null) {
 				manager.msgClosingTime();

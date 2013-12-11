@@ -235,6 +235,7 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If it's time to go to sleep
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && (CityTime.timeDifference(time, sleepTime) >= 0 || CityTime.timeDifference(time, wakeupTime) < 0)) {
+			passengerRole.msgStopRoaming();
 			this.planner.clear();
 			this.state = PersonState.Sleeping;
 			this.addActionToPlanner(Intention.ResidenceSleep, home, false);

@@ -58,21 +58,40 @@ public class RestaurantAnimationPanelSkyler extends StructurePanel {
         	}
         }
         
-        
-        g2.setColor(Color.WHITE);
-        g2.fillRect(getWidth()-100, 0, 100, 100 ); //cook's area
-        g2.setColor(Color.GRAY);
+         /*g2.setColor(Color.WHITE);
+        g2.fillRect(getWidth()-100, 0, 100, 100 ); //cook's area*/
+        /*g2.setColor(Color.GRAY);
         g2.fillRect(getWidth()-100, 92, 100, 8 );//bottom wall
         g2.setColor(Color.GRAY);
-        g2.fillRect(getWidth()-100, 0, 20, 92 );//serving counter
-        g2.setColor(Color.BLACK);
-        g2.fillRect(getWidth()-75, 3, 70, 20 ); //grill
-        
-        g2.setColor(Color.WHITE);
+        g2.fillRect(getWidth()-100, 0, 20, 92 );*///serving counter 
+        /*g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, 90, 70 ); //customer waiting area
         
-        g2.setColor(Color.WHITE);
-        g2.fillRect(0, 97, 26, 106 ); //waiter home area
+        g2..setColor(Color.WHITE);
+        g2.fillRect(0, 97, 26, 106 );*/ //waiter home area
+        for (int i=getWidth()-100; i<getWidth(); i=i+32) { //Cook's area
+        	for (int j=0; j<85; j=j+32) {
+        		g.drawImage(ArtManager.getImage("Skyler_Kitchen_Floor"), i, j, 32, 32, null);
+        	}
+        }
+        
+        g.drawImage(ArtManager.getImage("Skyler_Counter_Vert"), getWidth()-100, 0, 22, 101, null); //Serving Counter
+        g.drawImage(ArtManager.getImage("Skyler_Counter_Horiz"), getWidth()-100+18, 72, 90, 29, null); //Bottom Wall
+        
+        g2.setColor(Color.GRAY);
+        g2.fillRect(getWidth()-75, 3, 70, 20 ); //grill
+        
+        for (int i=-5; i < 80; i=i+32) {		//customer waiting area
+        	for (int j=-20; j<60; j=j+32) {
+             g.drawImage(ArtManager.getImage("Apartment_Complex_Floor2"), i, j, 32, 32, null);
+        	}
+         }
+        
+        for (int i=0; i < 26; i=i+32) {		//waiter home position
+        	for (int j=100; j<202; j=j+32) {
+             g.drawImage(ArtManager.getImage("Apartment_Complex_Floor3"), i, j, 32, 32, null);
+        	}
+         }
         
         for (int i=0; i < nTables; i++) {
            // g.setColor(Color.ORANGE);

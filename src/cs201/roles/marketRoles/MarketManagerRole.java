@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.CarAgent;
@@ -38,6 +39,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	private static final int CARPRICE = 1000;
 
 	String name = "";
+	Semaphore animation = new Semaphore(0, true);
 	
 	// Lists
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
@@ -513,6 +515,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 		stateChanged();
 	}
 	
+	public void animationFinished() {
+		animation.release();
+	}
+	
 	/*
 	 * ********** ACTIONS **********
 	 */
@@ -669,7 +675,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	private void leaveMarket() {
-
+		System.out.println("leaveMarket() called");
 		// Message all the employees and let them know its time to go home
 		for (MyEmployee employee : employees) {
 			employee.employee.msgClosingTime();
@@ -677,19 +683,28 @@ public class MarketManagerRole extends Role implements MarketManager {
 		
 		// Remove all the employees from my list (they'll be back tomorrow)
 		employees.clear();
+				
+		gui.doLeaveMarket();
+		pauseForAnimation();
 		
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
-//		gui.doLeave()
 		gui.setPresent(false);
-		
 	}
 
 	/*
 	 * ********** UTILITY **********
 	 */
+	
+	public void pauseForAnimation() {
+		try {
+			animation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void addEmployee(MarketEmployee e) {
 		employees.add(new MyEmployee(e, EmployeeState.AVAILABLE));

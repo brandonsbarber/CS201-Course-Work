@@ -177,6 +177,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Weekend Behavior Change");
 		scenarioList.add("Joust");
 		scenarioList.add("Skyler Restaurant");
+		scenarioList.add("Failed Market Delivery Truck");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -224,6 +225,7 @@ public class SimCity201 extends JFrame {
 			case 24: weekendDifference(); break;
 			case 25: joust();break;
 			case 26: skylerRestaurant();break;
+			case 27: failedMarketDeliveryTruck(); break;
 			default: return;
 		}
 	}
@@ -558,10 +560,12 @@ public class SimCity201 extends JFrame {
 		PersonAgent p1 = new PersonAgent("Renter",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		
 		PersonAgent p2 = new PersonAgent("Landlord",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), res2, ac, Intention.ResidenceLandLord, res2, null);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		
 		ac.addApartment(res);
 		ac.getLandlord().addProperty(res, (Renter)res.getResident(), 30, WeekDay.Tuesday);
@@ -587,10 +591,13 @@ public class SimCity201 extends JFrame {
 		
 		PersonAgent p1 = new PersonAgent("Resident",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		p1.setSleepTime(new CityTime(11, 0));
 		personPanel.addPerson(p1);
 		CityDirectory.getInstance().addPerson(p1);
 		
 		p1.startThread();
+		
+		//p1.setWakeupTime(new CityTime(13,0)); //Need to change wakeup Time after a delay.
 	}
 	
 	private void normativeWalking()
@@ -1819,6 +1826,88 @@ public class SimCity201 extends JFrame {
 			bus.startThread();
 			transitPanel.addVehicle(bus);
 		}
+	}
+	
+	private void failedMarketDeliveryTruck()
+	{
+		/* A Restaurant Cook and Cashier go to work at 8:00AM. The Restaurant is forced open for this scenario (normally
+		 * it would be closed if only a Cook and Cashier were present). A Market Manager and Employee also go to work at
+		 * 8:00AM. The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market
+		 * employee gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring
+		 * the food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from
+		 * the cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with
+		 * negative money which is okay. Eventually what will happen is the restaurant will have to cover for this by
+		 * withdrawing from its bank account. If it doesn't have enough, it will take out a loan.
+		 */
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		timePanel.addAnimationPanel(mG);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
+		MarketConfigPanel mcp = new MarketConfigPanel();
+		settingsPanel.addPanel("Markets",mcp);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		m.setConfigPanel(mcp);
+		mcp.addMarketStructure(m);
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
+		
+		TruckAgent truck2 = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck2);
+		transitPanel.addVehicle(truck2);
+		
+		RestaurantAnimationPanelMatt g = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
+		RestaurantMatt r = new RestaurantMatt(23*25,11*25,50,50,Structure.getNextInstance(),g);
+		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(14, 0));
+		r.setOpen(true);
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
+		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p1b.setHungerEnabled(false);
+		p1b.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1b);
+		personPanel.addPerson(p1b);
+		p1b.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		((RestaurantCookRoleMatt) r.getCook()).emptySteakInventory();
 	}
 	
 	public PersonAgent createPerson(String name, Structure location, Residence home, Intention job, Structure workplace, CarAgent car) {
