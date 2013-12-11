@@ -127,15 +127,18 @@ public class RestaurantSkyler extends Restaurant {
 	}
 
 	private void checkIfItsTimeToOpen(CityTime time) {
-		if (CityTime.timeDifference(time, this.morningShiftStart)>=0 && CityTime.timeDifference(this.morningShiftEnd, time)>=0
-				|| CityTime.timeDifference(time, this.afternoonShiftStart)>=0 && CityTime.timeDifference(this.closingTime, time)>=0) {
-			if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
-				for (RestaurantWaiterRole w : waiters) {
-					if (w.getPerson() != null) {
-						AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
-						this.isOpen = true;
-						return;
-					}
+		// If it's not during shift hours, there's no way the restaurant would be open
+		if (!(CityTime.timeDifference(time, morningShiftStart) >= 0 && CityTime.timeDifference(time, morningShiftEnd) < 0) &&
+				!(CityTime.timeDifference(time, afternoonShiftStart) >= 0 && CityTime.timeDifference(time, closingTime) < 0)) {
+			return;
+		}
+		
+		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
+			for (RestaurantWaiterRole w : waiters) {
+				if (w.getPerson() != null) {
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Open for business!");
+					this.isOpen = true;
+					return;
 				}
 			}
 		}
@@ -144,44 +147,38 @@ public class RestaurantSkyler extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {
-		if(!isOpen) {
-			checkIfItsTimeToOpen(time);
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
 		}
 		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
-			if (host.getPerson() != null) {
-				host.msgClosingTime();
-			} else {
-				closingTime();
-			}
-		}
-		
-		if (time.equalsIgnoreDay(closingTime)) {
-			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
-			if (host.getPerson() != null) {
-				host.msgClosingTime();
-			} else {
-				closingTime();
-			}
 			this.isOpen = false;
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+			this.configPanel.updateInfo(this);
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
+			this.isOpen = false;
+			if (host.getPerson() != null) {
+				host.msgClosingTime();
+			} else {
+				closingTime();
+			}
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !forceClosed) {
+			checkIfItsTimeToOpen(time);
+			this.configPanel.updateInfo(this);
 		}
-	}
-
-	@Override
-	public void closeRestaurant() {
-		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Closing manually!");
-		if (host.getPerson() != null) {
-			host.msgClosingTime();
-		} else {
-			closingTime();
-		}
-		this.isOpen = false;
 	}
 
 	@Override
 	public void emptyEntireCookInventory() {
 		((RestaurantCookRoleSkyler)cook).clearInventory();
+		this.configPanel.updateInfo(this);
 	}
 
 	@Override

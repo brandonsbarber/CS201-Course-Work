@@ -66,9 +66,14 @@ public class ResidenceConfigPanel extends ConfigPanel implements ActionListener 
 		}
 		if (structure != null) {
 			List<Food> fridgeContents = structure.getFridgeContents();
-			for (Food thisFood : fridgeContents) {
-				String foodString = String.format(thisFood.getAmount() + " " + thisFood.getType());
+			if (fridgeContents.isEmpty()) {
+				String foodString = new String("Fridge Empty.");
 				listModel.addElement(foodString);
+			} else {
+				for (Food thisFood : fridgeContents) {
+					String foodString = String.format(thisFood.getAmount() + " " + thisFood.getType());
+					listModel.addElement(foodString);
+				}
 			}
 		}
 	}

@@ -151,7 +151,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		
 		for (Map.Entry<String, Food> entry : inventory.entrySet())
 		{
-		    tempString = entry.getKey() + "[" + entry.getValue().amount + "]";
+		    tempString = entry.getKey() + " [" + entry.getValue().amount + "]";
 		    formattedInventory.add(tempString);
 		}
 		
@@ -174,6 +174,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		o.state = OrderState.cooking;
 		o.cookOrder(inventory.get(o.choice).cookingTime);
 		inventory.get(o.choice).amount--;
+		this.restaurant.updateInfoPanel();
 	}
 	
 	private void newRestockOrder(Food food, int amount) {
@@ -188,6 +189,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(food.type, amount));
 		
 		food.amtOrdered+=amount;
+		this.restaurant.updateInfoPanel();
 		//NEED TO RECORD THAT MORE WAS REQUESTED ALREADY!
 	}
 	
@@ -212,6 +214,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
+		this.restaurant.updateInfoPanel();
 	}
 	
 	public String getName() {

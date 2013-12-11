@@ -61,6 +61,8 @@ public class ArtManager
 		atlas.put("Sidewalk_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/SidewalkTile.png")));
 		atlas.put("Road_Tile",ImageIO.read(new File("data/TransitSprites/Tiles/RoadTile.png")));
 		
+		atlas.put("Bus_Stop_Bench", ImageIO.read(new File("data/TransitSprites/BusStop_Bench.png")));
+		
 		
 		
 		//Ben's Sprites
