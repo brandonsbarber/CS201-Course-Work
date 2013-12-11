@@ -422,7 +422,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * 
 	 */
 	public void msgDeliveryFailed(int deliveryID) {
-		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that a delivery failed."));
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that delivery " + deliveryID + " failed."));
 		
 		// Find the order in our list of orders
 		Order order = null;
@@ -506,8 +506,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	public void startInteraction(Intention intent) {
 		// animate inside market
-		this.gui.setPresent(true);
+		gui.setPresent(true);
 		timeToLeave = false;
+		gui.doEnterMarket();
+		pauseForAnimation();
 	}
 
 	public void msgClosingTime() {
@@ -625,8 +627,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @return True if we were able to dispatch the order, False if something went wrong
 	 */
 	private boolean dispatchDeliveryTruckForOrder(Order o) {
-		//if (structure != null && o.structure != null && o.structure.getOpen()) {
-		if (structure != null && o.structure != null) {
+		if (structure != null && o.structure != null && o.structure.getOpen()) {
+		//if (structure != null && o.structure != null) {
 			// Get our delivery truck
 			TruckAgent deliveryTruck = structure.getNextDeliveryTruck();
 		
@@ -635,7 +637,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 			
 			// The order has now been "SENT"
 			o.state = OrderState.SENT;
-			
 			return true;
 		}
 		

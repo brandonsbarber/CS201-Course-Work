@@ -182,7 +182,8 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Joust");
 		scenarioList.add("Skyler Restaurant");
 		scenarioList.add("Failed Market Delivery Truck");
-		scenarioList.add("Residence running out of a Food");
+		scenarioList.add("Residence runs out of a food item");
+		scenarioList.add("Residence is completely out of food");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -231,7 +232,8 @@ public class SimCity201 extends JFrame {
 			case 25: joust();break;
 			case 26: skylerRestaurant();break;
 			case 27: failedMarketDeliveryTruck(); break;
-			case 28: residenceOutOfFood(); break;
+			case 28: residenceOutOfFood(false); break;
+			case 29: residenceOutOfFood(true); break;
 			
 			default: return;
 		}
@@ -614,7 +616,7 @@ public class SimCity201 extends JFrame {
 		//p1.setWakeupTime(new CityTime(13,0)); //Need to change wakeup Time after a delay.
 	}
 	
-	private void residenceOutOfFood() {
+	private void residenceOutOfFood(boolean b) {
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
 		timePanel.addAnimationPanel(resPanel);
 		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
@@ -623,7 +625,11 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
 		CityDirectory.getInstance().addResidence(res);
 		timePanel.addAnimationPanel(resPanel);
-		for (int i=0; i<10; i++) { //bring all food amounts down to 1 in the fridge.
+		int limit = 9;
+		if (b) {
+			limit++;
+		}
+		for (int i=0; i<limit; i++) { //bring all food amounts down to 1 in the fridge.
 			res.removeFood("Steak");
 			res.removeFood("Pasta");
 			res.removeFood("Ice Cream");
@@ -869,7 +875,7 @@ public class SimCity201 extends JFrame {
 		transitPanel.addVehicle(truck);
 		
 		TruckAgent truck2 = new TruckAgent(m);
-		truck.startThread();
+		truck2.startThread();
 		m.addTruck(truck2);
 		transitPanel.addVehicle(truck2);
 		

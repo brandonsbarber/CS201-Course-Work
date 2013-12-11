@@ -184,7 +184,6 @@ public class TruckAgent extends VehicleAgent implements Truck
 		if(homeStructure instanceof MarketStructure)
 		{
 			MarketStructure m = (MarketStructure)homeStructure;
-			//FIX THIS AFTER TALKING WITH BEN
 			m.getManager().msgDeliveryFailed(d.id);
 		}
 		

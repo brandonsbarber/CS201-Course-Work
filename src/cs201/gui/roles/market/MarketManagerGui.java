@@ -73,6 +73,12 @@ public class MarketManagerGui implements Gui {
 		xDestination = 530;
 		yDestination = yPos;
 	}
+	
+	public void doEnterMarket() {
+		animating = true;
+		xDestination = MANAGER_X;
+		yDestination = MANAGER_Y;
+	}
 
 	public boolean isPresent() {
 		return isPresent;
