@@ -91,7 +91,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		// If there's nothing else to do, go home
 		if (gui != null) {
 			gui.doGoHome();
-			//pauseForAnimationWithTimeDelay();
+			pauseForAnimationWithTimeDelay();
 		}
 		
 		return false;
@@ -204,7 +204,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			 */
 			Random generator = new Random();
 			gui.doGoToItemOnShelf(generator.nextInt(5), generator.nextInt(5));
+			AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market employee " + name, "about to pause with time delay");
 			pauseForAnimationWithTimeDelay();
+			AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market employee " + name, "done with pause");
 		}
 	}
 	

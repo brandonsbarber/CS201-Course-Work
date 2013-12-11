@@ -175,8 +175,9 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	}
 
 	public void resetCity() {
-		// TODO Auto-generated method stub
-		
+		currentStructure = null;
+		listModel.clear();
+		marketsComboBox.removeAllItems();
 	}
 
 }
