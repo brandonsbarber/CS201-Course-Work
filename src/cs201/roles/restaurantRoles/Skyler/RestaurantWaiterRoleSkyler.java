@@ -505,9 +505,9 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			e.printStackTrace();
 		}
 		//Do(cashier.getName()+", can you make a bill for "+c.customer.getName()+"?");
-		System.out.println("!!!Pre message to cashier: "+this.menu);
+
 		cashier.msgRequestCheck(c.customer, this, menu.get(c.order.orderChoice));
-		System.out.println("!!!Post message to cashier: "+this.menu);
+		
 		try {
 			waitingForResponse.acquire();
 		} catch (InterruptedException e) {

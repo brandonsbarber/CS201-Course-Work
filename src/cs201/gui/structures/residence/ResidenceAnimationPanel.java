@@ -97,11 +97,6 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		g.drawImage(ArtManager.getImage("Residence_Bed"), bedX-10, bedY, 63, 32, null);
 		g.drawImage(ArtManager.getImage("Residence_Couch"), couchX, couchY, 32, 90, null);
 		
-		g2.setColor(Color.WHITE);
-		g2.drawString("Fridge", fridgeX, fridgeY+13);
-		g2.drawString("Table", tableX, tableY+tableHeight);
-		g2.drawString("Bed", bedX, bedY+bedHeight);
-		
 		super.paintComponent(g);
 	}
 	
