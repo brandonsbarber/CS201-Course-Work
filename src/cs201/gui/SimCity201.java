@@ -195,6 +195,9 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Weekend Behavior Change");
 		scenarioList.add("All Workplaces");
 		
+		scenarioList.add("Drunk Car Crash");
+		scenarioList.add("Drunk Passenger Crash");
+		
 		scenarioList.add("Reset City"); // keep as last item
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
@@ -248,13 +251,16 @@ public class SimCity201 extends JFrame {
 			case 31: normativeApartmentComplex(); break;
 			case 32: weekendDifference(); break;
 			case 33: allWorkplaces(); break;
+			
+			case 34: drunk();break;
+			case 35: hundredPeopleBusDrunk();break;
 			default: return;
 		}
 	}
 
 	private void drunk()
 	{
-CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
 
