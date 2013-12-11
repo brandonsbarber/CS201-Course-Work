@@ -18,7 +18,7 @@ import cs201.trace.AlertTag;
  *
  */
 public abstract class Restaurant extends Structure {
-	private final double INITIALMONEY = 100;
+	private final double INITIALMONEY = 2000;
 	
 	protected RestaurantConfigPanel configPanel;
 	protected RestaurantCashierRole cashier;
