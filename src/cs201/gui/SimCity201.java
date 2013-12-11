@@ -155,35 +155,42 @@ public class SimCity201 extends JFrame {
 		add(mainPanel);
 		
 		List<String> scenarioList = new ArrayList<String>();
-		scenarioList.add("Normative Restaurant");
-		scenarioList.add("Normative Restaurant: Two Customers, Two Waiters");
-		scenarioList.add("Normative Bus");
-		scenarioList.add("Normative Walking");
-		scenarioList.add("Normative Driving");
-		scenarioList.add("Market Restaurant Delivery (to show truck)");
-		scenarioList.add("Normative Market");
-		scenarioList.add("Normative Residence Test");
-		scenarioList.add("Normative Apartment Complex");
-		scenarioList.add("Ben's Normative Restaurant");
-		scenarioList.add("Ben's Normative Restaurant: Two Customers, Two Waiters");
-		scenarioList.add("Market Consumer Purchase Car");
-		scenarioList.add("Ben's Normative Restaurant Delivery");
-		scenarioList.add("Restaurant Shift Change");
-		scenarioList.add("100 People");
-		scenarioList.add("Brandon's Restaurant");
-		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");	
-		scenarioList.add("Brandon's Restaurant: Shift Change");
-		scenarioList.add("Market Shift Change");
-		scenarioList.add("Ben's Restaurant Shift Change");
-		scenarioList.add("Brandon Restaurant Market Order");
+		scenarioList.add("RestaurantMatt: Normative");
+		scenarioList.add("RestaurantMatt: Two Customers, Two Waiters");
+		scenarioList.add("RestaurantMat: Shift Change");
+		scenarioList.add("RestaurantBrandon: Normative");
+		scenarioList.add("RestaurantBrandon: Two Customers, Two Waiters");	
+		scenarioList.add("RestaurantBrandon: Shift Change");
+		scenarioList.add("RestaurantBen: Normative");
+		scenarioList.add("RestaurantBen: Two Customers, Two Waiters");
+		scenarioList.add("RestaurantBen: Shift Change");
+		scenarioList.add("RestaurantSkyler: Normative");
+		scenarioList.add("RestaurantSkyler: Two Customers, Two Waiters");
+		scenarioList.add("RestaurantSkyler: Shift Change");
+		
+		scenarioList.add("Bus: Normative");
+		scenarioList.add("Bus: Joust");
 		scenarioList.add("Beaucoup Buses");
 		scenarioList.add("Killer Buses");
+		scenarioList.add("Walking: Normative");
+		scenarioList.add("100 People");
+		scenarioList.add("Driving: Normative");
+		
+		scenarioList.add("Market: Normative");	
+		scenarioList.add("Market: Purchase Car");
+		scenarioList.add("Market: Shift Change");
+		scenarioList.add("Market: RestaurantMatt Delivery");
+		scenarioList.add("Market: RestaurantBrandon Delivery");
+		scenarioList.add("Market: RestaurantBen Delivery");
+		scenarioList.add("Market: RestaurantSkyler Deliver");
+		scenarioList.add("Market: Failed Delivery");
+		
+		scenarioList.add("Residence: Normative");
+		scenarioList.add("Residence: Out of single food item");
+		scenarioList.add("Residence: Completely out of food");
+		scenarioList.add("Apartment Complex: Normative");
+
 		scenarioList.add("Weekend Behavior Change");
-		scenarioList.add("Joust");
-		scenarioList.add("Skyler Restaurant");
-		scenarioList.add("Failed Market Delivery Truck");
-		scenarioList.add("Residence runs out of a food item");
-		scenarioList.add("Residence is completely out of food");
 		
 		scenarioList.add("Reset City"); // keep as last item
 		
@@ -207,34 +214,36 @@ public class SimCity201 extends JFrame {
 		{
 			case 1: normativeRestaurant(); break;
 			case 2: normativeRestaurantTwoCustomersTwoWaiters(); break;
-			case 3: normativeBus(); break;
-			case 4: normativeWalking(); break;
-			case 5: normativeDriving(); break;
-			case 6: normativeMarketRestaurantDelivery(); break;
-			case 7: normativeMarket(); break;
-			case 8: normativeResidence(); break;
-			case 9: normativeApartmentComplex(); break;
-			case 10: normativeRestaurantBen(); break;
-			case 11: normativeRestaurantBenTwoOfEach(); break;
-			case 12: marketConsumerCar(); break;
-			case 13: normativeMarketRestaurantBenDelivery(); break;
-			case 14: restaurantShiftChange(); break;
-			case 15: hundredPeople(); break;
-			case 16: brandonRestaurant(); break;
-			case 17: brandonRestaurantTwoCustomersTwoWaiters(); break;
-			case 18: brandonRestaurantShiftChange(); break;
-			case 19: marketShiftChange(); break;
-			case 20: benRestaurantShiftChange(); break;
-			case 21: brandonRestaurantMarketOrder(); break;
-			case 22: beaucoupBuses();break;
-			case 23: hundredPeopleBus();break;
-			case 24: weekendDifference(); break;
-			case 25: joust();break;
-			case 26: skylerRestaurant();break;
+			case 3: restaurantShiftChange(); break;
+			case 4: brandonRestaurant(); break;
+			case 5: brandonRestaurantTwoCustomersTwoWaiters(); break;
+			case 6: brandonRestaurantShiftChange(); break;
+			case 7: normativeRestaurantBen(); break;
+			case 8: normativeRestaurantBenTwoOfEach(); break;
+			case 9: benRestaurantShiftChange(); break;
+			case 10: skylerRestaurant(); break;
+			case 11: break; //
+			case 12: break; //
+			case 13: normativeBus(); break;
+			case 14: joust(); break;
+			case 15: beaucoupBuses(); break;
+			case 16: hundredPeopleBus(); break;
+			case 17: normativeWalking(); break;
+			case 18: hundredPeople(); break;
+			case 19: normativeDriving(); break;
+			case 20: normativeMarket(); break;
+			case 21: marketConsumerCar(); break;
+			case 22: marketShiftChange(); break;
+			case 23: normativeMarketRestaurantDelivery(); break;
+			case 24: brandonRestaurantMarketOrder(); break;
+			case 25: normativeMarketRestaurantBenDelivery(); break;
+			case 26: break; //
 			case 27: failedMarketDeliveryTruck(); break;
-			case 28: residenceOutOfFood(false); break;
-			case 29: residenceOutOfFood(true); break;
-			
+			case 28: normativeResidence(); break;
+			case 29: residenceOutOfFood(false); break;
+			case 30: residenceOutOfFood(true); break;
+			case 31: normativeApartmentComplex(); break;
+			case 32: weekendDifference(); break;
 			default: return;
 		}
 	}
@@ -1689,30 +1698,56 @@ public class SimCity201 extends JFrame {
 		}
 		
 		ArrayList<BusStop> stops = new ArrayList<BusStop>();
-
+		
 		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(23*25,13*25,25,25,1, panel));
+		stops.add(new BusStop(5*25,1*25,25,25,1, panel));
 		timePanel.addAnimationPanel(panel);
-		
-		cityPanel.addStructure(stops.get(0),new Point(23*25,14*25),new Point((int)stops.get(0).getRect().x,(int)stops.get(0).getRect().y));
-		
+			
 		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(1*25,6*25,25,25,2, panel2));
+		stops.add(new BusStop(12*25,1*25,25,25,2, panel2));
 		timePanel.addAnimationPanel(panel2);
-		
-		cityPanel.addStructure(stops.get(1),new Point(2*25,6*25),new Point((int)stops.get(1).getRect().x,(int)stops.get(1).getRect().y));
-		
+			
 		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(24*25,4*25,25,25,2, panel3));
+		stops.add(new BusStop(24*25,1*25,25,25,3, panel3));
 		timePanel.addAnimationPanel(panel3);
-		
-		cityPanel.addStructure(stops.get(2),new Point(24*25,3*25),new Point((int)stops.get(2).getRect().x,(int)stops.get(2).getRect().y));
-		
+			
 		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
-		stops.add(new BusStop(1*25,12*25,25,25,2, panel4));
+		stops.add(new BusStop(5*25,13*25,25,25,4, panel4));
 		timePanel.addAnimationPanel(panel4);
+			
+		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,13*25,25,25,5, panel5));
+		timePanel.addAnimationPanel(panel5);
+			
+		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
+		timePanel.addAnimationPanel(panel6);
 		
-		cityPanel.addStructure(stops.get(3),new Point(2*25,12*25),new Point((int)stops.get(3).getRect().x,(int)stops.get(3).getRect().y));
+		panel.setStop(stops.get(0));
+		panel2.setStop(stops.get(1));
+		panel3.setStop(stops.get(2));
+		panel4.setStop(stops.get(3));
+		panel5.setStop(stops.get(4));
+		panel6.setStop(stops.get(5));
+		
+		stops.get(0).setStructurePanel(panel);
+		stops.get(1).setStructurePanel(panel2);
+		stops.get(2).setStructurePanel(panel3);
+		stops.get(3).setStructurePanel(panel4);
+		stops.get(4).setStructurePanel(panel5);
+		stops.get(5).setStructurePanel(panel6);
+		
+		buildingPanels.add(panel,""+stops.get(0).getId());
+		buildingPanels.add(panel2,""+stops.get(1).getId());
+		buildingPanels.add(panel3,""+stops.get(2).getId());
+		buildingPanels.add(panel4,""+stops.get(3).getId());
+		buildingPanels.add(panel5,""+stops.get(4).getId());
+		buildingPanels.add(panel6,""+stops.get(5).getId());
+		
+		for(BusStop stop : stops)
+		{
+			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:14*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
+		}
 		
 		for(int i = 0; i < stops.size(); i++)
 		{
@@ -1974,7 +2009,21 @@ public class SimCity201 extends JFrame {
 		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
 		stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
 		timePanel.addAnimationPanel(panel6);
-			
+		
+		panel.setStop(stops.get(0));
+		panel2.setStop(stops.get(1));
+		panel3.setStop(stops.get(2));
+		panel4.setStop(stops.get(3));
+		panel5.setStop(stops.get(4));
+		panel6.setStop(stops.get(5));
+		
+		stops.get(0).setStructurePanel(panel);
+		stops.get(1).setStructurePanel(panel2);
+		stops.get(2).setStructurePanel(panel3);
+		stops.get(3).setStructurePanel(panel4);
+		stops.get(4).setStructurePanel(panel5);
+		stops.get(5).setStructurePanel(panel6);
+		
 		buildingPanels.add(panel,""+stops.get(0).getId());
 		buildingPanels.add(panel2,""+stops.get(1).getId());
 		buildingPanels.add(panel3,""+stops.get(2).getId());

@@ -265,7 +265,7 @@ public class MarketEmployeeGui implements Gui {
 	}
 	
 	public void doBringCarOut() {
-		guiMoveFromCurrentPositionTo(new Position(11, 13));
+		guiMoveFromCurrentPositionTo(new Position(13, 13));
 		gettingShelfItem = false;
 	}
 	

@@ -216,7 +216,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
-		// If its time to leave, leave
+		// If its time to leave, and we don't have any current orders, leave
 		if (timeToLeave) {
 			boolean inPersonOrder = false;
 			for (Order order : orders) {
@@ -225,7 +225,14 @@ public class MarketManagerRole extends Role implements MarketManager {
 					break;
 				}
 			}
-			if (!inPersonOrder) {
+			boolean carOrder = false;
+			for (CarOrder order : carOrders) {
+				if (order.state != CarOrderState.FINISHED) {
+					carOrder = true;
+					break;
+				}
+			}
+			if (!inPersonOrder && !carOrder) {
 				leaveMarket();
 				return true;
 			}
@@ -652,7 +659,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	private void giveCarToConsumer(CarOrder co) {
 		// First lets charge the consumer
-		// TODO this is a fixed price, we need to change this
 		chargeConsumer(co.consumer, CARPRICE);
 		
 		// Let the consumer know how much he was charged

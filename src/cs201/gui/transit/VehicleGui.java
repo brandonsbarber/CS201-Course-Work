@@ -100,7 +100,7 @@ public abstract class VehicleGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
-		/*if(!present)
+		if(!present)
 		{
 			if(currentIntersection != null)
 			{
@@ -111,7 +111,7 @@ public abstract class VehicleGui implements Gui
 			{
 				city.permissions[next.y][next.x].release();
 			}
-		}*/
+		}
 	}
 	
 	/**
@@ -133,9 +133,7 @@ public abstract class VehicleGui implements Gui
 
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
-		
-		//city.permissions[current.y][current.x].tryAcquire();
-		
+				
 		findPath();
 	}
 	
@@ -145,7 +143,7 @@ public abstract class VehicleGui implements Gui
 	private void findPath()
 	{
 		pathfinding = true;
-		//System.out.println(""+x+" "+y);
+
 		moves = Pathfinder.calcOneWayMove(city.getDrivingMap(), x, y, destX, destY);
 		pathfinding = false;
 	}
@@ -187,24 +185,22 @@ public abstract class VehicleGui implements Gui
 				
 				Intersection nextIntersection = city.getIntersection(next);
 				Intersection cIntersection = city.getIntersection(current);
-				
-				if(current != next)
+				if(cIntersection == null)
 				{
-					if(cIntersection == null)
+					if(city.permissions[current.y][current.x].tryAcquire() || true)
 					{
-						if(city.permissions[current.y][current.x].tryAcquire() || true)
-						{
-							city.permissions[current.y][current.x].release();
-						}
+						city.permissions[current.y][current.x].release();
 					}
-					else
+				}
+				else
+				{
+					if(nextIntersection == null)
 					{
-						if(nextIntersection == null)
+						if(!cIntersection.acquireIntersection())
 						{
-							//System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
 							cIntersection.releaseAll();
-							cIntersection.releaseIntersection();
 						}
+						cIntersection.releaseIntersection();
 					}
 				}
 				return;
@@ -251,8 +247,10 @@ public abstract class VehicleGui implements Gui
 						{
 							if(nextIntersection == null)
 							{
-								//System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
-								cIntersection.releaseAll();
+								if(!cIntersection.acquireIntersection())
+								{
+									cIntersection.releaseAll();
+								}
 								cIntersection.releaseIntersection();
 							}
 						}
@@ -295,7 +293,6 @@ public abstract class VehicleGui implements Gui
 					{
 						if(nextIntersection.acquireIntersection())
 						{
-							//System.out.println(this.getVehicle().getInstance()+" just got intersection "+nextIntersection.getInstance());
 							nextIntersection.acquireAll();
 							allowedToMove = true;
 							return;
