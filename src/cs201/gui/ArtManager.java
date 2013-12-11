@@ -33,6 +33,16 @@ public class ArtManager
 		atlas.put("Bus_Left", ImageIO.read(new File("data/TransitSprites/Bus_West.png")));
 		atlas.put("Bus_Right", ImageIO.read(new File("data/TransitSprites/Bus_East.png")));
 		
+		atlas.put("Car_Empty_Up", ImageIO.read(new File("data/TransitSprites/Car_Empty_Up.png")));
+		atlas.put("Car_Empty_Down", ImageIO.read(new File("data/TransitSprites/Car_Empty_Down.png")));
+		atlas.put("Car_Empty_Left", ImageIO.read(new File("data/TransitSprites/Car_Empty_Left.png")));
+		atlas.put("Car_Empty_Right", ImageIO.read(new File("data/TransitSprites/Car_Empty_Right.png")));
+		
+		atlas.put("Car_Occupied_Up", ImageIO.read(new File("data/TransitSprites/Car_Occupied_Up.png")));
+		atlas.put("Car_Occupied_Down", ImageIO.read(new File("data/TransitSprites/Car_Occupied_Down.png")));
+		atlas.put("Car_Occupied_Left", ImageIO.read(new File("data/TransitSprites/Car_Occupied_Left.png")));
+		atlas.put("Car_Occupied_Right", ImageIO.read(new File("data/TransitSprites/Car_Occupied_Right.png")));
+		
 		atlas.put("Restaurant_Brandon_Open",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonOpen.png")));
 		atlas.put("Restaurant_Brandon_Closed",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonClosed.png")));
 		atlas.put("Restaurant_Brandon_Floor",ImageIO.read(new File("data/Restaurant/Brandon/RestaurantBrandonFloor.png")));

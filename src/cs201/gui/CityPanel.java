@@ -151,6 +151,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
 		}
+		
+		for(Intersection i : intersections)
+		{
+			i.acquireIntersection();
+			i.releaseIntersection();
+		}
 	}
 	
 	/**

@@ -249,7 +249,6 @@ public abstract class VehicleGui implements Gui
 					if(gottenIntersection.acquireIntersection())
 					{
 						currentIntersection = gottenIntersection;
-						System.out.println("ACQUIRING THE ENTIRE INTERSECTION");
 						gottenIntersection.acquireAll();
 						allowedToMove = true;
 					}
