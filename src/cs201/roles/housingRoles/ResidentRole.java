@@ -57,8 +57,7 @@ public class ResidentRole extends Role implements Resident {
 					return true;
 				}
 				else {
-					//getPerson().goToMarket();
-					Do("I need to get food from the market. I need to implement some way to do that.");
+					makeShoppingList();
 					return false;
 				}
 			case relaxing:

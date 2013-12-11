@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import cs201.gui.ArtManager;
 import cs201.gui.Gui;
@@ -37,6 +38,9 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 		// TODO Auto-generated constructor stub
 		setSize(WINDOWX, WINDOWY);
 		setVisible(true);
+		
+		Timer timer = new Timer(15, this );
+    	timer.start();
 	}
 
 	public void paintComponent(Graphics g) {

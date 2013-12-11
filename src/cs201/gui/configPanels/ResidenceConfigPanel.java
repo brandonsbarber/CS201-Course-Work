@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
@@ -34,6 +35,8 @@ public class ResidenceConfigPanel extends ConfigPanel implements ActionListener 
 		listModel = new DefaultListModel();
 		fridgeList = new JList(listModel);
 		listScroller = new JScrollPane(fridgeList);
+		JLabel label = new JLabel("Fridge Contents:");
+		this.add(label);
 		this.add(listScroller);
 		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout(layout);
@@ -58,7 +61,9 @@ public class ResidenceConfigPanel extends ConfigPanel implements ActionListener 
 	
 	private void getFridgeContents(Residence structure) {
 		listModel.clear();
-		
+		if (structure.getFridgeContents().isEmpty()) {
+			return;
+		}
 		if (structure != null) {
 			List<Food> fridgeContents = structure.getFridgeContents();
 			for (Food thisFood : fridgeContents) {

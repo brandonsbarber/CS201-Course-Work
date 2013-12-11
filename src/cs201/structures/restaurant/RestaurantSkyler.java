@@ -170,20 +170,23 @@ public class RestaurantSkyler extends Restaurant {
 
 	@Override
 	public void closeRestaurant() {
-		// TODO Auto-generated method stub
-		
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Closing manually!");
+		if (host.getPerson() != null) {
+			host.msgClosingTime();
+		} else {
+			closingTime();
+		}
+		this.isOpen = false;
 	}
 
 	@Override
 	public void emptyEntireCookInventory() {
-		// TODO Auto-generated method stub
-		
+		((RestaurantCookRoleSkyler)cook).clearInventory();
 	}
 
 	@Override
 	public List<String> getCookInventory() {
-		// TODO Auto-generated method stub
-		return null;
+		return ((RestaurantCookRoleSkyler)cook).getInventory();
 	}
 
 }

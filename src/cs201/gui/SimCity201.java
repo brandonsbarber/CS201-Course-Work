@@ -57,7 +57,7 @@ import cs201.structures.transit.BusStop;
 @SuppressWarnings("serial")
 public class SimCity201 extends JFrame {
 	public static final int SIZEX = 1200;
-	public static final int SIZEY = 800;
+	public static final int SIZEY = 700;
 	
 	CityPanel cityPanel;
 	JPanel buildingPanels;
@@ -293,14 +293,15 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		
 		RestaurantAnimationPanelSkyler g = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
 		RestaurantSkyler r = new RestaurantSkyler(125,125,50,50,Structure.getNextInstance(),g);
-		settingsPanel.addPanel("Restaurants",new ConfigPanel());
+		restaurantPanel.addRestaurant(r);
+		r.setConfigPanel(restaurantPanel);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
-		timePanel.addAnimationPanel(g);
 		
 		PersonAgent p1 = new PersonAgent("Host", cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
@@ -543,6 +544,7 @@ public class SimCity201 extends JFrame {
 		 * on Monday. Otherwise, both will act as regular residents in their homes.
 		 */
 		ApartmentComplexAnimationPanel acap = new ApartmentComplexAnimationPanel(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(acap);
 		ApartmentComplex ac = new ApartmentComplex(17*25, 11*25, 25, 25, Structure.getNextInstance(), acap);
 		ac.setStructurePanel(acap);
 		ac.setClosingTime(new CityTime(12, 0));
@@ -552,6 +554,7 @@ public class SimCity201 extends JFrame {
 		timePanel.addAnimationPanel(acap);
 		
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel);
 		Residence res = new Residence(17*25, 12*25, 25, 25, Structure.getNextInstance(), resPanel, true);
 		res.setStructurePanel(resPanel);
 		buildingPanels.add(resPanel,""+res.getId());
@@ -559,6 +562,7 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addResidence(res);
 		
 		ResidenceAnimationPanel resPanel2 = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel2);
 		Residence res2 = new Residence(18*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel2, false);
 		res2.setStructurePanel(resPanel2);
 		buildingPanels.add(resPanel2, ""+res2.getId());
@@ -590,6 +594,7 @@ public class SimCity201 extends JFrame {
 		 * gets hungry or has something else to do. At 10pm he will go to sleep in his bed.
 		 */
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel);
 		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
 		res.setStructurePanel(resPanel);
 		buildingPanels.add(resPanel,""+res.getId());
@@ -610,13 +615,14 @@ public class SimCity201 extends JFrame {
 	
 	private void residenceOutOfFood() {
 		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel);
 		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
 		res.setStructurePanel(resPanel);
 		buildingPanels.add(resPanel,""+res.getId());
 		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
 		CityDirectory.getInstance().addResidence(res);
 		timePanel.addAnimationPanel(resPanel);
-		for (int i=0; i<9; i++) { //bring all food amounts down to 1 in the fridge.
+		for (int i=0; i<10; i++) { //bring all food amounts down to 1 in the fridge.
 			res.removeFood("Steak");
 			res.removeFood("Pasta");
 			res.removeFood("Ice Cream");

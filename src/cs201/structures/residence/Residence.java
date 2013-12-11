@@ -134,10 +134,11 @@ public class Residence extends Structure {
 			if (f.getType() == t) {
 				f.minusOne();
 				if (f.noneLeft()) {
-					resident.getPerson().getMarketChecklist().add(new ItemRequest(f.getType(), 10));
-					Do("I'm all out of "+f.getType()+". I will go get more when I get the chance.");
+					if(resident.getPerson()!=null) {
+						resident.getPerson().getMarketChecklist().add(new ItemRequest(f.getType(), 10));
+						Do("I'm all out of "+f.getType()+". I will go get more when I get the chance.");
+					}
 					it.remove();
-					System.out.println("Food category removed");
 					if (fridge.isEmpty()) {
 						hasFood = false;
 					}	
@@ -164,9 +165,6 @@ public class Residence extends Structure {
 	}
 	
 	public List<Food> getFridgeContents() {
-		if (fridge.isEmpty()) {
-			return null;
-		}
 		return fridge;
 	}
 	

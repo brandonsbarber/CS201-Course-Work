@@ -27,7 +27,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	private Map <String, Food> inventory = new HashMap <String, Food>();
 	private String name;
 	private static int orderQuantity = 5; // number of food items to be ordered at one time when an order is placed.
-	private static int defaultAmt = 100; //100 of each food to begin with
+	private static int defaultAmt = 1; //100 of each food to begin with
 	
 	private int NMARKETS;
 	
@@ -159,7 +159,9 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	}
 	
 	public void clearInventory() {
-		inventory.clear();
+		for (Map.Entry<String, Food> entry : inventory.entrySet()) {
+			entry.getValue().clear();
+		}
 	}
 	
 	private void CookOrder(Order o) {
@@ -256,6 +258,10 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 			cookingTime = time;
 			amount = amt;
 			amtOrdered = 0;
+		}
+		
+		public void clear() {
+			amount = 0;
 		}
 		
 	

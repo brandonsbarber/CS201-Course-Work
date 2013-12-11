@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.Timer;
+
 import cs201.gui.ArtManager;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
@@ -48,6 +50,9 @@ public class ResidenceAnimationPanel extends StructurePanel {
 		setMaximumSize(new Dimension(WINDOWX, WINDOWY));
 		setMinimumSize(new Dimension(WINDOWX, WINDOWY));
 		setVisible(true);
+		
+		Timer timer = new Timer(15, this );
+    	timer.start();
 	}
 	
 	@Override
