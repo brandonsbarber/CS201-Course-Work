@@ -185,6 +185,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Residence runs out of a food item");
 		scenarioList.add("Residence is completely out of food");
 		scenarioList.add("Drunkard");
+		scenarioList.add("Drunk Killer");
 		scenarioList.add("Reset City"); // keep as last item
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
@@ -235,7 +236,7 @@ public class SimCity201 extends JFrame {
 			case 28: residenceOutOfFood(false); break;
 			case 29: residenceOutOfFood(true); break;
 			case 30: drunk(); break;
-			
+			case 31: hundredPeopleBusDrunk();break;
 			default: return;
 		}
 	}
@@ -1795,6 +1796,89 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 			bus.startThread();
 			transitPanel.addVehicle(bus);
 		}
+	}
+	
+	private void hundredPeopleBusDrunk()
+	{
+		for (int i = 1; i <= 100; i++) {
+			createPerson(i + "", null, null, null, null, null);
+		}
+		
+		ArrayList<BusStop> stops = new ArrayList<BusStop>();
+		
+		BusStopAnimationPanel panel = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(5*25,1*25,25,25,1, panel));
+		timePanel.addAnimationPanel(panel);
+			
+		BusStopAnimationPanel panel2 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,1*25,25,25,2, panel2));
+		timePanel.addAnimationPanel(panel2);
+			
+		BusStopAnimationPanel panel3 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,1*25,25,25,3, panel3));
+		timePanel.addAnimationPanel(panel3);
+			
+		BusStopAnimationPanel panel4 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(5*25,13*25,25,25,4, panel4));
+		timePanel.addAnimationPanel(panel4);
+			
+		BusStopAnimationPanel panel5 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(12*25,13*25,25,25,5, panel5));
+		timePanel.addAnimationPanel(panel5);
+			
+		BusStopAnimationPanel panel6 = new BusStopAnimationPanel(Structure.getNextInstance(),this);
+		stops.add(new BusStop(24*25,13*25,25,25,6, panel6));
+		timePanel.addAnimationPanel(panel6);
+		
+		panel.setStop(stops.get(0));
+		panel2.setStop(stops.get(1));
+		panel3.setStop(stops.get(2));
+		panel4.setStop(stops.get(3));
+		panel5.setStop(stops.get(4));
+		panel6.setStop(stops.get(5));
+		
+		stops.get(0).setStructurePanel(panel);
+		stops.get(1).setStructurePanel(panel2);
+		stops.get(2).setStructurePanel(panel3);
+		stops.get(3).setStructurePanel(panel4);
+		stops.get(4).setStructurePanel(panel5);
+		stops.get(5).setStructurePanel(panel6);
+		
+		buildingPanels.add(panel,""+stops.get(0).getId());
+		buildingPanels.add(panel2,""+stops.get(1).getId());
+		buildingPanels.add(panel3,""+stops.get(2).getId());
+		buildingPanels.add(panel4,""+stops.get(3).getId());
+		buildingPanels.add(panel5,""+stops.get(4).getId());
+		buildingPanels.add(panel6,""+stops.get(5).getId());
+		
+		for(BusStop stop : stops)
+		{
+			cityPanel.addStructure(stop,new Point((int)stop.getRect().x,((int)stop.getRect().y==25?2*25:14*25)),new Point((int)stop.getRect().x,(int)stop.getRect().y));
+		}
+		
+		/*for(int i = 0; i < stops.size(); i++)
+		{
+			BusAgent bus = new BusAgent(new BusRoute(stops),i);
+			BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+			bus.setGui(busG);
+			cityPanel.addGui(busG);
+			if(i == 0)
+			{
+				busG.setDrunk(true);
+			}
+			bus.startThread();
+			transitPanel.addVehicle(bus);
+		}*/
+		
+		BusAgent bus = new BusAgent(new BusRoute(stops),0);
+		BusGui busG = new BusGui(bus,cityPanel,bus.getRoute().getCurrentLocation().getParkingLocation().x,bus.getRoute().getCurrentLocation().getParkingLocation().y);
+		bus.setGui(busG);
+		cityPanel.addGui(busG);
+		busG.setDrunk(true);
+		bus.startThread();
+		transitPanel.addVehicle(bus);
+		
+		CityDirectory.getInstance().setStartTime(new CityTime(6,45));
 	}
 
 	private void brandonRestaurant() {
