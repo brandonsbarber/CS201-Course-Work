@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
@@ -105,7 +106,21 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
-		Pathfinder.findIntersections(this);
+		intersections = Pathfinder.findIntersections(this);
+	}
+	
+	private ArrayList<Intersection> intersections;
+	
+	public Intersection getIntersection(Point next)
+	{
+		for(Intersection i : intersections)
+		{
+			if(i.containsPoint(next))
+			{
+				return i;
+			}
+		}
+		return null;
 	}
 	
 	/**

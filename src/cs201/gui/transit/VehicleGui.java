@@ -20,6 +20,7 @@ import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.Gui;
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
@@ -102,7 +103,7 @@ public abstract class VehicleGui implements Gui
 		if(!present)
 		{
 			city.permissions[next.y][next.x].release();
-			revertCrosswalk();
+			//revertCrosswalk();
 		}
 	}
 	
@@ -177,7 +178,7 @@ public abstract class VehicleGui implements Gui
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
 
-				revertCrosswalk();
+				//revertCrosswalk();
 				city.permissions[current.y][current.x].release();
 				
 				return;
@@ -210,8 +211,16 @@ public abstract class VehicleGui implements Gui
 				
 					if(current != next)
 					{
-						city.permissions[current.y][current.x].release();
-						revertCrosswalk();
+						if(city.getIntersection(current) == null)
+						{
+							city.permissions[current.y][current.x].release();
+						}
+						else if(city.getIntersection(next) == null)
+						{
+							city.getIntersection(current).releaseAll();
+							city.getIntersection(current).releaseIntersection();
+						}
+						//revertCrosswalk();
 						acquiredPoints.remove(current);
 					}
 					
@@ -233,13 +242,36 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()))
+				Intersection gottenIntersection = city.getIntersection(next);
+				
+				if(gottenIntersection != null)
 				{
-					allowedToMove = true;
+					if(gottenIntersection.acquireIntersection())
+					{
+						currentIntersection = gottenIntersection;
+						System.out.println("ACQUIRING THE ENTIRE INTERSECTION");
+						gottenIntersection.acquireAll();
+						allowedToMove = true;
+					}
+					else if(gottenIntersection == currentIntersection)
+					{
+						allowedToMove = true;
+					}
+					else
+					{
+						allowedToMove = false;
+					}
 				}
 				else
 				{
-					allowedToMove = false;
+					if(city.permissions[next.y][next.x].tryAcquire())
+					{
+						allowedToMove = true;
+					}
+					else
+					{
+						allowedToMove = false;
+					}
 				}
 				
 				return;
@@ -247,6 +279,8 @@ public abstract class VehicleGui implements Gui
 			
 		}
 	}
+	
+	private Intersection currentIntersection = null;
 
 	private boolean timerStarted = false;
 	private boolean cancelled = true;

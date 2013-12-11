@@ -404,16 +404,6 @@ public class Pathfinder
 			}
 		}
 		
-		for(Intersection i : intersections)
-		{
-			if(i.acquireIntersection())
-			{
-				i.acquireAll();
-			}
-		}
-		
-		System.out.println(intersections.size());
-		
 		return intersections;
 	}
 	
