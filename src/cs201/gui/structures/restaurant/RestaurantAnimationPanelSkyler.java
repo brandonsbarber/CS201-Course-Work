@@ -24,7 +24,7 @@ public class RestaurantAnimationPanelSkyler extends StructurePanel {
 	
 	private final int nTables = RestaurantHostRoleSkyler.NTABLES;
 	private final int WINDOWX = 550;
-    private final int WINDOWY = 350;
+    private final int WINDOWY = 550;
     
     public static final int xTable = 150;
     public static final int yTable = 250;
