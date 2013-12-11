@@ -6,7 +6,7 @@ All:
     [ ] Finalize Restaurant Integration (new force-closing stuff && getting cook's inventory)
 
 Brandon:
-    [-] Transit config panel
+    [X] Transit config panel
     [ ] Updated graphics
     [X] Change restaurant closing behavior
     [ ] Fix boat jam behavior

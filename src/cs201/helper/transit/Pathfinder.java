@@ -346,44 +346,6 @@ public class Pathfinder
 		return walking[p.y][p.x].isValid() && driving[p.y][p.x].isValid();
 	}
 	
-	public static Set<Point> tryIntersectionAcquire(CityPanel city, int x, int y)
-	{
-		Point p = new Point(x,y);
-		
-		Set<Point> intersection = new HashSet<Point>();
-		
-		if(isValidPoint(city.getDrivingMap(),p) && city.getDrivingMap()[p.y][p.x] != MovementDirection.Turn && !isCrossWalk(p,city.getWalkingMap(),city.getDrivingMap()))
-		{
-			return intersection;
-		}
-		
-		intersection.add(p);
-		
-		ArrayList<Point> toCheck = new ArrayList<Point>();
-		ArrayList<Point> checked = new ArrayList<Point>();
-		toCheck.add(p);
-		
-		while(!toCheck.isEmpty())
-		{
-			Point check = toCheck.remove(0);
-			if(checked.contains(check))
-			{
-				continue;
-			}
-			checked.add(check);
-			if(isValidPoint(city.getDrivingMap(),check) && (city.getDrivingMap()[check.y][check.x] == MovementDirection.Turn || isCrossWalk(check,city.getWalkingMap(),city.getDrivingMap())))
-			{
-				intersection.add(check);
-				toCheck.add(new Point(check.x,check.y+1));
-				toCheck.add(new Point(check.x,check.y-1));
-				toCheck.add(new Point(check.x+1,check.y));
-				toCheck.add(new Point(check.x-1,check.y));
-			}
-		}
-		
-		return intersection;
-	}
-	
 	public static boolean isInIntersection(CityPanel city, Point p)
 	{
 		return city.getDrivingMap()[p.y][p.x] == MovementDirection.Turn;
@@ -422,4 +384,69 @@ public class Pathfinder
             }
             return new Point(x,y);
     }
+	
+	public static ArrayList<Intersection> findIntersections(CityPanel panel)
+	{
+		ArrayList<Intersection> intersections = new ArrayList<Intersection>();
+		
+		Set<Point> registeredPoints = new HashSet<Point>();
+		
+		for(int y = 0; y < panel.getDrivingMap().length; y++)
+		{
+			for(int x = 0; x < panel.getDrivingMap()[y].length; x++)
+			{
+				if(isValidPoint(panel.getDrivingMap(),new Point(x,y)) && panel.getDrivingMap()[y][x] == MovementDirection.Turn && !registeredPoints.contains(new Point(x,y)))
+				{
+					Set<Point> points = tryIntersectionAcquire(panel,x,y);
+					registeredPoints.addAll(points);
+					intersections.add(new Intersection(panel,points));
+				}
+			}
+		}
+		
+		return intersections;
+	}
+	
+	public static Set<Point> tryIntersectionAcquire(CityPanel city, int x, int y)
+	{
+		Point p = new Point(x,y);
+		
+		Set<Point> intersection = new HashSet<Point>();
+		
+		if(isValidPoint(city.getDrivingMap(),p) && city.getDrivingMap()[p.y][p.x] != MovementDirection.Turn && !isCrossWalk(p,city.getWalkingMap(),city.getDrivingMap()))
+		{
+			return intersection;
+		}
+		
+		intersection.add(p);
+		
+		ArrayList<Point> toCheck = new ArrayList<Point>();
+		ArrayList<Point> checked = new ArrayList<Point>();
+		toCheck.add(p);
+		
+		while(!toCheck.isEmpty())
+		{
+			Point check = toCheck.remove(0);
+			if(checked.contains(check))
+			{
+				continue;
+			}
+			checked.add(check);
+			if(isValidPoint(city.getDrivingMap(),check) && (city.getDrivingMap()[check.y][check.x] == MovementDirection.Turn || isCrossWalk(check,city.getWalkingMap(),city.getDrivingMap())))
+			{
+				intersection.add(check);
+				toCheck.add(new Point(check.x,check.y+1));
+				toCheck.add(new Point(check.x,check.y-1));
+				toCheck.add(new Point(check.x+1,check.y));
+				toCheck.add(new Point(check.x-1,check.y));
+			}
+		}
+		
+		return intersection;
+	}
+	
+	public static boolean isIntersectionPoint(CityPanel panel, Point p)
+	{
+		return panel.getDrivingMap()[p.y][p.x] == MovementDirection.Turn || (panel.getDrivingMap()[p.y][p.x].isValid() && panel.getWalkingMap()[p.y][p.x].isValid());
+	}
 }
