@@ -141,6 +141,27 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		}
 	}
 	
+	public List<String> getInventory() {
+		List<String> formattedInventory = new ArrayList<String>();
+		String tempString;
+		
+		if (inventory.isEmpty()) {
+			return null;
+		}
+		
+		for (Map.Entry<String, Food> entry : inventory.entrySet())
+		{
+		    tempString = entry.getKey() + "[" + entry.getValue().amount + "]";
+		    formattedInventory.add(tempString);
+		}
+		
+		return formattedInventory;
+	}
+	
+	public void clearInventory() {
+		inventory.clear();
+	}
+	
 	private void CookOrder(Order o) {
 		if(inventory.get(o.choice).amount==0) {
 			Do("Sorry, but we're out of "+o.choice+" right now.");
