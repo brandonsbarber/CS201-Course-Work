@@ -52,7 +52,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 
 	@Override
 	public void msgHereIsOrder(WaiterSkyler w, String choice, int tableNum) {
-		Do(""+choice+" added to order list.");
+		//Do(""+choice+" added to order list.");
 		orders.add(new Order(w, choice, tableNum));
 		stateChanged();
 	}
@@ -68,7 +68,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	}
 	
 	public void msgHereIsDelivery(String item, int amount) {
-		Do("Just received "+amount+" of "+item+" from a delivery.");
+		//Do("Just received "+amount+" of "+item+" from a delivery.");
 		inventory.get(item).addFromOrder(amount);
 	}
 
@@ -121,7 +121,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	
 	private void checkInventory() {
 		if(CityDirectory.getInstance().getMarkets().isEmpty()) {
-			Do("No markets = no food!!!!");
+			//Do("No markets = no food!!!!");
 			return;
 		}
 		
@@ -181,14 +181,14 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	
 	private void CookOrder(Order o) {
 		if(inventory.get(o.choice).amount==0) {
-			Do("Sorry, but we're out of "+o.choice+" right now.");
+			//Do("Sorry, but we're out of "+o.choice+" right now.");
 			if (inventory.get(o.choice).amtOrdered==0) {
 				checkInventory();
 			}
 			o.state = OrderState.rejected;
 			return;
 		}
-		Do(o.choice+" cooking.");
+		//Do(o.choice+" cooking.");
 		o.state = OrderState.cooking;
 		o.cookOrder(inventory.get(o.choice).cookingTime);
 		inventory.get(o.choice).amount--;
@@ -203,7 +203,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		
 		//print(markets.get(tempFood.whichMarket).getName()+": I'd like to place an order for "+amount+" "+type+" please.");
 		market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(food.type, amount));
-		Do("Just placed an order for "+amount+" of "+food.type);
+		//Do("Just placed an order for "+amount+" of "+food.type);
 		
 		food.amtOrdered+=amount;
 		this.restaurant.updateInfoPanel();
@@ -216,12 +216,12 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 
 	
 	private void PlateIt(Order o) {
-		Do(o.choice+" plated.");
+		//Do(o.choice+" plated.");
 		o.state = OrderState.plated;
 	}
 	
 	private void CallWaiter(Order o) {
-		Do(o.waiter.getName()+", the "+o.choice+" for table "+o.tableNumber+" is ready.");
+		//Do(o.waiter.getName()+", the "+o.choice+" for table "+o.tableNumber+" is ready.");
 		o.state = OrderState.waiterNotified;
 		o.waiter.msgOrderReady(o.choice, o.tableNumber);
 	}
@@ -256,7 +256,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		void cookOrder(int time) {
 			timer.schedule(new TimerTask() {
 				public void run() {	
-					Do(choice+" done cooking.");
+					//Do(choice+" done cooking.");
 					state = OrderState.doneCooking;
 					stateChanged();
 				}

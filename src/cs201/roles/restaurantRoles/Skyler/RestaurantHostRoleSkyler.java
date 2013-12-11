@@ -26,8 +26,8 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 	private boolean closingTime = false;
 	
 	int numCustomers = 0;
-
-	private String name;
+	String name;
+	
 	//private Semaphore atTable = new Semaphore(0,true);
 	private HostGuiSkyler gui;
 
@@ -74,13 +74,13 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 
 	@Override
 	public void msgBackFromBreak(WaiterSkyler w) {
-		Do("Welcome back, "+w.getName());
+		//Do("Welcome back, "+w.getName());
 		stateChanged();
 	}
 
 	@Override
 	public void msgTableFree(int tableNum) {
-		Do("Table "+tableNum+" free.");
+		//Do("Table "+tableNum+" free.");
 		for (Table t : tables) {
 			if (t.tableNumber == tableNum) {
 				t.setUnoccupied();
@@ -114,11 +114,11 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 							i++;
 					}
 					if (i>0) {
-						Do("Okay, "+w1.getName()+", go take your break when you are done with your customers.");
+						//Do("Okay, "+w1.getName()+", go take your break when you are done with your customers.");
 						w1.msgBreakApproved();
 					}
 					else {
-						Do("Sorry, "+w1.getName()+", but you'll have to wait to go on break.");
+						//Do("Sorry, "+w1.getName()+", but you'll have to wait to go on break.");
 						w1.msgBreakDenied();
 					}
 					return true;
