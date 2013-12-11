@@ -23,6 +23,7 @@ import javax.swing.Timer;
 import cs201.helper.Constants;
 import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
+import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
 
 @SuppressWarnings("serial")
@@ -103,6 +104,8 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
 		}
+		
+		Pathfinder.findIntersections(this);
 	}
 	
 	/**
