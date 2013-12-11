@@ -1,5 +1,6 @@
 package cs201.roles.housingRoles;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
@@ -52,12 +53,19 @@ public class ResidentRole extends Role implements Resident {
 					goToSleep();
 					return true;
 			case hungry: 
+				goToFridge();
 				if (residence.hasFood()) {
 					pickAndEatFromFridge();
 					return true;
 				}
 				else {
-					makeShoppingList();
+					if(myPerson.getMarketChecklist().isEmpty()) { //if shopping list is empty, make one.
+						makeShoppingList(); 
+					}
+					LinkedList<Intention> action = new LinkedList<Intention>();
+					action.add(Intention.MarketConsumerGoods);
+					myPerson.addIntermediateActions((Role)this, action, true);
+					actionFinished();
 					return false;
 				}
 			case relaxing:
@@ -75,8 +83,6 @@ public class ResidentRole extends Role implements Resident {
 	 * Resident walks to the fridge, picks an item from the fridge's contents, goes to the table, and eats.
 	 */
 	private void pickAndEatFromFridge() {
-		goToFridge();//animation go to fridge
-		
 		List<ItemRequest> inventory = myPerson.getInventory();
 		
 		if (inventory!=null && inventory.size()>0) {
@@ -201,7 +207,21 @@ public class ResidentRole extends Role implements Resident {
 			gui.goToCouch();
 			this.acquireSemaphore();
 		}
-		
+	}
+	
+	private void makeShoppingList() {
+		int rand = (int)(Math.random()*5);
+			myPerson.getMarketChecklist().add(new ItemRequest("Steak",rand));
+		rand = (int)(Math.random()*5);
+			myPerson.getMarketChecklist().add(new ItemRequest("Salad",rand));
+		rand = (int)(Math.random()*5);
+			myPerson.getMarketChecklist().add(new ItemRequest("Pizza",rand));
+		rand = (int)(Math.random()*5);
+			myPerson.getMarketChecklist().add(new ItemRequest("Pasta",rand));
+		rand = (int)(Math.random()*5);
+			myPerson.getMarketChecklist().add(new ItemRequest("Chicken",rand));
+		rand = (int)(Math.random()*3);
+			myPerson.getMarketChecklist().add(new ItemRequest("Ice Cream",rand));
 	}
 
 	@Override
