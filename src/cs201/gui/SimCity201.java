@@ -2146,18 +2146,18 @@ public class SimCity201 extends JFrame {
 		marketPanel.addMarketStructure(m);
 		
 		MarketAnimationPanel mG2 = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
-		MarketStructure m2 = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG2);
+		MarketStructure m2 = new MarketStructure(200,125,50,50,Structure.getNextInstance(),mG2);
 		m2.setStructurePanel(mG2);
 		m2.setClosingTime(new CityTime(18, 0));
-		buildingPanels.add(mG2,""+m.getId());
+		buildingPanels.add(mG2,""+m2.getId());
 		cityPanel.addStructure(m2);
 		timePanel.addAnimationPanel(mG2);
 		m2.setConfigPanel(marketPanel);
-		marketPanel.addMarketStructure(m);
+		marketPanel.addMarketStructure(m2);
 		
 		// Ben's Restaurant		
 		RestaurantAnimationPanelBen g = new RestaurantAnimationPanelBen(Structure.getNextInstance(), this, 0, 0);
-		RestaurantBen r = new RestaurantBen(125, 125, 50, 50, Structure.getNextInstance(), g);
+		RestaurantBen r = new RestaurantBen(275, 125, 50, 50, Structure.getNextInstance(), g);
 		restaurantPanel.addRestaurant(r);
 		r.setConfigPanel(restaurantPanel);
 		r.setStructurePanel(g);
@@ -2194,16 +2194,16 @@ public class SimCity201 extends JFrame {
 		p4.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p4);
 		p4.startThread();
-		
+
 		// Matt's Restaurant
 		RestaurantAnimationPanelMatt g_matt = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g_matt);
-		RestaurantMatt r_matt = new RestaurantMatt(125,125,50,50,Structure.getNextInstance(),g_matt);
+		RestaurantMatt r_matt = new RestaurantMatt(275 + 150,125,50,50,Structure.getNextInstance(),g_matt);
 		restaurantPanel.addRestaurant(r_matt);
 		r_matt.setConfigPanel(restaurantPanel);
-		r_matt.setStructurePanel(g);
+		r_matt.setStructurePanel(g_matt);
 		r_matt.setClosingTime(new CityTime(13, 15));
-		buildingPanels.add(g_matt,""+r.getId());
+		buildingPanels.add(g_matt,""+r_matt.getId());
 		cityPanel.addStructure(r_matt);
 		CityDirectory.getInstance().addRestaurant(r_matt);
 		
@@ -2238,13 +2238,13 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p4_matt);
 		personPanel.addPerson(p4_matt);
 		p4_matt.startThread();
-		
+
 		// Brandon's Restaurant
 		RestaurantAnimationPanelBrandon g_brandon = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
-		RestaurantBrandon r_brandon = new RestaurantBrandon(125,125,50,50,Structure.getNextInstance(),g_brandon);
+		RestaurantBrandon r_brandon = new RestaurantBrandon(275+150+75,125,50,50,Structure.getNextInstance(),g_brandon);
 		restaurantPanel.addRestaurant(r_brandon);
 		r_brandon.setConfigPanel(restaurantPanel);
-		r_brandon.setStructurePanel(g);
+		r_brandon.setStructurePanel(g_brandon);
 		r_brandon.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g_brandon,""+r_brandon.getId());
 		cityPanel.addStructure(r_brandon);
@@ -2282,14 +2282,14 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p4_brandon);
 		personPanel.addPerson(p4_brandon);
 		p4_brandon.startThread();
-		
+
 		// Skyler's Restaurant
 		RestaurantAnimationPanelSkyler g_skyler = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
 		timePanel.addAnimationPanel(g_skyler);
-		RestaurantSkyler r_skyler = new RestaurantSkyler(125,125,50,50,Structure.getNextInstance(),g_skyler);
+		RestaurantSkyler r_skyler = new RestaurantSkyler(275+150+75+75,125,50,50,Structure.getNextInstance(),g_skyler);
 		restaurantPanel.addRestaurant(r_skyler);
 		r_skyler.setConfigPanel(restaurantPanel);
-		r_skyler.setStructurePanel(g);
+		r_skyler.setStructurePanel(g_skyler);
 		r_skyler.setClosingTime(new CityTime(13, 15));
 		buildingPanels.add(g_skyler,""+r_skyler.getId());
 		cityPanel.addStructure(r_skyler);
