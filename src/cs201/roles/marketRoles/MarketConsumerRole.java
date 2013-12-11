@@ -192,7 +192,6 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 			animation.acquire();
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
