@@ -63,7 +63,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	
 	public void gotHungry() {//from animation
 		money = myPerson.getMoney();
-		Do("I'm hungry and I have $"+String.format("%.2f", money)+" to spend.");
+		//Do("I'm hungry and I have $"+String.format("%.2f", money)+" to spend.");
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
@@ -71,7 +71,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	//public void msgSitAtTable(List<String> newMenu) {
 	public void msgSitAtTable(Map<String, Double> newMenu) {
 		menu = newMenu;
-		Do("Received msgSitAtTable");
+		//Do("Received msgSitAtTable");
 		event = AgentEvent.followHost;
 		stateChanged();
 	}
@@ -128,7 +128,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	public void startInteraction(Intention intent) {
 		// TODO Auto-generated method stub
 		state = AgentState.DoingNothing;
-		Do("Interaction started.");
+		//Do("Interaction started.");
 		this.customerGui.setHungry();
 	}
 
@@ -221,17 +221,17 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	}
 	
 	private void goToRestaurant() {
-		Do("Going to restaurant");
+		//Do("Going to restaurant");
 		host.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 
 	private void SitDown() {
-		Do("Being seated. Going to table");
+		//Do("Being seated. Going to table");
 		customerGui.DoGoToSeat();
 	}
 	
 	private void BrowseMenu() {
-		Do("Browsing Menu");
+		//Do("Browsing Menu");
 		
 		if(menu.isEmpty()) {
 			leaveTable();
@@ -263,12 +263,12 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 					randomInt = (int)(Math.random()*(menu.size()));
 					choice = (String) choices[randomInt];
 					if(menu.get(choice)>money && !name.equals("Flake")) { //rechooses if choice is over amt in pocket. 
-						Do("I can't afford the "+choice+". I'm going to choose something else.");
+						//Do("I can't afford the "+choice+". I'm going to choose something else.");
 						choice = "";
 					}
 
 					if(name.equals("Steak")||name.equals("Chicken")||name.equals("Salad")||name.equals("Pizza")){ // HACK to dictate customer's food choice
-						Do("!!!!!!! Hack triggered. Ordering same as my name.");
+						//Do("!!!!!!! Hack triggered. Ordering same as my name.");
 						choice = name;}
 				} while(choice == "");
 				
@@ -280,24 +280,24 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	}
 	
 	private void CallWaiter() {
-		Do("Ready to Order!");
+		//Do("Ready to Order!");
 		waiter.msgReadyToOrder(this);
 		event = AgentEvent.notifiedWaiter; //doesn't immediately prompt an action.
 	}
 	
 	private void MakeOrder() {
-		Do("I'll have the "+choice+".");
+		//Do("I'll have the "+choice+".");
 		waiter.msgHereIsMyChoice(this, choice);
 		event = AgentEvent.madeOrder;
 		stateChanged();
 	}
 	
 	private void WaitForFood() { //probably unnecessary...
-		Do("Now I'm waiting for my food.");
+		//Do("Now I'm waiting for my food.");
 	}
 
 	private void EatFood() {
-		Do("Eating Food");
+		//Do("Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
 		//When that time elapses, it will call back to the run routine
@@ -319,7 +319,7 @@ public class RestaurantCustomerRoleSkyler extends RestaurantCustomerRole
 	}
 
 	private void leaveTable() {
-		Do("Leaving.");
+		//Do("Leaving.");
 		waiter.msgLeavingTable(this);
 		if(name.equals("Flake")||amtOwed==0){
 			customerGui.DoExitRestaurant();

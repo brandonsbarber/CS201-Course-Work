@@ -55,7 +55,6 @@ public class ResidentRole extends Role implements Resident {
 			case hungry: 
 				goToFridge();
 				if (residence.hasFood()) {
-					if (residence.getFridgeContents().size()<3)
 					
 					pickAndEatFromFridge();
 					return true;

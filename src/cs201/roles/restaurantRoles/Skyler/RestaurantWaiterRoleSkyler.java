@@ -73,19 +73,19 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 	
 	public void msgWantBreak() {//from animation
-		Do("I want a break");
+		//Do("I want a break");
 		breakRequest = BreakState.wantBreak;
 		stateChanged();
 	}
 	
 	public void msgEndBreak() {
-		Do("Coming back from my break");
+		//Do("Coming back from my break");
 		breakRequest = BreakState.backFromBreak;
 		stateChanged();
 	}
 
 	public void msgDoneEating(CustomerSkyler cust) {
-		Do("Received msgDoneEating from customer "+cust.getName());
+		//Do("Received msgDoneEating from customer "+cust.getName());
 		synchronized(myCustomers) {
 			for (myCustomer myC : myCustomers) {
 				if (myC.customer == cust) {
@@ -102,7 +102,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	public void msgLeavingTable(CustomerSkyler cust) {
 		for (int i=0; i<myCustomers.size(); i++) {
 			if (myCustomers.get(i).customer == cust) {
-				Do(cust + " leaving table " + myCustomers.get(i).tableNumber);
+				//Do(cust + " leaving table " + myCustomers.get(i).tableNumber);
 				host.msgTableFree(myCustomers.get(i).tableNumber);
 				myCustomers.remove(i);
 				stateChanged();
@@ -111,34 +111,34 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 
 	public void msgAtTable(int atTableNum) {//from animation
-		Do("msgAtTable() called");
+		//Do("msgAtTable() called");
 		currentTable = atTableNum;
 		goingSomewhere.release();
 	}
 	
 	public void msgAtFront() {
-		Do("Back at the front of the restaurant.");
+		//Do("Back at the front of the restaurant.");
 		currentTable = -1;
 		goingSomewhere.release();
 		state = AgentState.Free;
 	}
 	
 	public void msgAtCook() {
-		Do("At Cook");
+		//Do("At Cook");
 		currentTable = -2;
 		goingSomewhere.release();
 		state = AgentState.Busy;
 	}
 	
 	public void msgAtCashier() {
-		Do("At cashier");
+		//Do("At cashier");
 		currentTable = -3;
 		goingSomewhere.release();
 		state = AgentState.Busy;
 	}
 	
 	public void msgAtWaitingArea() {
-		Do("At waiting area");
+		//Do("At waiting area");
 		currentTable = -3;
 		goingSomewhere.release();
 		state = AgentState.Busy;
@@ -153,7 +153,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	
 	public void msgGoToWork() {
 		host.msgWaiterReady(this);
-		Do("I'm ready to work.");
+		//Do("I'm ready to work.");
 		stateChanged();
 	}
 	
@@ -164,7 +164,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			if (myCust.customer==cust){
 				myCust.state = CustomerState.waitingToOrder;
 				//DoReturnForOrder(myCust.tableNumber); //gui action.
-				Do("I'll be right there, "+myCust.customer.getName());
+				//Do("I'll be right there, "+myCust.customer.getName());
 				if (state == AgentState.Free && waiterGui.inMotion()) { goingSomewhere.release();}
 				stateChanged();
 			}
@@ -183,7 +183,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				}
 			}
 		}
-		Do("waitingforresponse released. hereismychoice.");
+		//Do("waitingforresponse released. hereismychoice.");
 		waitingForResponse.release();
 	}
 	public void msgOutOf(String choice, int tableNum) {
@@ -222,7 +222,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			}
 		}
 		}
-		Do("waitingforresponse released. hereisfood.");
+		//Do("waitingforresponse released. hereisfood.");
 		waitingForResponse.release();
 	}
 	
@@ -234,7 +234,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 				myC.amtOwed=amt;
 		}
 		}
-		Do("waitingforresponse released. CheckReady.");
+		//Do("waitingforresponse released. CheckReady.");
 		waitingForResponse.release();
 	}
 	
@@ -266,7 +266,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			case wantBreak: requestBreak();
 				break;
 			case denied: waiterGui.breakDenied();
-					Do("Fine, I won't go on break.");
+					//Do("Fine, I won't go on break.");
 					breakRequest = BreakState.noRequest;
 				break;
 			case backFromBreak: returnFromBreak();
@@ -325,7 +325,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						Do(cust.customer+", sorry, but we are out of "+cust.order.orderChoice+". Please reorder.");
+						//Do(cust.customer+", sorry, but we are out of "+cust.order.orderChoice+". Please reorder.");
 						adjustedMenu = new HashMap<String, Double>(menu);
 						adjustedMenu.remove(cust.order.orderChoice);
 						cust.customer.msgReOrder(adjustedMenu);
@@ -344,7 +344,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					Do("Customer "+cust.customer.getName()+", here is your food");
+					//Do("Customer "+cust.customer.getName()+", here is your food");
 					cust.order.state = OrderState.delivered;
 					cust.state = CustomerState.eating;
 					cust.customer.msgHereIsYourFood(cust.order.orderChoice);
@@ -362,7 +362,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					Do("Ok chef, I'm back for the order for table "+cust.tableNumber);
+					//Do("Ok chef, I'm back for the order for table "+cust.tableNumber);
 					cook.msgImBackFor(cust.tableNumber);
 					try {
 						waitingForResponse.acquire();
@@ -388,7 +388,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 							e.printStackTrace();
 						}
 					}
-					Do("What would you like, "+cust.customer.getName()+"?");
+					//Do("What would you like, "+cust.customer.getName()+"?");
 					cust.customer.msgWaiterBack();
 					try {
 						
@@ -487,14 +487,14 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Do("Giving "+c.customer.getName()+" check.");
+		//Do("Giving "+c.customer.getName()+" check.");
 		c.customer.msgHereIsYourCheck(cashier, c.amtOwed);
 		c.amtOwed=0; //resets customer balance to 0 in myCustomers list. check is out of the hands of the waiter, now responsibility of customer & cashier.
 		c.state = CustomerState.hasCheck;
 	}
 	
 	private void getCheck(myCustomer c) {
-		Do("Getting check for "+c.customer.getName());
+		//Do("Getting check for "+c.customer.getName());
 		waiterGui.DoGoToCashier();
 		state = AgentState.Busy;
 		try {
@@ -504,7 +504,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Do(cashier.getName()+", can you make a bill for "+c.customer.getName()+"?");
+		//Do(cashier.getName()+", can you make a bill for "+c.customer.getName()+"?");
 		System.out.println("!!!Pre message to cashier: "+this.menu);
 		cashier.msgRequestCheck(c.customer, this, menu.get(c.order.orderChoice));
 		System.out.println("!!!Post message to cashier: "+this.menu);
@@ -523,7 +523,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	
 	private void goOnBreak() {
 		breakRequest = BreakState.onBreak;
-		Do("Going on break now!");
+		//Do("Going on break now!");
 		//host.msgImGoingOnBreak(this);
 		//DoBreakAnimation();
 	}
@@ -533,43 +533,43 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		
-		Do("Seating " + customer + " at table " + tableNumber+". Follow me!");
+		//Do("Seating " + customer + " at table " + tableNumber+". Follow me!");
 		waiterGui.DoBringToTable(customer, tableNumber);
 	}
 	
 	private void DoGoBackToFront() {
-		Do("Going back to front");
+		//Do("Going back to front");
 		waiterGui.DoLeaveCustomer();
 	}
 	
 	private void DoGoToWaitingArea() {
-		Do("Going to get a customer from the waiting area");
+		//Do("Going to get a customer from the waiting area");
 		waiterGui.DoGoToWaitingArea();
 	}
 	
 	private void DoGoToTable(int tableNum) {
-		Do("Going to table "+tableNum);
+		//Do("Going to table "+tableNum);
 		waiterGui.DoGoToTable(tableNum);
 	}
 	
 	private void DoBringOrderToCook(String choice) {
-		Do("One "+choice+" coming right up. Telling Cook.");
+		//Do("One "+choice+" coming right up. Telling Cook.");
 		waiterGui.DoBringOrderToCook(choice);
 	}
 	
 	private void TellCookChoice(myCustomer cust) {
-		Do("One "+cust.order.orderChoice+" please, Chef.");
+		//Do("One "+cust.order.orderChoice+" please, Chef.");
 		cust.order.state = OrderState.givenToCook;
 		cook.msgHereIsOrder(this, cust.order.orderChoice, cust.tableNumber);
 	}
 	
 	private void DoGoGetFood(int tableNum) {
-		Do("Getting food for table "+tableNum);
+		//Do("Getting food for table "+tableNum);
 		waiterGui.DoGetFood();
 	}
 	
 	private void DoDeliverFood(myCustomer cust) {
-		Do("Bringing food to table "+cust.tableNumber);
+		//Do("Bringing food to table "+cust.tableNumber);
 		waiterGui.DoDeliverFood(cust.order.orderChoice, cust.tableNumber);
 	}
 	

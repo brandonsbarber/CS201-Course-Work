@@ -41,15 +41,13 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 
 	@Override
 	public void msgRequestCheck(CustomerSkyler c, WaiterSkyler w, double amount) {
-		Do("Making check.");
-		//log.add(new LoggedEvent("Making check."));
 		checks.add(new Check(c, w, amount));
 		stateChanged();
 	}
 
 	@Override
 	public void msgHereIsCash(CustomerSkyler cust, double cash) {
-		Do("Received cash from "+cust);
+		//Do("Received cash from "+cust);
 		//log.add(new LoggedEvent("Received cash from "+cust));
 		for (Check ch : checks) {
 			if (ch.c.equals(cust)) {
@@ -121,7 +119,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 	
 	private void outgoingPayment(MarketBill mBill) {
 		if (mBill.amount>cashOnHand) {
-			Do("Not enough cash on hand to pay for our recent market orders. \n I've payed the market in full but added $"+String.format("%.2f", (mBill.amount-cashOnHand))+" to our debt.");
+			//Do("Not enough cash on hand to pay for our recent market orders. \n I've payed the market in full but added $"+String.format("%.2f", (mBill.amount-cashOnHand))+" to our debt.");
 			//log.add(new LoggedEvent("Not enough cash on hand to pay for our recent market orders. \n I've payed $"+String.format("%.2f",cashOnHand)+" but added $"+String.format("%.2f", (amt-cashOnHand))+" to our debt."));
 			
 			debt+=(mBill.amount-cashOnHand);
@@ -132,7 +130,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 			marketBills.remove(mBill);
 			return;
 		}
-		Do("Deducted outstanding balance of $"+String.format("%.2f", mBill.amount)+" from cash on hand.");
+		//Do("Deducted outstanding balance of $"+String.format("%.2f", mBill.amount)+" from cash on hand.");
 		//log.add(new LoggedEvent("Deducted outstanding balance of $"+String.format("%.2f", amt)+" from cash on hand."));
 		cashOnHand-=mBill.amount;
 		restaurant.removeMoney(mBill.amount);
@@ -172,7 +170,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 		}
 		
 		void prepareCheck() {
-			Do(w.getName()+", I have a check ready for you.");
+			//Do(w.getName()+", I have a check ready for you.");
 			//log.add(new LoggedEvent(w.getName()+", I have a check ready for you."));
 			state = CheckState.unpaid;
 			w.msgCheckReady(c, amount);
@@ -181,9 +179,9 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 		void processCheck() {
 			
 			change = Math.round((cashPaid - amount)*100)/100.0;
-			Do("Thanks, "+c.getName()+", you gave me $"+String.format("%.2f", cashPaid)+" for your $"+String.format("%.2f", amount)+" bill.");
+			//Do("Thanks, "+c.getName()+", you gave me $"+String.format("%.2f", cashPaid)+" for your $"+String.format("%.2f", amount)+" bill.");
 			if(change>0) {
-				Do("Here is your change of $"+String.format("%.2f", change));
+				//Do("Here is your change of $"+String.format("%.2f", change));
 			}
 			//log.add(new LoggedEvent("Thanks, "+c.getName()+", you gave me $"+String.format("%.2f", cashPaid)+" for your $"+String.format("%.2f", amount)+" bill.\n Here is your change of $"+String.format("%.2f", change)));
 			state = CheckState.paid;
