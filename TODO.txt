@@ -31,6 +31,6 @@ Matt:
 Ben:
     [ ] Testing failed market delivery
     [ ] Entry/exit animations Market
-    [ ] Car artwork
+    [X] Car artwork
     [ ] Test car buying
-    [ ] Reset market config panel on scenario reset
+    [X] Reset market config panel on scenario reset

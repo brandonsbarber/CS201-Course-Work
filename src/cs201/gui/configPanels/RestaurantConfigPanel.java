@@ -347,7 +347,7 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		}
 		this.labelNumWaiters.setText(numWaiters + "");
 		this.lblMoney.setText("Money: " + String.format("$%.2f", r.getCurrentRestaurantMoney()));
-		this.modelInventory.removeAllElements();
+		this.modelInventory.clear();
 		for (String s : r.getCookInventory()) {
 			this.modelInventory.addElement(s);
 		}
@@ -360,7 +360,7 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		this.checkBoxCashier.setSelected(false);
 		this.labelNumWaiters.setToolTipText("0");
 		this.lblMoney.setText("Money: $0.00");
-		this.modelInventory.removeAllElements();
+		this.modelInventory.clear();
 	}
 
 	public void resetCity() {
