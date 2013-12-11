@@ -74,8 +74,8 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-
+		this.restaurant.updateInfoPanel();
+		closingTime = false;
 	}
 
 	@Override

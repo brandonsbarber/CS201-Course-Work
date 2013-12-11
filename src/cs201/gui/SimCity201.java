@@ -187,7 +187,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Market: Failed Delivery");
 		
 		scenarioList.add("Residence: Normative");
-		scenarioList.add("Residence: Out of single food item");
+		scenarioList.add("Residence: Runs out of single food item");
 		scenarioList.add("Residence: Completely out of food");
 		scenarioList.add("Apartment Complex: Normative");
 
@@ -224,7 +224,7 @@ public class SimCity201 extends JFrame {
 			case 9: benRestaurantShiftChange(); break;
 			case 10: skylerRestaurant(); break;
 			case 11: skylerRestaurantTwo(); break; //
-			case 12: break; //
+			case 12: skylerRestaurantShiftChange(); break; //
 			case 13: normativeBus(); break;
 			case 14: joust(); break;
 			case 15: beaucoupBuses(); break;
@@ -431,6 +431,100 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p8);
 		personPanel.addPerson(p8);
 		p8.startThread();
+	}
+	
+	private void skylerRestaurantShiftChange() {
+		CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
+		
+		RestaurantAnimationPanelSkyler g = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
+		RestaurantSkyler r = new RestaurantSkyler(125,125,50,50,Structure.getNextInstance(),g);
+		restaurantPanel.addRestaurant(r);
+		r.setConfigPanel(restaurantPanel);
+		r.setStructurePanel(g);
+		r.setClosingTime(new CityTime(13, 15));
+		buildingPanels.add(g,""+r.getId());
+		cityPanel.addStructure(r);
+		CityDirectory.getInstance().addRestaurant(r);
+		
+		PersonAgent p1 = new PersonAgent("Host PM", cityPanel);
+		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1.setHungerEnabled(false);
+		p1.setHungerLevel(0);
+		p1.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
+		p1.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Cashier PM", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		p2.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Cook PM", cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p3.setHungerEnabled(false);
+		p3.setHungerLevel(0);
+		p3.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
+		p3.startThread();
+		
+		PersonAgent p4 = new PersonAgent("Waiter PM", cityPanel);
+		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p4.setHungerEnabled(false);
+		p4.setHungerLevel(0);
+		p4.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
+		p4.startThread();
+		
+		PersonAgent p5 = new PersonAgent("Customer", cityPanel);
+		p5.setWakeupTime(new CityTime(8, 00));
+		p5.setupPerson(CityDirectory.getInstance().getTime(), null, null, null, r, null);
+		CityDirectory.getInstance().addPerson(p5);
+		personPanel.addPerson(p5);
+		p5.startThread();
+		
+		PersonAgent p6 = new PersonAgent("Host AM", cityPanel);
+		p6.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p6.setHungerEnabled(false);
+		p6.setHungerLevel(0);
+		p6.setWorkTime(r.getMorningShiftStart());
+		CityDirectory.getInstance().addPerson(p6);
+		personPanel.addPerson(p6);
+		p6.startThread();
+		
+		PersonAgent p7 = new PersonAgent("Cashier AM", cityPanel);
+		p7.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p7.setHungerEnabled(false);
+		p7.setHungerLevel(0);
+		p7.setWorkTime(r.getMorningShiftStart());
+		CityDirectory.getInstance().addPerson(p7);
+		personPanel.addPerson(p7);
+		p7.startThread();
+		
+		PersonAgent p8 = new PersonAgent("Cook AM", cityPanel);
+		p8.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		p8.setHungerEnabled(false);
+		p8.setHungerLevel(0);
+		p8.setWorkTime(r.getMorningShiftStart());
+		CityDirectory.getInstance().addPerson(p8);
+		personPanel.addPerson(p8);
+		p8.startThread();
+		
+		PersonAgent p9 = new PersonAgent("Waiter AM", cityPanel);
+		p9.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p9.setHungerEnabled(false);
+		p9.setHungerLevel(0);
+		p9.setWorkTime(r.getMorningShiftStart());
+		CityDirectory.getInstance().addPerson(p9);
+		personPanel.addPerson(p9);
+		p9.startThread();
 	}
 		
 	private void weekendDifference() {

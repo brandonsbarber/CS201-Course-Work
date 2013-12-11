@@ -143,6 +143,7 @@ public class ArtManager
 		atlas.put("Skyler_Counter_Vert", ImageIO.read(new File("data/Restaurant/Skyler/counter-vert.png")));
 		atlas.put("Skyler_Counter_Horiz", ImageIO.read(new File("data/Restaurant/Skyler/counter-horiz.png")));
 		atlas.put("Skyler_Kitchen_Floor", ImageIO.read(new File("data/Restaurant/Skyler/kitchen-floor.png")));
+		atlas.put("Skyler_Host", ImageIO.read(new File("data/Restaurant/Skyler/host.png")));
 		
 		atlas.put("Residence_Floor",ImageIO.read(new File("data/Housing/Residence-floor.png")));
 		atlas.put("Residence_Floor2",ImageIO.read(new File("data/Housing/Residence-floor2.png")));

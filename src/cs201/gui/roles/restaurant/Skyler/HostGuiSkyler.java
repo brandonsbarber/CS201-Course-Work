@@ -2,6 +2,7 @@ package cs201.gui.roles.restaurant.Skyler;
 
 import java.awt.*;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
@@ -11,7 +12,7 @@ public class HostGuiSkyler implements Gui {
 
     private HostSkyler agent = null;
 
-    private int xPos = 90, yPos = 0;//default waiter position
+    private int xPos = 91, yPos = 2;//default waiter position
     private int xDestination = 90, yDestination = 0;//default start position
     private int currentTableNum;  
     
@@ -52,8 +53,7 @@ public class HostGuiSkyler implements Gui {
     }
 
     public void draw(Graphics2D g) {
-        g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, 20, 20);
+        g.drawImage(ArtManager.getImage("Skyler_Host"), xPos, yPos, 16, 38, null);
         
         /*for (int i=0; i < agent.getNTables(); i++) {
         g.setColor(Color.ORANGE);

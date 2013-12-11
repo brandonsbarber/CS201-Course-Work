@@ -82,8 +82,8 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 	
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-
+		this.restaurant.updateInfoPanel();
+		closingTime = false;
 	}
 
 	@Override

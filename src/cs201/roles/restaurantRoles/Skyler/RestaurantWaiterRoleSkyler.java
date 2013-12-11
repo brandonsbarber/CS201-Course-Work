@@ -250,8 +250,9 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 
 	@Override
 	public void startInteraction(Intention intent) {
-		// TODO Auto-generated method stub
-
+		this.restaurant.updateInfoPanel();
+		this.waiterGui.setPresent(true);
+		closingTime = false;
 	}
 
 	@Override
