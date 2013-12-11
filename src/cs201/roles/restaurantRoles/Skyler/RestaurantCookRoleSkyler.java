@@ -218,7 +218,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	}
 	
 	public String getName() {
-		return name;
+		return myPerson.getName();
 	}
 
 	

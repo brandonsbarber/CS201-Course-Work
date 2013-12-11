@@ -155,37 +155,43 @@ public class SimCity201 extends JFrame {
 		add(mainPanel);
 		
 		List<String> scenarioList = new ArrayList<String>();
-		scenarioList.add("Normative Restaurant");
-		scenarioList.add("Normative Restaurant: Two Customers, Two Waiters");
-		scenarioList.add("Normative Bus");
-		scenarioList.add("Normative Walking");
-		scenarioList.add("Normative Driving");
-		scenarioList.add("Market Restaurant Delivery (to show truck)");
-		scenarioList.add("Normative Market");
-		scenarioList.add("Normative Residence Test");
-		scenarioList.add("Normative Apartment Complex");
-		scenarioList.add("Ben's Normative Restaurant");
-		scenarioList.add("Ben's Normative Restaurant: Two Customers, Two Waiters");
-		scenarioList.add("Market Consumer Purchase Car");
-		scenarioList.add("Ben's Normative Restaurant Delivery");
-		scenarioList.add("Restaurant Shift Change");
-		scenarioList.add("100 People");
-		scenarioList.add("Brandon's Restaurant");
-		scenarioList.add("Brandon's Restaurant: Two Customers, Two Waiters");	
-		scenarioList.add("Brandon's Restaurant: Shift Change");
-		scenarioList.add("Market Shift Change");
-		scenarioList.add("Ben's Restaurant Shift Change");
-		scenarioList.add("Brandon Restaurant Market Order");
+		scenarioList.add("RestaurantMatt: Normative");
+		scenarioList.add("RestaurantMatt: Two Customers, Two Waiters");
+		scenarioList.add("RestaurantMat: Shift Change");
+		scenarioList.add("RestaurantBrandon: Normative");
+		scenarioList.add("RestaurantBrandon: Two Customers, Two Waiters");	
+		scenarioList.add("RestaurantBrandon: Shift Change");
+		scenarioList.add("RestaurantBen: Normative");
+		scenarioList.add("RestaurantBen: Two Customers, Two Waiters");
+		scenarioList.add("RestaurantBen: Shift Change");
+		scenarioList.add("RestaurantSkyler: Normative");
+		scenarioList.add("RestaurantSkyler: Two Customers, Two Waiters");
+		scenarioList.add("RestaurantSkyler: Shift Change");
+		
+		scenarioList.add("Bus: Normative");
+		scenarioList.add("Bus: Joust");
 		scenarioList.add("Beaucoup Buses");
 		scenarioList.add("Killer Buses");
+		scenarioList.add("Walking: Normative");
+		scenarioList.add("100 People");
+		scenarioList.add("Driving: Normative");
+		
+		scenarioList.add("Market: Normative");	
+		scenarioList.add("Market: Purchase Car");
+		scenarioList.add("Market: Shift Change");
+		scenarioList.add("Market: RestaurantMatt Delivery");
+		scenarioList.add("Market: RestaurantBrandon Delivery");
+		scenarioList.add("Market: RestaurantBen Delivery");
+		scenarioList.add("Market: RestaurantSkyler Deliver");
+		scenarioList.add("Market: Failed Delivery");
+		
+		scenarioList.add("Residence: Normative");
+		scenarioList.add("Residence: Out of single food item");
+		scenarioList.add("Residence: Completely out of food");
+		scenarioList.add("Apartment Complex: Normative");
+
 		scenarioList.add("Weekend Behavior Change");
-		scenarioList.add("Joust");
-		scenarioList.add("Skyler Restaurant");
-		scenarioList.add("Failed Market Delivery Truck");
-		scenarioList.add("Residence runs out of a food item");
-		scenarioList.add("Residence is completely out of food");
-		scenarioList.add("Drunkard");
-		scenarioList.add("Drunk Killer");
+		
 		scenarioList.add("Reset City"); // keep as last item
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);
@@ -208,35 +214,36 @@ public class SimCity201 extends JFrame {
 		{
 			case 1: normativeRestaurant(); break;
 			case 2: normativeRestaurantTwoCustomersTwoWaiters(); break;
-			case 3: normativeBus(); break;
-			case 4: normativeWalking(); break;
-			case 5: normativeDriving(); break;
-			case 6: normativeMarketRestaurantDelivery(); break;
-			case 7: normativeMarket(); break;
-			case 8: normativeResidence(); break;
-			case 9: normativeApartmentComplex(); break;
-			case 10: normativeRestaurantBen(); break;
-			case 11: normativeRestaurantBenTwoOfEach(); break;
-			case 12: marketConsumerCar(); break;
-			case 13: normativeMarketRestaurantBenDelivery(); break;
-			case 14: restaurantShiftChange(); break;
-			case 15: hundredPeople(); break;
-			case 16: brandonRestaurant(); break;
-			case 17: brandonRestaurantTwoCustomersTwoWaiters(); break;
-			case 18: brandonRestaurantShiftChange(); break;
-			case 19: marketShiftChange(); break;
-			case 20: benRestaurantShiftChange(); break;
-			case 21: brandonRestaurantMarketOrder(); break;
-			case 22: beaucoupBuses();break;
-			case 23: hundredPeopleBus();break;
-			case 24: weekendDifference(); break;
-			case 25: joust();break;
-			case 26: skylerRestaurant();break;
+			case 3: restaurantShiftChange(); break;
+			case 4: brandonRestaurant(); break;
+			case 5: brandonRestaurantTwoCustomersTwoWaiters(); break;
+			case 6: brandonRestaurantShiftChange(); break;
+			case 7: normativeRestaurantBen(); break;
+			case 8: normativeRestaurantBenTwoOfEach(); break;
+			case 9: benRestaurantShiftChange(); break;
+			case 10: skylerRestaurant(); break;
+			case 11: break; //
+			case 12: break; //
+			case 13: normativeBus(); break;
+			case 14: joust(); break;
+			case 15: beaucoupBuses(); break;
+			case 16: hundredPeopleBus(); break;
+			case 17: normativeWalking(); break;
+			case 18: hundredPeople(); break;
+			case 19: normativeDriving(); break;
+			case 20: normativeMarket(); break;
+			case 21: marketConsumerCar(); break;
+			case 22: marketShiftChange(); break;
+			case 23: normativeMarketRestaurantDelivery(); break;
+			case 24: brandonRestaurantMarketOrder(); break;
+			case 25: normativeMarketRestaurantBenDelivery(); break;
+			case 26: break; //
 			case 27: failedMarketDeliveryTruck(); break;
-			case 28: residenceOutOfFood(false); break;
-			case 29: residenceOutOfFood(true); break;
-			case 30: drunk(); break;
-			case 31: hundredPeopleBusDrunk();break;
+			case 28: normativeResidence(); break;
+			case 29: residenceOutOfFood(false); break;
+			case 30: residenceOutOfFood(true); break;
+			case 31: normativeApartmentComplex(); break;
+			case 32: weekendDifference(); break;
 			default: return;
 		}
 	}
@@ -328,6 +335,7 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 0));
 		this.transitPanel.resetCity();
 		this.marketPanel.resetCity();
 		this.restaurantPanel.resetCity();
+		this.residencePanel.resetCity();
 		
 		bottomSettingsPanel.resetCity();
 		CityDirectory.getInstance().resetCity();

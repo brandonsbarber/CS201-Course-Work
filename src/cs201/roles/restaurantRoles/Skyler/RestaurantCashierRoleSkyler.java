@@ -148,7 +148,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 	}
 	
 	public String getName() {
-		return this.name;
+		return myPerson.getName();
 	}
 	
 	public class Check {
@@ -177,10 +177,14 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 		void processCheck() {
 			
 			change = Math.round((cashPaid - amount)*100)/100.0;
-			System.out.println("Thanks, "+c.getName()+", you gave me $"+String.format("%.2f", cashPaid)+" for your $"+String.format("%.2f", amount)+" bill.\n Here is your change of $"+String.format("%.2f", change));
+			Do("Thanks, "+c.getName()+", you gave me $"+String.format("%.2f", cashPaid)+" for your $"+String.format("%.2f", amount)+" bill.");
+			if(change>0) {
+				Do("Here is your change of $"+String.format("%.2f", change));
+			}
 			//log.add(new LoggedEvent("Thanks, "+c.getName()+", you gave me $"+String.format("%.2f", cashPaid)+" for your $"+String.format("%.2f", amount)+" bill.\n Here is your change of $"+String.format("%.2f", change)));
 			state = CheckState.paid;
 			cashOnHand+=(cashPaid-change);
+			restaurant.addMoney(cashPaid-change);
 			c.msgHereIsYourChange(change);
 			
 		}
@@ -193,6 +197,10 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 			amount = amt;
 			market = m;
 		}
+	}
+	
+	public void setCashOnHand (double amt) {
+		cashOnHand = amt;
 	}
 
 }

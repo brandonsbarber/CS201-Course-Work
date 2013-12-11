@@ -61,12 +61,10 @@ public class ResidenceConfigPanel extends ConfigPanel implements ActionListener 
 	
 	private void getFridgeContents(Residence structure) {
 		listModel.clear();
-		if (structure.getFridgeContents().isEmpty()) {
-			return;
-		}
 		if (structure != null) {
 			List<Food> fridgeContents = structure.getFridgeContents();
 			if (fridgeContents.isEmpty()) {
+				//System.out.println("FRIDGE EMPTY");
 				String foodString = new String("Fridge Empty.");
 				listModel.addElement(foodString);
 			} else {
@@ -85,6 +83,12 @@ public class ResidenceConfigPanel extends ConfigPanel implements ActionListener 
 			updateFridgeContents(currentStructure);
 		}
 		
+	}
+	
+	public void resetCity() {
+		currentStructure = null;
+		listModel.clear();
+		residenceComboBox.removeAllItems();
 	}
 
 }

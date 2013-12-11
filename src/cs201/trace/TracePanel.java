@@ -190,7 +190,7 @@ public class TracePanel extends JScrollPane implements AlertListener {
 		}
 
 		updateTracePanel();	//update the panel to now reflect the correct alerts
-		traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength()); // scroll to bottom
+		traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength()); // TODO DIFFERENCE scroll to bottom
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class TracePanel extends JScrollPane implements AlertListener {
 	public void addNewAlert(Alert alert) {
 		//This should make it only scroll down if we are already at the bottom.  Like a scroll lock kinda thing.
 		boolean scrollDown = this.getVerticalScrollBar().getValue() + this.getVerticalScrollBar().getVisibleAmount()
-							>= this.getVerticalScrollBar().getMaximum() - 4;
+							>= this.getVerticalScrollBar().getMaximum() - 4; // TODO DIFFERENCE
 		
 		//add the new alert and update the panel to show it
 		newAlerts.add(alert);
@@ -262,7 +262,7 @@ public class TracePanel extends JScrollPane implements AlertListener {
 
 		//Should snap the trace panel to the bottom when a new thing is added (makes it so you don't have to scroll down manually as new stuff gets added in)
 		if (scrollDown) {
-			traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength());
+			traceTextPane.setCaretPosition(traceTextPane.getDocument().getLength()); // TODO DIFFERENCE
 			//Document d = this.traceTextPane.getDocument();
 			//this.traceTextPane.select(d.getLength(), d.getLength());
 			// this.getVerticalScrollBar().setValue(

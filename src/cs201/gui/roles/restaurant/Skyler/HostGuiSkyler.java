@@ -11,8 +11,8 @@ public class HostGuiSkyler implements Gui {
 
     private HostSkyler agent = null;
 
-    private int xPos = -20, yPos = -20;//default waiter position
-    private int xDestination = -20, yDestination = -20;//default start position
+    private int xPos = 90, yPos = 0;//default waiter position
+    private int xDestination = 90, yDestination = 0;//default start position
     private int currentTableNum;  
     
     private boolean isPresent = false;
@@ -22,8 +22,8 @@ public class HostGuiSkyler implements Gui {
 
     RestaurantAnimationPanelSkyler animationPanel;
     
-    public HostGuiSkyler(HostSkyler agent, RestaurantAnimationPanelSkyler panel) {
-        this.agent = agent;
+    public HostGuiSkyler(HostSkyler host, RestaurantAnimationPanelSkyler panel) {
+        this.agent = host;
         animationPanel = panel;
     }
 
