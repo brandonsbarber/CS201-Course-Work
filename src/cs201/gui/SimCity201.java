@@ -184,7 +184,7 @@ public class SimCity201 extends JFrame {
 		scenarioList.add("Failed Market Delivery Truck");
 		scenarioList.add("Residence runs out of a food item");
 		scenarioList.add("Residence is completely out of food");
-		
+		scenarioList.add("Drunkard");
 		scenarioList.add("Reset City"); // keep as last item
 		
 		scenarioPanel = new ScenarioPanel(scenarioList);

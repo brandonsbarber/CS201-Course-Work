@@ -45,6 +45,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		this.gui = gui;
 	}
 	
+	public void setDrunk(boolean drunk)
+	{
+		if(gui != null)
+		{
+			gui.setDrunk(drunk);
+		}
+	}
+	
 	/**
 	 * Message received from GUI indicating that animation is finished
 	 */

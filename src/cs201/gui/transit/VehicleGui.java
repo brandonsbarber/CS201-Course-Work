@@ -205,7 +205,7 @@ public abstract class VehicleGui implements Gui
 				}
 				return;
 			}
-			if(allowedToMove)
+			if(allowedToMove || drunk)
 			{
 				switch(currentDirection)
 				{
@@ -254,6 +254,19 @@ public abstract class VehicleGui implements Gui
 								cIntersection.releaseIntersection();
 							}
 						}
+						//**************************ADDED**************************//
+						/*if(Pathfinder.isCrossWalk(current,city.getWalkingMap(), city.getDrivingMap()))
+						{
+							List<Gui> guiList = city.crosswalkPermissions.get(current.y).get(current.x);
+							synchronized(guiList)
+							{
+								while(guiList.contains(this))
+								{
+									guiList.remove(this);
+								}
+							}
+						}*/
+						//**************************END ADDED**************************//
 					}
 					
 					current = next;
@@ -274,6 +287,25 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
+				//**************************ADDED**************************//
+				/*List<Gui> guiList = city.crosswalkPermissions.get(next.y).get(next.x);
+				synchronized(guiList)
+				{
+					if(Pathfinder.isCrossWalk(next, city.getWalkingMap(), city.getDrivingMap()))
+					{
+						for(Gui g : guiList)
+						{
+							if(g instanceof PassengerGui)
+							{
+								allowedToMove = false;
+								return;
+							}
+						}
+						guiList.add(this);
+					}
+				}*/
+				//**************************END ADDED**************************//
+
 				Intersection nextIntersection = city.getIntersection(next);
 				Intersection cIntersection = city.getIntersection(current);
 				
@@ -310,40 +342,15 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 			}
-			
+		}
+		if(!allowedToMove && drunk)
+		{
+			city.removeGui(this);
+			vehicle.stopThread();
 		}
 	}
 	
 	private Intersection currentIntersection = null;
-
-	private boolean timerStarted = false;
-	private boolean cancelled = true;
-	
-	private boolean canMoveCrosswalk()
-	{
-		if(city.getWalkingMap()[next.y][next.x].isValid())
-		{
-			List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
-			synchronized(list)
-			{
-				if(list.size() != 0)
-				{
-					return false;
-				}
-				list.add(this);
-			}
-		}
-		return true;
-	}
-	
-	private void revertCrosswalk()
-	{
-		List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-		synchronized(list)
-		{
-			list.remove(this);
-		}
-	}
 
 	/**
 	 * Gets whether the gui is present and should be rendered
@@ -426,5 +433,12 @@ public abstract class VehicleGui implements Gui
 		//city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
+	}
+
+	boolean drunk = false;
+	
+	public void setDrunk(boolean drunk)
+	{
+		this.drunk = drunk;
 	}
 }

@@ -599,6 +599,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		city.displayBlankPanel();
+		
+		int x = arg0.getX()/GRID_SIZE;
+		int y = arg0.getY()/GRID_SIZE;
+		
+		System.out.println(crosswalkPermissions.get(y).get(x));
 	}
 	
 	/**
@@ -664,9 +669,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		repaint();
 	}
 	
-	
-	public void release()
+	/**
+	 * Removes a gui
+	 * @param g the gui to remove
+	 */
+	public void removeGui(Gui g)
 	{
-		permissions[7][13].release();
+		guis.remove(g);
 	}
 }

@@ -304,18 +304,22 @@ public class PassengerGui implements Gui
 				
 				synchronized(nextSquare)
 				{
-					for(Gui g : nextSquare)
+					if(Pathfinder.isCrossWalk(next, city.getWalkingMap(), city.getDrivingMap()))
 					{
-						if(g instanceof VehicleGui)
+						for(Gui g : nextSquare)
 						{
-							allowedToMove = false;
-							return;
+							if(g instanceof VehicleGui)
+							{
+								allowedToMove = false;
+								return;
+							}
 						}
 					}
 					allowedToMove = true;
 					nextSquare.add(this);
 				}
 			}
+			allowedToMove = true;
 		}
 	}
 	
