@@ -3,6 +3,7 @@ package cs201.structures.restaurant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.ArtManager;
@@ -24,9 +25,7 @@ import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
-
 import cs201.roles.restaurantRoles.Brandon.*;
-
 import cs201.gui.structures.restaurant.*;
 
 public class RestaurantBrandon extends Restaurant {
@@ -258,6 +257,12 @@ public class RestaurantBrandon extends Restaurant {
 	public void emptyEntireCookInventory() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<String> getCookInventory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

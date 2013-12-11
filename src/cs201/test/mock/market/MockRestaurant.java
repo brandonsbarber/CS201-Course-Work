@@ -1,5 +1,7 @@
 package cs201.test.mock.market;
 
+import java.util.List;
+
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.helper.CityTime;
@@ -45,6 +47,12 @@ public class MockRestaurant extends Restaurant {
 	public void emptyEntireCookInventory() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<String> getCookInventory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

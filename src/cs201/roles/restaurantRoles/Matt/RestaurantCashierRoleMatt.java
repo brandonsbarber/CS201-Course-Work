@@ -173,6 +173,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 	private void GiveCustomerChange(Check c) {
 		boolean checkPaidInFull = c.customerPaid >= c.amount;
 		this.restaurant.addMoney(checkPaidInFull ? c.amount : c.customerPaid);
+		this.restaurant.updateInfoPanel();
 		double change = checkPaidInFull ? c.customerPaid - c.amount : 0;
 		DoGiveCustomerChange(c);
 		c.customer.msgHereIsYourChange(change);
@@ -186,6 +187,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		for (MarketInvoice i : invoices) {
 			if (i.market == c.market && i.order.toLowerCase().equals(c.choice.toLowerCase()) && i.quantity >= c.quantity) {
 				this.restaurant.removeMoney(c.amount);
+				this.restaurant.updateInfoPanel();
 				DoPayMarket(c);
 				((RestaurantCookRoleMatt) this.restaurant.getCook()).msgFulfillSupplyOrder(c.choice, c.quantity, c.market);
 				c.market.getManager().msgHereIsMyPayment(restaurant, (float)c.amount);
