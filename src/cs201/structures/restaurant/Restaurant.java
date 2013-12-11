@@ -9,6 +9,8 @@ import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.structures.Structure;
+import cs201.trace.AlertLog;
+import cs201.trace.AlertTag;
  
 /**
  * Base Restaurant class that every team member must extend in their personal Restaurants
@@ -126,11 +128,34 @@ public abstract class Restaurant extends Structure {
 	/**
 	 * Force closes this Restaurant
 	 */
-	public abstract void closeRestaurant();
+	public void closeRestaurant() {
+		AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Force closing.");
+		this.forceClosed = true;
+		this.isOpen = false;
+		if (host.getPerson() != null) {
+			host.msgClosingTime();
+		} else {
+			closingTime();
+		}
+		this.configPanel.updateInfo(this);
+	}
 	
 	/**
 	 * Forces the Restaurant to empty the cook's inventory
 	 */
 	public abstract void emptyEntireCookInventory();
+	
+	/**
+	 * Gets the cook's current inventory at this Restaurant
+	 * @return List<String> representing the inventory at this Restaurant
+	 */
+	public abstract List<String> getCookInventory();
+	
+	/**
+	 * Call this to update the RestaurantConfig panel with new values
+	 */
+	public void updateInfoPanel() {
+		this.configPanel.updateInfo(this);
+	}
 
 }

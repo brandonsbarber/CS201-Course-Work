@@ -2,6 +2,7 @@ package cs201.structures.restaurant;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
@@ -243,6 +244,12 @@ public class RestaurantBen extends Restaurant {
 	@Override
 	public void emptyEntireCookInventory() {
 		((RestaurantCookRoleBen)this.cook).emptyInventory();
+	}
+
+	@Override
+	public List<String> getCookInventory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

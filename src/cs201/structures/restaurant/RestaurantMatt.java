@@ -2,6 +2,7 @@ package cs201.structures.restaurant;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
@@ -242,22 +243,14 @@ public class RestaurantMatt extends Restaurant {
 	}
 
 	@Override
-	public void closeRestaurant() {
-		AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Force closing.");
-		this.forceClosed = true;
-		this.isOpen = false;
-		if (host.getPerson() != null) {
-			host.msgClosingTime();
-		} else {
-			closingTime();
-		}
+	public void emptyEntireCookInventory() {
+		((RestaurantCookRoleMatt) cook).emptyInventory();
 		this.configPanel.updateInfo(this);
 	}
 
 	@Override
-	public void emptyEntireCookInventory() {
-		// TODO Auto-generated method stub
-		((RestaurantCookRoleMatt) cook).emptyInventory();
+	public List<String> getCookInventory() {
+		return ((RestaurantCookRoleMatt) cook).getInventory();
 	}
 
 }

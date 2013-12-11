@@ -7,6 +7,7 @@ import cs201.gui.Gui;
 import cs201.gui.roles.residence.ResidentGui;
 import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
+import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.residence.Residence;
 
 public class ResidentRole extends Role implements Resident {
@@ -75,6 +76,17 @@ public class ResidentRole extends Role implements Resident {
 	 */
 	private void pickAndEatFromFridge() {
 		goToFridge();//animation go to fridge
+		
+		List<ItemRequest> inventory = myPerson.getInventory();
+		
+		if (inventory!=null && inventory.size()>0) {
+			for (ItemRequest i: inventory) {
+				residence.addFood(i.item, i.amount);
+				Do("Added "+i.amount+" "+i.item+"s to my fridge from my inventory.");
+				inventory.remove(i);
+			}
+		}
+		
 		state = ResidentState.eating;
 		List<String> fridgeContents = residence.getFridgeContents();
 		//Do("My choices from the fridge: "+fridgeContents);

@@ -10,11 +10,16 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import cs201.gui.ConfigPanel;
@@ -26,10 +31,9 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 	private JComboBox<Restaurant> comboBoxRestaurants;
 	private JButton btnCloseRestaurant;
 	private JButton btnEmptyAllInventory;
-	private JButton btnEmptySelectedInventory;
 	private JLabel lblStatus;
 	private JPanel staffInfopanel;
-	private JPanel panel_1;
+	private JPanel cookInventoryPanel;
 	private JPanel panel_2;
 	private JLabel lblStaff;
 	private JLabel lblHost;
@@ -41,6 +45,10 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 	private JLabel lblWaiters;
 	private JLabel labelNumWaiters;
 	private JLabel lblMoney;
+	private JLabel lblCookInventory;
+	private JScrollPane scrollPane;
+	private JList<String> listInventory;
+	private DefaultListModel<String> modelInventory;
 
 	public RestaurantConfigPanel() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -92,11 +100,12 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		selectionPanel.add(lblStatus, gbc_lblStatus);
 		
 		lblMoney = new JLabel("Money: $0.00");
+		lblMoney.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMoney.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblMoney.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		lblMoney.setMaximumSize(new Dimension(81, 28));
-		lblMoney.setMinimumSize(new Dimension(81, 28));
-		lblMoney.setPreferredSize(new Dimension(81, 28));
+		lblMoney.setMaximumSize(new Dimension(100, 28));
+		lblMoney.setMinimumSize(new Dimension(100, 28));
+		lblMoney.setPreferredSize(new Dimension(100, 28));
 		GridBagConstraints gbc_lblMoney = new GridBagConstraints();
 		gbc_lblMoney.insets = new Insets(0, 0, 5, 0);
 		gbc_lblMoney.gridx = 0;
@@ -124,15 +133,6 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		gbc_btnEmptyAllInventory.gridy = 4;
 		selectionPanel.add(btnEmptyAllInventory, gbc_btnEmptyAllInventory);
 		btnEmptyAllInventory.addActionListener(this);
-		
-		btnEmptySelectedInventory = new JButton("Empty Selected Inventory");
-		btnEmptySelectedInventory.setMaximumSize(new Dimension(172, 28));
-		btnEmptySelectedInventory.setPreferredSize(new Dimension(172, 28));
-		btnEmptySelectedInventory.setMinimumSize(new Dimension(100, 28));
-		GridBagConstraints gbc_btnEmptySelectedInventory = new GridBagConstraints();
-		gbc_btnEmptySelectedInventory.gridx = 0;
-		gbc_btnEmptySelectedInventory.gridy = 5;
-		selectionPanel.add(btnEmptySelectedInventory, gbc_btnEmptySelectedInventory);
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBorder(new TitledBorder(null, "Info:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));
@@ -267,8 +267,40 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		gbc_labelNumWaiters.gridy = 4;
 		staffInfopanel.add(labelNumWaiters, gbc_labelNumWaiters);
 		
-		panel_1 = new JPanel();
-		infoPanel.add(panel_1);
+		cookInventoryPanel = new JPanel();
+		infoPanel.add(cookInventoryPanel);
+		GridBagLayout gbl_cookInventoryPanel = new GridBagLayout();
+		gbl_cookInventoryPanel.columnWidths = new int[]{0, 0};
+		gbl_cookInventoryPanel.rowHeights = new int[]{0, 0, 0};
+		gbl_cookInventoryPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_cookInventoryPanel.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		cookInventoryPanel.setLayout(gbl_cookInventoryPanel);
+		
+		lblCookInventory = new JLabel("Cook Inventory:");
+		lblCookInventory.setFont(new Font("SansSerif", Font.BOLD, 11));
+		lblCookInventory.setMaximumSize(new Dimension(100, 28));
+		lblCookInventory.setMinimumSize(new Dimension(100, 28));
+		lblCookInventory.setPreferredSize(new Dimension(100, 28));
+		GridBagConstraints gbc_lblCookInventory = new GridBagConstraints();
+		gbc_lblCookInventory.insets = new Insets(0, 0, 5, 0);
+		gbc_lblCookInventory.anchor = GridBagConstraints.WEST;
+		gbc_lblCookInventory.gridx = 0;
+		gbc_lblCookInventory.gridy = 0;
+		cookInventoryPanel.add(lblCookInventory, gbc_lblCookInventory);
+		
+		scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 1;
+		cookInventoryPanel.add(scrollPane, gbc_scrollPane);
+		
+		listInventory = new JList<String>();
+		listInventory.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		modelInventory = new DefaultListModel<String>();
+		listInventory.setModel(modelInventory);
+		listInventory.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(listInventory);
 		
 		panel_2 = new JPanel();
 		infoPanel.add(panel_2);
@@ -282,7 +314,6 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 				updateInfo(r);
 			}
 		} else if (e.getSource() == this.btnCloseRestaurant) {
-			//System.out.println("PRINTPRINTPRINT;DLSKFJDSL;KJFL;KFJSDL;FKJDFL;DSKJFL;JKs");
 			if (this.comboBoxRestaurants.getSelectedIndex() != -1) {
 				Restaurant r = (Restaurant) this.comboBoxRestaurants.getSelectedItem();
 				if (r.getOpen()) {
@@ -316,6 +347,10 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		}
 		this.labelNumWaiters.setText(numWaiters + "");
 		this.lblMoney.setText("Money: " + String.format("$%.2f", r.getCurrentRestaurantMoney()));
+		this.modelInventory.removeAllElements();
+		for (String s : r.getCookInventory()) {
+			this.modelInventory.addElement(s);
+		}
 	}
 	
 	private void resetInfo() {
@@ -325,6 +360,7 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		this.checkBoxCashier.setSelected(false);
 		this.labelNumWaiters.setToolTipText("0");
 		this.lblMoney.setText("Money: $0.00");
+		this.modelInventory.removeAllElements();
 	}
 
 	public void resetCity() {
