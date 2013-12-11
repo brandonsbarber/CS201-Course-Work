@@ -95,12 +95,14 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleMatt) cook).getGui().setPresent(true);
+				this.configPanel.updateInfo(this);
 				return cook;
 			}
 			return null;
 		}
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
+				this.configPanel.updateInfo(this);
 				return host;
 			}
 			return null;
@@ -112,6 +114,7 @@ public class RestaurantMatt extends Restaurant {
 						((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
 						UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
+						this.configPanel.updateInfo(this);
 						return r;
 					}
 				}
@@ -132,6 +135,7 @@ public class RestaurantMatt extends Restaurant {
 					this.panel.addGui(waiterGui);
 					newWaiter.setRestaurant(this);
 					((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
+					this.configPanel.updateInfo(this);
 					return newWaiter;
 				}
 			}
@@ -141,6 +145,7 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleMatt) cashier).getGui().setPresent(true);
+				this.configPanel.updateInfo(this);
 				return cashier;
 			}
 			return null;
@@ -199,6 +204,10 @@ public class RestaurantMatt extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {		
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
+		}
+		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
@@ -207,6 +216,7 @@ public class RestaurantMatt extends Restaurant {
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
 		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
@@ -215,8 +225,10 @@ public class RestaurantMatt extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (!isOpen) {
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !forceClosed) {
 			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
 	}
 	
@@ -227,6 +239,25 @@ public class RestaurantMatt extends Restaurant {
 		for (RestaurantWaiterRole r : waiters) {
 			r.msgClosingTime();
 		}
+	}
+
+	@Override
+	public void closeRestaurant() {
+		AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Force closing.");
+		this.forceClosed = true;
+		this.isOpen = false;
+		if (host.getPerson() != null) {
+			host.msgClosingTime();
+		} else {
+			closingTime();
+		}
+		this.configPanel.updateInfo(this);
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		// TODO Auto-generated method stub
+		((RestaurantCookRoleMatt) cook).emptyInventory();
 	}
 
 }

@@ -35,4 +35,16 @@ public class MockRestaurant extends Restaurant {
 
 	}
 
+	@Override
+	public void closeRestaurant() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

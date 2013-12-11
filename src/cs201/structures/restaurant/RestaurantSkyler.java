@@ -5,19 +5,12 @@ import java.util.Collections;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
-import cs201.gui.roles.restaurant.Ben.CustomerGuiBen;
 import cs201.gui.roles.restaurant.Skyler.CustomerGuiSkyler;
 import cs201.gui.roles.restaurant.Skyler.WaiterGuiSkyler;
-import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelSkyler;
 import cs201.helper.CityTime;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
-import cs201.roles.restaurantRoles.Ben.RestaurantCashierRoleBen;
-import cs201.roles.restaurantRoles.Ben.RestaurantCookRoleBen;
-import cs201.roles.restaurantRoles.Ben.RestaurantCustomerRoleBen;
-import cs201.roles.restaurantRoles.Ben.RestaurantHostRoleBen;
-import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBen;
 import cs201.roles.restaurantRoles.Skyler.RestaurantCashierRoleSkyler;
 import cs201.roles.restaurantRoles.Skyler.RestaurantCookRoleSkyler;
 import cs201.roles.restaurantRoles.Skyler.RestaurantCustomerRoleSkyler;
@@ -172,6 +165,18 @@ public class RestaurantSkyler extends Restaurant {
 			}
 			this.isOpen = false;
 		}
+	}
+
+	@Override
+	public void closeRestaurant() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -3,6 +3,7 @@ package cs201.structures.restaurant;
 import java.util.List;
 
 import cs201.gui.StructurePanel;
+import cs201.gui.configPanels.RestaurantConfigPanel;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.RestaurantHostRole;
@@ -17,6 +18,7 @@ import cs201.structures.Structure;
 public abstract class Restaurant extends Structure {
 	private final double INITIALMONEY = 100;
 	
+	protected RestaurantConfigPanel configPanel;
 	protected RestaurantCashierRole cashier;
 	protected RestaurantCookRole cook;
 	protected RestaurantHostRole host;
@@ -27,6 +29,7 @@ public abstract class Restaurant extends Structure {
 	public Restaurant(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
 		
+		this.configPanel = null;
 		this.cashier = null;
 		this.cook = null;
 		this.host = null;
@@ -111,5 +114,23 @@ public abstract class Restaurant extends Structure {
 	 * Should be called by the Host when he believes it's okay for all the other employees to go Home
 	 */
 	public abstract void closingTime();
+	
+	/**
+	 * Sets the config panel for this Restaurant
+	 * @param panel The RestaurantConfigPanel
+	 */
+	public void setConfigPanel(RestaurantConfigPanel panel) {
+		this.configPanel = panel;
+	}
+	
+	/**
+	 * Force closes this Restaurant
+	 */
+	public abstract void closeRestaurant();
+	
+	/**
+	 * Forces the Restaurant to empty the cook's inventory
+	 */
+	public abstract void emptyEntireCookInventory();
 
 }
