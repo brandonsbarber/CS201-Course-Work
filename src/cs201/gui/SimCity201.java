@@ -54,7 +54,7 @@ import cs201.structures.transit.BusStop;
 @SuppressWarnings("serial")
 public class SimCity201 extends JFrame {
 	public static final int SIZEX = 1200;
-	public static final int SIZEY = 700;
+	public static final int SIZEY = 800;
 	
 	CityPanel cityPanel;
 	JPanel buildingPanels;
@@ -541,10 +541,12 @@ public class SimCity201 extends JFrame {
 		PersonAgent p1 = new PersonAgent("Renter",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		
 		PersonAgent p2 = new PersonAgent("Landlord",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), res2, ac, Intention.ResidenceLandLord, res2, null);
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		
 		ac.addApartment(res);
 		ac.getLandlord().addProperty(res, (Renter)res.getResident(), 30, WeekDay.Tuesday);

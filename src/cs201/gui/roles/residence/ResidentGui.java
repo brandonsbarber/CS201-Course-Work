@@ -104,7 +104,6 @@ public class ResidentGui implements Gui {
 		g.fillRect(xPos, yPos, WIDTH, HEIGHT);*/
 		if (dir=="Resident_Sleeping") {
 			g.drawImage(ArtManager.getImage(dir), xPos, yPos, 22, 17, null);
-			holding = "Zzz";
 		}
 		else {
 			g.drawImage(ArtManager.getImage(dir), xPos, yPos, 17, 22, null);
@@ -201,7 +200,11 @@ public class ResidentGui implements Gui {
 	}
 	
 	public void setHolding(String item) {
-		holding=item.substring(0,3);
+		if (item.length()>2){
+			holding=item.substring(0,3);
+		}
+		else
+			holding=item;
 	}
 	
 	public void clearHolding() {

@@ -104,6 +104,7 @@ public class ResidentRole extends Role implements Resident {
 	private void goToSleep() {
 		Do("Going to sleep");
 		goToBed(); //animation go to bed
+		gui.setHolding("Zzz");
 		state = ResidentState.sleeping;
 		isActive = false;
 		//timer/wait for wakeup
@@ -111,6 +112,7 @@ public class ResidentRole extends Role implements Resident {
 
 	@Override
 	public void startInteraction(Intention intent) {
+		
 		switch (intent) {
 			case ResidenceEat:
 				this.msgStartEating();
@@ -130,6 +132,7 @@ public class ResidentRole extends Role implements Resident {
 		Do("Entering residence");
 		if(!isTest) {
 			this.gui.setPresent(true);
+			gui.clearHolding();
 			gui.enter();
 			this.acquireSemaphore();
 			if (intent == Intention.ResidenceRelax) {
@@ -145,6 +148,7 @@ public class ResidentRole extends Role implements Resident {
 	 * simply leave. He can re-enter if he decides to do something else in the residence.
 	 */
 	private void actionFinished() {
+		gui.clearHolding();
 		Do("Action finished. Leaving.");
 		state = ResidentState.doingNothing;
 		isActive = false;
