@@ -659,7 +659,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	private void giveCarToConsumer(CarOrder co) {
 		// First lets charge the consumer
-		// TODO this is a fixed price, we need to change this
 		chargeConsumer(co.consumer, CARPRICE);
 		
 		// Let the consumer know how much he was charged

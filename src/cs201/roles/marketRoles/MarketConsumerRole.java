@@ -71,10 +71,12 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 			}
 		}
 		
+		/*
 		if (leaveMarket) {
 			leaveMarket();
 			return true;
 		}
+		*/
 		
 		return false;
 	}
@@ -111,7 +113,6 @@ public class MarketConsumerRole extends Role implements MarketConsumer {
 		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market consumer " + name, "Just got my new car from the market.");
 		
 		// We now have a car!
-		// TODO Ask Brandon how to do this...
 		this.getPerson().setVehicle(car);
 		
 		stateChanged();
