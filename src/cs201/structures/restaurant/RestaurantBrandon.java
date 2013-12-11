@@ -29,7 +29,6 @@ import cs201.roles.restaurantRoles.Brandon.*;
 
 import cs201.gui.structures.restaurant.*;
 
-@SuppressWarnings("serial")
 public class RestaurantBrandon extends Restaurant {
 
 	private static final int MAXWAITERS = 4;
@@ -247,6 +246,18 @@ public class RestaurantBrandon extends Restaurant {
 		for (RestaurantWaiterRole r : waiters) {
 			r.msgClosingTime();
 		}
+	}
+
+	@Override
+	public void closeRestaurant() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

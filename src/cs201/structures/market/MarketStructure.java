@@ -164,7 +164,13 @@ public class MarketStructure extends Structure {
 		totalFunds -= amount;
 	}
 	
-	private void checkIfOpen() {
+	private void checkIfOpen(CityTime time) {
+		// If it's not during shift hours, there's no way the restaurant would be open
+		if (!(CityTime.timeDifference(time, morningShiftStart) >= 0 && CityTime.timeDifference(time, morningShiftEnd) < 0) &&
+				!(CityTime.timeDifference(time, afternoonShiftStart) >= 0 && CityTime.timeDifference(time, closingTime) < 0)) {
+			return;
+		}
+		
 		if (manager.getPerson() != null && atLeastOneEmployeeWorking()) {
 			isOpen = true;
 			AlertLog.getInstance().logInfo(AlertTag.MARKET, "Market Structure", "Open for business");
@@ -271,23 +277,11 @@ public class MarketStructure extends Structure {
 			manager.msgClosingTime();
 		}
 	}
-	
-	public void setForceClose(boolean close) {
-		forceClose = close;
-	}
 
 	@Override
 	public void updateTime(CityTime time) {
-		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
-			forceClose = false;
-		}
 		
-		if (!isOpen && !forceClose) {
-			System.out.println("Checking to see if the market shoudl open.");
-			checkIfOpen();
-		}
-		
-		if (time.equalsIgnoreDay(morningShiftEnd) && isOpen) {
+		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "Morning shift over!");
 			if (manager.getPerson() != null) {
 				manager.msgClosingTime();
@@ -295,12 +289,16 @@ public class MarketStructure extends Structure {
 			}
 		}
 		
-		if (time.equalsIgnoreDay(this.closingTime) && isOpen) {
+		else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "It's closing time!");
 			if (manager.getPerson() != null) {
 				manager.msgClosingTime();
 				isOpen = false;
 			}
+		}
+		else if (!isOpen && !forceClose) {
+			System.out.println("Checking to see if the market shoudl open.");
+			checkIfOpen(time);
 		}
 		
 	}

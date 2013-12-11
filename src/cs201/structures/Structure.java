@@ -27,6 +27,7 @@ public abstract class Structure {
 	protected CityTime morningShiftEnd;
 	protected CityTime afternoonShiftStart;
 	protected boolean isOpen;
+	protected boolean forceClosed;
 	
 	protected BufferedImage openSprite;
 	protected BufferedImage closedSprite;
@@ -262,6 +263,14 @@ public abstract class Structure {
 	 */
 	public Rectangle getRect() {
 		return rect;
+	}
+	
+	public boolean isForceClosed() {
+		return forceClosed;
+	}
+	
+	public void setForceClosed(boolean closed) {
+		this.forceClosed = closed;
 	}
 	
 }

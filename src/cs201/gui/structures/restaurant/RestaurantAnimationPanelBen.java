@@ -80,12 +80,6 @@ public class RestaurantAnimationPanelBen extends StructurePanel {
 	        for (int i = 0; i < numTables; i++) {
 	            g2.fillRect(TABLEXPOS + (TABLEWIDTH + TABLEPAD) * i, TABLEYPOS, TABLEWIDTH, TABLEHEIGHT);
 	        }
-	        
-	        // Here is the plating area
-	        platingArea.draw(g2);
-	        
-	        // Here is the cooking area
-	        cookingArea.draw(g2);
         
         } else {
         	// Draw the floor
@@ -97,6 +91,12 @@ public class RestaurantAnimationPanelBen extends StructurePanel {
             }
         	
         }
+        
+        // Here is the plating area
+        platingArea.draw(g2);
+        
+        // Here is the cooking area
+        cookingArea.draw(g2);
 
         super.paintComponent(g);
     }
