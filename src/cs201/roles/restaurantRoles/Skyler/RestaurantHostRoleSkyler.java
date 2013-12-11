@@ -131,6 +131,12 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 					if (!waiters.isEmpty()) { //Currently just assigns waiters if they exist
 						if (!waitingCustomers.isEmpty()) {
 							for (RestaurantWaiterRoleSkyler w : waiters) {
+								if (w.getNumCustomers()==0 && w.breakRequest != BreakState.approved && w.breakRequest != BreakState.onBreak){
+									assignCustomer(waitingCustomers.get(0), w, table);
+									return true;
+								}
+							} //looks through waiters to find one who has no customers currently.
+							for (RestaurantWaiterRoleSkyler w : waiters) {
 								if (w.state == RestaurantWaiterRoleSkyler.AgentState.Free && w.breakRequest != BreakState.approved && w.breakRequest != BreakState.onBreak){
 									assignCustomer(waitingCustomers.get(0), w, table);
 									return true;
