@@ -116,6 +116,7 @@ public class RestaurantBrandon extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleBrandon) cook).getGui().setPresent(true);
+				this.configPanel.updateInfo(this);
 				return cook;
 			}
 			return null;
@@ -123,6 +124,7 @@ public class RestaurantBrandon extends Restaurant {
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
 				((RestaurantHostRoleBrandon) host).getGui().setPresent(true);
+				this.configPanel.updateInfo(this);
 				return host;
 			}
 			return null;
@@ -134,8 +136,8 @@ public class RestaurantBrandon extends Restaurant {
 					if (r.getPerson() == null)
 					{
 						((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) r);
-						//UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleBrandon) r).getGui().setPresent(true);
+						this.configPanel.updateInfo(this);
 						return r;
 					}
 				}
@@ -159,7 +161,6 @@ public class RestaurantBrandon extends Restaurant {
 					waiterGui.setKitchen(kitchen);
 					waiterGui.setTables(((RestaurantAnimationPanelBrandon)panel).getTables());
 					((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) newWaiter);
-					//UpdateWaiterHomePositions();
 					((RestaurantWaiterRoleBrandon) newWaiter).setRotatingStand(stand);
 					this.panel.addGui(waiterGui);
 					System.out.println(this.panel);
@@ -167,6 +168,7 @@ public class RestaurantBrandon extends Restaurant {
 					newWaiter.setChef((CookBrandon)cook);
 					newWaiter.setCashier((CashierBrandon)cashier);
 					((RestaurantWaiterRoleBrandon) newWaiter).getGui().setPresent(true);
+					this.configPanel.updateInfo(this);
 					return newWaiter;
 				}
 			}
@@ -176,6 +178,7 @@ public class RestaurantBrandon extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleBrandon) cashier).getGui().setPresent(true);
+				this.configPanel.updateInfo(this);
 				return cashier;
 			}
 			return null;
@@ -217,6 +220,10 @@ public class RestaurantBrandon extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {		
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
+		}
+
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
@@ -225,6 +232,7 @@ public class RestaurantBrandon extends Restaurant {
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
 		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
@@ -233,8 +241,10 @@ public class RestaurantBrandon extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (!isOpen) {
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !this.forceClosed) {
 			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
 	}
 	
@@ -248,21 +258,14 @@ public class RestaurantBrandon extends Restaurant {
 	}
 
 	@Override
-	public void closeRestaurant() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void emptyEntireCookInventory() {
-		// TODO Auto-generated method stub
-		
+		((RestaurantCookRoleBrandon) cook).emptyInventory();
+		this.configPanel.updateInfo(this);
 	}
 
 	@Override
 	public List<String> getCookInventory() {
-		// TODO Auto-generated method stub
-		return null;
+		return ((RestaurantCookRoleBrandon) cook).getInventory();
 	}
 
 }
