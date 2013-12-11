@@ -169,7 +169,7 @@ public class WaiterGuiSkyler implements Gui {
         //yDestination = -19;
         xDestination = homeX;
         yDestination = homeY;
-        destinationDir = "Skyler_Waiter_Left";
+        destinationDir = "Skyler_Waiter_Right";
     }
     
     public void DoGoToWaitingArea() {

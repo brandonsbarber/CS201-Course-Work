@@ -132,6 +132,7 @@ public class Residence extends Structure {
 				f.minusOne();
 				if (f.noneLeft()) {
 					resident.getPerson().getMarketChecklist().add(new ItemRequest(f.getType(), 10));
+					Do("I'm all out of "+f.getType()+". I will go get more when I get the chance.");
 					it.remove();
 					System.out.println("Food category removed");
 					if (fridge.isEmpty()) {

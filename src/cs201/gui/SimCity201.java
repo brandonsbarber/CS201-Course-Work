@@ -601,6 +601,65 @@ public class SimCity201 extends JFrame {
 		//p1.setWakeupTime(new CityTime(13,0)); //Need to change wakeup Time after a delay.
 	}
 	
+	private void residenceOutOfFood() {
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		Residence res = new Residence(17*25, 11*25, 25, 25, Structure.getNextInstance(), resPanel, false);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
+		CityDirectory.getInstance().addResidence(res);
+		timePanel.addAnimationPanel(resPanel);
+		
+		for (int i=0; i<9; i++) { //bring all food amounts down to 1 in the fridge.
+			res.removeFood("Steak");
+			res.removeFood("Pasta");
+			res.removeFood("Ice Cream");
+			res.removeFood("Pizza");
+			res.removeFood("Chicken");
+			res.removeFood("Salad");
+		}
+		
+		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
+		m.setStructurePanel(mG);
+		m.setClosingTime(new CityTime(18, 0));
+		buildingPanels.add(mG,""+m.getId());
+		cityPanel.addStructure(m);
+		timePanel.addAnimationPanel(mG);
+		m.setConfigPanel(marketPanel);
+		marketPanel.addMarketStructure(m);
+		
+		TruckAgent truck = new TruckAgent(m);
+		truck.startThread();
+		m.addTruck(truck);
+		CityDirectory.getInstance().addMarket(m);
+		transitPanel.addVehicle(truck);
+			
+		PersonAgent p = new PersonAgent("Market Employee",cityPanel);
+		p.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
+		p.setHungerEnabled(false);
+		p.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p);
+		personPanel.addPerson(p);
+		p.startThread();
+		
+		PersonAgent p2 = new PersonAgent("Market Manager",cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
+		p2.setHungerEnabled(false);
+		p2.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
+		p2.startThread();
+		
+		PersonAgent p3 = new PersonAgent("Resident",cityPanel);
+		p3.setupPerson(CityDirectory.getInstance().getTime(), res, null, null, res, null);
+		p3.setSleepTime(new CityTime(20, 0));
+		personPanel.addPerson(p3);
+		CityDirectory.getInstance().addPerson(p3);
+		
+		p3.startThread();
+	}
+	
 	private void normativeWalking()
 	{
 		/*
