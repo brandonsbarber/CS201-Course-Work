@@ -2,18 +2,18 @@ TODO:
 
 All:
     [ ] Update design docs
-    [ ] Close Structure Button in structure panel
+    [X] Close Structure Button in structure panel
     [ ] Finalize Restaurant Integration (new force-closing stuff && getting cook's inventory)
 
 Brandon:
     [X] Transit config panel
     [ ] Updated graphics
     [X] Change restaurant closing behavior
-    [ ] Fix boat jam behavior
+    [X] Fix boat jam behavior
     [X] Fix car warp
     [ ] Crosswalks
     [ ] Fully implement collisions
-    [ ] Testing failed market delivery
+    [X] Testing failed market delivery
 
 Skyler:
     [ ] Animation upgrades
