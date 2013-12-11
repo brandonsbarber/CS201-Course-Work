@@ -229,14 +229,20 @@ public class RestaurantBen extends Restaurant {
 
 	@Override
 	public void closeRestaurant() {
-		// TODO Auto-generated method stub
-		
+		AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Force closing.");
+		this.forceClosed = true;
+		this.isOpen = false;
+		if (host.getPerson() != null) {
+			host.msgClosingTime();
+		} else {
+			closingTime();
+		}
+		this.configPanel.updateInfo(this);
 	}
 
 	@Override
 	public void emptyEntireCookInventory() {
-		// TODO Auto-generated method stub
-		
+		((RestaurantCookRoleBen)this.cook).emptyInventory();
 	}
 
 }

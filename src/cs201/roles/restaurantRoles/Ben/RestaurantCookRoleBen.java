@@ -120,6 +120,13 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		stateChanged();
 	}
 	
+	/**
+	 * Clears the cook's inventory.
+	 */
+	public void emptyInventory() {
+		this.inventory.clear();
+	}
+	
 	public void timerDone(Order order) {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, "Cook " + name, "The " + order.choice + " is finished cooking!");
 		
