@@ -307,6 +307,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		gbc_carCheckBox.gridx = 1;
 		gbc_carCheckBox.gridy = 0;
 		centerPanel.add(carCheckBox, gbc_carCheckBox);
+		carCheckBox.addActionListener(this);
 		
 		JLabel lblWorkplace = new JLabel("Workplace:");
 		lblWorkplace.setFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -716,6 +717,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 		this.sleepComboBox.setSelectedIndex(0);
 		this.actionTextField.setText(p.getCurrentAction() == null ? "None" : p.getCurrentAction().toString());
 		this.carCheckBox.setSelected(p.getVehicle() != null);
+		this.carCheckBox.setEnabled(p.getVehicle() == null);
 		this.workplaceTextField.setText(p.getWorkplace() == null ? "None" : p.getWorkplace().toString());
 		this.jobTextField.setText(p.getJob() == null ? "None" : p.getJob().toString());
 		this.workTimeTextField.setText(p.getJob() == null ? "N/A" : p.getWorkTime() == null ? "Not Set" : p.getWorkTime().toString().trim());
@@ -755,6 +757,10 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 			this.lblMode.setText("Mode: View");
 			this.setupEditing(false);
 			this.resetInfo();
+		} else if (e.getSource() == this.carCheckBox) { // CAR CHECK BOX
+			if (!editMode && this.carCheckBox.isEnabled() && this.carCheckBox.isSelected()) {
+				//
+			}
 		}
 	}
 }

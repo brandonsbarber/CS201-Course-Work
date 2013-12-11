@@ -317,7 +317,6 @@ public class PersonAgent extends Agent implements Person {
 	 */
 	public void goToLocation(Action a) {
 		a.active = true;
-		// if roaming, passengerRole.stopRoaming()
 		if (!passengerRole.isAtLocation(a.location)) {
 			AlertLog.getInstance().logMessage(AlertTag.PERSON_AGENT, name, "Going to " + a.location);
 			passengerRole.msgGoTo(a.location);
@@ -418,14 +417,14 @@ public class PersonAgent extends Agent implements Person {
 			switch (intent) {
 			case ResidenceSleep: this.addActionToPlanner(intent, home, true); break;
 			case ResidenceEat: this.addActionToPlanner(intent, home, true); break;
-			case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-			case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-			case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-			case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-			case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomBank(), true); break;
-			case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
-			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomMarket(), true); break;
-			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomRestaurant(), true); break;
+			case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenMarket(), true); break;
+			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenMarket(), true); break;
+			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenRestaurant(), true); break;
 			default: {
 				AlertLog.getInstance().logWarning(AlertTag.PERSON_AGENT, name, "addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
 				return;
