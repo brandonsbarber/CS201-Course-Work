@@ -211,6 +211,7 @@ public class PersonAgent extends Agent implements Person {
 			if (home != null && ((Residence) home).isApartment()) {
 				this.addActionToPlanner(Intention.ResidencePayRent, home, true);
 			}
+			
 			// The Residence Role will determine if there's enough time to eat at a Restaurant, or if eating at home is better
 			this.addActionToPlanner(Intention.ResidenceEat, home, false);
 			return true;
@@ -279,13 +280,25 @@ public class PersonAgent extends Agent implements Person {
 		
 		// If you're hungry and at home (or there are no open restaurants)
 		if ((state == PersonState.Awake || state == PersonState.Relaxing) && home != null && (currentLocation == home || CityDirectory.getInstance().getOpenRestaurants().size() == 0) && hungerLevel >= HUNGRY) {
-			boolean performAction = checkForExistingAction(Intention.ResidenceEat);
-			
-			if (performAction) {
-				boolean starving = hungerLevel >= STARVING;
-				if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
-					this.state = PersonState.Awake;
-					return true;
+			if (CityTime.timeDifference(time, new CityTime(12, 00)) >= 0) {
+				boolean performAction = checkForExistingAction(Intention.RestaurantCustomer);
+				
+				if (performAction) {
+					boolean starving = hungerLevel >= STARVING;
+					if (this.addActionToPlanner(Intention.RestaurantCustomer, CityDirectory.getInstance().getRandomOpenRestaurant(), starving)) {
+						this.state = PersonState.Awake;
+						return true;
+					}
+				}
+			} else {
+				boolean performAction = checkForExistingAction(Intention.ResidenceEat);
+				
+				if (performAction) {
+					boolean starving = hungerLevel >= STARVING;
+					if (this.addActionToPlanner(Intention.ResidenceEat, home, starving)) {
+						this.state = PersonState.Awake;
+						return true;
+					}
 				}
 			}
 		}
