@@ -74,7 +74,7 @@ SimCity201 Project Repository for Team 21
  + No File I/O for configuration
  + No GUI for dynamic configuration of buildings
  + No working Bank
- + Passenger collisions
+ + Slightly buggy Pedestrian/Vehicle collisions
 
 ###Running Some Scenarios (Things That Do Work)
 ####Instructions

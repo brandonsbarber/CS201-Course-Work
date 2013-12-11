@@ -23,10 +23,10 @@ public class ArtManager
 		atlas.put("Person_Left", ImageIO.read(new File("data/TransitSprites/Walk_West.png")));
 		atlas.put("Person_Right", ImageIO.read(new File("data/TransitSprites/Walk_East.png")));
 		
-		atlas.put("Truck_Up", ImageIO.read(new File("data/TransitSprites/Truck.png")));
-		atlas.put("Truck_Down", ImageIO.read(new File("data/TransitSprites/Truck.png")));
-		atlas.put("Truck_Left", ImageIO.read(new File("data/TransitSprites/Truck.png")));
-		atlas.put("Truck_Right", ImageIO.read(new File("data/TransitSprites/Truck.png")));
+		atlas.put("Truck_Up", ImageIO.read(new File("data/TransitSprites/Truck_Up.png")));
+		atlas.put("Truck_Down", ImageIO.read(new File("data/TransitSprites/Truck_Down.png")));
+		atlas.put("Truck_Left", ImageIO.read(new File("data/TransitSprites/Truck_Left.png")));
+		atlas.put("Truck_Right", ImageIO.read(new File("data/TransitSprites/Truck_Right.png")));
 		
 		atlas.put("Bus_Up", ImageIO.read(new File("data/TransitSprites/Bus_North.png")));
 		atlas.put("Bus_Down", ImageIO.read(new File("data/TransitSprites/Bus_South.png")));
@@ -63,7 +63,14 @@ public class ArtManager
 		
 		atlas.put("Bus_Stop_Bench", ImageIO.read(new File("data/TransitSprites/BusStop_Bench.png")));
 		
-		
+		atlas.put("Explosion_0", ImageIO.read(new File("data/TransitSprites/Explosion_0.png")));
+		atlas.put("Explosion_1", ImageIO.read(new File("data/TransitSprites/Explosion_1.png")));
+		atlas.put("Explosion_2", ImageIO.read(new File("data/TransitSprites/Explosion_2.png")));
+		atlas.put("Explosion_3", ImageIO.read(new File("data/TransitSprites/Explosion_3.png")));
+		atlas.put("Explosion_4", ImageIO.read(new File("data/TransitSprites/Explosion_4.png")));
+		atlas.put("Explosion_5", ImageIO.read(new File("data/TransitSprites/Explosion_5.png")));
+		atlas.put("Explosion_6", ImageIO.read(new File("data/TransitSprites/Explosion_6.png")));
+		atlas.put("Explosion_7", ImageIO.read(new File("data/TransitSprites/Explosion_7.png")));
 		
 		//Ben's Sprites
 		atlas.put("Market_Floor", ImageIO.read(new File("data/Market/Floor.png")));

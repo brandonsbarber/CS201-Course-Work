@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.gui.Gui;
@@ -212,6 +213,27 @@ public class PassengerGui implements Gui
 			{
 				currentDirection = MovementDirection.None;
 				fired = true;
+				
+				if(current != next)
+				{
+					List<Gui> currentSquare = city.crosswalkPermissions.get(current.y).get(current.x);
+					synchronized(currentSquare)
+					{
+						while(currentSquare.contains(this))
+						{
+							currentSquare.remove(this);
+						}
+					}
+					List<Gui> nextSquare = city.crosswalkPermissions.get(next.y).get(next.x);
+					synchronized(nextSquare)
+					{
+						while(nextSquare.contains(this))
+						{
+							nextSquare.remove(this);
+						}
+					}
+				}
+				
 				if(!roaming)
 				{
 					pass.msgAnimationFinished ();
@@ -220,6 +242,7 @@ public class PassengerGui implements Gui
 				{
 					doRoam();
 				}
+				
 				return;
 			}
 			if(allowedToMove)
@@ -247,6 +270,19 @@ public class PassengerGui implements Gui
 				if(allowedToMove)
 				{
 					currentDirection = moves.pop();
+					
+					if(current != next)
+					{
+						List<Gui> currentSquare = city.crosswalkPermissions.get(current.y).get(current.x);
+						synchronized(currentSquare)
+						{
+							while(currentSquare.contains(this))
+							{
+								currentSquare.remove(this);
+							}
+						}
+					}
+					
 					current = next;
 					
 					switch(currentDirection)
@@ -263,7 +299,27 @@ public class PassengerGui implements Gui
 						break;
 					}
 				}
+				
+				List<Gui> nextSquare = city.crosswalkPermissions.get(next.y).get(next.x);
+				
+				synchronized(nextSquare)
+				{
+					if(Pathfinder.isCrossWalk(next, city.getWalkingMap(), city.getDrivingMap()))
+					{
+						for(Gui g : nextSquare)
+						{
+							if(g instanceof VehicleGui)
+							{
+								allowedToMove = false;
+								return;
+							}
+						}
+					}
+					allowedToMove = true;
+					nextSquare.add(this);
+				}
 			}
+			allowedToMove = true;
 		}
 	}
 	

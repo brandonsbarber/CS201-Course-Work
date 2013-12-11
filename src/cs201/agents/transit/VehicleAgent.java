@@ -45,6 +45,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		this.gui = gui;
 	}
 	
+	public void setDrunk(boolean drunk)
+	{
+		if(gui != null)
+		{
+			gui.setDrunk(drunk);
+		}
+	}
+	
 	/**
 	 * Message received from GUI indicating that animation is finished
 	 */
@@ -106,7 +114,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		}
 		catch(InterruptedException e)
 		{
-			e.printStackTrace();
+			if(!gui.getDrunk())
+			{
+				e.printStackTrace();
+			}
+			else
+			{
+				destroyed = true;
+			}
 		}
 		currentLocation = destination;
 	}
@@ -130,5 +145,11 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public String toString()
 	{
 		return this.getClass().getSimpleName()+""+instance;
+	}
+
+	boolean destroyed = false;
+	
+	public boolean getDestroyed() {
+		return destroyed;
 	}
 }
