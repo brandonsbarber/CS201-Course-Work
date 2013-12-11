@@ -506,8 +506,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	public void startInteraction(Intention intent) {
 		// animate inside market
-		this.gui.setPresent(true);
+		gui.setPresent(true);
 		timeToLeave = false;
+		gui.doEnterMarket();
+		pauseForAnimation();
 	}
 
 	public void msgClosingTime() {
