@@ -875,7 +875,6 @@ public class SimCity201 extends JFrame {
 		r.setConfigPanel(restaurantPanel);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
-		r.setOpen(true);
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
 		CityDirectory.getInstance().addRestaurant(r);
@@ -895,6 +894,22 @@ public class SimCity201 extends JFrame {
 		CityDirectory.getInstance().addPerson(p1b);
 		personPanel.addPerson(p1b);
 		p1b.startThread();
+		
+		PersonAgent p1c = new PersonAgent("Host",cityPanel);
+		p1c.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1c.setHungerEnabled(false);
+		p1c.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1c);
+		personPanel.addPerson(p1c);
+		p1c.startThread();
+		
+		PersonAgent p1d = new PersonAgent("Waiter",cityPanel);
+		p1d.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p1d.setHungerEnabled(false);
+		p1d.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1d);
+		personPanel.addPerson(p1d);
+		p1d.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);

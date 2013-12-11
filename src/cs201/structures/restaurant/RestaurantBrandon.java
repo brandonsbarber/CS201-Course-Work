@@ -116,7 +116,6 @@ public class RestaurantBrandon extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleBrandon) cook).getGui().setPresent(true);
-				this.configPanel.updateInfo(this);
 				return cook;
 			}
 			return null;
@@ -124,7 +123,6 @@ public class RestaurantBrandon extends Restaurant {
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
 				((RestaurantHostRoleBrandon) host).getGui().setPresent(true);
-				this.configPanel.updateInfo(this);
 				return host;
 			}
 			return null;
@@ -137,7 +135,6 @@ public class RestaurantBrandon extends Restaurant {
 					{
 						((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) r);
 						((RestaurantWaiterRoleBrandon) r).getGui().setPresent(true);
-						this.configPanel.updateInfo(this);
 						return r;
 					}
 				}
@@ -168,7 +165,6 @@ public class RestaurantBrandon extends Restaurant {
 					newWaiter.setChef((CookBrandon)cook);
 					newWaiter.setCashier((CashierBrandon)cashier);
 					((RestaurantWaiterRoleBrandon) newWaiter).getGui().setPresent(true);
-					this.configPanel.updateInfo(this);
 					return newWaiter;
 				}
 			}
@@ -178,7 +174,6 @@ public class RestaurantBrandon extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleBrandon) cashier).getGui().setPresent(true);
-				this.configPanel.updateInfo(this);
 				return cashier;
 			}
 			return null;
@@ -187,8 +182,6 @@ public class RestaurantBrandon extends Restaurant {
 			RestaurantCustomerRoleBrandon newCustomer = new RestaurantCustomerRoleBrandon("",(RestaurantHostRoleBrandon)host);
 			CustomerGuiBrandon customerGui = new CustomerGuiBrandon((RestaurantCustomerRoleBrandon) newCustomer);
 			((RestaurantCustomerRoleBrandon) newCustomer).setGui(customerGui);
-			//newCustomer.setCashier((RestaurantCashierRoleBrandon) cashier);
-			//newCustomer.setHost((RestaurantHostRoleBrandon) host);
 			this.panel.addGui(customerGui);
 			newCustomer.setRestaurant(this);
 			return newCustomer;

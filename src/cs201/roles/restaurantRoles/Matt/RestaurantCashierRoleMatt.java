@@ -160,6 +160,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 		this.myPerson.goOffWork();
 		DoLeaveRestaurant();
 		this.myPerson = null;
+		this.restaurant.updateInfoPanel();
 		this.gui.setPresent(false);
 	}
 	
@@ -286,6 +287,7 @@ public class RestaurantCashierRoleMatt extends RestaurantCashierRole implements 
 
 	@Override
 	public void startInteraction(Intention intent) {
+		this.restaurant.updateInfoPanel();
 		closingTime = false;
 		this.gui.setPresent(true);
 		gui.goToRegister();
