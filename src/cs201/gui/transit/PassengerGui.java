@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.gui.Gui;
@@ -247,6 +248,7 @@ public class PassengerGui implements Gui
 				if(allowedToMove)
 				{
 					currentDirection = moves.pop();
+					
 					current = next;
 					
 					switch(currentDirection)

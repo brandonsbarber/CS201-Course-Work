@@ -718,6 +718,8 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r,new Point(23*25,14*25), new Point(22*25,11*25));
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
+		r.setConfigPanel(restaurantPanel);
+		restaurantPanel.addRestaurant(r);
 		
 		PersonAgent p1 = new PersonAgent("Walker",cityPanel);
 		//p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.None, m, null);
@@ -1674,6 +1676,8 @@ public class SimCity201 extends JFrame {
 		cityPanel.addStructure(r);
 		CityDirectory.getInstance().addRestaurant(r);
 		timePanel.addAnimationPanel(g);
+		r.setConfigPanel(restaurantPanel);
+		restaurantPanel.addRestaurant(r);
 		
 		for (int i = 1; i <= 100; i++)
 		{
