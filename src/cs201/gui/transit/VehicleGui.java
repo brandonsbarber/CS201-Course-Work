@@ -145,7 +145,7 @@ public abstract class VehicleGui implements Gui
 	private void findPath()
 	{
 		pathfinding = true;
-		System.out.println(""+x+" "+y);
+		//System.out.println(""+x+" "+y);
 		moves = Pathfinder.calcOneWayMove(city.getDrivingMap(), x, y, destX, destY);
 		pathfinding = false;
 	}
@@ -201,7 +201,7 @@ public abstract class VehicleGui implements Gui
 					{
 						if(nextIntersection == null)
 						{
-							System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
+							//System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
 							cIntersection.releaseAll();
 							cIntersection.releaseIntersection();
 						}
@@ -251,7 +251,7 @@ public abstract class VehicleGui implements Gui
 						{
 							if(nextIntersection == null)
 							{
-								System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
+								//System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
 								cIntersection.releaseAll();
 								cIntersection.releaseIntersection();
 							}
@@ -295,7 +295,7 @@ public abstract class VehicleGui implements Gui
 					{
 						if(nextIntersection.acquireIntersection())
 						{
-							System.out.println(this.getVehicle().getInstance()+" just got intersection "+nextIntersection.getInstance());
+							//System.out.println(this.getVehicle().getInstance()+" just got intersection "+nextIntersection.getInstance());
 							nextIntersection.acquireAll();
 							allowedToMove = true;
 							return;
