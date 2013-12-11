@@ -6,7 +6,7 @@ All:
     [ ] Finalize Restaurant Integration (new force-closing stuff && getting cook's inventory)
 
 Brandon:
-    [-] Transit config panel
+    [X] Transit config panel
     [ ] Updated graphics
     [X] Change restaurant closing behavior
     [ ] Fix boat jam behavior
@@ -31,6 +31,6 @@ Matt:
 Ben:
     [ ] Testing failed market delivery
     [ ] Entry/exit animations Market
-    [ ] Car artwork
+    [X] Car artwork
     [ ] Test car buying
-    [ ] Reset market config panel on scenario reset
+    [X] Reset market config panel on scenario reset

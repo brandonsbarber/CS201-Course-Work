@@ -254,6 +254,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 		this.waiters.clear();
 		DoCloseRestaurant();
 		this.myPerson = null;
+		this.restaurant.updateInfoPanel();
 		this.gui.setPresent(false);
 	}
 	
@@ -390,6 +391,7 @@ public class RestaurantHostRoleMatt extends RestaurantHostRole implements HostMa
 
 	@Override
 	public void startInteraction(Intention intent) {
+		this.restaurant.updateInfoPanel();
 		this.gui.setPresent(true);
 		timeToClose = false;
 		gui.goToDesk();

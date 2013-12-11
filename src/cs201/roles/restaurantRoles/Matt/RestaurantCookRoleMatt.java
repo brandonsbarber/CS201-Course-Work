@@ -82,6 +82,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	public void msgFulfillSupplyOrder(String type, int amount, MarketStructure from) {
 		Food temp = foods.get(type);
 		temp.quantity += amount;
+		this.restaurant.updateInfoPanel();
 		temp.orderPending = false;
 		if (temp.amountOrdered > amount || amount == 0) {
 			temp.marketsTried.add(from);
@@ -157,6 +158,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		DoLeaveRestaurant();
 		this.myPerson = null;
 		this.gui.setPresent(false);
+		this.restaurant.updateInfoPanel();
 	}
 	
 	private void GetOrderFromStand() {
@@ -373,6 +375,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 
 	@Override
 	public void startInteraction(Intention intent) {
+		this.restaurant.updateInfoPanel();
 		closingTime = false;
 		this.gui.setPresent(true);
 		gui.goToKitchen();

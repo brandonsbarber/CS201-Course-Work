@@ -20,6 +20,7 @@ import cs201.agents.transit.VehicleAgent;
 import cs201.gui.CityPanel;
 import cs201.gui.Gui;
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
@@ -99,11 +100,18 @@ public abstract class VehicleGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
-		if(!present)
+		/*if(!present)
 		{
-			city.permissions[next.y][next.x].release();
-			revertCrosswalk();
-		}
+			if(currentIntersection != null)
+			{
+				currentIntersection.releaseAll();
+				currentIntersection.releaseIntersection();
+			}
+			if(!city.permissions[next.y][next.x].tryAcquire() || true)
+			{
+				city.permissions[next.y][next.x].release();
+			}
+		}*/
 	}
 	
 	/**
@@ -126,7 +134,7 @@ public abstract class VehicleGui implements Gui
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
 		
-		city.permissions[current.y][current.x].tryAcquire();
+		//city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
 	}
@@ -137,7 +145,7 @@ public abstract class VehicleGui implements Gui
 	private void findPath()
 	{
 		pathfinding = true;
-		System.out.println(""+x+" "+y);
+		//System.out.println(""+x+" "+y);
 		moves = Pathfinder.calcOneWayMove(city.getDrivingMap(), x, y, destX, destY);
 		pathfinding = false;
 	}
@@ -176,10 +184,29 @@ public abstract class VehicleGui implements Gui
 				fired = true;
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
-
-				revertCrosswalk();
-				city.permissions[current.y][current.x].release();
 				
+				Intersection nextIntersection = city.getIntersection(next);
+				Intersection cIntersection = city.getIntersection(current);
+				
+				if(current != next)
+				{
+					if(cIntersection == null)
+					{
+						if(city.permissions[current.y][current.x].tryAcquire() || true)
+						{
+							city.permissions[current.y][current.x].release();
+						}
+					}
+					else
+					{
+						if(nextIntersection == null)
+						{
+							//System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
+							cIntersection.releaseAll();
+							cIntersection.releaseIntersection();
+						}
+					}
+				}
 				return;
 			}
 			if(allowedToMove)
@@ -208,11 +235,27 @@ public abstract class VehicleGui implements Gui
 				{
 					currentDirection = moves.pop();
 				
+					Intersection nextIntersection = city.getIntersection(next);
+					Intersection cIntersection = city.getIntersection(current);
+					
 					if(current != next)
 					{
-						city.permissions[current.y][current.x].release();
-						revertCrosswalk();
-						acquiredPoints.remove(current);
+						if(cIntersection == null)
+						{
+							if(city.permissions[current.y][current.x].tryAcquire() || true)
+							{
+								city.permissions[current.y][current.x].release();
+							}
+						}
+						else
+						{
+							if(nextIntersection == null)
+							{
+								//System.out.println(this.getVehicle().getInstance()+" just released intersection "+cIntersection.getInstance());
+								cIntersection.releaseAll();
+								cIntersection.releaseIntersection();
+							}
+						}
 					}
 					
 					current = next;
@@ -233,20 +276,48 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				if((canMoveCrosswalk() && city.permissions[next.y][next.x].tryAcquire()))
+				Intersection nextIntersection = city.getIntersection(next);
+				Intersection cIntersection = city.getIntersection(current);
+				
+				if(nextIntersection == null)
 				{
-					allowedToMove = true;
+					if(city.permissions[next.y][next.x].tryAcquire())
+					{
+						allowedToMove = true;
+						return;
+					}
+					allowedToMove = false;
+					return;
 				}
 				else
 				{
-					allowedToMove = false;
+					if(cIntersection == null)
+					{
+						if(nextIntersection.acquireIntersection())
+						{
+							//System.out.println(this.getVehicle().getInstance()+" just got intersection "+nextIntersection.getInstance());
+							nextIntersection.acquireAll();
+							allowedToMove = true;
+							return;
+						}
+						else
+						{
+							allowedToMove = false;
+							return;
+						}
+					}
+					else
+					{
+						allowedToMove = true;
+						return;
+					}
 				}
-				
-				return;
 			}
 			
 		}
 	}
+	
+	private Intersection currentIntersection = null;
 
 	private boolean timerStarted = false;
 	private boolean cancelled = true;
@@ -355,7 +426,7 @@ public abstract class VehicleGui implements Gui
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
 		
-		city.permissions[current.y][current.x].tryAcquire();
+		//city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
 	}

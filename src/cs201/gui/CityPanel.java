@@ -21,8 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
+import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
 
 @SuppressWarnings("serial")
@@ -103,6 +105,22 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
 		}
+		
+		intersections = Pathfinder.findIntersections(this);
+	}
+	
+	private ArrayList<Intersection> intersections;
+	
+	public Intersection getIntersection(Point next)
+	{
+		for(Intersection i : intersections)
+		{
+			if(i.containsPoint(next))
+			{
+				return i;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -132,6 +150,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			{
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
+		}
+		
+		for(Intersection i : intersections)
+		{
+			i.acquireIntersection();
+			i.releaseIntersection();
 		}
 	}
 	
@@ -392,29 +416,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
-		if(Constants.DEBUG_MODE)
-		{
-			for(int y = 0; y < permissions.length;y++)
-			{
-				for(int x = 0; x < permissions[y].length; x++)
-				{
-					if(permissions[y][x].availablePermits() == 0)
-					{
-						g2.setColor(Color.WHITE);
-						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-					}
-					g2.setColor(Color.BLACK);
-					g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
-					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
-					if(crosswalkPermissions.get(y).get(x).size() != 0)
-					{
-						g2.setColor(Color.WHITE);
-						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-					}
-				}
-			}
-		}
-		
 		try
 		{
 			for(Gui gui: guis)
@@ -429,6 +430,34 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		catch(ConcurrentModificationException e)
 		{
 			e.printStackTrace();
+		}
+		
+		if(Constants.DEBUG_MODE)
+		{
+			for(int y = 0; y < permissions.length;y++)
+			{
+				for(int x = 0; x < permissions[y].length; x++)
+				{
+					if(permissions[y][x].availablePermits() == 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+					else if(permissions[y][x].availablePermits() > 1)
+					{
+						g2.setColor(Color.RED);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+					g2.setColor(Color.BLACK);
+					g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
+					if(crosswalkPermissions.get(y).get(x).size() != 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+				}
+			}
 		}
 	}
 	

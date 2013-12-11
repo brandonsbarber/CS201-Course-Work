@@ -96,14 +96,12 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCook: {
 			if (cook.getPerson() == null) {
 				((RestaurantCookRoleMatt) cook).getGui().setPresent(true);
-				this.configPanel.updateInfo(this);
 				return cook;
 			}
 			return null;
 		}
 		case RestaurantHost: {
 			if (host.getPerson() == null) {
-				this.configPanel.updateInfo(this);
 				return host;
 			}
 			return null;
@@ -115,7 +113,6 @@ public class RestaurantMatt extends Restaurant {
 						((RestaurantHostRoleMatt) host).addWaiter((RestaurantWaiterRoleMatt) r);
 						UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleMatt) r).getGui().setPresent(true);
-						this.configPanel.updateInfo(this);
 						return r;
 					}
 				}
@@ -136,7 +133,6 @@ public class RestaurantMatt extends Restaurant {
 					this.panel.addGui(waiterGui);
 					newWaiter.setRestaurant(this);
 					((RestaurantWaiterRoleMatt) newWaiter).getGui().setPresent(true);
-					this.configPanel.updateInfo(this);
 					return newWaiter;
 				}
 			}
@@ -146,7 +142,6 @@ public class RestaurantMatt extends Restaurant {
 		case RestaurantCashier: {
 			if (cashier.getPerson() == null) {
 				((RestaurantCashierRoleMatt) cashier).getGui().setPresent(true);
-				this.configPanel.updateInfo(this);
 				return cashier;
 			}
 			return null;

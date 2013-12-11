@@ -134,7 +134,6 @@ public class RestaurantBrandon extends Restaurant {
 					if (r.getPerson() == null)
 					{
 						((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) r);
-						//UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleBrandon) r).getGui().setPresent(true);
 						return r;
 					}
@@ -159,7 +158,6 @@ public class RestaurantBrandon extends Restaurant {
 					waiterGui.setKitchen(kitchen);
 					waiterGui.setTables(((RestaurantAnimationPanelBrandon)panel).getTables());
 					((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) newWaiter);
-					//UpdateWaiterHomePositions();
 					((RestaurantWaiterRoleBrandon) newWaiter).setRotatingStand(stand);
 					this.panel.addGui(waiterGui);
 					System.out.println(this.panel);
@@ -184,8 +182,6 @@ public class RestaurantBrandon extends Restaurant {
 			RestaurantCustomerRoleBrandon newCustomer = new RestaurantCustomerRoleBrandon("",(RestaurantHostRoleBrandon)host);
 			CustomerGuiBrandon customerGui = new CustomerGuiBrandon((RestaurantCustomerRoleBrandon) newCustomer);
 			((RestaurantCustomerRoleBrandon) newCustomer).setGui(customerGui);
-			//newCustomer.setCashier((RestaurantCashierRoleBrandon) cashier);
-			//newCustomer.setHost((RestaurantHostRoleBrandon) host);
 			this.panel.addGui(customerGui);
 			newCustomer.setRestaurant(this);
 			return newCustomer;
@@ -217,6 +213,10 @@ public class RestaurantBrandon extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {		
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
+		}
+
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
@@ -225,6 +225,7 @@ public class RestaurantBrandon extends Restaurant {
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
 		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
@@ -233,8 +234,10 @@ public class RestaurantBrandon extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (!isOpen) {
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !this.forceClosed) {
 			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
 	}
 	
@@ -248,21 +251,14 @@ public class RestaurantBrandon extends Restaurant {
 	}
 
 	@Override
-	public void closeRestaurant() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void emptyEntireCookInventory() {
-		// TODO Auto-generated method stub
-		
+		((RestaurantCookRoleBrandon) cook).emptyInventory();
+		this.configPanel.updateInfo(this);
 	}
 
 	@Override
 	public List<String> getCookInventory() {
-		// TODO Auto-generated method stub
-		return null;
+		return ((RestaurantCookRoleBrandon) cook).getInventory();
 	}
 
 }
