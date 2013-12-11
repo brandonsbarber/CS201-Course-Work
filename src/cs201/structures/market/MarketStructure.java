@@ -46,9 +46,9 @@ public class MarketStructure extends Structure {
 		
 		// Setup times
 		this.morningShiftStart = new CityTime(8, 00);
-		this.morningShiftEnd = new CityTime(12, 30);
-		this.afternoonShiftStart = new CityTime(13, 00);
-		this.closingTime = new CityTime(18, 00);
+		this.morningShiftEnd = new CityTime(12, 00);
+		this.afternoonShiftStart = new CityTime(15, 00);
+		this.closingTime = new CityTime(20, 00);
 				
 		// Create a manager to manage this market
 		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
@@ -290,19 +290,16 @@ public class MarketStructure extends Structure {
 				manager.msgClosingTime();
 				isOpen = false;
 			}
-		}
-		else if (time.equalsIgnoreDay(this.closingTime)) {
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "It's closing time!");
 			if (manager.getPerson() != null) {
 				manager.msgClosingTime();
 				isOpen = false;
 			}
-		}
-		else if (!isOpen && !this.forceClosed) {
+		} else if (!isOpen && !this.forceClosed) {
 			System.out.println("Checking to see if the market shoudl open.");
 			checkIfOpen(time);
 		}
-		
 	}
 	
 	public boolean isOpen() {
