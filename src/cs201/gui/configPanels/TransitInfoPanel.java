@@ -9,6 +9,7 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -25,6 +26,7 @@ public class TransitInfoPanel extends JPanel
 
 	private TransitConfigPanel transitPanel;
 	private JTextField nameTextField,passTextField,currentTextField,destinationTextField;
+	private JCheckBox chckbxDestroyed;
 	
 	
 	public TransitInfoPanel(TransitConfigPanel transitConfigPanel)
@@ -162,6 +164,29 @@ public class TransitInfoPanel extends JPanel
 		gbc_destinationTextField.gridy = 3;
 		leftPanel.add(destinationTextField, gbc_destinationTextField);
 		destinationTextField.setColumns(10);
+		
+		JLabel lblDestroyed = new JLabel("Destroyed:");
+		lblDestroyed.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		GridBagConstraints gbc_lblDestroyed = new GridBagConstraints();
+		gbc_lblDestroyed.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDestroyed.anchor = GridBagConstraints.EAST;
+		gbc_lblDestroyed.gridx = 0;
+		gbc_lblDestroyed.gridy = 4;
+		leftPanel.add(lblDestroyed, gbc_lblDestroyed);
+		
+		chckbxDestroyed = new JCheckBox("");
+		chckbxDestroyed.setEnabled(false);
+		chckbxDestroyed.setFocusable(false);
+		chckbxDestroyed.setMinimumSize(new Dimension(18, 28));
+		chckbxDestroyed.setMaximumSize(new Dimension(18, 28));
+		chckbxDestroyed.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		chckbxDestroyed.setPreferredSize(new Dimension(18, 28));
+		GridBagConstraints gbc_chckbxDestroyed = new GridBagConstraints();
+		gbc_chckbxDestroyed.insets = new Insets(0, 0, 5, 0);
+		gbc_chckbxDestroyed.anchor = GridBagConstraints.WEST;
+		gbc_chckbxDestroyed.gridx = 1;
+		gbc_chckbxDestroyed.gridy = 4;
+		leftPanel.add(chckbxDestroyed, gbc_chckbxDestroyed);
 	}
 
 	public void resetInfo()
@@ -170,6 +195,7 @@ public class TransitInfoPanel extends JPanel
 		nameTextField.setText("");
 		currentTextField.setText("");
 		destinationTextField.setText("");
+		chckbxDestroyed.setSelected(false);
 	}
 	
 	public void updateInfo(VehicleAgent vehicle)
@@ -195,6 +221,7 @@ public class TransitInfoPanel extends JPanel
 		
 		currentTextField.setText(""+vehicle.currentLocation);
 		destinationTextField.setText(""+vehicle.destination);
+		chckbxDestroyed.setSelected(vehicle.getDestroyed());
 	}
 
 }
