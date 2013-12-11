@@ -2448,6 +2448,43 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		CityDirectory.getInstance().addPerson(p4_skyler);
 		personPanel.addPerson(p4_skyler);
 		p4_skyler.startThread();
+		
+		// Houses
+		List<Residence> houses = new ArrayList<Residence>();
+		fullRowOfHouses(houses, 5, 17);	// 24 houses
+		threeHousesInRow(houses, 5, 23); // 12 houses
+		fourHousesAtLocation(houses, 17, 23); // 4 houses
+	}
+	
+	private void fullRowOfHouses(List<Residence> list, int x, int y) {
+		threeHousesInRow(list, x, y);
+		threeHousesInRow(list, x + 12, y);
+	}
+	
+	private void threeHousesInRow(List<Residence> list, int x, int y) {
+		fourHousesAtLocation(list, x, y);
+		fourHousesAtLocation(list, x + 3, y);
+		fourHousesAtLocation(list, x + 6, y);
+	}
+	
+	private void fourHousesAtLocation(List<Residence> list, int x, int y) {
+		houseAtLocation(list, x * 25, y * 25);
+		houseAtLocation(list, (x + 1) * 25, y * 25);
+		houseAtLocation(list, x * 25, (y + 1) * 25);
+		houseAtLocation(list, (x + 1) * 25, (y + 1) * 25);
+	}
+	
+	private void houseAtLocation(List<Residence> list, int x, int y) {
+		ResidenceAnimationPanel resPanel = new ResidenceAnimationPanel(Structure.getNextInstance(), this);
+		timePanel.addAnimationPanel(resPanel);
+		Residence res = new Residence(x, y, 25, 25, Structure.getNextInstance(), resPanel, false);
+		res.setStructurePanel(resPanel);
+		buildingPanels.add(resPanel,""+res.getId());
+		cityPanel.addStructure(res, new Point(15*25, 11*25), new Point(16*25, 11*25));
+		CityDirectory.getInstance().addResidence(res);
+		timePanel.addAnimationPanel(resPanel);
+		
+		list.add(res);
 	}
 	
 	public PersonAgent createPerson(String name, Structure location, Residence home, Intention job, Structure workplace, CarAgent car) {
