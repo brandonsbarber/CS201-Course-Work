@@ -20,6 +20,7 @@ import cs201.roles.restaurantRoles.Skyler.RestaurantHostRoleSkyler;
 import cs201.roles.restaurantRoles.Skyler.RestaurantWaiterRoleSkyler;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
+import cs201.interfaces.roles.restaurant.Skyler.CookSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.HostSkyler;
 
 public class RestaurantSkyler extends Restaurant {
@@ -46,6 +47,7 @@ public class RestaurantSkyler extends Restaurant {
 		
 		this.cashier = new RestaurantCashierRoleSkyler();
 		cashier.setRestaurant(this);
+		((RestaurantCashierRoleSkyler)cashier).setCook((CookSkyler)cook);
 		((RestaurantCashierRoleSkyler)cashier).setCashOnHand(this.moneyOnHand);
 		
 		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());

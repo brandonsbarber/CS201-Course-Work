@@ -7,6 +7,7 @@ import java.util.Timer;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.interfaces.roles.restaurant.Skyler.CashierSkyler;
+import cs201.interfaces.roles.restaurant.Skyler.CookSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.WaiterSkyler;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
@@ -22,6 +23,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 	public double cashOnHand;
 	public double debt = 0; 
 	private boolean closingTime = false;
+	CookSkyler cook = null;
 	private List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 	
 	//public EventLog log = new EventLog();
@@ -73,6 +75,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 		
 		marketBills.add(new MarketBill(market, amount));
 		
+		cook.msgHereIsDelivery(item.item, item.amount);
 		
 		stateChanged();
 	}
@@ -124,7 +127,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 			debt+=(mBill.amount-cashOnHand);
 			
 			mBill.market.getManager().msgHereIsMyPayment(this.restaurant,(float) mBill.amount);
-			cashOnHand=0;
+			cashOnHand-=mBill.amount;
 			
 			marketBills.remove(mBill);
 			return;
@@ -132,6 +135,7 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 		Do("Deducted outstanding balance of $"+String.format("%.2f", mBill.amount)+" from cash on hand.");
 		//log.add(new LoggedEvent("Deducted outstanding balance of $"+String.format("%.2f", amt)+" from cash on hand."));
 		cashOnHand-=mBill.amount;
+		restaurant.removeMoney(mBill.amount);
 		mBill.market.getManager().msgHereIsMyPayment(this.restaurant,(float) mBill.amount);
 		marketBills.remove(mBill);
 	}
@@ -201,6 +205,10 @@ public class RestaurantCashierRoleSkyler extends RestaurantCashierRole
 	
 	public void setCashOnHand (double amt) {
 		cashOnHand = amt;
+	}
+	
+	public void setCook(CookSkyler newCook) {
+		cook = newCook;
 	}
 
 }
