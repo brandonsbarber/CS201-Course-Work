@@ -5,6 +5,8 @@ public interface CookSkyler {
 	
 	public void msgImBackFor(int tableNum);
 	
+	public void msgHereIsDelivery(String item, int amount);
+	
 	/*public void msgCantFulfill(Market m, String foodType, int amount);
 	
 	public void msgProcessingOrder(Market m, String foodType, int amount);

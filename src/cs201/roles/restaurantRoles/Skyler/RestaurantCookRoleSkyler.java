@@ -26,8 +26,8 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	//private Timer timer = new Timer();
 	private Map <String, Food> inventory = new HashMap <String, Food>();
 	private String name;
-	private static int orderQuantity = 5; // number of food items to be ordered at one time when an order is placed.
-	private static int defaultAmt = 1; //100 of each food to begin with
+	private static int orderQuantity = 10; // number of food items to be ordered at one time when an order is placed.
+	private int defaultAmt = 100; //100 of each food to begin with
 	
 	private int NMARKETS;
 	
@@ -48,6 +48,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		inventory.put("Salad", new Food("Salad", 2000, defaultAmt));
 		inventory.put("Pizza", new Food("Pizza", 6000, defaultAmt));
 	}
+	
 
 	@Override
 	public void msgHereIsOrder(WaiterSkyler w, String choice, int tableNum) {
@@ -65,6 +66,11 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 			}
 		}
 	}
+	
+	public void msgHereIsDelivery(String item, int amount) {
+		Do("Just received "+amount+" of "+item+" from a delivery.");
+		inventory.get(item).addFromOrder(amount);
+	}
 
 	@Override
 	public void startInteraction(Intention intent) {
@@ -78,7 +84,6 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 			leaveRestaurant();
 			return true;
 		}
-		checkInventory();
 		for (Order order : orders) {
 			if (order.state==OrderState.arrived) {
 				CookOrder(order);
@@ -103,6 +108,7 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 				return true;
 			}
 		}
+		checkInventory();
 		return false;
 	}
 
@@ -114,28 +120,32 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	}
 	
 	private void checkInventory() {
+		if(CityDirectory.getInstance().getMarkets().isEmpty()) {
+			Do("No markets = no food!!!!");
+			return;
+		}
+		
 		Food tempFood = inventory.get("Steak");
-		NMARKETS = CityDirectory.getInstance().getMarkets().size();
 		if(tempFood.amount < 3){
-			if(tempFood.amtOrdered==0 && tempFood.failCounter<NMARKETS) {
+			if(tempFood.amtOrdered==0) {
 				newRestockOrder(tempFood, orderQuantity);
 			}
 		}
 		tempFood = inventory.get("Salad");
 		if(tempFood.amount < 3) {
-			if (tempFood.amtOrdered==0 && tempFood.failCounter<NMARKETS) {
+			if (tempFood.amtOrdered==0) {
 				newRestockOrder(tempFood, orderQuantity);
 			}
 		}
 		tempFood = inventory.get("Pizza");
 		if(tempFood.amount < 3) {
-			if (tempFood.amtOrdered==0 && tempFood.failCounter<NMARKETS) {
+			if (tempFood.amtOrdered==0) {
 				newRestockOrder(tempFood, orderQuantity);
 			}
 		}
 		tempFood = inventory.get("Chicken");
 		if(tempFood.amount < 3) {
-			if (tempFood.amtOrdered==0 && tempFood.failCounter<NMARKETS) {
+			if (tempFood.amtOrdered==0) {
 				newRestockOrder(tempFood, orderQuantity);
 			}
 		}
@@ -164,9 +174,17 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 		}
 	}
 	
+	public void clearAllButOne() {
+		clearInventory();
+		inventory.get("Steak").add(1);
+	}
+	
 	private void CookOrder(Order o) {
 		if(inventory.get(o.choice).amount==0) {
 			Do("Sorry, but we're out of "+o.choice+" right now.");
+			if (inventory.get(o.choice).amtOrdered==0) {
+				checkInventory();
+			}
 			o.state = OrderState.rejected;
 			return;
 		}
@@ -180,17 +198,16 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 	private void newRestockOrder(Food food, int amount) {
 		// create a new restocking (outgoing) order. should this be its own class?
 		// need to somewhat randomly choose which market to try to order from?
-		if(CityDirectory.getInstance().getMarkets().isEmpty()) {
-			Do("No markets = no food!!!!");
-		}
+		
 		MarketStructure market = CityDirectory.getInstance().getRandomMarket();
 		
 		//print(markets.get(tempFood.whichMarket).getName()+": I'd like to place an order for "+amount+" "+type+" please.");
 		market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(food.type, amount));
+		Do("Just placed an order for "+amount+" of "+food.type);
 		
 		food.amtOrdered+=amount;
 		this.restaurant.updateInfoPanel();
-		//NEED TO RECORD THAT MORE WAS REQUESTED ALREADY!
+
 	}
 	
 	private void sendBackOrder(Order o) {
@@ -267,6 +284,14 @@ public class RestaurantCookRoleSkyler extends RestaurantCookRole implements
 			amount = 0;
 		}
 		
+		public void addFromOrder(int amt) {
+			amount += amt;
+			amtOrdered -= amt;
+		}
+		
+		public void add(int amt) {
+			amount += amt;
+		}
 	
 	}
 

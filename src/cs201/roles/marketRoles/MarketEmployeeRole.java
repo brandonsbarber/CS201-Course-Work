@@ -230,7 +230,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			animation.acquire();
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -239,7 +238,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		try {
 			animation.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
