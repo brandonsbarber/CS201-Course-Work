@@ -61,8 +61,6 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 	
 	public List<MarketBill> marketBills;
 	
-	public double budget;
-	
 	enum BillState {Pending,Sent,Paid,Changed};
 	
 	private Map<String,FoodBrandon> prices;
@@ -87,7 +85,6 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		penaltyList = new HashMap<CustomerBrandon,Double>();
 		
 		//log = new EventLog();
-		budget = startBudget;
 		
 		marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 	}
@@ -175,7 +172,7 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 
 	private void payMarket(MarketBill b)
 	{
-		if(budget < b.amount)
+		if(restaurant.getCurrentRestaurantMoney() < b.amount)
 		{
 			sellSoul();
 		}
@@ -183,7 +180,8 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		
 		b.m.getManager().msgHereIsMyPayment(this.restaurant,(float) b.amount);
 		
-		budget -= b.amount;
+		restaurant.addMoney(-b.amount);
+		restaurant.updateInfoPanel();
 		
 		marketBills.remove(b);
 	}
@@ -193,7 +191,8 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 		if(!soulSold )
 		{
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Selling soul...");
-			budget += SOUL_SALE_PRICE;
+			restaurant.addMoney(SOUL_SALE_PRICE);
+			restaurant.updateInfoPanel();
 			soulSold = true;
 		}
 	}
@@ -232,12 +231,14 @@ public class RestaurantCashierRoleBrandon extends RestaurantCashierRole implemen
 			penaltyList.put(bill.cust,change*-1);
 			bill.cust.msgGiveChange(0);
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Adding "+bill.price+" - "+(-1*change)+" to the budget");
-			budget += bill.price - -1*change;
+			restaurant.addMoney(bill.price - -1*change);
+			restaurant.updateInfoPanel();
 		}
 		else
 		{
 			bill.cust.msgGiveChange(change);
-			budget += bill.price;
+			restaurant.addMoney(bill.price);
+			restaurant.updateInfoPanel();
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"Adding $"+bill.price+" to the budget");
 
 		}

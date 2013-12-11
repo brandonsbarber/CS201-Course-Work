@@ -1826,15 +1826,24 @@ public class SimCity201 extends JFrame {
 	
 	private void brandonRestaurantMarketOrder()
 	{
+		/* A Restaurant Cook and Cashier go to work at 8:00AM. The Restaurant is forced open for this scenario (normally
+		 * it would be closed if only a Cook and Cashier were present). A Market Manager and Employee also go to work at
+		 * 8:00AM. The cook's inventory is forced to 0 for Steak, so he orders 25 steaks from the market. The market
+		 * employee gets the steaks from the shelves, gives them to the manager, who dispatches a delivery truck to bring
+		 * the food back to the restaurant. The cashier checks to make sure the delivery matches an invoice he has from
+		 * the cook. It matches, so he gives the cook the delivery and pays the market. The restaurant ends up with
+		 * negative money which is okay. Eventually what will happen is the restaurant will have to cover for this by
+		 * withdrawing from its bank account. If it doesn't have enough, it will take out a loan.
+		 */
 		CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		
 		MarketAnimationPanel mG = new MarketAnimationPanel(Structure.getNextInstance(),this,50,50);
+		timePanel.addAnimationPanel(mG);
 		MarketStructure m = new MarketStructure(125,125,50,50,Structure.getNextInstance(),mG);
 		m.setStructurePanel(mG);
 		m.setClosingTime(new CityTime(18, 0));
 		buildingPanels.add(mG,""+m.getId());
 		cityPanel.addStructure(m);
-		timePanel.addAnimationPanel(mG);
 		m.setConfigPanel(marketPanel);
 		marketPanel.addMarketStructure(m);
 		
@@ -1843,52 +1852,72 @@ public class SimCity201 extends JFrame {
 		m.addTruck(truck);
 		CityDirectory.getInstance().addMarket(m);
 		transitPanel.addVehicle(truck);
-			
+		
+		TruckAgent truck2 = new TruckAgent(m);
+		truck2.startThread();
+		m.addTruck(truck2);
+		transitPanel.addVehicle(truck2);
+		
 		RestaurantAnimationPanelBrandon g = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
+		timePanel.addAnimationPanel(g);
 		RestaurantBrandon r = new RestaurantBrandon(23*25,11*25,50,50,Structure.getNextInstance(),g);
 		restaurantPanel.addRestaurant(r);
 		r.setConfigPanel(restaurantPanel);
 		r.setStructurePanel(g);
 		r.setClosingTime(new CityTime(14, 0));
-		r.setOpen(true);
 		buildingPanels.add(g,""+r.getId());
 		cityPanel.addStructure(r,new Point(23*25,9*25), new Point(23*25,10*25));
 		CityDirectory.getInstance().addRestaurant(r);
-		timePanel.addAnimationPanel(g);
 		
-		((RestaurantCookRoleBrandon)r.getCook()).emptySomeFood();
+		((RestaurantCookRoleBrandon) r.getCook()).emptySomeFood();
 		
 		PersonAgent p1 = new PersonAgent("Cook",cityPanel);
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
 		p1.setHungerEnabled(false);
 		p1.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1);
-		p1.startThread();
 		personPanel.addPerson(p1);
+		p1.startThread();
 		
 		PersonAgent p1b = new PersonAgent("Cashier",cityPanel);
 		p1b.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
 		p1b.setHungerEnabled(false);
 		p1b.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p1b);
-		p1b.startThread();
 		personPanel.addPerson(p1b);
+		p1b.startThread();
+		
+		PersonAgent p1c = new PersonAgent("Host",cityPanel);
+		p1c.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		p1c.setHungerEnabled(false);
+		p1c.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1c);
+		personPanel.addPerson(p1c);
+		p1c.startThread();
+		
+		PersonAgent p1d = new PersonAgent("Waiter",cityPanel);
+		p1d.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		p1d.setHungerEnabled(false);
+		p1d.setHungerLevel(0);
+		CityDirectory.getInstance().addPerson(p1d);
+		personPanel.addPerson(p1d);
+		p1d.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Market Employee",cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketEmployee, m, null);
 		p2.setHungerEnabled(false);
 		p2.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p2);
-		p2.startThread();
 		personPanel.addPerson(p2);
+		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Market Manager",cityPanel);
 		p3.setupPerson(CityDirectory.getInstance().getTime(), null, m, Intention.MarketManager, m, null);
 		p3.setHungerEnabled(false);
 		p3.setHungerLevel(0);
 		CityDirectory.getInstance().addPerson(p3);
-		p3.startThread();
 		personPanel.addPerson(p3);
+		p3.startThread();
 	}
 	
 	private void beaucoupBuses()

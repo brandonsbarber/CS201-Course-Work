@@ -33,6 +33,7 @@ public class RestaurantBrandon extends Restaurant {
 	private static final int MAXWAITERS = 4;
 	private RestaurantRotatingStandBrandon stand;
 
+	@SuppressWarnings("unchecked")
 	public RestaurantBrandon(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
 		this.openSprite = ArtManager.getImage("Restaurant_Brandon_Open");
@@ -51,12 +52,10 @@ public class RestaurantBrandon extends Restaurant {
     	savedPrices = (HashMap<String,java.lang.Double>)prices.clone();
     	
 		cookingTimes = new HashMap<String,FoodBrandon>();
-		cookingTimes.put("Steak",new FoodBrandon ("Steak",2,2,2,1000,prices.get("Steak")));
-		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",5,2,2,1000,prices.get("Chicken")));
-		cookingTimes.put("Salad",new FoodBrandon ("Salad",5,2,2,1000,prices.get("Salad")));
-		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",5,2,3,1000,prices.get("Pizza")));
-		
-		MenuBrandon menu = new MenuBrandon(prices);
+		cookingTimes.put("Steak",new FoodBrandon ("Steak",3,2,5,1000,prices.get("Steak")));
+		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",5,2,5,1000,prices.get("Chicken")));
+		cookingTimes.put("Salad",new FoodBrandon ("Salad",5,2,5,1000,prices.get("Salad")));
+		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",5,2,5,1000,prices.get("Pizza")));
 		
 		/*--------------------------------
 		 * 
