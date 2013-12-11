@@ -5,7 +5,7 @@ All:
     [ ] Close Structure Button in structure panel
 
 Brandon:
-    [-] Transit config panel
+    [X] Transit config panel
     [ ] Updated graphics
     [X] Change restaurant closing behavior
     [ ] Fix boat jam behavior

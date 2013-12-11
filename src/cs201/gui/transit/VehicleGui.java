@@ -100,11 +100,18 @@ public abstract class VehicleGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
-		if(!present)
+		/*if(!present)
 		{
-			city.permissions[next.y][next.x].release();
-			//revertCrosswalk();
-		}
+			if(currentIntersection != null)
+			{
+				currentIntersection.releaseAll();
+				currentIntersection.releaseIntersection();
+			}
+			if(!city.permissions[next.y][next.x].tryAcquire() || true)
+			{
+				city.permissions[next.y][next.x].release();
+			}
+		}*/
 	}
 	
 	/**
@@ -127,7 +134,7 @@ public abstract class VehicleGui implements Gui
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
 		
-		city.permissions[current.y][current.x].tryAcquire();
+		//city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
 	}
@@ -178,8 +185,15 @@ public abstract class VehicleGui implements Gui
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
 
-				//revertCrosswalk();
-				city.permissions[current.y][current.x].release();
+				/*if(currentIntersection != null)
+				{
+					currentIntersection.releaseAll();
+					currentIntersection.releaseIntersection();
+				}
+				else
+				{
+					city.permissions[current.y][current.x].release();
+				}*/
 				
 				return;
 			}
@@ -211,17 +225,20 @@ public abstract class VehicleGui implements Gui
 				
 					if(current != next)
 					{
-						if(city.getIntersection(current) == null)
+						/*if(city.getIntersection(current) == null)
 						{
 							city.permissions[current.y][current.x].release();
 						}
-						else if(city.getIntersection(next) == null)
+						else if(city.getIntersection(next) == null && currentIntersection != null)
 						{
 							city.getIntersection(current).releaseAll();
 							city.getIntersection(current).releaseIntersection();
+							currentIntersection = null;
 						}
-						//revertCrosswalk();
-						acquiredPoints.remove(current);
+						else
+						{
+							city.permissions[current.y][current.x].release();
+						}*/
 					}
 					
 					current = next;
@@ -242,9 +259,10 @@ public abstract class VehicleGui implements Gui
 					}
 				}
 				
-				Intersection gottenIntersection = city.getIntersection(next);
+				Intersection nextIntersection = city.getIntersection(next);
+				Intersection currentIntersection = city.getIntersection(current);
 				
-				if(gottenIntersection != null)
+				/*if(gottenIntersection != null)
 				{
 					if(gottenIntersection.acquireIntersection())
 					{
@@ -270,6 +288,32 @@ public abstract class VehicleGui implements Gui
 					else
 					{
 						allowedToMove = false;
+					}
+				}*/
+				
+				if(allowedToMove)
+				{
+					if(nextIntersection != null)
+					{
+						if(nextIntersection.acquireIntersection())
+						{
+							currentIntersection = nextIntersection;
+							currentIntersection.acquireAll();
+						}
+						if(currentIntersection == nextIntersection)
+						{
+							
+						}
+					}
+					else if(currentIntersection != null)
+					{
+						currentIntersection.releaseAll();
+						currentIntersection.releaseIntersection();
+						currentIntersection = null;
+					}
+					else
+					{
+						
 					}
 				}
 				
@@ -388,7 +432,7 @@ public abstract class VehicleGui implements Gui
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
 		
-		city.permissions[current.y][current.x].tryAcquire();
+		//city.permissions[current.y][current.x].tryAcquire();
 		
 		findPath();
 	}
