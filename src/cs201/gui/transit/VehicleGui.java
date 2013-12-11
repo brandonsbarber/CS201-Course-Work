@@ -184,17 +184,20 @@ public abstract class VehicleGui implements Gui
 				fired = true;
 				vehicle.msgAnimationDestinationReached();
 				currentDirection = MovementDirection.None;
-
-				/*if(currentIntersection != null)
-				{
-					currentIntersection.releaseAll();
-					currentIntersection.releaseIntersection();
-				}
-				else
-				{
-					city.permissions[current.y][current.x].release();
-				}*/
 				
+				Intersection nextIntersection = city.getIntersection(next);
+				Intersection cIntersection = city.getIntersection(current);
+				
+				if(current != next)
+				{
+					if(cIntersection == null)
+					{
+						if(city.permissions[current.y][current.x].tryAcquire() || true)
+						{
+							city.permissions[current.y][current.x].release();
+						}
+					}
+				}
 				return;
 			}
 			if(allowedToMove)
@@ -223,22 +226,26 @@ public abstract class VehicleGui implements Gui
 				{
 					currentDirection = moves.pop();
 				
+					Intersection nextIntersection = city.getIntersection(next);
+					Intersection cIntersection = city.getIntersection(current);
+					
 					if(current != next)
 					{
-						/*if(city.getIntersection(current) == null)
+						if(cIntersection == null)
 						{
-							city.permissions[current.y][current.x].release();
-						}
-						else if(city.getIntersection(next) == null && currentIntersection != null)
-						{
-							city.getIntersection(current).releaseAll();
-							city.getIntersection(current).releaseIntersection();
-							currentIntersection = null;
+							if(city.permissions[current.y][current.x].tryAcquire() || true)
+							{
+								city.permissions[current.y][current.x].release();
+							}
 						}
 						else
 						{
-							city.permissions[current.y][current.x].release();
-						}*/
+							if(nextIntersection == null)
+							{
+								cIntersection.releaseAll();
+								cIntersection.releaseIntersection();
+							}
+						}
 					}
 					
 					current = next;
@@ -260,64 +267,40 @@ public abstract class VehicleGui implements Gui
 				}
 				
 				Intersection nextIntersection = city.getIntersection(next);
-				Intersection currentIntersection = city.getIntersection(current);
+				Intersection cIntersection = city.getIntersection(current);
 				
-				/*if(gottenIntersection != null)
-				{
-					if(gottenIntersection.acquireIntersection())
-					{
-						currentIntersection = gottenIntersection;
-						gottenIntersection.acquireAll();
-						allowedToMove = true;
-					}
-					else if(gottenIntersection == currentIntersection)
-					{
-						allowedToMove = true;
-					}
-					else
-					{
-						allowedToMove = false;
-					}
-				}
-				else
+				if(nextIntersection == null)
 				{
 					if(city.permissions[next.y][next.x].tryAcquire())
 					{
 						allowedToMove = true;
+						return;
 					}
-					else
-					{
-						allowedToMove = false;
-					}
-				}*/
-				
-				if(allowedToMove)
+					allowedToMove = false;
+					return;
+				}
+				else
 				{
-					if(nextIntersection != null)
+					if(cIntersection == null)
 					{
 						if(nextIntersection.acquireIntersection())
 						{
-							currentIntersection = nextIntersection;
-							currentIntersection.acquireAll();
+							nextIntersection.acquireAll();
+							allowedToMove = true;
+							return;
 						}
-						if(currentIntersection == nextIntersection)
+						else
 						{
-							
+							allowedToMove = false;
+							return;
 						}
-					}
-					else if(currentIntersection != null)
-					{
-						currentIntersection.releaseAll();
-						currentIntersection.releaseIntersection();
-						currentIntersection = null;
 					}
 					else
 					{
-						
+						allowedToMove = true;
+						return;
 					}
 				}
-				
-				return;
 			}
 			
 		}

@@ -416,29 +416,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
-		if(Constants.DEBUG_MODE)
-		{
-			for(int y = 0; y < permissions.length;y++)
-			{
-				for(int x = 0; x < permissions[y].length; x++)
-				{
-					if(permissions[y][x].availablePermits() == 0)
-					{
-						g2.setColor(Color.WHITE);
-						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-					}
-					g2.setColor(Color.BLACK);
-					g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
-					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
-					if(crosswalkPermissions.get(y).get(x).size() != 0)
-					{
-						g2.setColor(Color.WHITE);
-						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
-					}
-				}
-			}
-		}
-		
 		try
 		{
 			for(Gui gui: guis)
@@ -453,6 +430,34 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		catch(ConcurrentModificationException e)
 		{
 			e.printStackTrace();
+		}
+		
+		if(Constants.DEBUG_MODE)
+		{
+			for(int y = 0; y < permissions.length;y++)
+			{
+				for(int x = 0; x < permissions[y].length; x++)
+				{
+					if(permissions[y][x].availablePermits() == 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+					else if(permissions[y][x].availablePermits() > 1)
+					{
+						g2.setColor(Color.RED);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+					g2.setColor(Color.BLACK);
+					g2.drawString(""+permissions[y][x].availablePermits(), x*GRID_SIZE, (y+1)*GRID_SIZE);
+					g2.drawString(""+crosswalkPermissions.get(y).get(x).size(), x*GRID_SIZE+GRID_SIZE/2+5, (y+1)*GRID_SIZE);
+					if(crosswalkPermissions.get(y).get(x).size() != 0)
+					{
+						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+				}
+			}
 		}
 	}
 	
