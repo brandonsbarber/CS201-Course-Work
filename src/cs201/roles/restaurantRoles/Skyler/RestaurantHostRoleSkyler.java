@@ -7,6 +7,7 @@ import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Skyler.HostGuiSkyler;
+import cs201.gui.roles.restaurant.Skyler.WaiterGuiSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.CustomerSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.HostSkyler;
 import cs201.interfaces.roles.restaurant.Skyler.WaiterSkyler;
@@ -50,7 +51,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 	}
 	
 	public String getName() {
-		return name;
+		return myPerson.getName();
 	}
 
 	@Override

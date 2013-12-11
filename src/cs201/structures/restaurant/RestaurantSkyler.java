@@ -7,6 +7,7 @@ import java.util.List;
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Skyler.CustomerGuiSkyler;
+import cs201.gui.roles.restaurant.Skyler.HostGuiSkyler;
 import cs201.gui.roles.restaurant.Skyler.WaiterGuiSkyler;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelSkyler;
 import cs201.helper.CityTime;
@@ -19,6 +20,7 @@ import cs201.roles.restaurantRoles.Skyler.RestaurantHostRoleSkyler;
 import cs201.roles.restaurantRoles.Skyler.RestaurantWaiterRoleSkyler;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
+import cs201.interfaces.roles.restaurant.Skyler.HostSkyler;
 
 public class RestaurantSkyler extends Restaurant {
 	
@@ -34,6 +36,9 @@ public class RestaurantSkyler extends Restaurant {
 		this.closingTime = new CityTime(18, 00);
 		
 		this.host = new RestaurantHostRoleSkyler();
+		HostGuiSkyler hostGui = new HostGuiSkyler((HostSkyler)host, (RestaurantAnimationPanelSkyler) p);
+		((RestaurantHostRoleSkyler)host).setGui(hostGui);
+		this.panel.addGui(hostGui);
 		host.setRestaurant(this);
 		
 		this.cook = new RestaurantCookRoleSkyler();
@@ -41,6 +46,7 @@ public class RestaurantSkyler extends Restaurant {
 		
 		this.cashier = new RestaurantCashierRoleSkyler();
 		cashier.setRestaurant(this);
+		((RestaurantCashierRoleSkyler)cashier).setCashOnHand(this.moneyOnHand);
 		
 		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 		for (int i = 0 ; i<numWaiters; i++) {

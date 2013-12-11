@@ -28,6 +28,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 
 	
 	private Map<String, Double> menu = new HashMap<String, Double>();
+	private Map<String, Double> adjustedMenu = new HashMap<String, Double>();
 	private String name;
 	private Semaphore goingSomewhere = new Semaphore(0,true);
 	private Semaphore waitingForResponse = new Semaphore(0,true);
@@ -68,7 +69,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 	}
 	
 	public String getName() {
-		return name;
+		return myPerson.getName();
 	}
 	
 	public void msgWantBreak() {//from animation
@@ -324,9 +325,7 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 							e.printStackTrace();
 						}
 						Do(cust.customer+", sorry, but we are out of "+cust.order.orderChoice+". Please reorder.");
-						//menu.remove(cust.order.orderChoice);
-						//List<String> adjustedMenu = menu;
-						Map<String, Double> adjustedMenu = menu;
+						adjustedMenu = new HashMap<String, Double>(menu);
 						adjustedMenu.remove(cust.order.orderChoice);
 						cust.customer.msgReOrder(adjustedMenu);
 						cust.state=CustomerState.seated;
@@ -505,7 +504,9 @@ public class RestaurantWaiterRoleSkyler extends RestaurantWaiterRole implements
 			e.printStackTrace();
 		}
 		Do(cashier.getName()+", can you make a bill for "+c.customer.getName()+"?");
+		System.out.println("!!!Pre message to cashier: "+this.menu);
 		cashier.msgRequestCheck(c.customer, this, menu.get(c.order.orderChoice));
+		System.out.println("!!!Post message to cashier: "+this.menu);
 		try {
 			waitingForResponse.acquire();
 		} catch (InterruptedException e) {
