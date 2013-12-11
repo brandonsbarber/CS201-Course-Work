@@ -31,7 +31,6 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 	private JComboBox<Restaurant> comboBoxRestaurants;
 	private JButton btnCloseRestaurant;
 	private JButton btnEmptyAllInventory;
-	private JButton btnEmptySelectedInventory;
 	private JLabel lblStatus;
 	private JPanel staffInfopanel;
 	private JPanel cookInventoryPanel;
@@ -134,15 +133,6 @@ public class RestaurantConfigPanel extends ConfigPanel implements ActionListener
 		gbc_btnEmptyAllInventory.gridy = 4;
 		selectionPanel.add(btnEmptyAllInventory, gbc_btnEmptyAllInventory);
 		btnEmptyAllInventory.addActionListener(this);
-		
-		btnEmptySelectedInventory = new JButton("Empty Selected Inventory");
-		btnEmptySelectedInventory.setMaximumSize(new Dimension(172, 28));
-		btnEmptySelectedInventory.setPreferredSize(new Dimension(172, 28));
-		btnEmptySelectedInventory.setMinimumSize(new Dimension(100, 28));
-		GridBagConstraints gbc_btnEmptySelectedInventory = new GridBagConstraints();
-		gbc_btnEmptySelectedInventory.gridx = 0;
-		gbc_btnEmptySelectedInventory.gridy = 5;
-		selectionPanel.add(btnEmptySelectedInventory, gbc_btnEmptySelectedInventory);
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBorder(new TitledBorder(null, "Info:", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, null));

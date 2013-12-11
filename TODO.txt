@@ -3,6 +3,7 @@ TODO:
 All:
     [ ] Update design docs
     [ ] Close Structure Button in structure panel
+    [ ] Finalize Restaurant Integration (new force-closing stuff && getting cook's inventory)
 
 Brandon:
     [-] Transit config panel
@@ -24,7 +25,7 @@ Skyler:
 
 Matt:
     [ ] Test car buying
-    [ ] Restaurant config panel
+    [X] Restaurant config panel
     [ ] Finalize code integration
 
 Ben:

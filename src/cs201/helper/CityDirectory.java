@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
+import cs201.helper.CityTime.WeekDay;
 import cs201.structures.Structure;
 import cs201.structures.bank.BankStructure;
 import cs201.structures.market.MarketStructure;
@@ -127,6 +128,9 @@ public class CityDirectory implements ActionListener {
 	
 	public void setStartTime(CityTime newTime) {
 		time = newTime;
+		if (newTime.day == null) {
+			time.day = WeekDay.Monday;
+		}
 	}
 	
 	public void setTimerOut(int newTimerOut) {
