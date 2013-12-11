@@ -1,27 +1,27 @@
 TODO:
 
 All:
-    [ ] Update design docs
+    [-] Update design docs
     [X] Close Structure Button in structure panel
-    [ ] Finalize Restaurant Integration (new force-closing stuff && getting cook's inventory)
+    [-] Finalize Restaurant Integration (new force-closing stuff && getting cook's inventory)
 
 Brandon:
     [X] Transit config panel
-    [ ] Updated graphics
+    [-] Updated graphics
     [X] Change restaurant closing behavior
     [X] Fix boat jam behavior
     [X] Fix car warp
-    [ ] Crosswalks
-    [ ] Fully implement collisions
+    [-] Crosswalks
+    [-] Fully implement collisions
     [X] Testing failed market delivery
 
 Skyler:
-    [ ] Animation upgrades
-    [ ] Finish restaurant integration/testing
-    [ ] Clean up housing scenarios
+    [-] Animation upgrades
+    [-] Finish restaurant integration/testing
+    [-] Clean up housing scenarios
     [ ] Potentially adding multiple residents to a single residence
     [ ] Add random gui animation for 'relaxing'
-    [ ] Config panels for housing/apartments
+    [-] Config panels for housing/apartments
 
 Matt:
     [X] Test car buying
@@ -30,7 +30,7 @@ Matt:
 
 Ben:
     [X] Testing failed market delivery
-    [ ] Entry/exit animations Market
+    [X] Entry/exit animations Market
     [X] Car artwork
     [X] Test car buying
     [X] Reset market config panel on scenario reset
