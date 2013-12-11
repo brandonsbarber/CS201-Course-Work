@@ -240,11 +240,9 @@ public class MarketManagerRole extends Role implements MarketManager {
 		order = null;
 		synchronized (orders) {
 			for (Order o : orders) {
-				System.out.println("Checking to see if this order failed...");
 				if (o.state == OrderState.FAILED) {
 					order = o;
-					System.out.println("It did.");
-				} else System.out.println("It didn't.");
+				}
 			}
 		}
 		if (order != null) { // if we have an order that has FAILED
@@ -508,8 +506,10 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	public void startInteraction(Intention intent) {
 		// animate inside market
-		this.gui.setPresent(true);
+		gui.setPresent(true);
 		timeToLeave = false;
+		gui.doEnterMarket();
+		pauseForAnimation();
 	}
 
 	public void msgClosingTime() {
@@ -627,7 +627,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @return True if we were able to dispatch the order, False if something went wrong
 	 */
 	private boolean dispatchDeliveryTruckForOrder(Order o) {
-		System.out.println("About to dispatch a truck if possible...");
 		if (structure != null && o.structure != null && o.structure.getOpen()) {
 		//if (structure != null && o.structure != null) {
 			// Get our delivery truck
@@ -638,9 +637,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 			
 			// The order has now been "SENT"
 			o.state = OrderState.SENT;
-			System.out.println("Dispatched a truck");
 			return true;
-		} else System.out.println("Not possible");
+		}
 		
 		// If we don't have a pointer to our structure we don't have a delivery truck
 		// Or, the structure isn't open

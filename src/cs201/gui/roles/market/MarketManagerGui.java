@@ -20,6 +20,7 @@ public class MarketManagerGui implements Gui {
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	boolean animating = false;
+	private double hover = 0.0;
 	
 	public MarketManagerGui() {
 		this(null);
@@ -52,6 +53,9 @@ public class MarketManagerGui implements Gui {
 			animating = false;
 		}
 		
+		hover += .05;
+		if (hover > 1000.0) hover = 0.0; // just to make sure we don't oveflow
+		
 		return;
 	}
 
@@ -64,7 +68,7 @@ public class MarketManagerGui implements Gui {
 			g.drawString("Market Manager", xPos, yPos - 3);
 		} else {
 			// Draw the market manager
-			g.drawImage(ArtManager.getImage("Market_Manager_Down"), xPos, yPos, MANAGER_SIZE, MANAGER_SIZE, null);
+			g.drawImage(ArtManager.getImage("Market_Manager_Down"), xPos, yPos + (int)(Math.sin(hover) * 2), MANAGER_SIZE, MANAGER_SIZE, null);
 		}
 	}
 	
@@ -74,6 +78,11 @@ public class MarketManagerGui implements Gui {
 		yDestination = yPos;
 	}
 	
+	public void doEnterMarket() {
+		animating = true;
+		xDestination = MANAGER_X;
+		yDestination = MANAGER_Y;
+	}
 
 	public boolean isPresent() {
 		return isPresent;

@@ -60,11 +60,11 @@ public class ResidentRole extends Role implements Resident {
 				}
 				else {
 					if(myPerson.getMarketChecklist().isEmpty()) { //if shopping list is empty, make one.
-						makeShoppingList(); 
+						makeShoppingList();
+						LinkedList<Intention> action = new LinkedList<Intention>();
+						action.add(Intention.MarketConsumerGoods);
+						myPerson.addIntermediateActions((Role)this, action, true);
 					}
-					LinkedList<Intention> action = new LinkedList<Intention>();
-					action.add(Intention.MarketConsumerGoods);
-					myPerson.addIntermediateActions((Role)this, action, true);
 					actionFinished();
 					return false;
 				}

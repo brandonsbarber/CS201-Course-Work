@@ -549,7 +549,7 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 	private void setupDefaults() {
 		this.nameTextField.setText("Person");
 		
-		this.moneyTextField.setText("$200.00");
+		this.moneyTextField.setText("$2000.00");
 		
 		this.hungerComboBox.setSelectedIndex(1);
 		
@@ -759,7 +759,8 @@ public class PersonInfoPanel extends JPanel implements ActionListener {
 			this.resetInfo();
 		} else if (e.getSource() == this.carCheckBox) { // CAR CHECK BOX
 			if (!editMode && this.carCheckBox.isEnabled() && this.carCheckBox.isSelected()) {
-				//
+				this.carCheckBox.setEnabled(false);
+				this.personPanel.getSelectedPerson().setTryToBuyCar(true);
 			}
 		}
 	}
