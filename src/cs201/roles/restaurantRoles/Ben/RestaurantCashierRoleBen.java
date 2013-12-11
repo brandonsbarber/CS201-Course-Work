@@ -13,10 +13,8 @@ import cs201.interfaces.roles.restaurant.Ben.CustomerBen;
 import cs201.interfaces.roles.restaurant.Ben.WaiterBen;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCashierRole;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.Check;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.CheckState;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt.CheckType;
 import cs201.structures.market.MarketStructure;
+import cs201.structures.restaurant.RestaurantBen;
 import cs201.test.mock.EventLog;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
@@ -30,10 +28,10 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	public List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	public List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 	public List<MarketInvoice> marketInvoices = Collections.synchronizedList(new ArrayList<MarketInvoice>());
-	private Timer timer;
 	private Map<String, Food> inventory = new HashMap<String, Food>();
 	public EventLog log = new EventLog();
 	private boolean closingTime = false;
+	private RestaurantBen structure;
 	
 	float netMoney = 0.0f;
 	
@@ -45,8 +43,6 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 		super();
 
 		this.name = name;
-		
-		timer = new Timer();
 		
 		// Set up our map of foods
 		inventory.put("Chicken", new Food("Chicken", 6.99f));
@@ -104,6 +100,11 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 		
 		// Add the money to our account
 		this.restaurant.addMoney((double)amount);
+		
+		// Update the structure config panel
+		if (structure != null) {
+			structure.updateInfoPanel();
+		}
 		
 		stateChanged();
 	}
@@ -225,6 +226,11 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 		
 		// Deduct the funds from our account
 		restaurant.removeMoney(bill.totalCost);
+		
+		// Update the structure config panel
+		if (structure != null) {
+			structure.updateInfoPanel();
+		}
 	}
 	
 	private void LeaveRestaurant() {
@@ -237,6 +243,10 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	/**
 	 * Utilities
 	 */
+	
+	public void setStructure(RestaurantBen s) {
+		structure = s;
+	}
 	
 	public String getName() {
 		return name;
@@ -295,11 +305,15 @@ public class RestaurantCashierRoleBen extends RestaurantCashierRole implements C
 	@Override
 	public void startInteraction(Intention intent) {
 		closingTime = false;
+		
+		// Update the structure config panel
+		if (structure != null) {
+			structure.updateInfoPanel();
+		}
 	}
 
 	@Override
 	public void msgClosingTime() {
-		// TODO Auto-generated method stub
 		closingTime = true;
 		stateChanged();
 	}
