@@ -61,10 +61,10 @@ public class ResidentRole extends Role implements Resident {
 				else {
 					if(myPerson.getMarketChecklist().isEmpty()) { //if shopping list is empty, make one.
 						makeShoppingList();
-						LinkedList<Intention> action = new LinkedList<Intention>();
-						action.add(Intention.MarketConsumerGoods);
-						myPerson.addIntermediateActions((Role)this, action, true);
 					}
+					LinkedList<Intention> action = new LinkedList<Intention>();
+					action.add(Intention.MarketConsumerGoods);
+					myPerson.addIntermediateActions((Role)this, action, true);
 					actionFinished();
 					return false;
 				}
@@ -210,17 +210,23 @@ public class ResidentRole extends Role implements Resident {
 	}
 	
 	private void makeShoppingList() {
-		int rand = (int)(Math.random()*5);
+		int rand = (int)(Math.random()*6);
+		if (rand!=0)
 			myPerson.getMarketChecklist().add(new ItemRequest("Steak",rand));
-		rand = (int)(Math.random()*5);
+		rand = (int)(Math.random()*6);
+		if (rand!=0)
 			myPerson.getMarketChecklist().add(new ItemRequest("Salad",rand));
-		rand = (int)(Math.random()*5);
+		rand = (int)(Math.random()*6);
+		if (rand!=0)
 			myPerson.getMarketChecklist().add(new ItemRequest("Pizza",rand));
-		rand = (int)(Math.random()*5);
+		rand = (int)(Math.random()*6);
+		if (rand!=0)
 			myPerson.getMarketChecklist().add(new ItemRequest("Pasta",rand));
-		rand = (int)(Math.random()*5);
+		rand = (int)(Math.random()*6);
+		if (rand!=0)
 			myPerson.getMarketChecklist().add(new ItemRequest("Chicken",rand));
-		rand = (int)(Math.random()*3);
+		rand = (int)(Math.random()*4);
+		if (rand!=0)
 			myPerson.getMarketChecklist().add(new ItemRequest("Ice Cream",rand));
 	}
 
