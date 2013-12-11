@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import cs201.gui.ArtManager;
 import cs201.gui.roles.market.MarketConsumerGui;
 import cs201.gui.roles.market.MarketEmployeeGui;
 import cs201.gui.roles.market.MarketManagerGui;
@@ -25,6 +26,8 @@ public class MarketAnimationTest {
 
 	@Before
 	public void setUp() throws Exception {
+		ArtManager.load();
+		
 		// Create a new JFrame
 		mainFrame = new JFrame();
 		mainFrame.setLayout(new BorderLayout());

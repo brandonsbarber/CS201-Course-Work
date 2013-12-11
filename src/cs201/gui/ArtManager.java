@@ -74,6 +74,8 @@ public class ArtManager
 		atlas.put("Restaurant_Ben_Waiter_Left", ImageIO.read(new File("data/Restaurant/Ben/Waiter_West.png")));
 		atlas.put("Restaurant_Ben_Waiter_Right", ImageIO.read(new File("data/Restaurant/Ben/Waiter_East.png")));
 		
+		atlas.put("Market_Car", ImageIO.read(new File("data/Market/Car.png")));
+		
 		//Matt's Sprites
 		atlas.put("Default_Walker_Up", ImageIO.read(new File("data/DefaultSprites/Up.png")));
 		atlas.put("Default_Walker_Down", ImageIO.read(new File("data/DefaultSprites/Down.png")));
