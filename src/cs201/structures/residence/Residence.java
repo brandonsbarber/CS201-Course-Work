@@ -7,6 +7,8 @@ import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
+import cs201.gui.configPanels.MarketConfigPanel;
+import cs201.gui.configPanels.ResidenceConfigPanel;
 import cs201.gui.roles.residence.ResidentGui;
 import cs201.gui.structures.residence.ResidenceAnimationPanel;
 import cs201.helper.CityTime;
@@ -26,8 +28,9 @@ public class Residence extends Structure {
 	private boolean hasFood;
 	private boolean isApartment;
 	private boolean isOccupied = false;
+	private ResidenceConfigPanel configPanel;
 	
-	private class Food {
+	public class Food {
 		private String type;
 		private int amount;
 
@@ -160,17 +163,11 @@ public class Residence extends Structure {
 		return owner;
 	}
 	
-	public List<String> getFridgeContents() {
+	public List<Food> getFridgeContents() {
 		if (fridge.isEmpty()) {
 			return null;
 		}
-		List<String> contents = new ArrayList<String>();
-		for (Food f:fridge) {
-			if(!contents.contains(f.getType())) {
-				contents.add(f.getType());
-			}
-		}
-		return contents;
+		return fridge;
 	}
 	
 	public boolean isApartment() {
@@ -209,5 +206,15 @@ public class Residence extends Structure {
 	public void updateTime(CityTime time) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void updateConfigPanel() {
+		if (configPanel != null) {
+			configPanel.updateFridgeContents(this);
+		}
+	}
+	
+	public void setConfigPanel(ResidenceConfigPanel config) {
+		configPanel = config;
 	}
 }

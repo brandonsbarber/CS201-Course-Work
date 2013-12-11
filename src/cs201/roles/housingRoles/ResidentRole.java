@@ -9,6 +9,7 @@ import cs201.interfaces.roles.housing.Resident;
 import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.structures.residence.Residence;
+import cs201.structures.residence.Residence.Food;
 
 public class ResidentRole extends Role implements Resident {
 	public enum ResidentState {doingNothing, hungry, eating, readyToSleep, sleeping, readyToWakeUp, payingRent, relaxing};
@@ -88,11 +89,11 @@ public class ResidentRole extends Role implements Resident {
 		}
 		
 		state = ResidentState.eating;
-		List<String> fridgeContents = residence.getFridgeContents();
+		List<Food> fridgeContents = residence.getFridgeContents();
 		//Do("My choices from the fridge: "+fridgeContents);
 		//picks food from home's fridge list of Food and eats it. Temporarily random choice
 		int rand = (int)(Math.random()*fridgeContents.size());
-		String foodToEat = fridgeContents.get(rand);
+		String foodToEat = fridgeContents.get(rand).getType();
 		residence.removeFood(foodToEat);
 		if(!isTest) {
 			gui.setHolding(foodToEat);
