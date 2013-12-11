@@ -30,6 +30,8 @@ import cs201.structures.Structure;
 @SuppressWarnings("serial")
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
+	List<Gui> toAdd = new ArrayList<Gui>();
+	List<Gui> toRemove = new ArrayList<Gui>();
 	
 	public MovementDirection[][] drivingMap;
 	public MovementDirection[][] walkingMap;
@@ -165,7 +167,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	 */
 	public void addGui(Gui gui)
 	{
-		guis.add(gui);
+		toAdd.add(gui);
 	}
 	
 	/**
@@ -418,14 +420,27 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		
 		try
 		{
-			for(Gui gui: guis)
+			synchronized(guis)
 			{
-				if(gui.isPresent())
+				for(Gui gui: guis)
 				{
-					gui.updatePosition();
-					gui.draw(g2);
+					if(gui.isPresent())
+					{
+						gui.updatePosition();
+						gui.draw(g2);
+					}
 				}
 			}
+			for(Gui gui : toRemove)
+			{
+				guis.remove(gui);
+			}
+			for(Gui gui : toAdd)
+			{
+				guis.add(gui);
+			}
+			toRemove.clear();
+			toAdd.clear();
 		}
 		catch(ConcurrentModificationException e)
 		{
@@ -675,6 +690,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	 */
 	public void removeGui(Gui g)
 	{
-		guis.remove(g);
+		toRemove.add(g);
 	}
 }
+

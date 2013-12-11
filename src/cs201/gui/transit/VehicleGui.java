@@ -227,7 +227,7 @@ public abstract class VehicleGui implements Gui
 			}
 			if(x % CityPanel.GRID_SIZE == 0 && y % CityPanel.GRID_SIZE == 0 && !moves.isEmpty())
 			{	
-				if(allowedToMove)
+				if(allowedToMove || drunk)
 				{
 					currentDirection = moves.pop();
 				
@@ -345,8 +345,33 @@ public abstract class VehicleGui implements Gui
 		}
 		if(!allowedToMove && drunk)
 		{
+			city.addGui(new ExplosionGui(x,y));
+			System.out.println("DESTROYING");
 			city.removeGui(this);
 			vehicle.stopThread();
+			setPresent(false);
+			
+			Intersection nextIntersection = city.getIntersection(next);
+			Intersection cIntersection = city.getIntersection(current);
+			
+			if(cIntersection == null)
+			{
+				if(city.permissions[current.y][current.x].tryAcquire() || true)
+				{
+					city.permissions[current.y][current.x].release();
+				}
+			}
+			else
+			{
+				if(nextIntersection == null)
+				{
+					if(!cIntersection.acquireIntersection())
+					{
+						cIntersection.releaseAll();
+					}
+					cIntersection.releaseIntersection();
+				}
+			}
 		}
 	}
 	
@@ -430,8 +455,6 @@ public abstract class VehicleGui implements Gui
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
 		
-		//city.permissions[current.y][current.x].tryAcquire();
-		
 		findPath();
 	}
 
@@ -440,5 +463,10 @@ public abstract class VehicleGui implements Gui
 	public void setDrunk(boolean drunk)
 	{
 		this.drunk = drunk;
+	}
+
+	public boolean getDrunk()
+	{
+		return drunk;
 	}
 }

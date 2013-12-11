@@ -114,7 +114,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		}
 		catch(InterruptedException e)
 		{
-			e.printStackTrace();
+			if(!gui.getDrunk())
+			{
+				e.printStackTrace();
+			}
+			else
+			{
+				destroyed = true;
+			}
 		}
 		currentLocation = destination;
 	}
@@ -138,5 +145,11 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public String toString()
 	{
 		return this.getClass().getSimpleName()+""+instance;
+	}
+
+	boolean destroyed = false;
+	
+	public boolean getDestroyed() {
+		return destroyed;
 	}
 }
