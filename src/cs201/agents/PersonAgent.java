@@ -424,21 +424,22 @@ public class PersonAgent extends Agent implements Person {
 			from.setActive(false);
 		}
 		int numActivities = intents.size();
+		boolean succeeded = false;
 		
 		while (intents.size() > 0) {
 			// Create a new action with high priority and put it at front of planner
 			Intention intent = intents.removeLast();
 			switch (intent) {
-			case ResidenceSleep: this.addActionToPlanner(intent, home, true); break;
-			case ResidenceEat: this.addActionToPlanner(intent, home, true); break;
-			case BankWithdrawMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
-			case BankDepositMoneyCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
-			case BankTakeOutLoan: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
-			case BankWithdrawMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
-			case BankDepositMoneyBusiness: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
-			case MarketConsumerGoods: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenMarket(), true); break;
-			case MarketConsumerCar: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenMarket(), true); break;
-			case RestaurantCustomer: this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenRestaurant(), true); break;
+			case ResidenceSleep: succeeded = this.addActionToPlanner(intent, home, true); break;
+			case ResidenceEat: succeeded = this.addActionToPlanner(intent, home, true); break;
+			case BankWithdrawMoneyCustomer: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankDepositMoneyCustomer: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankTakeOutLoan: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankWithdrawMoneyBusiness: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case BankDepositMoneyBusiness: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenBank(), true); break;
+			case MarketConsumerGoods: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenMarket(), true); break;
+			case MarketConsumerCar: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenMarket(), true); break;
+			case RestaurantCustomer: succeeded = this.addActionToPlanner(intent, CityDirectory.getInstance().getRandomOpenRestaurant(), true); break;
 			default: {
 				AlertLog.getInstance().logWarning(AlertTag.PERSON_AGENT, name, "addIntermediateAction(Role, LinkedList<Intention>, boolean):: Provided bad Intention");
 				return;
@@ -447,9 +448,12 @@ public class PersonAgent extends Agent implements Person {
 		}
 		
 		// If Role requests that the PersonAgent return after, add that action back at the correct position
-		if (returnToCurrentAction) {
+		if (returnToCurrentAction && succeeded) {
 			currentAction.active = false;
 			planner.add(numActivities, currentAction);
+		} else {
+			currentAction.active = false;
+			planner.add(numActivities - 1, currentAction);
 		}
 	}
 	
