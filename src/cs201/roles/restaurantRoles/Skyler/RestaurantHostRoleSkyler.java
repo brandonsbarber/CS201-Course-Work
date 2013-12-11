@@ -220,6 +220,7 @@ public class RestaurantHostRoleSkyler extends RestaurantHostRole implements
 		myPerson = null;
 		isActive = false;
 		gui.setPresent(false);
+		this.restaurant.updateInfoPanel();
 	}
 
 }

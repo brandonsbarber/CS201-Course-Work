@@ -112,7 +112,7 @@ public class ResidentRole extends Role implements Resident {
 		}
 		
 		myPerson.setHungerLevel(0); //clear hunger amount
-		Do("Finished pickAndEatFromFridge action. I ate one serving of "+foodToEat+"s from my fridge.");
+		//Do("Finished pickAndEatFromFridge action. I ate one serving of "+foodToEat+"s from my fridge.");
 		actionFinished();
 	}
 	
@@ -168,7 +168,7 @@ public class ResidentRole extends Role implements Resident {
 	 */
 	private void actionFinished() {
 		gui.clearHolding();
-		Do("Action finished. Leaving.");
+		//Do("Action finished. Leaving.");
 		state = ResidentState.doingNothing;
 		isActive = false;
 		if(!isTest) {
@@ -180,7 +180,7 @@ public class ResidentRole extends Role implements Resident {
 	}
 	
 	private void goToFridge() { //animation
-		Do("Going to the fridge.");
+		//Do("Going to the fridge.");
 		if(!isTest) {
 			gui.walkToFridge();
 			this.acquireSemaphore();
@@ -188,7 +188,7 @@ public class ResidentRole extends Role implements Resident {
 	}
 	
 	private void eatAtTable() {
-		Do("Going to the table to eat.");
+		//Do("Going to the table to eat.");
 		if(!isTest) {
 			gui.walkToTable();
 			this.acquireSemaphore();

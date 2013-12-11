@@ -21,12 +21,4 @@ public class MockLandlord extends Mock implements Landlord {
 		log.add(new LoggedEvent(string));
 	}
 
-	@Override
-	public void msgPropertyNeedsMaintenance(Renter r, Residence res) {
-		// TODO Auto-generated method stub
-		String string = "received msgPropertyNeedsMaintenance. Renter: "+r.toString()+" Residence: "+res.toString();
-		System.out.println(string);
-		log.add(new LoggedEvent(string));
-	}
-
 }
