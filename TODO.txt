@@ -24,13 +24,13 @@ Skyler:
     [ ] Config panels for housing/apartments
 
 Matt:
-    [ ] Test car buying
+    [X] Test car buying
     [X] Restaurant config panel
     [ ] Finalize code integration
 
 Ben:
-    [ ] Testing failed market delivery
+    [X] Testing failed market delivery
     [ ] Entry/exit animations Market
     [X] Car artwork
-    [ ] Test car buying
+    [X] Test car buying
     [X] Reset market config panel on scenario reset
