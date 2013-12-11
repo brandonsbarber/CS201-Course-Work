@@ -875,7 +875,7 @@ public class SimCity201 extends JFrame {
 		transitPanel.addVehicle(truck);
 		
 		TruckAgent truck2 = new TruckAgent(m);
-		truck.startThread();
+		truck2.startThread();
 		m.addTruck(truck2);
 		transitPanel.addVehicle(truck2);
 		
