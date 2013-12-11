@@ -55,6 +55,8 @@ public class ResidentRole extends Role implements Resident {
 			case hungry: 
 				goToFridge();
 				if (residence.hasFood()) {
+					if (residence.getFridgeContents().size()<3)
+					
 					pickAndEatFromFridge();
 					return true;
 				}
@@ -62,9 +64,9 @@ public class ResidentRole extends Role implements Resident {
 					if(myPerson.getMarketChecklist().isEmpty()) { //if shopping list is empty, make one.
 						makeShoppingList();
 					}
-					LinkedList<Intention> action = new LinkedList<Intention>();
-					action.add(Intention.MarketConsumerGoods);
-					myPerson.addIntermediateActions((Role)this, action, true);
+					LinkedList<Intention> actions = new LinkedList<Intention>();
+					actions.add(Intention.MarketConsumerGoods);
+					myPerson.addIntermediateActions((Role)this, actions, true);
 					actionFinished();
 					return false;
 				}

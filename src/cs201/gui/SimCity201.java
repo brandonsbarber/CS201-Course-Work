@@ -296,6 +296,7 @@ public class SimCity201 extends JFrame {
 		this.transitPanel.resetCity();
 		this.marketPanel.resetCity();
 		this.restaurantPanel.resetCity();
+		this.residencePanel.resetCity();
 		
 		bottomSettingsPanel.resetCity();
 		CityDirectory.getInstance().resetCity();
