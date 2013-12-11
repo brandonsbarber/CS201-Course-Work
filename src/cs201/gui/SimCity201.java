@@ -2607,25 +2607,57 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		p1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
 		p1.setWorkTime(r.getMorningShiftStart());
 		CityDirectory.getInstance().addPerson(p1);
+		personPanel.addPerson(p1);
 		p1.startThread();
 		
 		PersonAgent p2 = new PersonAgent("Cashier at Ben's Restaurant", cityPanel);
 		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
 		p2.setWorkTime(r.getMorningShiftStart());
 		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(p2);
 		p2.startThread();
 		
 		PersonAgent p3 = new PersonAgent("Cook at Ben's Restaurant", cityPanel);
 		p3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
 		p3.setWorkTime(r.getMorningShiftStart());
 		CityDirectory.getInstance().addPerson(p3);
+		personPanel.addPerson(p3);
 		p3.startThread();
 		
 		PersonAgent p4 = new PersonAgent("Waiter at Ben's Restaurant", cityPanel);
 		p4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
 		p4.setWorkTime(r.getMorningShiftStart());
 		CityDirectory.getInstance().addPerson(p4);
+		personPanel.addPerson(p4);
 		p4.startThread();
+		
+		PersonAgent pm1 = new PersonAgent("PM Host at Ben's Restaurant", cityPanel);
+		pm1.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantHost, r, null);
+		pm1.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm1);
+		personPanel.addPerson(pm1);
+		pm1.startThread();
+		
+		PersonAgent pm2 = new PersonAgent("PM Cashier at Ben's Restaurant", cityPanel);
+		p2.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCashier, r, null);
+		p2.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(p2);
+		personPanel.addPerson(pm2);
+		p2.startThread();
+		
+		PersonAgent pm3 = new PersonAgent("PM Cook at Ben's Restaurant", cityPanel);
+		pm3.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantCook, r, null);
+		pm3.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm3);
+		personPanel.addPerson(pm3);
+		pm3.startThread();
+		
+		PersonAgent pm4 = new PersonAgent("PM Waiter at Ben's Restaurant", cityPanel);
+		pm4.setupPerson(CityDirectory.getInstance().getTime(), null, r, Intention.RestaurantWaiter, r, null);
+		pm4.setWorkTime(r.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm4);
+		personPanel.addPerson(pm4);
+		pm4.startThread();
 
 		// Matt's Restaurant
 		RestaurantAnimationPanelMatt g_matt = new RestaurantAnimationPanelMatt(Structure.getNextInstance(),this);
@@ -2665,6 +2697,34 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		CityDirectory.getInstance().addPerson(p4_matt);
 		personPanel.addPerson(p4_matt);
 		p4_matt.startThread();
+		
+		PersonAgent pm1_matt = new PersonAgent("PM Host at Matt's Restaurant", cityPanel);
+		pm1_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantHost, r_matt, null);
+		pm1_matt.setWorkTime(r_matt.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm1_matt);
+		personPanel.addPerson(pm1_matt);
+		pm1_matt.startThread();
+		
+		PersonAgent pm2_matt = new PersonAgent("PM Cashier at Matt's Restaurant", cityPanel);
+		pm2_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantCashier, r_matt, null);
+		pm2_matt.setWorkTime(r_matt.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm2_matt);
+		personPanel.addPerson(pm2_matt);
+		pm2_matt.startThread();
+		
+		PersonAgent pm3_matt = new PersonAgent("PM Cook at Matt's Restaurant", cityPanel);
+		pm3_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantCook, r_matt, null);
+		pm3_matt.setWorkTime(r_matt.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm3_matt);
+		personPanel.addPerson(pm3_matt);
+		pm3_matt.startThread();
+		
+		PersonAgent pm4_matt = new PersonAgent("PM Waiter at Matt's Restaurant", cityPanel);
+		pm4_matt.setupPerson(CityDirectory.getInstance().getTime(), null, r_matt, Intention.RestaurantWaiter, r_matt, null);
+		pm4_matt.setWorkTime(r_matt.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm4_matt);
+		personPanel.addPerson(pm4_matt);
+		pm4_matt.startThread();
 
 		// Brandon's Restaurant
 		RestaurantAnimationPanelBrandon g_brandon = new RestaurantAnimationPanelBrandon(Structure.getNextInstance(),this);
@@ -2704,6 +2764,34 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		CityDirectory.getInstance().addPerson(p4_brandon);
 		personPanel.addPerson(p4_brandon);
 		p4_brandon.startThread();
+		
+		PersonAgent pm1_brandon = new PersonAgent("PM Host at Brandon's Restaurant", cityPanel);
+		pm1_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantHost, r_brandon, null);
+		pm1_brandon.setWorkTime(r_brandon.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm1_brandon);
+		personPanel.addPerson(p1);
+		pm1_brandon.startThread();
+		
+		PersonAgent pm2_brandon = new PersonAgent("PM Cashier at Brandon's Restaurant", cityPanel);
+		pm2_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantCashier, r_brandon, null);
+		pm2_brandon.setWorkTime(r_brandon.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm2_brandon);
+		personPanel.addPerson(pm2_brandon);
+		pm2_brandon.startThread();
+		
+		PersonAgent pm3_brandon = new PersonAgent("PM Cook at Brandon's Restaurant", cityPanel);
+		pm3_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantCook, r_brandon, null);
+		pm3_brandon.setWorkTime(r_brandon.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm3_brandon);
+		personPanel.addPerson(pm3_brandon);
+		pm3_brandon.startThread();
+		
+		PersonAgent pm4_brandon = new PersonAgent("PM Waiter at Brandon's Restaurant", cityPanel);
+		pm4_brandon.setupPerson(CityDirectory.getInstance().getTime(), null, r_brandon, Intention.RestaurantWaiter, r_brandon, null);
+		pm4_brandon.setWorkTime(r_brandon.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm4_brandon);
+		personPanel.addPerson(pm4_brandon);
+		pm4_brandon.startThread();
 
 		// Skyler's Restaurant
 		RestaurantAnimationPanelSkyler g_skyler = new RestaurantAnimationPanelSkyler(Structure.getNextInstance(),this);
@@ -2743,6 +2831,34 @@ CityDirectory.getInstance().setStartTime(new CityTime(8, 00));
 		CityDirectory.getInstance().addPerson(p4_skyler);
 		personPanel.addPerson(p4_skyler);
 		p4_skyler.startThread();
+		
+		PersonAgent pm1_skyler = new PersonAgent("Host at Skyler's Restaurant", cityPanel);
+		pm1_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantHost, r_skyler, null);
+		pm1_skyler.setWorkTime(r_skyler.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm1_skyler);
+		personPanel.addPerson(pm1_skyler);
+		pm1_skyler.startThread();
+		
+		PersonAgent pm2_skyler = new PersonAgent("Cashier at Skyler's Restaurant", cityPanel);
+		pm2_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantCashier, r_skyler, null);
+		pm2_skyler.setWorkTime(r_skyler.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm2_skyler);
+		personPanel.addPerson(pm2_skyler);
+		pm2_skyler.startThread();
+		
+		PersonAgent pm3_skyler = new PersonAgent("Cook at Skyler's Restaurant", cityPanel);
+		pm3_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantCook, r_skyler, null);
+		pm3_skyler.setWorkTime(r_skyler.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm3_skyler);
+		personPanel.addPerson(pm3_skyler);
+		pm3_skyler.startThread();
+		
+		PersonAgent pm4_skyler = new PersonAgent("Waiter at Skyler's Restaurant", cityPanel);
+		pm4_skyler.setupPerson(CityDirectory.getInstance().getTime(), null, r_skyler, Intention.RestaurantWaiter, r_skyler, null);
+		pm4_skyler.setWorkTime(r_skyler.getAfternoonShiftStart());
+		CityDirectory.getInstance().addPerson(pm4_skyler);
+		personPanel.addPerson(pm4_skyler);
+		pm4_skyler.startThread();
 		
 		// Houses
 		List<Residence> houses = new ArrayList<Residence>();
