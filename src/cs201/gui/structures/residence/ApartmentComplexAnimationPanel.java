@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
+import cs201.gui.ArtManager;
 import cs201.gui.Gui;
 import cs201.gui.SimCity201;
 import cs201.gui.StructurePanel;
@@ -29,15 +31,16 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 	private final int chairWidth = 20;
 	private final int chairHeight = 20;
 	private final int chairX = deskX+(deskWidth/2)-(chairWidth/2);
-	private final int chairY = deskY+(deskHeight)+5;
-	
-	private List<Gui> guis = new ArrayList<Gui>();
+	private final int chairY = deskY+(deskHeight)-1;
 	
 	public ApartmentComplexAnimationPanel(int i, SimCity201 sc) {
 		super(i, sc);
 		// TODO Auto-generated constructor stub
 		setSize(WINDOWX, WINDOWY);
 		setVisible(true);
+		
+		Timer timer = new Timer(15, this );
+    	timer.start();
 	}
 
 	public void paintComponent(Graphics g) {
@@ -46,17 +49,28 @@ public class ApartmentComplexAnimationPanel extends StructurePanel {
 		g2.setColor(getBackground());
 		g2.fillRect(0, 0, WINDOWX, WINDOWY); //clear screen
 		
-		g2.setColor(Color.darkGray);
-		g2.fillRect(deskX, deskY, deskWidth, deskHeight);
+		for (int i=0; i<WINDOWX; i=i+32) {
+        	for (int j=0; j<WINDOWY; j=j+32) {
+        		g.drawImage(ArtManager.getImage("Apartment_Complex_Floor2"), i, j, 32, 32, null);
+        	}
+        }
 		
-		g2.setColor(Color.GRAY);
-		g2.fillRect(chairX, chairY, chairWidth, chairHeight);
+		/*g2.setColor(Color.darkGray);
+		g2.fillRect(deskX, deskY, deskWidth, deskHeight);*/
+		
+		g.drawImage(ArtManager.getImage("Apartment_Complex_Desk"), deskX, deskY, 86, 43, null);
+		
+		/*g2.setColor(Color.GRAY);
+		g2.fillRect(chairX, chairY, chairWidth, chairHeight);*/
+		
+		
 		
 		g2.setColor(Color.WHITE);
 		g2.drawString("Desk", deskX, deskY+13);
 		
 	    super.paintComponent(g);
-
+	    
+	    g.drawImage(ArtManager.getImage("Apartment_Complex_Chair"), chairX-3, chairY+10, 30, 25, null);
 	}
 	
 	public void informLandlord(LandlordGui lGui) {

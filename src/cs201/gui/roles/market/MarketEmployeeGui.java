@@ -207,16 +207,23 @@ public class MarketEmployeeGui implements Gui {
 			// Draw the employee text
 			g.setColor(Color.black);
 			g.drawString("Market Employee", xPos, yPos - 3);
+			
+			// Draw the car, if the employee is currently bringing one out
+			if (hasCar) {
+				g.setColor(Color.red);
+				g.fillRect(carX, carY, 150, 35);
+			}
 		} else {
 			// Draw the employee
 			g.drawImage(ArtManager.getImage(moveDir), xPos, yPos, EMPLOYEE_SIZE, EMPLOYEE_SIZE, null);
+			
+			// Draw the car, if the employee is currently bringing one out
+			if (hasCar) {
+				g.drawImage(ArtManager.getImage("Market_Car"), carX, carY, null);
+			}
 		}
 		
-		// Draw the car, if the employee is currently bringing one out
-		if (hasCar) {
-			g.setColor(Color.red);
-			g.fillRect(carX, carY, 150, 35);
-		}
+		
 	}
 
 	public boolean isPresent() {
@@ -258,7 +265,7 @@ public class MarketEmployeeGui implements Gui {
 	}
 	
 	public void doBringCarOut() {
-		guiMoveFromCurrentPositionTo(new Position(11, 13));
+		guiMoveFromCurrentPositionTo(new Position(13, 13));
 		gettingShelfItem = false;
 	}
 	

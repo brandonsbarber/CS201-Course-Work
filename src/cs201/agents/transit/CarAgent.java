@@ -1,5 +1,6 @@
 package cs201.agents.transit;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,12 +29,22 @@ public class CarAgent extends VehicleAgent implements Car
 		Passenger p;
 		Structure start;
 		Structure destination;
+		Point startPos;
 		
 		public PickupRequest(Passenger p, Structure s, Structure d)
 		{
 			this.p = p;
 			start = s;
 			destination = d;
+			startPos = start.getParkingLocation();
+		}
+		
+		public PickupRequest(Passenger p, Point start, Structure d)
+		{
+			this.p = p;
+			destination = d;
+			startPos = start;
+			this.start = null;
 		}
 	};
 	
@@ -152,8 +163,14 @@ public class CarAgent extends VehicleAgent implements Car
 			msgSetLocation(removed.start);
 		}
 		
-		msgSetDestination(removed.start);
-				
+		if(removed.start != null)
+		{
+			msgSetDestination(removed.start);
+		}
+		else
+		{
+			msgSetDestination(removed.startPos);
+		}
 		animate();
 		
 		removed.p.msgPleaseBoard(this);
@@ -182,5 +199,12 @@ public class CarAgent extends VehicleAgent implements Car
 	public Passenger getPassenger()
 	{
 		return p;
+	}
+
+	@Override
+	public void msgCallCar(Passenger p, Point point, Structure d)
+	{
+		pickups.add(new PickupRequest(p,point,d));
+		stateChanged();
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
+import cs201.gui.CityPanel;
 import cs201.gui.transit.PassengerGui;
 import cs201.helper.transit.BusRoute;
 import cs201.interfaces.agents.transit.Bus;
@@ -142,9 +143,16 @@ public class PassengerRole extends Role implements Passenger
 	{
 		if(state != PassengerState.Roaming)
 		{
-			setCurrentLocation(currentLocation);
+			//setCurrentLocation(currentLocation);
 			state = PassengerState.Roaming;
 		}
+		stateChanged();
+	}
+	
+	public void msgStopRoaming()
+	{
+		state = PassengerState.None;
+		gui.stopRoam();
 		stateChanged();
 	}
 
@@ -153,7 +161,10 @@ public class PassengerRole extends Role implements Passenger
 	 */
 	public void msgAnimationFinished()
 	{
-		animationPause.release();
+		if(animationPause.availablePermits() == 0)
+		{
+			animationPause.release();
+		}
 	}
 
 	/**
@@ -489,8 +500,17 @@ public class PassengerRole extends Role implements Passenger
 				state = PassengerState.Arrived;
 				break;
 			case Car :
-				car.msgCallCar(this, currentLocation, destination);
-				
+				System.out.println("Calling car");
+				if(gui.locationEquals(currentLocation))
+				{
+					car.msgCallCar(this, currentLocation, destination);
+				}
+				else
+				{
+					gui.stopRoam();
+					Point p = gui.findRoad(gui.getX()/CityPanel.GRID_SIZE,gui.getY()/CityPanel.GRID_SIZE);
+					car.msgCallCar(this, new Point(p.x*CityPanel.GRID_SIZE,p.y*CityPanel.GRID_SIZE), destination);
+				}
 				if(!testing)
 				{
 					try

@@ -34,6 +34,7 @@ public class MarketStructure extends Structure {
 	StructurePanel panel = null;
 	double totalFunds = 0.0;
 	private MarketConfigPanel configPanel;
+
 	
 	/**
 	 * Constructs a Market with the given dimensions at a given location. Automatically creates a MarketManagerRole and a MarketEmployeeRole
@@ -45,9 +46,9 @@ public class MarketStructure extends Structure {
 		
 		// Setup times
 		this.morningShiftStart = new CityTime(8, 00);
-		this.morningShiftEnd = new CityTime(12, 30);
-		this.afternoonShiftStart = new CityTime(13, 00);
-		this.closingTime = new CityTime(18, 00);
+		this.morningShiftEnd = new CityTime(12, 00);
+		this.afternoonShiftStart = new CityTime(15, 00);
+		this.closingTime = new CityTime(20, 00);
 				
 		// Create a manager to manage this market
 		MarketManagerRole newManager = new MarketManagerRole("Manager", this);
@@ -163,7 +164,13 @@ public class MarketStructure extends Structure {
 		totalFunds -= amount;
 	}
 	
-	private void checkIfOpen() {
+	private void checkIfOpen(CityTime time) {
+		// If it's not during shift hours, there's no way the restaurant would be open
+		if (!(CityTime.timeDifference(time, morningShiftStart) >= 0 && CityTime.timeDifference(time, morningShiftEnd) < 0) &&
+				!(CityTime.timeDifference(time, afternoonShiftStart) >= 0 && CityTime.timeDifference(time, closingTime) < 0)) {
+			return;
+		}
+		
 		if (manager.getPerson() != null && atLeastOneEmployeeWorking()) {
 			isOpen = true;
 			AlertLog.getInstance().logInfo(AlertTag.MARKET, "Market Structure", "Open for business");
@@ -259,11 +266,22 @@ public class MarketStructure extends Structure {
 	public List<InventoryEntry> getInventory() {
 		return manager.getInventory();
 	}
+	
+	/**
+	 * Closes the market by messaging the market manager. He, in turn, messages his employees.
+	 */
+	public synchronized void closeMarket() {
+		if (manager.getPerson() != null) {
+			this.forceClosed = true;
+			this.isOpen = false;
+			manager.msgClosingTime();
+		}
+	}
 
 	@Override
 	public void updateTime(CityTime time) {
-		if (!isOpen) {
-			checkIfOpen();
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
 		}
 		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
@@ -272,16 +290,16 @@ public class MarketStructure extends Structure {
 				manager.msgClosingTime();
 				isOpen = false;
 			}
-		}
-		
-		if (time.equalsIgnoreDay(this.closingTime)) {
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.toString(), "It's closing time!");
 			if (manager.getPerson() != null) {
 				manager.msgClosingTime();
 				isOpen = false;
 			}
+		} else if (!isOpen && !this.forceClosed) {
+			System.out.println("Checking to see if the market shoudl open.");
+			checkIfOpen(time);
 		}
-		
 	}
 	
 	public boolean isOpen() {

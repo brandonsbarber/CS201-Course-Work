@@ -5,11 +5,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.agents.transit.CarAgent;
 import cs201.agents.transit.TruckAgent;
+import cs201.gui.CityPanel;
 import cs201.gui.roles.market.MarketManagerGui;
+import cs201.gui.transit.CarGui;
+import cs201.gui.transit.TruckGui;
 import cs201.helper.CityDirectory;
 import cs201.interfaces.agents.transit.Vehicle;
 import cs201.interfaces.roles.market.MarketConsumer;
@@ -35,6 +39,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	private static final int CARPRICE = 1000;
 
 	String name = "";
+	Semaphore animation = new Semaphore(0, true);
 	
 	// Lists
 	public List<Order> orders = Collections.synchronizedList( new ArrayList<Order>() );
@@ -211,7 +216,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	
 	public boolean pickAndExecuteAnAction() {
-		// If its time to leave, leave
+		// If its time to leave, and we don't have any current orders, leave
 		if (timeToLeave) {
 			boolean inPersonOrder = false;
 			for (Order order : orders) {
@@ -220,7 +225,14 @@ public class MarketManagerRole extends Role implements MarketManager {
 					break;
 				}
 			}
-			if (!inPersonOrder) {
+			boolean carOrder = false;
+			for (CarOrder order : carOrders) {
+				if (order.state != CarOrderState.FINISHED) {
+					carOrder = true;
+					break;
+				}
+			}
+			if (!inPersonOrder && !carOrder) {
 				leaveMarket();
 				return true;
 			}
@@ -417,7 +429,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * 
 	 */
 	public void msgDeliveryFailed(int deliveryID) {
-		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that a delivery failed."));
+		AlertLog.getInstance().logMessage(AlertTag.MARKET, "Market manager " + name, String.format("Was just notified that delivery " + deliveryID + " failed."));
 		
 		// Find the order in our list of orders
 		Order order = null;
@@ -501,13 +513,19 @@ public class MarketManagerRole extends Role implements MarketManager {
 	
 	public void startInteraction(Intention intent) {
 		// animate inside market
-		this.gui.setPresent(true);
+		gui.setPresent(true);
 		timeToLeave = false;
+		gui.doEnterMarket();
+		pauseForAnimation();
 	}
 
 	public void msgClosingTime() {
 		timeToLeave = true;
 		stateChanged();
+	}
+	
+	public void animationFinished() {
+		animation.release();
 	}
 	
 	/*
@@ -616,8 +634,8 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 * @return True if we were able to dispatch the order, False if something went wrong
 	 */
 	private boolean dispatchDeliveryTruckForOrder(Order o) {
-		//if (structure != null && o.structure != null && o.structure.getOpen()) {
-		if (structure != null && o.structure != null) {
+		if (structure != null && o.structure != null && o.structure.getOpen()) {
+		//if (structure != null && o.structure != null) {
 			// Get our delivery truck
 			TruckAgent deliveryTruck = structure.getNextDeliveryTruck();
 		
@@ -626,7 +644,6 @@ public class MarketManagerRole extends Role implements MarketManager {
 			
 			// The order has now been "SENT"
 			o.state = OrderState.SENT;
-			
 			return true;
 		}
 		
@@ -642,15 +659,20 @@ public class MarketManagerRole extends Role implements MarketManager {
 	 */
 	private void giveCarToConsumer(CarOrder co) {
 		// First lets charge the consumer
-		// TODO this is a fixed price, we need to change this
 		chargeConsumer(co.consumer, CARPRICE);
 		
 		// Let the consumer know how much he was charged
 		co.consumer.msgHereIsYourTotal(this, CARPRICE);
 		
 		// Create a new vehicle
-		// TODO ask Brandon what the params need to be
-		Vehicle newCar = new CarAgent();
+		CarAgent newCar = new CarAgent();
+		if(CityPanel.INSTANCE != null)
+		{
+			CarGui gui = new CarGui(newCar, CityPanel.INSTANCE);
+			newCar.setGui(gui);
+			CityPanel.INSTANCE.addGui(gui);
+		}
+		newCar.startThread();
 		
 		// Give him his BRAND NEW CAR!
 		co.consumer.msgHereIsYourCar(newCar);
@@ -660,7 +682,7 @@ public class MarketManagerRole extends Role implements MarketManager {
 	}
 	
 	private void leaveMarket() {
-
+		System.out.println("leaveMarket() called");
 		// Message all the employees and let them know its time to go home
 		for (MyEmployee employee : employees) {
 			employee.employee.msgClosingTime();
@@ -668,19 +690,28 @@ public class MarketManagerRole extends Role implements MarketManager {
 		
 		// Remove all the employees from my list (they'll be back tomorrow)
 		employees.clear();
+				
+		gui.doLeaveMarket();
+		pauseForAnimation();
 		
 		this.isActive = false;
 		this.myPerson.goOffWork();
 		this.myPerson.removeRole(this);
 		this.myPerson = null;
-//		gui.doLeave()
 		gui.setPresent(false);
-		
 	}
 
 	/*
 	 * ********** UTILITY **********
 	 */
+	
+	public void pauseForAnimation() {
+		try {
+			animation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void addEmployee(MarketEmployee e) {
 		employees.add(new MyEmployee(e, EmployeeState.AVAILABLE));

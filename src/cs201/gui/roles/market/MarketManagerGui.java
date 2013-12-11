@@ -18,6 +18,9 @@ public class MarketManagerGui implements Gui {
 	public static final int MANAGER_Y = 320;
 
 	private int xPos, yPos;
+	private int xDestination, yDestination;
+	boolean animating = false;
+	private double hover = 0.0;
 	
 	public MarketManagerGui() {
 		this(null);
@@ -27,10 +30,32 @@ public class MarketManagerGui implements Gui {
 		role = c;
 		xPos = MANAGER_X;
 		yPos = MANAGER_Y;
+		xDestination = xPos;
+		yDestination = yPos;
+		animating = false;
 		isPresent = false;
 	}
 
 	public void updatePosition() {	
+		if (xPos < xDestination) {
+			xPos++;
+		} else if (xPos > xDestination) {
+			xPos--;
+		} else if (yPos < yDestination) {
+			yPos++;
+		} else if (yPos > yDestination) {
+			yPos--;
+		}
+		
+		if (xPos == xDestination && yPos == yDestination && animating) {
+			if (role != null)
+				role.animationFinished();
+			animating = false;
+		}
+		
+		hover += .05;
+		if (hover > 1000.0) hover = 0.0; // just to make sure we don't oveflow
+		
 		return;
 	}
 
@@ -43,8 +68,20 @@ public class MarketManagerGui implements Gui {
 			g.drawString("Market Manager", xPos, yPos - 3);
 		} else {
 			// Draw the market manager
-			g.drawImage(ArtManager.getImage("Market_Manager_Down"), xPos, yPos, MANAGER_SIZE, MANAGER_SIZE, null);
+			g.drawImage(ArtManager.getImage("Market_Manager_Down"), xPos, yPos + (int)(Math.sin(hover) * 2), MANAGER_SIZE, MANAGER_SIZE, null);
 		}
+	}
+	
+	public void doLeaveMarket() {
+		animating = true;
+		xDestination = 530;
+		yDestination = yPos;
+	}
+	
+	public void doEnterMarket() {
+		animating = true;
+		xDestination = MANAGER_X;
+		yDestination = MANAGER_Y;
 	}
 
 	public boolean isPresent() {

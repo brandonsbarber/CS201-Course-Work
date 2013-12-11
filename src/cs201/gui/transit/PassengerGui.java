@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import cs201.gui.ArtManager;
 import cs201.gui.CityPanel;
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MovementDirection;
 import cs201.helper.transit.Pathfinder;
 import cs201.gui.Gui;
@@ -45,7 +46,7 @@ public class PassengerGui implements Gui
 
 	private boolean pathfinding = false;
 
-	private boolean allowedToMove;
+	private boolean allowedToMove = true;
 
 	private Point current, next;
 
@@ -100,14 +101,6 @@ public class PassengerGui implements Gui
 	public void setPresent(boolean present)
 	{
 		this.present = present;
-		if(!present)
-		{
-			List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-			synchronized(list)
-			{
-				list.remove(this);
-			}
-		}
 	}
 	
 	/**
@@ -116,7 +109,6 @@ public class PassengerGui implements Gui
 	 */
 	public void doGoToLocation(Structure structure)
 	{
-		//JOptionPane.showMessageDialog(null,""+pass.getName()+": Being told to go to "+structure.getEntranceLocation().x/CityPanel.GRID_SIZE+" "+structure.getEntranceLocation().y/CityPanel.GRID_SIZE);
 		destination = structure;
 		destX = (int)structure.getEntranceLocation().x;
 		destY = (int)structure.getEntranceLocation().y;
@@ -125,9 +117,7 @@ public class PassengerGui implements Gui
 		
 		current = new Point(x/CityPanel.GRID_SIZE,y/CityPanel.GRID_SIZE);
 		next = current;
-		
-		//city.permissions[current.y][current.x].tryAcquire();
-		
+
 		findPath();
 	}
 	
@@ -157,6 +147,7 @@ public class PassengerGui implements Gui
 	private void findPath()
 	{
 		moves.clear();
+		
 		pathfinding = true;
 		try
 		{
@@ -220,18 +211,29 @@ public class PassengerGui implements Gui
 		{
 			if(x == destX && y == destY)
 			{
-				List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-				synchronized(list)
-				{
-					list.remove(this);
-				}
-				list = city.crosswalkPermissions.get(next.y).get(next.x);
-				synchronized(list)
-				{
-					list.remove(this);
-				}
 				currentDirection = MovementDirection.None;
 				fired = true;
+				
+				if(current != next)
+				{
+					List<Gui> currentSquare = city.crosswalkPermissions.get(current.y).get(current.x);
+					synchronized(currentSquare)
+					{
+						while(currentSquare.contains(this))
+						{
+							currentSquare.remove(this);
+						}
+					}
+					List<Gui> nextSquare = city.crosswalkPermissions.get(next.y).get(next.x);
+					synchronized(nextSquare)
+					{
+						while(nextSquare.contains(this))
+						{
+							nextSquare.remove(this);
+						}
+					}
+				}
+				
 				if(!roaming)
 				{
 					pass.msgAnimationFinished ();
@@ -240,6 +242,7 @@ public class PassengerGui implements Gui
 				{
 					doRoam();
 				}
+				
 				return;
 			}
 			if(allowedToMove)
@@ -267,13 +270,16 @@ public class PassengerGui implements Gui
 				if(allowedToMove)
 				{
 					currentDirection = moves.pop();
-				
+					
 					if(current != next)
 					{
-						List<Gui> list = city.crosswalkPermissions.get(current.y).get(current.x);
-						synchronized(list)
+						List<Gui> currentSquare = city.crosswalkPermissions.get(current.y).get(current.x);
+						synchronized(currentSquare)
 						{
-							list.remove(this);
+							while(currentSquare.contains(this))
+							{
+								currentSquare.remove(this);
+							}
 						}
 					}
 					
@@ -291,24 +297,29 @@ public class PassengerGui implements Gui
 						break;
 					default:next = current;
 						break;
-					}	
-				}
-				List<Gui> list = city.crosswalkPermissions.get(next.y).get(next.x);
-				synchronized(list)
-				{
-					for(Gui g : list)
-					{
-						if(g instanceof VehicleGui)
-						{
-							allowedToMove = false;
-							return;
-						}
 					}
-					list.add(this);
-					allowedToMove = true;
 				}
 				
+				List<Gui> nextSquare = city.crosswalkPermissions.get(next.y).get(next.x);
+				
+				synchronized(nextSquare)
+				{
+					if(Pathfinder.isCrossWalk(next, city.getWalkingMap(), city.getDrivingMap()))
+					{
+						for(Gui g : nextSquare)
+						{
+							if(g instanceof VehicleGui)
+							{
+								allowedToMove = false;
+								return;
+							}
+						}
+					}
+					allowedToMove = true;
+					nextSquare.add(this);
+				}
 			}
+			allowedToMove = true;
 		}
 	}
 	
@@ -328,7 +339,7 @@ public class PassengerGui implements Gui
 	 */
 	public void setLocation(int x, int y)
 	{
-		System.out.println("Setting location: "+this.pass.getName()+" "+x+" "+y);
+		System.out.println(this.pass.getPerson()+" Setting location: "+this.pass.getName()+" "+x+" "+y);
 		this.x = x;
 		this.y = y;
 	}
@@ -362,6 +373,16 @@ public class PassengerGui implements Gui
 	public void stopRoam()
 	{
 		roaming = false;
+		moves.clear();
+
+		currentDirection = MovementDirection.None;
+		destX = x = x/CityPanel.GRID_SIZE*CityPanel.GRID_SIZE;
+		destY = y = y/CityPanel.GRID_SIZE*CityPanel.GRID_SIZE;
+	}
+	
+	public Point findRoad(int i, int j)
+	{
+		return Pathfinder.findRoad(city,i,j);
 	}
 	
 	boolean roaming;

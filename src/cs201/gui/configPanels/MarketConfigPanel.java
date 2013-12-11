@@ -20,6 +20,7 @@ import cs201.roles.Role;
 import cs201.roles.marketRoles.MarketManagerRole.InventoryEntry;
 import cs201.structures.market.MarketStructure;
 
+@SuppressWarnings("serial")
 public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	
 	// The reference to the MarketStructure this config panel will be controlling
@@ -30,6 +31,7 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	DefaultListModel listModel;
 	JList inventoryList;
 	JButton addInventoryButton;
+	JButton shutdownButton;
 	MarketStructure currentStructure;
 	
 	public MarketConfigPanel() {
@@ -48,22 +50,19 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout(layout);
 		
-		// GUI Elements
+		// Inventory button
 		addInventoryButton = new JButton("Add inventory");
 		addInventoryButton.addActionListener(this);
 		addInventoryButton.setEnabled(true);
 		this.add(addInventoryButton);
 		
+		// Shutdown button
+		shutdownButton = new JButton("Shutdown Market");
+		shutdownButton.addActionListener(this);
+		shutdownButton.setEnabled(true);
+		this.add(shutdownButton);
+		
 		//loadInventoryFromStructure();
-	}
-	
-	/**
-	 * The market config panel no longer configures only one market.
-	 * @deprecated Use addMarketStructure instead
-	 */
-	public void setStructure(MarketStructure s) {
-		// Hook up this config panel to a certain structure
-		//structure = s;
 	}
 
 	public void setPersonEnabled(Role role) {
@@ -83,6 +82,11 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 			loadInventoryFromStructure(selectedStructure);
 			currentStructure = selectedStructure;
 		}
+		
+		if (e.getSource() == shutdownButton) {
+			// Shut 'er down
+			currentStructure.closeMarket();
+		}
 	}
 	
 	/**
@@ -99,6 +103,9 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 	 */
 	public void addMarketStructure(MarketStructure structure) {
 		marketsComboBox.addItem(structure);
+		if (marketsComboBox.getModel().getSize() == 1) {
+			currentStructure = structure;
+		}
 	}
 	
 	private void loadInventoryFromStructure(MarketStructure structure) {
@@ -165,6 +172,12 @@ public class MarketConfigPanel extends ConfigPanel implements ActionListener {
 		// Confirm the add
 		String confirmation = "Successfully added " + quantityValue + " " + item + "(s) at $" + String.format("%.2f", priceValue) + " each to the market's inventory!";
 		JOptionPane.showMessageDialog(this, confirmation);	
+	}
+
+	public void resetCity() {
+		currentStructure = null;
+		listModel.clear();
+		marketsComboBox.removeAllItems();
 	}
 
 }

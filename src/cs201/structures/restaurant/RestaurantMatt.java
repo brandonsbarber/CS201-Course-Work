@@ -2,6 +2,7 @@ package cs201.structures.restaurant;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
@@ -199,6 +200,10 @@ public class RestaurantMatt extends Restaurant {
 
 	@Override
 	public void updateTime(CityTime time) {		
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
+		}
+		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
@@ -207,6 +212,7 @@ public class RestaurantMatt extends Restaurant {
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
 		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
@@ -215,8 +221,10 @@ public class RestaurantMatt extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (!isOpen) {
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !forceClosed) {
 			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
 	}
 	
@@ -227,6 +235,17 @@ public class RestaurantMatt extends Restaurant {
 		for (RestaurantWaiterRole r : waiters) {
 			r.msgClosingTime();
 		}
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		((RestaurantCookRoleMatt) cook).emptyInventory();
+		this.configPanel.updateInfo(this);
+	}
+
+	@Override
+	public List<String> getCookInventory() {
+		return ((RestaurantCookRoleMatt) cook).getInventory();
 	}
 
 }

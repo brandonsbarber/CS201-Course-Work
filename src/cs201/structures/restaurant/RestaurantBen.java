@@ -2,21 +2,16 @@ package cs201.structures.restaurant;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.StructurePanel;
 import cs201.gui.roles.restaurant.Ben.CustomerGuiBen;
 import cs201.gui.roles.restaurant.Ben.WaiterGuiBen;
-import cs201.gui.roles.restaurant.Matt.CashierGuiMatt;
-import cs201.gui.roles.restaurant.Matt.CookGuiMatt;
-import cs201.gui.roles.restaurant.Matt.CustomerGuiMatt;
-import cs201.gui.roles.restaurant.Matt.HostGuiMatt;
-import cs201.gui.roles.restaurant.Matt.WaiterGuiMatt;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelBen;
 import cs201.gui.structures.restaurant.RestaurantAnimationPanelMatt;
 import cs201.helper.CityTime;
 import cs201.helper.Ben.RestaurantRotatingStandBen;
-import cs201.helper.Matt.RestaurantRotatingStand;
 import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.roles.restaurantRoles.Ben.RestaurantCashierRoleBen;
@@ -26,13 +21,8 @@ import cs201.roles.restaurantRoles.Ben.RestaurantHostRoleBen;
 import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBen;
 import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBenNormal;
 import cs201.roles.restaurantRoles.Ben.RestaurantWaiterRoleBenStand;
-import cs201.roles.restaurantRoles.Matt.RestaurantCashierRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantCookRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantCustomerRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantHostRoleMatt;
 import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMatt;
-import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattNormal;
-import cs201.roles.restaurantRoles.Matt.RestaurantWaiterRoleMattStand;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
 
@@ -65,13 +55,14 @@ public class RestaurantBen extends Restaurant {
 		
 		this.cashier = new RestaurantCashierRoleBen();
 		cashier.setRestaurant(this);
+		((RestaurantCashierRoleBen) cashier).setStructure(this);
 		
 		this.cook = new RestaurantCookRoleBen();
 		((RestaurantCookRoleBen) cook).setRotatingStand(stand);
 		cook.setRestaurant(this);
 		((RestaurantCookRoleBen) cook).setAnimPanel((RestaurantAnimationPanelBen) this.panel);
 		((RestaurantCookRoleBen) cook).setCashier((RestaurantCashierRoleBen) cashier);
-		
+		((RestaurantCookRoleBen) cook).setStructure(this);
 		
 		this.waiters = Collections.synchronizedList(new ArrayList<RestaurantWaiterRole>());
 		for (int i = 0; i < INITIALWAITERS; i++) {
@@ -188,26 +179,13 @@ public class RestaurantBen extends Restaurant {
 			}
 		}
 	}
-	
-	private void UpdateWaiterHomePositions() {		
-		int initialX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .48f);
-    	int initialY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .18f);
-    	int mult = (int)(RestaurantAnimationPanelMatt.WINDOWX * .024f);
-    	int offset = (int)(RestaurantAnimationPanelMatt.WINDOWX * .048f);
-    	
-    	synchronized(waiters) {
-    		for (RestaurantWaiterRoleMatt waiter : ((RestaurantHostRoleMatt) host).getActiveWaiters()) {
-    			int x = initialX - (((RestaurantHostRoleMatt) host).getNumActiveWaiters() - 1) * mult;
-    			int y = initialY;
-				waiter.getGui().SetHomePosition(x, y);
-				waiter.getGui().GoToWaitingPosition();
-				initialX += offset;
-    		}
-    	}
-    }
 
 	@Override
-	public void updateTime(CityTime time) {		
+	public void updateTime(CityTime time) {
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
+		}
+		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
@@ -216,6 +194,7 @@ public class RestaurantBen extends Restaurant {
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
 		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
@@ -224,8 +203,10 @@ public class RestaurantBen extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (!isOpen) {
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !forceClosed) {
 			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
 	}
 	
@@ -236,6 +217,17 @@ public class RestaurantBen extends Restaurant {
 		for (RestaurantWaiterRole r : waiters) {
 			r.msgClosingTime();
 		}
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		((RestaurantCookRoleBen)this.cook).emptyInventory();
+		this.configPanel.updateInfo(this);
+	}
+
+	@Override
+	public List<String> getCookInventory() {
+		return ((RestaurantCookRoleBen)this.cook).getFormattedInventory();
 	}
 
 }

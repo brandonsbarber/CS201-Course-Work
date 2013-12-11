@@ -1,5 +1,6 @@
 package cs201.agents.transit;
 
+import java.awt.Point;
 import java.util.concurrent.Semaphore;
 
 import cs201.agents.Agent;
@@ -42,6 +43,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public void setGui(VehicleGui gui)
 	{
 		this.gui = gui;
+	}
+	
+	public void setDrunk(boolean drunk)
+	{
+		if(gui != null)
+		{
+			gui.setDrunk(drunk);
+		}
 	}
 	
 	/**
@@ -90,7 +99,14 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 			return;
 		}
 		gui.setPresent(true);
-		gui.doGoToLocation(destination);
+		if(destination != null)
+		{
+			gui.doGoToLocation(destination);
+		}
+		else
+		{
+			gui.doGoToLocation(destinationPoint);
+		}
 		try
 		{
 			AlertLog.getInstance().logMessage(AlertTag.TRANSIT,"Vehicle "+getInstance(),"Animating to "+destination +" from "+currentLocation);
@@ -98,10 +114,24 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 		}
 		catch(InterruptedException e)
 		{
-			e.printStackTrace();
+			if(!gui.getDrunk())
+			{
+				e.printStackTrace();
+			}
+			else
+			{
+				destroyed = true;
+			}
 		}
 		currentLocation = destination;
 	}
+	
+	public void msgSetDestination(Point p)
+	{
+		destinationPoint = p;
+	}
+	
+	Point destinationPoint;
 	
 	/**
 	 * Gets the instance count of the vehicle
@@ -110,5 +140,16 @@ public abstract class VehicleAgent extends Agent implements Vehicle
 	public int getInstance()
 	{
 		return instance;
+	}
+	
+	public String toString()
+	{
+		return this.getClass().getSimpleName()+""+instance;
+	}
+
+	boolean destroyed = false;
+	
+	public boolean getDestroyed() {
+		return destroyed;
 	}
 }

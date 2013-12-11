@@ -7,6 +7,7 @@ import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Brandon.CookGuiBrandon;
 import cs201.gui.roles.restaurant.Brandon.KitchenGuiBrandon;
 import cs201.helper.CityDirectory;
+import cs201.helper.Constants;
 import cs201.helper.Brandon.FoodBrandon;
 import cs201.helper.Brandon.RestaurantRotatingStandBrandon;
 import cs201.helper.Brandon.RestaurantRotatingStandBrandon.StandOrder;
@@ -221,6 +222,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		{
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,""+key+" "+cookTime.get(key).getAmount());
 		}
+		restaurant.updateInfoPanel();
 		stateChanged();
 	}
 	
@@ -378,7 +380,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 		
 		f.useFood();
 		o.s = OrderState.Cooking;
-		timer.schedule (new CookingTask(this,o), cookTime.get(o.c).getCookingTime());
+		timer.schedule (new CookingTask(this,o), (long)(cookTime.get(o.c).getCookingTime()*Constants.ANIMATION_SPEED_FACTOR));
 		
 		gui.doGoToSlot(o.table);
 		try
@@ -397,6 +399,7 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT,""+this,"We are low on "+f.getType()+": "+f.getAmount());
 			calcLowFoods();
 		}
+		restaurant.updateInfoPanel();
 	}
 	
 	private void calcLowFoods()
@@ -523,6 +526,26 @@ public class RestaurantCookRoleBrandon extends RestaurantCookRole implements Coo
 	public RestaurantRotatingStandBrandon getStand()
 	{
 		return stand;
+	}
+	
+	public void emptyInventory()
+	{
+		for(String s : cookTime.keySet())
+		{
+			FoodBrandon food = cookTime.get(s);
+			food.setAmount(0);
+		}
+	}
+	
+	public List<String> getInventory()
+	{
+		List<String> strings = new ArrayList<String>();
+		for(String s : cookTime.keySet())
+		{
+			FoodBrandon food = cookTime.get(s);
+			strings.add(food.getType()+" ["+food.getAmount()+"]");
+		}
+		return strings;
 	}
 }
 

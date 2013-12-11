@@ -3,6 +3,7 @@ package cs201.structures.restaurant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.ArtManager;
@@ -24,17 +25,15 @@ import cs201.roles.Role;
 import cs201.roles.restaurantRoles.RestaurantWaiterRole;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
-
 import cs201.roles.restaurantRoles.Brandon.*;
-
 import cs201.gui.structures.restaurant.*;
 
-@SuppressWarnings("serial")
 public class RestaurantBrandon extends Restaurant {
 
 	private static final int MAXWAITERS = 4;
 	private RestaurantRotatingStandBrandon stand;
 
+	@SuppressWarnings("unchecked")
 	public RestaurantBrandon(int x, int y, int width, int height, int id, StructurePanel p) {
 		super(x, y, width, height, id, p);
 		this.openSprite = ArtManager.getImage("Restaurant_Brandon_Open");
@@ -53,12 +52,10 @@ public class RestaurantBrandon extends Restaurant {
     	savedPrices = (HashMap<String,java.lang.Double>)prices.clone();
     	
 		cookingTimes = new HashMap<String,FoodBrandon>();
-		cookingTimes.put("Steak",new FoodBrandon ("Steak",2,2,2,1000,prices.get("Steak")));
-		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",5,2,2,1000,prices.get("Chicken")));
-		cookingTimes.put("Salad",new FoodBrandon ("Salad",5,2,2,1000,prices.get("Salad")));
-		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",5,2,3,1000,prices.get("Pizza")));
-		
-		MenuBrandon menu = new MenuBrandon(prices);
+		cookingTimes.put("Steak",new FoodBrandon ("Steak",3,2,5,1000,prices.get("Steak")));
+		cookingTimes.put("Chicken",new FoodBrandon ("Chicken",5,2,5,1000,prices.get("Chicken")));
+		cookingTimes.put("Salad",new FoodBrandon ("Salad",5,2,5,1000,prices.get("Salad")));
+		cookingTimes.put("Pizza",new FoodBrandon ("Pizza",5,2,5,1000,prices.get("Pizza")));
 		
 		/*--------------------------------
 		 * 
@@ -113,16 +110,6 @@ public class RestaurantBrandon extends Restaurant {
 	HashMap<String,java.lang.Double> savedPrices;
 
 	@Override
-	public void closingTime() {
-		cashier.msgClosingTime();
-		cook.msgClosingTime();
-		for(RestaurantWaiterRole w : waiters)
-		{
-			w.msgClosingTime();
-		}
-	}
-
-	@Override
 	public Role getRole(Intention role) {
 		switch (role) {
 		case RestaurantCook: {
@@ -146,7 +133,6 @@ public class RestaurantBrandon extends Restaurant {
 					if (r.getPerson() == null)
 					{
 						((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) r);
-						//UpdateWaiterHomePositions();
 						((RestaurantWaiterRoleBrandon) r).getGui().setPresent(true);
 						return r;
 					}
@@ -171,7 +157,6 @@ public class RestaurantBrandon extends Restaurant {
 					waiterGui.setKitchen(kitchen);
 					waiterGui.setTables(((RestaurantAnimationPanelBrandon)panel).getTables());
 					((RestaurantHostRoleBrandon) host).addWaiter((RestaurantWaiterRoleBrandon) newWaiter);
-					//UpdateWaiterHomePositions();
 					((RestaurantWaiterRoleBrandon) newWaiter).setRotatingStand(stand);
 					this.panel.addGui(waiterGui);
 					System.out.println(this.panel);
@@ -196,8 +181,6 @@ public class RestaurantBrandon extends Restaurant {
 			RestaurantCustomerRoleBrandon newCustomer = new RestaurantCustomerRoleBrandon("",(RestaurantHostRoleBrandon)host);
 			CustomerGuiBrandon customerGui = new CustomerGuiBrandon((RestaurantCustomerRoleBrandon) newCustomer);
 			((RestaurantCustomerRoleBrandon) newCustomer).setGui(customerGui);
-			//newCustomer.setCashier((RestaurantCashierRoleBrandon) cashier);
-			//newCustomer.setHost((RestaurantHostRoleBrandon) host);
 			this.panel.addGui(customerGui);
 			newCustomer.setRestaurant(this);
 			return newCustomer;
@@ -209,7 +192,13 @@ public class RestaurantBrandon extends Restaurant {
 		}
 	}
 	
-	private void checkIfRestaurantShouldOpen() {
+	private void checkIfRestaurantShouldOpen(CityTime time) {
+		// If it's not during shift hours, there's no way the restaurant would be open
+		if (!(CityTime.timeDifference(time, morningShiftStart) >= 0 && CityTime.timeDifference(time, morningShiftEnd) < 0) &&
+				!(CityTime.timeDifference(time, afternoonShiftStart) >= 0 && CityTime.timeDifference(time, closingTime) < 0)) {
+			return;
+		}
+		
 		if (host.getPerson() != null && cashier.getPerson() != null && cook.getPerson() != null) {
 			for (RestaurantWaiterRole w : waiters) {
 				if (w.getPerson() != null) {
@@ -222,29 +211,53 @@ public class RestaurantBrandon extends Restaurant {
 	}
 
 	@Override
-	public void updateTime(CityTime time) {
-		if(!isOpen)
-		{
-			checkIfRestaurantShouldOpen();
+	public void updateTime(CityTime time) {		
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
 		}
-		
+
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
+			this.isOpen = false;
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
 				closingTime();
 			}
-		}
-		
-		if (time.equalsIgnoreDay(this.closingTime)) {
+			this.configPanel.updateInfo(this);
+		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
+			this.isOpen = false;
 			if (host.getPerson() != null) {
 				host.msgClosingTime();
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !this.forceClosed) {
+			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
+	}
+	
+	@Override
+	public void closingTime() {
+		cashier.msgClosingTime();
+		cook.msgClosingTime();
+		for (RestaurantWaiterRole r : waiters) {
+			r.msgClosingTime();
+		}
+	}
+
+	@Override
+	public void emptyEntireCookInventory() {
+		((RestaurantCookRoleBrandon) cook).emptyInventory();
+		this.configPanel.updateInfo(this);
+	}
+
+	@Override
+	public List<String> getCookInventory() {
+		return ((RestaurantCookRoleBrandon) cook).getInventory();
 	}
 
 }

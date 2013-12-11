@@ -258,6 +258,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 		DoLeaveRestaurant();
 		this.myPerson = null;
 		this.waiterGui.setPresent(false);
+		this.restaurant.updateInfoPanel();
 	}
 	
 	private void AskForBreak() {
@@ -571,6 +572,7 @@ public abstract class RestaurantWaiterRoleMatt extends RestaurantWaiterRole impl
 
 	@Override
 	public void startInteraction(Intention intent) {
+		this.restaurant.updateInfoPanel();
 		this.waiterGui.setPresent(true);
 		closingTime = false;
 	}

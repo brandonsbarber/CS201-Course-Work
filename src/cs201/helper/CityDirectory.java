@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import cs201.agents.PersonAgent;
+import cs201.helper.CityTime.WeekDay;
 import cs201.structures.Structure;
 import cs201.structures.bank.BankStructure;
 import cs201.structures.market.MarketStructure;
@@ -127,6 +128,9 @@ public class CityDirectory implements ActionListener {
 	
 	public void setStartTime(CityTime newTime) {
 		time = newTime;
+		if (newTime.day == null) {
+			time.day = WeekDay.Monday;
+		}
 	}
 	
 	public void setTimerOut(int newTimerOut) {
@@ -237,8 +241,12 @@ public class CityDirectory implements ActionListener {
 	public Restaurant getRandomOpenRestaurant() {
 		Random randGenerator = new Random();
 		List<Restaurant> openRestaurants = getOpenRestaurants();
-		int num = randGenerator.nextInt(openRestaurants.size());
-		return openRestaurants.get(num);
+		try {
+			int num = randGenerator.nextInt(openRestaurants.size());
+			return openRestaurants.get(num);
+		} catch(IllegalArgumentException e) {
+			return null;
+		}
 	}
 	
 	// Bank Stuff
@@ -282,8 +290,12 @@ public class CityDirectory implements ActionListener {
 	public BankStructure getRandomOpenBank() {
 		Random randGenerator = new Random();
 		List<BankStructure> openBanks = getOpenBanks();
-		int num = randGenerator.nextInt(openBanks.size());
-		return openBanks.get(num);
+		try {
+			int num = randGenerator.nextInt(openBanks.size());
+			return openBanks.get(num);
+		} catch(IllegalArgumentException e) {
+			return null;
+		}
 	}
 	
 	// Market Stuff
@@ -325,8 +337,12 @@ public class CityDirectory implements ActionListener {
 	public MarketStructure getRandomOpenMarket() {
 		Random randGenerator = new Random();
 		List<MarketStructure> openMarkets = getOpenMarkets();
-		int num = randGenerator.nextInt(openMarkets.size());
-		return openMarkets.get(num);
+		try {
+			int num = randGenerator.nextInt(openMarkets.size());
+			return openMarkets.get(num);
+		} catch(IllegalArgumentException e) {
+			return null;
+		}
 	}
 	
 	// Residence Stuff

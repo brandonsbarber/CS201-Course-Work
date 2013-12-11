@@ -82,6 +82,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 	public void msgFulfillSupplyOrder(String type, int amount, MarketStructure from) {
 		Food temp = foods.get(type);
 		temp.quantity += amount;
+		this.restaurant.updateInfoPanel();
 		temp.orderPending = false;
 		if (temp.amountOrdered > amount || amount == 0) {
 			temp.marketsTried.add(from);
@@ -111,8 +112,9 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			for (String f : foods.keySet()) {
 				Food temp = foods.get(f);
 				if (!temp.orderPending && temp.quantity < FOODTHRESHOLD && temp.marketsTried.size() < CityDirectory.getInstance().getMarkets().size()) {
-					OrderFood(temp);
-					return true;
+					if (OrderFood(temp)) {
+						return true;
+					}
 				}
 			}
 		}
@@ -156,6 +158,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		DoLeaveRestaurant();
 		this.myPerson = null;
 		this.gui.setPresent(false);
+		this.restaurant.updateInfoPanel();
 	}
 	
 	private void GetOrderFromStand() {
@@ -178,6 +181,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 			return;
 		}
 		f.quantity--;
+		this.restaurant.updateInfoPanel();
 		
 		DoCookOrder(o);
 		o.state = OrderState.cooking;
@@ -191,7 +195,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		orders.remove(o);
 	}
 	
-	private void OrderFood(Food f) {
+	private boolean OrderFood(Food f) {
 		f.amountOrdered = MAXSTOCK - f.quantity;
 		for (MarketStructure m : CityDirectory.getInstance().getMarkets()) {
 			if (!f.marketsTried.contains(m)) {
@@ -200,9 +204,10 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 				((RestaurantCashierRoleMatt) this.restaurant.getCashier()).msgOrderInvoiceFromCook(market, f.type, f.amountOrdered);
 				market.getManager().msgHereIsMyOrderForDelivery(restaurant, new ItemRequest(f.type, f.amountOrdered));
 				f.orderPending = true;
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	// Utilities -------------------------------------------------------------
@@ -287,6 +292,17 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 		stateChanged();
 	}
 	
+	public List<String> getInventory() {
+		List<String> inventory = new ArrayList<String>();
+		for (Food f : foods.values()) {
+			String s = f.type;
+			s += " [" + f.quantity + "]";
+			inventory.add(s);
+		}
+		
+		return inventory;
+	}
+	
 	private class Food {
 		private String type;
 		private int cookTime;
@@ -359,6 +375,7 @@ public class RestaurantCookRoleMatt extends RestaurantCookRole implements CookMa
 
 	@Override
 	public void startInteraction(Intention intent) {
+		this.restaurant.updateInfoPanel();
 		closingTime = false;
 		this.gui.setPresent(true);
 		gui.goToKitchen();

@@ -21,13 +21,17 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import cs201.helper.Constants;
+import cs201.helper.transit.Intersection;
 import cs201.helper.transit.MapParser;
 import cs201.helper.transit.MovementDirection;
+import cs201.helper.transit.Pathfinder;
 import cs201.structures.Structure;
 
 @SuppressWarnings("serial")
 public class CityPanel extends JPanel implements MouseListener, ActionListener
 {
+	List<Gui> toAdd = new ArrayList<Gui>();
+	List<Gui> toRemove = new ArrayList<Gui>();
 	
 	public MovementDirection[][] drivingMap;
 	public MovementDirection[][] walkingMap;
@@ -48,7 +52,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	
 	private Timer timer;
 	
-	private final double TIME_FACTOR = 2;
+	private final double TIME_FACTOR = 4;
 
 	/**
 	 * Creates a city panel and makes it the sole instance in the program.
@@ -103,6 +107,22 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
 		}
+		
+		intersections = Pathfinder.findIntersections(this);
+	}
+	
+	private ArrayList<Intersection> intersections;
+	
+	public Intersection getIntersection(Point next)
+	{
+		for(Intersection i : intersections)
+		{
+			if(i.containsPoint(next))
+			{
+				return i;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -133,6 +153,12 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 				crosswalkPermissions.get(y).add(Collections.synchronizedList(new ArrayList<Gui>()));
 			}
 		}
+		
+		for(Intersection i : intersections)
+		{
+			i.acquireIntersection();
+			i.releaseIntersection();
+		}
 	}
 	
 	/**
@@ -141,7 +167,7 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 	 */
 	public void addGui(Gui gui)
 	{
-		guis.add(gui);
+		toAdd.add(gui);
 	}
 	
 	/**
@@ -392,6 +418,35 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		
+		try
+		{
+			synchronized(guis)
+			{
+				for(Gui gui: guis)
+				{
+					if(gui.isPresent())
+					{
+						gui.updatePosition();
+						gui.draw(g2);
+					}
+				}
+			}
+			for(Gui gui : toRemove)
+			{
+				guis.remove(gui);
+			}
+			for(Gui gui : toAdd)
+			{
+				guis.add(gui);
+			}
+			toRemove.clear();
+			toAdd.clear();
+		}
+		catch(ConcurrentModificationException e)
+		{
+			e.printStackTrace();
+		}
+		
 		if(Constants.DEBUG_MODE)
 		{
 			for(int y = 0; y < permissions.length;y++)
@@ -401,6 +456,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					if(permissions[y][x].availablePermits() == 0)
 					{
 						g2.setColor(Color.WHITE);
+						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+					}
+					else if(permissions[y][x].availablePermits() > 1)
+					{
+						g2.setColor(Color.RED);
 						g2.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
 					}
 					g2.setColor(Color.BLACK);
@@ -413,22 +473,6 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 					}
 				}
 			}
-		}
-		
-		try
-		{
-			for(Gui gui: guis)
-			{
-				if(gui.isPresent())
-				{
-					gui.updatePosition();
-					gui.draw(g2);
-				}
-			}
-		}
-		catch(ConcurrentModificationException e)
-		{
-			e.printStackTrace();
 		}
 	}
 	
@@ -570,6 +614,11 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 			}
 		}
 		city.displayBlankPanel();
+		
+		int x = arg0.getX()/GRID_SIZE;
+		int y = arg0.getY()/GRID_SIZE;
+		
+		System.out.println(crosswalkPermissions.get(y).get(x));
 	}
 	
 	/**
@@ -635,9 +684,13 @@ public class CityPanel extends JPanel implements MouseListener, ActionListener
 		repaint();
 	}
 	
-	
-	public void release()
+	/**
+	 * Removes a gui
+	 * @param g the gui to remove
+	 */
+	public void removeGui(Gui g)
 	{
-		permissions[7][13].release();
+		toRemove.add(g);
 	}
 }
+

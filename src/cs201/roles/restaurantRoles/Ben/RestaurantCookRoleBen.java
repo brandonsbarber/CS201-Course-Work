@@ -22,6 +22,7 @@ import cs201.roles.marketRoles.MarketManagerRole.ItemRequest;
 import cs201.roles.restaurantRoles.RestaurantCookRole;
 import cs201.roles.restaurantRoles.Ben.RestaurantCookRoleBen.MarketOrder.Item;
 import cs201.structures.market.MarketStructure;
+import cs201.structures.restaurant.RestaurantBen;
 import cs201.trace.AlertLog;
 import cs201.trace.AlertTag;
 
@@ -40,6 +41,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 	
 	private boolean checkInventory = true;
 	
+	private RestaurantBen structure;
 	private RestaurantAnimationPanelBen animPanel = null;
 	private RestaurantRotatingStandBen stand = null;
 	
@@ -65,11 +67,11 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		if (!steakString.equals(""))
 			steakAmount = Integer.parseInt(steakString);
 			*/
-		int chickenAmount = 0;
+		int chickenAmount = 10;
 		int steakAmount = 10;
 
-		inventory.put("Chicken", new MyFood("Chicken", 10000, chickenAmount, 1, 10));
-		inventory.put("Steak", new MyFood("Steak", 12000, steakAmount, 1, 10));
+		inventory.put("Chicken", new MyFood("Chicken", 5000, chickenAmount, 1, 10));
+		inventory.put("Steak", new MyFood("Steak", 7000, steakAmount, 1, 10));
 		
 	}
 	
@@ -87,6 +89,10 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 	
 	public void setRotatingStand(RestaurantRotatingStandBen s) {
 		stand = s;
+	}
+	
+	public void setStructure(RestaurantBen s) {
+		structure = s;
 	}
 
 	/**
@@ -118,6 +124,26 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 		}
 		
 		stateChanged();
+	}
+	
+	/**
+	 * Clears the cook's inventory.
+	 */
+	public void emptyInventory() {
+		this.inventory.clear();
+	}
+	
+	/**
+	 * Returns the cook's inventory formated as hamburger [100], etc.
+	 * @return A List of Strings, each one with the given format.
+	 */
+	public List<String> getFormattedInventory() {
+		List<String> formattedInventory = new ArrayList<String>();
+		for (MyFood food : inventory.values()) {
+			String temp = food.type + " [" + food.quantity + "]";
+			formattedInventory.add(temp);
+		}
+		return formattedInventory;
 	}
 	
 	public void timerDone(Order order) {
@@ -221,6 +247,11 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 				timerDone(order);
 			}
 		}, cookingTime);
+		
+		// Update the structure config panel
+		if (structure != null) {
+			structure.updateInfoPanel();
+		}
 	}
 	
 	private void orderFoodIfInventoryLow() {
@@ -230,8 +261,7 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 			return;
 		}
 		
-		// Choose a Market to order from (we'll just choose a random one for now)
-		// TODO make this not random
+		// Choose a Market to order from (we'll just choose a random one)
 		MarketStructure market = CityDirectory.getInstance().getRandomMarket();
 		
 		// Go through each item in the inventory and make a call to the market if we're low
@@ -359,13 +389,17 @@ public class RestaurantCookRoleBen extends RestaurantCookRole implements CookBen
 
 	@Override
 	public void addMarket(MarketStructure m) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void startInteraction(Intention intent) {
 		closingTime = false;
+		
+		// Update the structure config panel
+		if (structure != null) {
+			structure.updateInfoPanel();
+		}
 	}
 	
 }

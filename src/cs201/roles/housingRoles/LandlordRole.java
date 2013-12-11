@@ -75,15 +75,6 @@ public class LandlordRole extends Role implements Landlord {
 		}
 		stateChanged();
 	}
-
-	public void msgPropertyNeedsMaintenance(Renter r, Residence res) { //currently unused
-		for (myProperty mP : myProperties) {
-			if (mP.residence == res) {
-				mP.needsMaintenance = true;
-			}
-		}
-		stateChanged();
-	}
 	
 	@Override
 	public void msgClosingTime() {
@@ -141,12 +132,6 @@ public class LandlordRole extends Role implements Landlord {
 			}
 		}
 
-		for (myProperty mP:myProperties) {
-			if (mP.needsMaintenance()) {
-				FixProperty(mP);
-				return true;
-			}
-		}
 		return false;
 	}
 	
@@ -162,12 +147,6 @@ public class LandlordRole extends Role implements Landlord {
 		Do("Sending additional late rent penalty request of "+latePenalty+" to "+mP.renter.toString());
 		mP.state = RentState.lateNotified;
         mP.renter.msgRentLateYouOweAdditional(this, latePenalty);
-	}
-
-	private void FixProperty(myProperty mP) {
-	//perform maintenance task on property
-		Do("Performing maintenance.");
-        mP.performMaintenance();
 	}
 	
 	private void goToDesk() {

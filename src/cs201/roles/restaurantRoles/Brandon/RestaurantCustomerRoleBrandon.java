@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import cs201.agents.PersonAgent.Intention;
 import cs201.gui.roles.restaurant.Brandon.CustomerGuiBrandon;
+import cs201.helper.Constants;
 import cs201.helper.Brandon.MenuBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CashierBrandon;
 import cs201.interfaces.roles.restaurant.Brandon.CustomerBrandon;
@@ -332,7 +333,7 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 				}
 				stateChanged();
 			}
-		}, ORDER_DECISION_TIME);
+		}, (long)(ORDER_DECISION_TIME*Constants.ANIMATION_SPEED_FACTOR));
 	}
 
 	private void goToRestaurant()
@@ -436,12 +437,11 @@ public class RestaurantCustomerRoleBrandon extends RestaurantCustomerRole implem
 				s = CustomerState.DoneEating;
 				stateChanged();
 			}
-		}, EAT_TIME);
+		}, (long)(EAT_TIME*Constants.ANIMATION_SPEED_FACTOR));
 	}
 	
 	private void leave()
 	{
-		//This was the source of the error in V.2.0
 		order = "";
 		
 		billAmount = 0;
