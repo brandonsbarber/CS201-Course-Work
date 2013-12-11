@@ -77,6 +77,7 @@ SimCity201 Project Repository for Team 21
  + Slightly buggy Pedestrian/Vehicle collisions
  + Animation in the CityView is extremely slow and buggy because Java can't handle so many draw calls
  + Some large scenarios don't work because we simply did not have the time or resources to integrate everything with only 4 people
+ + Skyler's restaurant is incomplete (shifts don't quite work, no rotating stand, no cook animation)
 
 ###Running Some Scenarios (Things That Do Work)
 ####Instructions
