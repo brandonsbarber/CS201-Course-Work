@@ -178,26 +178,13 @@ public class RestaurantBen extends Restaurant {
 			}
 		}
 	}
-	
-	private void UpdateWaiterHomePositions() {		
-		int initialX = (int)(RestaurantAnimationPanelMatt.WINDOWX * .48f);
-    	int initialY = (int)(RestaurantAnimationPanelMatt.WINDOWY * .18f);
-    	int mult = (int)(RestaurantAnimationPanelMatt.WINDOWX * .024f);
-    	int offset = (int)(RestaurantAnimationPanelMatt.WINDOWX * .048f);
-    	
-    	synchronized(waiters) {
-    		for (RestaurantWaiterRoleMatt waiter : ((RestaurantHostRoleMatt) host).getActiveWaiters()) {
-    			int x = initialX - (((RestaurantHostRoleMatt) host).getNumActiveWaiters() - 1) * mult;
-    			int y = initialY;
-				waiter.getGui().SetHomePosition(x, y);
-				waiter.getGui().GoToWaitingPosition();
-				initialX += offset;
-    		}
-    	}
-    }
 
 	@Override
-	public void updateTime(CityTime time) {		
+	public void updateTime(CityTime time) {
+		if (time.equalsIgnoreDay(morningShiftStart) || time.equalsIgnoreDay(afternoonShiftStart)) {
+			this.forceClosed = false;
+		}
+		
 		if (time.equalsIgnoreDay(morningShiftEnd)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "Morning shift over!");
 			this.isOpen = false;
@@ -206,6 +193,7 @@ public class RestaurantBen extends Restaurant {
 			} else {
 				closingTime();
 			}
+			this.configPanel.updateInfo(this);
 		} else if (time.equalsIgnoreDay(this.closingTime)) {
 			AlertLog.getInstance().logMessage(AlertTag.RESTAURANT, this.toString(), "It's closing time!");
 			this.isOpen = false;
@@ -214,8 +202,10 @@ public class RestaurantBen extends Restaurant {
 			} else {
 				closingTime();
 			}
-		} else if (!isOpen) {
+			this.configPanel.updateInfo(this);
+		} else if (!isOpen && !forceClosed) {
 			checkIfRestaurantShouldOpen(time);
+			this.configPanel.updateInfo(this);
 		}
 	}
 	
@@ -229,27 +219,14 @@ public class RestaurantBen extends Restaurant {
 	}
 
 	@Override
-	public void closeRestaurant() {
-		AlertLog.getInstance().logWarning(AlertTag.RESTAURANT, this.toString(), "Force closing.");
-		this.forceClosed = true;
-		this.isOpen = false;
-		if (host.getPerson() != null) {
-			host.msgClosingTime();
-		} else {
-			closingTime();
-		}
+	public void emptyEntireCookInventory() {
+		((RestaurantCookRoleBen)this.cook).emptyInventory();
 		this.configPanel.updateInfo(this);
 	}
 
 	@Override
-	public void emptyEntireCookInventory() {
-		((RestaurantCookRoleBen)this.cook).emptyInventory();
-	}
-
-	@Override
 	public List<String> getCookInventory() {
-		// TODO Auto-generated method stub
-		return null;
+		return ((RestaurantCookRoleBen)this.cook).getFormattedInventory();
 	}
 
 }
