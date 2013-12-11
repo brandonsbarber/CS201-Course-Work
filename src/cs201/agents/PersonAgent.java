@@ -451,7 +451,7 @@ public class PersonAgent extends Agent implements Person {
 		if (returnToCurrentAction && succeeded) {
 			currentAction.active = false;
 			planner.add(numActivities, currentAction);
-		} else {
+		} else if (returnToCurrentAction && !succeeded) {
 			currentAction.active = false;
 			planner.add(numActivities - 1, currentAction);
 		}
