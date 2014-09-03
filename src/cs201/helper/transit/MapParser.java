@@ -10,7 +10,9 @@ public class MapParser
 {
 	public static String[][] parseMap() throws FileNotFoundException
 	{
-		Scanner in = new Scanner(new File(Constants.MAP_PATH),"UTF-16");
+		MapParser parser = new MapParser();
+		
+		Scanner in = new Scanner(parser.getClass().getResourceAsStream(Constants.MAP_PATH),"UTF-16");
 		System.out.println(in.hasNext());
 		
 		int xDimen = in.nextInt();

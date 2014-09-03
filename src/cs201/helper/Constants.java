@@ -81,6 +81,6 @@ public class Constants {
     /**
      * Default path from which to load the map of the city
      */
-    public static final String MAP_PATH = "data/Map.txt";
+    public static final String MAP_PATH = "/data/Map.txt";
     
 }
